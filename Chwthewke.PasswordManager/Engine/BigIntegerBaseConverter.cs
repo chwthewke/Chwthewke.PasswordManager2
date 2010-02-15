@@ -28,12 +28,9 @@ namespace Chwthewke.PasswordManager.Engine
         {
             for ( int i = 0; i < numDigits; ++i )
             {
-                Console.WriteLine( "value: {0}, base: {1}", value, Base );
                 BigInteger digit = value % Base;
                 value /= Base;
-                Console.WriteLine( "modulo: {0}, remaining value: {1}", digit, value );
                 yield return ( byte ) digit;
-                Console.WriteLine( );
             }
         }
     }

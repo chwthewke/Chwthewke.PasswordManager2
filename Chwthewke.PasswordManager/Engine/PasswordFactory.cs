@@ -12,21 +12,25 @@ namespace Chwthewke.PasswordManager.Engine
         private readonly IBaseConverter _converter;
         private readonly Symbols _symbols;
         private readonly int _length;
+        private IHash _hash;
         private const int MinLength = 8;
 
-        public PasswordFactory( IBaseConverter converter, Symbols symbols, int length )
+        public PasswordFactory( IHash hash, IBaseConverter converter, Symbols symbols, int length )
         {
+            if ( hash == null )
+                throw new ArgumentNullException( "hash" );
             if ( converter == null )
                 throw new ArgumentNullException( "converter" );
             if ( symbols == null )
                 throw new ArgumentNullException( "symbols" );
             if ( converter.Base != symbols.Length )
                 throw new ArgumentException( "The converter's base must match the symbols length" );
-            if ( converter.UsedBytes( length ) > Sha512.Size )
-                throw new ArgumentException( "Requested password length too bug", "length" );
+            if ( converter.UsedBytes( length ) > hash.Size )
+                throw new ArgumentException( "Requested password length too large", "length" );
             if ( length < MinLength )
                 throw new ArgumentException( "Requested password length too small, must be at least" + MinLength,
                                              "length" );
+            _hash = hash;
             _converter = converter;
             _length = length;
             _symbols = symbols;
@@ -39,7 +43,7 @@ namespace Chwthewke.PasswordManager.Engine
             return _symbols.ToString( passwordBytes );
         }
 
-        private static byte[ ] HashTogetherWithSalt( string key, SecureString masterPassword )
+        private byte[ ] HashTogetherWithSalt( string key, SecureString masterPassword )
         {
             byte[ ] saltBytes = Encoding.UTF8.GetBytes( Salt );
             byte[ ] keyBytes = Encoding.UTF8.GetBytes( key );
@@ -49,7 +53,7 @@ namespace Chwthewke.PasswordManager.Engine
             {
                 masterPasswordBytes = Secure.GetBytes( Encoding.UTF8, masterPassword );
                 src = ConcatArrays( saltBytes, masterPasswordBytes, keyBytes );
-                return Sha512.Hash( src );
+                return _hash.Hash( src );
             }
             finally
             {

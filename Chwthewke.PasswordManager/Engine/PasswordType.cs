@@ -11,7 +11,10 @@ namespace Chwthewke.PasswordManager.Engine
             _length = length;
         }
 
-        public IPasswordFactory Factory { get { return new PasswordFactory( new ArrayBaseConverter( _symbols.Length ), _symbols, _length ); } }
+        public IPasswordFactory Factory
+        {
+            get { return new PasswordFactory( new Sha512( ), new ArrayBaseConverter( _symbols.Length ), _symbols, _length ); }
+        }
 
         public static readonly PasswordType Ascii = new PasswordType( Symbols.Symbols92, 10 );
         public static readonly PasswordType AlphaNumeric = new PasswordType( Symbols.Symbols62, 12 );

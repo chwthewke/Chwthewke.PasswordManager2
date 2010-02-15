@@ -4,28 +4,24 @@ using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    public static class Sha512
+    public class Sha512 : IHash
     {
-        public static int Size { get { return 64; } }
+        public int Size
+        {
+            get { return 64; }
+        }
 
-        public static byte[ ] Hash( byte[ ] bytes )
+        public byte[ ] Hash( byte[ ] bytes )
         {
             if ( bytes == null )
                 throw new ArgumentNullException( "bytes", "Argument cannot be null." );
 
-            SHA512 hash;
-            try
-            {
-                hash = new SHA512Cng( );
-            }
-            catch ( PlatformNotSupportedException )
-            {
-                hash = SHA512.Create( );
-            }
-            return hash.ComputeHash( bytes );
+            using ( SHA512 hash = GetHash( ) )
+                return hash.ComputeHash( bytes );
         }
 
-        public static byte[ ] Hash( string str )
+
+        public byte[ ] Hash( string str )
         {
             if ( str == null )
                 throw new ArgumentNullException( "str", "Argument cannot be null." );
@@ -41,6 +37,20 @@ namespace Chwthewke.PasswordManager.Engine
                 if ( bytes != null )
                     Array.Clear( bytes, 0, bytes.Length );
             }
+        }
+
+        private SHA512 GetHash( )
+        {
+            SHA512 hash;
+            try
+            {
+                hash = new SHA512Cng( );
+            }
+            catch ( PlatformNotSupportedException )
+            {
+                hash = SHA512.Create( );
+            }
+            return hash;
         }
     }
 }

@@ -27,8 +27,8 @@ namespace Chwthewke.PasswordManager.Test.Engine
             IBaseConverter converter = _converterMock.Object;
             // Exercise
             // Verify
-            Assert.That( new TestDelegate( ( ) => new PasswordFactory( converter, symbols50, 8 ) ),
-                         Throws.InstanceOf( typeof( ArgumentException ) ) );
+            Assert.That( new TestDelegate( ( ) => new PasswordFactory( new Sha512( ), converter, symbols50, 8 ) ),
+                         Throws.InstanceOf( typeof ( ArgumentException ) ) );
         }
 
         [ Test ]
@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             _converterMock.Setup( c => c.Base ).Returns( 16 );
             _converterMock.Setup( c => c.UsedBytes( It.IsAny<int>( ) ) ).Returns( 64 );
             // Exercise
-            new PasswordFactory( _converterMock.Object, symbols16, 8 );
+            new PasswordFactory( new Sha512( ), _converterMock.Object, symbols16, 8 );
             // Verify
         }
 
@@ -51,8 +51,9 @@ namespace Chwthewke.PasswordManager.Test.Engine
             _converterMock.Setup( c => c.Base ).Returns( 16 );
             _converterMock.Setup( c => c.UsedBytes( It.IsAny<int>( ) ) ).Returns( 65 );
             // Exercise
-            Assert.That( new TestDelegate( ( ) => new PasswordFactory( _converterMock.Object, symbols16, 8 ) ),
-                         Throws.InstanceOf( typeof( ArgumentException ) ) );
+            Assert.That(
+                new TestDelegate( ( ) => new PasswordFactory( new Sha512( ), _converterMock.Object, symbols16, 8 ) ),
+                Throws.InstanceOf( typeof ( ArgumentException ) ) );
             // Verify
         }
 
@@ -64,8 +65,9 @@ namespace Chwthewke.PasswordManager.Test.Engine
             _converterMock.Setup( c => c.Base ).Returns( 16 );
             _converterMock.Setup( c => c.UsedBytes( It.IsAny<int>( ) ) ).Returns( 64 );
             // Exercise
-            Assert.That( new TestDelegate( ( ) => new PasswordFactory( _converterMock.Object, symbols16, 7 ) ),
-                         Throws.InstanceOf( typeof( ArgumentException ) ) );
+            Assert.That(
+                new TestDelegate( ( ) => new PasswordFactory( new Sha512( ), _converterMock.Object, symbols16, 7 ) ),
+                Throws.InstanceOf( typeof ( ArgumentException ) ) );
             // Verify
         }
 
@@ -84,13 +86,13 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             Symbols symbols = Symbols.Symbols92;
 
-            PasswordFactory engine = new PasswordFactory( _converterMock.Object, symbols, 12 );
+            PasswordFactory engine = new PasswordFactory( new Sha512( ), _converterMock.Object, symbols, 12 );
 
             // Exercise
             string password = engine.MakePassword( domain, SecureTest.Wrap( masterPassword ) );
 
             // Verify
-            byte[ ] hash = Sha512.Hash( Encoding.UTF8.GetBytes( PasswordFactory.Salt + masterPassword + domain ) );
+            byte[ ] hash = new Sha512( ).Hash(  Encoding.UTF8.GetBytes( PasswordFactory.Salt + masterPassword + domain ) );
             _converterMock.Verify( c => c.UsedBytes( 12 ) );
             _converterMock.Verify( c => c.Convert( hash, 12 ) );
             Assert.That( password, Is.EquivalentTo( symbols.ToString( bytes ) ) );

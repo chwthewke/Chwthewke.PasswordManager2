@@ -23,7 +23,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
                                        0xc4, 0xf3, 0x70, 0xc3, 0x77, 0x17, 0xea, 0xf7, 0xe1, 0x03, 0x78, 0x91,
                                    };
 
-            byte[ ] hash = Sha512.Hash( input );
+            byte[ ] hash = new Sha512( ).Hash( input );
             Assert.That( hash.Length, Is.EqualTo( 64 ) );
             Assert.That( hash, Is.EquivalentTo( expected ) );
         }
@@ -31,7 +31,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         [ Test ]
         public void TestHashNull( )
         {
-            Assert.That( new TestDelegate( ( ) => Sha512.Hash( (byte[ ]) null ) ),
+            Assert.That( new TestDelegate( ( ) => new Sha512( ).Hash( (byte[ ]) null ) ),
                          Throws.InstanceOf( typeof( ArgumentException ) ) );
         }
     }

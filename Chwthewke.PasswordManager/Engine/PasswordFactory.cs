@@ -12,7 +12,7 @@ namespace Chwthewke.PasswordManager.Engine
         private readonly IBaseConverter _converter;
         private readonly Symbols _symbols;
         private readonly int _length;
-        private IHash _hash;
+        private readonly IHash _hash;
         private const int MinLength = 8;
 
         public PasswordFactory( IHash hash, IBaseConverter converter, Symbols symbols, int length )
@@ -25,7 +25,7 @@ namespace Chwthewke.PasswordManager.Engine
                 throw new ArgumentNullException( "symbols" );
             if ( converter.Base != symbols.Length )
                 throw new ArgumentException( "The converter's base must match the symbols length" );
-            if ( converter.UsedBytes( length ) > hash.Size )
+            if ( converter.BytesNeeded( length ) > hash.Size )
                 throw new ArgumentException( "Requested password length too large", "length" );
             if ( length < MinLength )
                 throw new ArgumentException( "Requested password length too small, must be at least" + MinLength,
@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Engine
         public string MakePassword( string key, SecureString masterPassword )
         {
             byte[ ] hash = HashTogetherWithSalt( key, masterPassword );
-            byte[ ] passwordBytes = _converter.Convert( hash, _length );
+            byte[ ] passwordBytes = _converter.ConvertBytesToDigits( hash, _length );
             return _symbols.ToString( passwordBytes );
         }
 

@@ -52,6 +52,19 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Assert.That( asciiBytes, Is.All.LessThan( 128 ) );
         }
 
+        [Test]
+        public void TestSymbols62IsAscii7( )
+        {
+            // Setup
+            // Exercise
+            Encoding encoding = Encoding.GetEncoding( Encoding.ASCII.CodePage, EncoderFallback.ExceptionFallback,
+                                                      DecoderFallback.ReplacementFallback );
+            byte[ ] asciiBytes = encoding.GetBytes( Symbols.SymbolsString62 );
+            // Verify
+            Assert.That( asciiBytes, Is.All.LessThan( 128 ) );
+        }
+
+
         [ Test ]
         public void TestSymbolsLength62( )
         {

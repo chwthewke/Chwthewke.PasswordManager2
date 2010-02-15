@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Security.Cryptography;
-using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
@@ -20,26 +19,7 @@ namespace Chwthewke.PasswordManager.Engine
                 return hash.ComputeHash( bytes );
         }
 
-
-        public byte[ ] Hash( string str )
-        {
-            if ( str == null )
-                throw new ArgumentNullException( "str", "Argument cannot be null." );
-
-            byte[ ] bytes = null;
-            try
-            {
-                bytes = Encoding.UTF8.GetBytes( str );
-                return Hash( bytes );
-            }
-            finally
-            {
-                if ( bytes != null )
-                    Array.Clear( bytes, 0, bytes.Length );
-            }
-        }
-
-        private SHA512 GetHash( )
+        private static SHA512 GetHash( )
         {
             SHA512 hash;
             try

@@ -3,7 +3,9 @@ namespace Chwthewke.PasswordManager.Engine
     public interface IBaseConverter
     {
         int Base { get; }
-        int UsedBytes( int length );
-        byte[ ] Convert( byte[ ] src, int length );
+
+        int BytesNeeded( int numDigits );
+
+        byte[ ] ConvertBytesToDigits( byte[ ] bytes, int numDigits );
     }
 }

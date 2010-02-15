@@ -4,6 +4,5 @@
     {
         int Size { get; }
         byte[ ] Hash( byte[ ] bytes );
-        byte[ ] Hash( string str );
     }
 }

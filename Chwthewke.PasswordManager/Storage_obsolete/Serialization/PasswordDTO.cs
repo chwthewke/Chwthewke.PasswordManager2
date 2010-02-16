@@ -25,8 +25,8 @@ namespace Chwthewke.PasswordManager.Storage.Serialization
         {
             if ( ReferenceEquals( null, obj ) ) return false;
             if ( ReferenceEquals( this, obj ) ) return true;
-            if ( obj.GetType( ) != typeof( PasswordDTO ) ) return false;
-            return Equals( (PasswordDTO) obj );
+            if ( obj.GetType( ) != typeof ( PasswordDTO ) ) return false;
+            return Equals( ( PasswordDTO ) obj );
         }
 
         public override int GetHashCode( )

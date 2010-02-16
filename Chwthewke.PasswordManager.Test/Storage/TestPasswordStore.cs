@@ -11,12 +11,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public PasswordInfo Add( PasswordInfo passwordInfo )
         {
             PasswordInfo previousPasswordInfo = FindPasswordInfo( passwordInfo.Key );
-            
+
             if ( previousPasswordInfo != null )
                 _passwords.Remove( previousPasswordInfo );
 
             _passwords.Add( passwordInfo );
-            
+
             return previousPasswordInfo;
         }
 

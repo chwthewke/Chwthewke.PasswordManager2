@@ -13,7 +13,10 @@ namespace Chwthewke.PasswordManager.Storage
 
         private readonly IDictionary<string, PasswordData> _passwords = new Dictionary<string, PasswordData>( );
 
-        internal IPassword this[ string key ] { get { return new PasswordWrapper( this, key ); } }
+        internal IPassword this[ string key ]
+        {
+            get { return new PasswordWrapper( this, key ); }
+        }
 
         internal PasswordData GetPasswordData( string key )
         {
@@ -48,7 +51,10 @@ namespace Chwthewke.PasswordManager.Storage
             }
         }
 
-        public IEnumerable<string> KnownKeys { get { return new ReadOnlyCollection<string>( _passwords.Keys.ToList( ) ); } }
+        public IEnumerable<string> KnownKeys
+        {
+            get { return new ReadOnlyCollection<string>( _passwords.Keys.ToList( ) ); }
+        }
 
         public bool HasPassword( string key )
         {
@@ -76,6 +82,9 @@ namespace Chwthewke.PasswordManager.Storage
         private readonly Func<IExportablePasswordCollection, ISerializer> _serializerConfig =
             s => new CsvPasswordSerializer( s );
 
-        public ISerializer Serializer { get { return _serializerConfig( this ); } }
+        public ISerializer Serializer
+        {
+            get { return _serializerConfig( this ); }
+        }
     }
 }

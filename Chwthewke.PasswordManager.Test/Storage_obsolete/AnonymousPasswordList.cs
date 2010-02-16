@@ -11,7 +11,10 @@ namespace Chwthewke.PasswordManager.Tests.Storage
 {
     internal class AnonymousPasswordList : IPasswordStorageService
     {
-        public IEnumerable<string> KnownKeys { get { return Enumerable.Empty<string>( ); } }
+        public IEnumerable<string> KnownKeys
+        {
+            get { return Enumerable.Empty<string>( ); }
+        }
 
         public bool HasPassword( string key )
         {
@@ -33,6 +36,9 @@ namespace Chwthewke.PasswordManager.Tests.Storage
             throw new NotImplementedException( );
         }
 
-        public ISerializer Serializer { get { throw new NotImplementedException( ); } }
+        public ISerializer Serializer
+        {
+            get { throw new NotImplementedException( ); }
+        }
     }
 }

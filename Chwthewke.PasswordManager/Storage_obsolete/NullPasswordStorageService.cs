@@ -8,7 +8,10 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public class NullPasswordStorageService : IPasswordStorageService
     {
-        public IEnumerable<string> KnownKeys { get { return Enumerable.Empty<string>( ); } }
+        public IEnumerable<string> KnownKeys
+        {
+            get { return Enumerable.Empty<string>( ); }
+        }
 
 
         public bool HasPassword( string key )
@@ -21,14 +24,13 @@ namespace Chwthewke.PasswordManager.Storage
             return false;
         }
 
-        public void SetPassword( string key, string password, PasswordType type )
-        {
-        }
+        public void SetPassword( string key, string password, PasswordType type ) {}
 
-        public void ClearPassword( string key )
-        {
-        }
+        public void ClearPassword( string key ) {}
 
-        public ISerializer Serializer { get { throw new NotImplementedException( ); } }
+        public ISerializer Serializer
+        {
+            get { throw new NotImplementedException( ); }
+        }
     }
 }

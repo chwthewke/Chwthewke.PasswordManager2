@@ -20,9 +20,15 @@ namespace Chwthewke.PasswordManager.Storage
             _key = key;
         }
 
-        public bool HasPassword { get { return _owner.GetPasswordData( _key ) != null; } }
+        public bool HasPassword
+        {
+            get { return _owner.GetPasswordData( _key ) != null; }
+        }
 
-        public PasswordType PasswordType { get { return GetOrCreateData( ).Type; } }
+        public PasswordType PasswordType
+        {
+            get { return GetOrCreateData( ).Type; }
+        }
 
         public bool ValidatePassword( string generatedPassword )
         {

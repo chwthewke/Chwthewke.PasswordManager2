@@ -1,4 +1,5 @@
 using System.Linq;
+using System.Text;
 using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Storage
@@ -44,7 +45,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         private byte[ ] PasswordHash( string password )
         {
-            return Sha512.Hash( PasswordDictionary.Salt + _key + password );
+            return new Sha512( ).Hash( Encoding.UTF8.GetBytes( PasswordDictionary.Salt + _key + password ) );
         }
     }
 }

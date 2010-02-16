@@ -26,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
         private static int Entropy( PasswordType passwordType )
         {
-            return new ArrayBaseConverter( passwordType._alphabet.Length ).BytesNeeded( passwordType._length );
+            return new BigIntegerBaseConverter( passwordType._alphabet.Length ).BytesNeeded( passwordType._length );
         }
     }
 }

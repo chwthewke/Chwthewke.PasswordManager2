@@ -15,7 +15,7 @@ namespace Chwthewke.PasswordManager.Engine
         {
             get
             {
-                return new PasswordFactory( new Sha512( ), new ArrayBaseConverter( _alphabet.Length ), _alphabet,
+                return new PasswordFactory( new Sha512( ), new BigIntegerBaseConverter( _alphabet.Length ), _alphabet,
                                             _length );
             }
         }

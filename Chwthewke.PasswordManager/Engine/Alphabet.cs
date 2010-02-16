@@ -25,6 +25,9 @@ namespace Chwthewke.PasswordManager.Engine
             return builder.ToString( );
         }
 
-        public int Length { get { return _symbols.Length; } }
+        public int Length
+        {
+            get { return _symbols.Length; }
+        }
     }
 }

@@ -2,7 +2,8 @@ using System;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    internal abstract class BaseConverterBase : IBaseConverter {
+    internal abstract class BaseConverterBase : IBaseConverter
+    {
         private readonly int _base;
 
         protected BaseConverterBase( int theBase )
@@ -12,11 +13,14 @@ namespace Chwthewke.PasswordManager.Engine
             _base = theBase;
         }
 
-        public int Base { get { return _base; } }
+        public int Base
+        {
+            get { return _base; }
+        }
 
         public int BytesNeeded( int numDigits )
         {
-            return (int) Math.Ceiling( numDigits * Math.Log( _base, 256 ) );
+            return ( int ) Math.Ceiling( numDigits * Math.Log( _base, 256 ) );
         }
 
         public byte[ ] ConvertBytesToDigits( byte[ ] bytes, int numDigits )
@@ -26,6 +30,6 @@ namespace Chwthewke.PasswordManager.Engine
             return ConvertBytesToDigitsCore( bytes, numDigits );
         }
 
-        protected abstract byte[] ConvertBytesToDigitsCore( byte[ ] bytes, int numDigits );
+        protected abstract byte[ ] ConvertBytesToDigitsCore( byte[ ] bytes, int numDigits );
     }
 }

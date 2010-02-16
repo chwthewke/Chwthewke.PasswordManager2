@@ -2,7 +2,7 @@ using System;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    [Obsolete]
+    [ Obsolete ]
     internal class ArrayBaseConverter : BaseConverterBase
     {
         public ArrayBaseConverter( int theBase ) : base( theBase ) {}

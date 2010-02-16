@@ -78,7 +78,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             string password = engine.MakePassword( domain, SecureTest.Wrap( masterPassword ) );
 
             // Verify
-            byte[ ] hash = new Sha512( ).Hash(  Encoding.UTF8.GetBytes( PasswordFactory.Salt + masterPassword + domain ) );
+            byte[ ] hash = new Sha512( ).Hash( Encoding.UTF8.GetBytes( PasswordFactory.Salt + masterPassword + domain ) );
             _converterMock.Verify( c => c.BytesNeeded( 12 ) );
             _converterMock.Verify( c => c.ConvertBytesToDigits( hash, 12 ) );
             Assert.That( password, Is.EquivalentTo( alphabet.ToString( bytes ) ) );

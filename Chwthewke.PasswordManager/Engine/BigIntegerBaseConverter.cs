@@ -16,7 +16,8 @@ namespace Chwthewke.PasswordManager.Engine
             return EnumerateDigits( value, numDigits ).ToArray( );
         }
 
-        private BigInteger CreatePositiveBigIntegerFromUsedBytes( int numDigits, byte[ ] bytes ) {
+        private BigInteger CreatePositiveBigIntegerFromUsedBytes( int numDigits, byte[ ] bytes )
+        {
             int bytesNeeded = BytesNeeded( numDigits );
             byte[ ] usedBytes = new byte[bytesNeeded + 1];
             Array.Copy( bytes, usedBytes, bytesNeeded );

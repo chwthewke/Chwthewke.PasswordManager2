@@ -26,7 +26,8 @@ namespace Chwthewke.PasswordManager.Engine
             long runningByteValue = 1;
             int result = 0;
 
-            foreach ( byte t in _bytes ) {
+            foreach ( byte t in _bytes )
+            {
                 result = ( int ) ( ( result + t * runningByteValue ) % divisor );
                 runningByteValue = ( runningByteValue * 256 ) % divisor;
 

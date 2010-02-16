@@ -5,19 +5,19 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Engine
 {
-    [TestFixture]
+    [ TestFixture ]
     public class AlphabetsTest
     {
         private Encoding _ascii;
 
-        [SetUp]
+        [ SetUp ]
         public void SetUpAsciiEncoding( )
         {
             _ascii = Encoding.GetEncoding( Encoding.ASCII.CodePage, EncoderFallback.ExceptionFallback,
                                            DecoderFallback.ReplacementFallback );
         }
 
-        [Test]
+        [ Test ]
         public void TestSymbols92IsAscii7( )
         {
             // Setup
@@ -27,7 +27,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Assert.That( asciiBytes, Is.All.LessThan( 128 ) );
         }
 
-        [Test]
+        [ Test ]
         public void TestSymbols62IsAscii7( )
         {
             // Setup

@@ -29,6 +29,5 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Verify
             Assert.That( symbols, Is.EqualTo( "1809785" ) );
         }
-
     }
 }

@@ -26,10 +26,10 @@ namespace Chwthewke.PasswordManager.Engine
 
             try
             {
-                char* charPtr = (char*) bstr;
+                char* charPtr = ( char* ) bstr;
                 int byteCount = Encoding.UTF8.GetByteCount( charPtr, charCount );
                 byte[ ] bytes = new byte[byteCount];
-                byte* bytePtr = (byte*) Marshal.UnsafeAddrOfPinnedArrayElement( bytes, 0 );
+                byte* bytePtr = ( byte* ) Marshal.UnsafeAddrOfPinnedArrayElement( bytes, 0 );
                 Encoding.UTF8.GetBytes( charPtr, charCount, bytePtr, byteCount );
                 return bytes;
             }

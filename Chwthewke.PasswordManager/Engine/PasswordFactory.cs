@@ -62,7 +62,7 @@ namespace Chwthewke.PasswordManager.Engine
         private static T[ ] ConcatArrays<T>( params T[ ][ ] arrays )
         {
             T[ ] result = new T[arrays.Aggregate( 0, ( x, y ) => x + y.Length )];
-            for ( int i = 0, accLength = 0 ; i < arrays.Length ; accLength += arrays[ i++ ].Length )
+            for ( int i = 0, accLength = 0; i < arrays.Length; accLength += arrays[ i++ ].Length )
                 Array.Copy( arrays[ i ], 0, result, accLength, arrays[ i ].Length );
             return result;
         }

@@ -4,10 +4,11 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Engine
 {
-    public abstract class BaseConverterTestBase {
+    public abstract class BaseConverterTestBase
+    {
         protected abstract IBaseConverter GetConverter( int theBase );
 
-        [Test]
+        [ Test ]
         public void Test12Base64DigitsNeeds72Bits( )
         {
             // Setup
@@ -17,7 +18,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Assert.That( converter.BytesNeeded( 12 ), Is.EqualTo( 9 ) );
         }
 
-        [Test]
+        [ Test ]
         public void Test8Base92DigitsNeeds53Bits( )
         {
             // Setup
@@ -27,17 +28,17 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Assert.That( converter.BytesNeeded( 8 ), Is.EqualTo( 7 ) );
         }
 
-        [Test]
+        [ Test ]
         public void TestCannotConvertToBaseOver256( )
         {
             // Setup
             // Exercise
             // Verify
             Assert.That( new TestDelegate( ( ) => GetConverter( 257 ) ),
-                         Throws.InstanceOf( typeof( ArgumentException ) ) );
+                         Throws.InstanceOf( typeof ( ArgumentException ) ) );
         }
 
-        [Test]
+        [ Test ]
         public void TestCannotConvertWithNotEnoughBytes( )
         {
             // Setup
@@ -45,10 +46,10 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Exercise
             // Verify
             Assert.That( new TestDelegate( ( ) => converter.ConvertBytesToDigits( new byte[ ] { 0x00, 0x00 }, 5 ) ),
-                         Throws.InstanceOf( typeof( ArgumentException ) ) );
+                         Throws.InstanceOf( typeof ( ArgumentException ) ) );
         }
 
-        [Test]
+        [ Test ]
         public void TestConvertToBase64( )
         {
             // Setup
@@ -67,7 +68,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Assert.That( actual, Is.EqualTo( expected ) );
         }
 
-        [Test]
+        [ Test ]
         public void TestConvertToBase100( )
         {
             // Setup
@@ -80,7 +81,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Assert.That( actual, Is.EqualTo( expected ) );
         }
 
-        [Test]
+        [ Test ]
         public void TestConvertWithExtraBytesInSource( )
         {
             // Setup

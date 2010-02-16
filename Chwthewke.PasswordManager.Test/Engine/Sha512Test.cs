@@ -31,7 +31,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         [ Test ]
         public void TestHashNull( )
         {
-            Assert.That( new TestDelegate( ( ) => new Sha512( ).Hash( (byte[ ]) null ) ),
+            Assert.That( new TestDelegate( ( ) => new Sha512( ).Hash( null ) ),
                          Throws.InstanceOf( typeof( ArgumentException ) ) );
         }
     }

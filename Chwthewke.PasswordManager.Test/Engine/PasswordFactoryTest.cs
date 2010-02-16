@@ -22,7 +22,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         public void TestMismatchedLengthsFail( )
         {
             // Setup
-            Symbols symbols50 = new Symbols( new StringBuilder( ).Append( new char[50] ).ToString( ) );
+            Alphabet symbols50 = new Alphabet( new StringBuilder( ).Append( new char[50] ).ToString( ) );
             _converterMock.Setup( c => c.Base ).Returns( 12 );
             IBaseConverter converter = _converterMock.Object;
             // Exercise
@@ -35,7 +35,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         public void TestCanGeneratePasswordsWith64BytesEntropy( )
         {
             // Setup
-            Symbols symbols16 = new Symbols( "0123456789ABCDEF" );
+            Alphabet symbols16 = new Alphabet( "0123456789ABCDEF" );
             _converterMock.Setup( c => c.Base ).Returns( 16 );
             _converterMock.Setup( c => c.BytesNeeded( It.IsAny<int>( ) ) ).Returns( 64 );
             // Exercise
@@ -47,7 +47,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         public void TestCannotGeneratePasswordsWithArbitraryEntropy( )
         {
             // Setup
-            Symbols symbols16 = new Symbols( "0123456789ABCDEF" );
+            Alphabet symbols16 = new Alphabet( "0123456789ABCDEF" );
             _converterMock.Setup( c => c.Base ).Returns( 16 );
             _converterMock.Setup( c => c.BytesNeeded( It.IsAny<int>( ) ) ).Returns( 65 );
             // Exercise
@@ -57,25 +57,11 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Verify
         }
 
-        [ Test ]
-        public void TestCannotRequestPasswordsLessThan8CharsLong( )
-        {
-            // Setup
-            Symbols symbols16 = new Symbols( "0123456789ABCDEF" );
-            _converterMock.Setup( c => c.Base ).Returns( 16 );
-            _converterMock.Setup( c => c.BytesNeeded( It.IsAny<int>( ) ) ).Returns( 64 );
-            // Exercise
-            Assert.That(
-                new TestDelegate( ( ) => new PasswordFactory( new Sha512( ), _converterMock.Object, symbols16, 7 ) ),
-                Throws.InstanceOf( typeof ( ArgumentException ) ) );
-            // Verify
-        }
-
         [ Test ] // this test basically specifies the implementation... is it any good ?
         public void TestGeneratePassword( )
         {
             // Setup
-            const string domain = "google.com";
+            const string domain = "chwthewke.net";
             const string masterPassword = "m@st3rp@ssw0rd";
 
             byte[ ] bytes = { 0x01, 0x02 };
@@ -84,9 +70,9 @@ namespace Chwthewke.PasswordManager.Test.Engine
             _converterMock.Setup( c => c.BytesNeeded( It.IsAny<int>( ) ) ).Returns( 10 );
             _converterMock.Setup( c => c.ConvertBytesToDigits( It.IsAny<byte[ ]>( ), It.IsAny<int>( ) ) ).Returns( bytes );
 
-            Symbols symbols = Symbols.Symbols92;
+            Alphabet alphabet = Alphabets.Symbols92;
 
-            PasswordFactory engine = new PasswordFactory( new Sha512( ), _converterMock.Object, symbols, 12 );
+            IPasswordFactory engine = new PasswordFactory( new Sha512( ), _converterMock.Object, alphabet, 12 );
 
             // Exercise
             string password = engine.MakePassword( domain, SecureTest.Wrap( masterPassword ) );
@@ -95,7 +81,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             byte[ ] hash = new Sha512( ).Hash(  Encoding.UTF8.GetBytes( PasswordFactory.Salt + masterPassword + domain ) );
             _converterMock.Verify( c => c.BytesNeeded( 12 ) );
             _converterMock.Verify( c => c.ConvertBytesToDigits( hash, 12 ) );
-            Assert.That( password, Is.EquivalentTo( symbols.ToString( bytes ) ) );
+            Assert.That( password, Is.EquivalentTo( alphabet.ToString( bytes ) ) );
         }
     }
 }

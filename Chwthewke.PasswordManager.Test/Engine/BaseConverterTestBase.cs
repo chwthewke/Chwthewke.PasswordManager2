@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Engine
 {
     public abstract class BaseConverterTestBase {
-        internal abstract IBaseConverter GetConverter( int theBase );
+        protected abstract IBaseConverter GetConverter( int theBase );
 
         [Test]
         public void Test12Base64DigitsNeeds72Bits( )

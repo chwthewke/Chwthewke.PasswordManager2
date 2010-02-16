@@ -6,7 +6,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
     [ TestFixture ]
     public class BigIntegerBaseConverterTest : BaseConverterTestBase
     {
-        internal override IBaseConverter GetConverter( int theBase )
+        protected override IBaseConverter GetConverter( int theBase )
         {
             return new BigIntegerBaseConverter( theBase );
         }

@@ -1,12 +1,13 @@
+using System;
 using Chwthewke.PasswordManager.Engine;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Engine
 {
-    [ TestFixture ]
+    [ TestFixture, Obsolete ]
     public class ArrayBaseConverterTest : BaseConverterTestBase
     {
-        internal override IBaseConverter GetConverter( int theBase )
+        protected override IBaseConverter GetConverter( int theBase )
         {
             return new ArrayBaseConverter( theBase );
         }

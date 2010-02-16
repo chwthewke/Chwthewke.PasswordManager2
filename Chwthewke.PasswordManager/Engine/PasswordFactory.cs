@@ -9,38 +9,35 @@ namespace Chwthewke.PasswordManager.Engine
     {
         public const string Salt = "tsU&yUaZulAs4eOV";
 
-        private readonly IBaseConverter _converter;
-        private readonly Symbols _symbols;
-        private readonly int _length;
         private readonly IHash _hash;
-        private const int MinLength = 8;
+        private readonly IBaseConverter _converter;
+        private readonly Alphabet _alphabet;
+        private readonly int _length;
 
-        public PasswordFactory( IHash hash, IBaseConverter converter, Symbols symbols, int length )
+        public PasswordFactory( IHash hash, IBaseConverter converter, Alphabet alphabet, int length )
         {
             if ( hash == null )
                 throw new ArgumentNullException( "hash" );
             if ( converter == null )
                 throw new ArgumentNullException( "converter" );
-            if ( symbols == null )
-                throw new ArgumentNullException( "symbols" );
-            if ( converter.Base != symbols.Length )
-                throw new ArgumentException( "The converter's base must match the symbols length" );
+            if ( alphabet == null )
+                throw new ArgumentNullException( "alphabet" );
+            if ( converter.Base != alphabet.Length )
+                throw new ArgumentException( "The converter's base must match the alphabet length" );
             if ( converter.BytesNeeded( length ) > hash.Size )
                 throw new ArgumentException( "Requested password length too large", "length" );
-            if ( length < MinLength )
-                throw new ArgumentException( "Requested password length too small, must be at least" + MinLength,
-                                             "length" );
+
             _hash = hash;
             _converter = converter;
             _length = length;
-            _symbols = symbols;
+            _alphabet = alphabet;
         }
 
         public string MakePassword( string key, SecureString masterPassword )
         {
             byte[ ] hash = HashTogetherWithSalt( key, masterPassword );
             byte[ ] passwordBytes = _converter.ConvertBytesToDigits( hash, _length );
-            return _symbols.ToString( passwordBytes );
+            return _alphabet.ToString( passwordBytes );
         }
 
         private byte[ ] HashTogetherWithSalt( string key, SecureString masterPassword )

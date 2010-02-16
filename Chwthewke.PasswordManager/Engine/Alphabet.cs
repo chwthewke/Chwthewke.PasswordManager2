@@ -3,11 +3,11 @@ using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    internal class Symbols
+    internal class Alphabet
     {
         private readonly string _symbols;
 
-        public Symbols( string symbols )
+        public Alphabet( string symbols )
         {
             _symbols = symbols;
         }
@@ -25,16 +25,6 @@ namespace Chwthewke.PasswordManager.Engine
             return builder.ToString( );
         }
 
-        internal int Length { get { return _symbols.Length; } }
-
-
-        internal static readonly Symbols Symbols92 = new Symbols( SymbolsString92 );
-        internal static readonly Symbols Symbols62 = new Symbols( SymbolsString62 );
-
-        internal const string SymbolsString92 =
-            @"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789&""'(-_)=#{[|\@]}$%*<>,?;.:/!^`";
-
-        internal const string SymbolsString62 =
-            "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+        public int Length { get { return _symbols.Length; } }
     }
 }

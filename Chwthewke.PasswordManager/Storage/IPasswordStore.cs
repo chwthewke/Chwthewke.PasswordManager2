@@ -4,7 +4,7 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public interface IPasswordStore
     {
-        PasswordInfo Add( PasswordInfo passwordInfo );
+        PasswordInfo AddOrUpdate( PasswordInfo passwordInfo );
 
         bool Remove( PasswordInfo passwordInfo );
 

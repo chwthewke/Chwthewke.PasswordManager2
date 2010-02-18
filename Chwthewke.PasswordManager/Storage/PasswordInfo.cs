@@ -12,7 +12,9 @@ namespace Chwthewke.PasswordManager.Storage
 
         public DateTime CreationTime { get; private set; }
 
-        public PasswordInfo( string key, byte[ ] hash, Guid masterPasswordId, DateTime creationTime )
+        public string Note { get; private set; }
+
+        public PasswordInfo( string key, byte[ ] hash, Guid masterPasswordId, DateTime creationTime, string note )
         {
             if ( key == null )
                 throw new ArgumentNullException( "key" );
@@ -23,6 +25,7 @@ namespace Chwthewke.PasswordManager.Storage
             Hash = hash;
             MasterPasswordId = masterPasswordId;
             CreationTime = creationTime;
+            Note = note;
         }
 
         public override bool Equals( object obj )
@@ -41,6 +44,7 @@ namespace Chwthewke.PasswordManager.Storage
                 result = ( result * 397 ) ^ Hash.GetHashCode( );
                 result = ( result * 397 ) ^ MasterPasswordId.GetHashCode( );
                 result = ( result * 397 ) ^ CreationTime.GetHashCode( );
+                result = ( result * 397 ) ^ ( Note != null ? Note.GetHashCode( ) : 0 );
                 return result;
             }
         }
@@ -50,7 +54,8 @@ namespace Chwthewke.PasswordManager.Storage
             if ( ReferenceEquals( null, other ) ) return false;
             if ( ReferenceEquals( this, other ) ) return true;
             return Equals( other.Key, Key ) && Equals( other.Hash, Hash ) &&
-                   other.MasterPasswordId.Equals( MasterPasswordId ) && other.CreationTime.Equals( CreationTime );
+                   other.MasterPasswordId.Equals( MasterPasswordId ) && other.CreationTime.Equals( CreationTime ) &&
+                   Equals( other.Note, Note );
         }
 
         public static bool operator ==( PasswordInfo left, PasswordInfo right )

@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using Chwthewke.PasswordManager.Storage;
@@ -8,7 +7,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
 {
     public class TestPasswordStore : IPasswordStore
     {
-        public PasswordInfo Add( PasswordInfo passwordInfo )
+        public PasswordInfo AddOrUpdate( PasswordInfo passwordInfo )
         {
             PasswordInfo previousPasswordInfo = FindPasswordInfo( passwordInfo.Key );
 

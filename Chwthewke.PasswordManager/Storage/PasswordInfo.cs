@@ -1,4 +1,5 @@
 using System;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
@@ -53,7 +54,7 @@ namespace Chwthewke.PasswordManager.Storage
         {
             if ( ReferenceEquals( null, other ) ) return false;
             if ( ReferenceEquals( this, other ) ) return true;
-            return Equals( other.Key, Key ) && Equals( other.Hash, Hash ) &&
+            return Equals( other.Key, Key ) && other.Hash.SequenceEqual( Hash ) &&
                    other.MasterPasswordId.Equals( MasterPasswordId ) && other.CreationTime.Equals( CreationTime ) &&
                    Equals( other.Note, Note );
         }

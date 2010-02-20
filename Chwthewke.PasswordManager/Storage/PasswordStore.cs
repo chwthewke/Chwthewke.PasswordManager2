@@ -16,7 +16,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         public bool Remove( PasswordInfo passwordInfo )
         {
-            throw new NotImplementedException( );
+            return _passwords.Remove( new KeyValuePair<string, PasswordInfo>( passwordInfo.Key, passwordInfo ) );
         }
 
         public IEnumerable<PasswordInfo> Passwords

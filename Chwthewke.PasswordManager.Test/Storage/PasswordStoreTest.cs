@@ -73,5 +73,36 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( _passwordStorage.FindPasswordInfo( "myKey" ), Is.EqualTo( storedFirst ) );
             Assert.That( _passwordStorage.FindPasswordInfo( "myNewKey" ), Is.EqualTo( storedSecond ) );
         }
+
+        [ Test ]
+        public void RemovePasswordMakesItUnavailable( )
+        {
+            // Setup
+            PasswordInfo stored = new PasswordInfo( "myKey", new byte[ ] { 0x55, 0xad }, new Guid( ), new DateTime( ),
+                                                    "a Note" );
+            _passwordStorage.AddOrUpdate( stored );
+            // Exercise
+            _passwordStorage.Remove( stored );
+            // Verify
+            Assert.That( _passwordStorage.Passwords, Has.Count.EqualTo( 0 ) );
+            Assert.That( _passwordStorage.FindPasswordInfo( "myKey" ), Is.Null );
+        }
+
+        [ Test ]
+        public void RemovePasswordCopyMakesItUnavailable( )
+        {
+            // Setup
+            PasswordInfo stored = new PasswordInfo( "myKey", new byte[ ] { 0x55, 0xad }, new Guid( ), new DateTime( ),
+                                                    "a Note" );
+            PasswordInfo storedCopy = new PasswordInfo( "myKey", new byte[ ] { 0x55, 0xad }, stored.MasterPasswordId,
+                                                        stored.CreationTime, "a Note" );
+            _passwordStorage.AddOrUpdate( stored );
+            // Exercise
+            _passwordStorage.Remove( storedCopy );
+            // Verify
+            Assert.That( storedCopy == stored );
+            Assert.That( _passwordStorage.Passwords, Has.Count.EqualTo( 0 ) );
+            Assert.That( _passwordStorage.FindPasswordInfo( "myKey" ), Is.Null );
+        }
     }
 }

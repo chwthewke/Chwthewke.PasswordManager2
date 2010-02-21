@@ -1,0 +1,57 @@
+﻿using System;
+using System.IO;
+using System.Text;
+using System.Xml;
+using System.Xml.Linq;
+using System.Linq;
+
+namespace Chwthewke.PasswordManager.Storage
+{
+    public class PasswordStoreSerializer {
+
+        public const string PasswordStoreElement = "password-store";
+        public const string PasswordElement = "password";
+        public const string KeyElement = "key";
+        public const string HashElement = "hash";
+        public const string GuidElement = "guid";
+        public const string TimestampElement = "timestamp";
+        public const string NoteElement = "note";
+
+        public void Save( IPasswordStore passwordStore, Stream outputStream )
+        {
+            XElement root = ToXml( passwordStore );
+            using( TextWriter tw = new StreamWriter( outputStream, Encoding.UTF8 ) )
+                root.Save( tw );
+        }
+
+        private static XElement ToXml( IPasswordStore passwordStore )
+        {
+            return new XElement( PasswordStoreElement, passwordStore.Passwords.Select( ToXml ) );
+        }
+
+        private static XElement ToXml( PasswordInfo password )
+        {
+            return new XElement( PasswordElement, 
+                new XElement( KeyElement, password.Key ),
+                new XElement( HashElement, Convert.ToBase64String( password.Hash ) ),
+                new XElement( GuidElement, password.MasterPasswordId.ToString( ) ),
+                new XElement( TimestampElement, password.CreationTime.Ticks ),
+                new XElement( NoteElement, password.Note ) );
+        }
+
+        public void Load( IPasswordStore passwordStore, Stream inputStream )
+        {
+            using( TextReader tr = new StreamReader( inputStream, Encoding.UTF8 ) )
+            {
+                XElement xml = XElement.Load(inputStream);
+                LoadFromXml(passwordStore, xml);
+            }
+        }
+
+        private void LoadFromXml( IPasswordStore passwordStore, XElement xml )
+        {
+            throw new NotImplementedException( );
+        }
+
+    }
+}

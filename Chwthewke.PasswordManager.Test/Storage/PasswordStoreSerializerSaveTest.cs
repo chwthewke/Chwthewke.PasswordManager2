@@ -1,27 +1,40 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml.Linq;
 using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
     public class PasswordStoreSerializerSaveTest
     {
+        [ SetUp ]
+        public void SetUpSerializer( )
+        {
+            _serializer = new PasswordStoreSerializer( new UTF8Encoding( false ) );
+            _outputStream = new MemoryStream( );
+            _passwordStore = new PasswordStore( );
+        }
+
+        [TearDown]
+        public void TearDownMemoryStream( )
+        {
+            _outputStream.Dispose( );
+        }
+
         private IPasswordStoreSerializer _serializer;
         private MemoryStream _outputStream;
         private IPasswordStore _passwordStore;
 
-        [ SetUp ]
-        public void SetUpSerializer( )
+        private XElement ReadSerializedXml( )
         {
-            _serializer = new PasswordStoreSerializer( );
-            _outputStream = new MemoryStream( );
-            _passwordStore = new PasswordStore( );
+            string text = new UTF8Encoding( false ).GetString( _outputStream.ToArray( ) );
+            Console.WriteLine( "Text: [{0}]", text );
+            return XElement.Parse( text );
         }
 
         [ Test ]
@@ -33,7 +46,24 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Verify
             XElement xElement = ReadSerializedXml( );
             Assert.That( xElement.IsEmpty );
-            Assert.That( xElement.Name, Is.EqualTo( (XName) PasswordStoreSerializer.PasswordStoreElement ) );
+            Assert.That( xElement.Name, Is.EqualTo( ( XName ) PasswordStoreSerializer.PasswordStoreElement ) );
+        }
+
+        [ Test ]
+        public void SerializeMasterPasswordGuidToElement( )
+        {
+            // Setup
+            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda },
+                                                          new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
+                                                          new DateTime( ), "No note" ) );
+            // Exercise
+            _serializer.Save( _passwordStore, _outputStream );
+            // Verify
+            XElement rootElement = ReadSerializedXml( );
+            XElement passwordElement = rootElement.Elements( PasswordStoreSerializer.PasswordElement ).First( );
+            IEnumerable<XElement> guidElements = passwordElement.Elements( PasswordStoreSerializer.GuidElement );
+            Assert.That( guidElements.Count( ), Is.EqualTo( 1 ) );
+            Assert.That( guidElements.First( ).Value, Is.EqualTo( "34579b9f-8ac1-464a-805a-abe564da8848" ).IgnoreCase );
         }
 
 
@@ -54,22 +84,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         [ Test ]
-        public void SerializePasswordKeyToElement( )
-        {
-            // Setup
-            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda }, new Guid( ),
-                                                          new DateTime( ), "No note" ) );
-            // Exercise
-            _serializer.Save( _passwordStore, _outputStream );
-            // Verify
-            XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = rootElement.Elements( PasswordStoreSerializer.PasswordElement ).First( );
-            IEnumerable<XElement> keyElements = passwordElement.Elements( PasswordStoreSerializer.KeyElement );
-            Assert.That( keyElements.Count( ), Is.EqualTo( 1 ) );
-            Assert.That( keyElements.First( ).Value, Is.EqualTo( "key" ) );
-        }
-
-        [ Test ]
         public void SerializePasswordHashToElement( )
         {
             // Setup
@@ -87,38 +101,19 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         [ Test ]
-        public void SerializeMasterPasswordGuidToElement( )
+        public void SerializePasswordKeyToElement( )
         {
             // Setup
-            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda },
-                                                          new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
+            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda }, new Guid( ),
                                                           new DateTime( ), "No note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             XElement passwordElement = rootElement.Elements( PasswordStoreSerializer.PasswordElement ).First( );
-            IEnumerable<XElement> guidElements = passwordElement.Elements( PasswordStoreSerializer.GuidElement );
-            Assert.That( guidElements.Count( ), Is.EqualTo( 1 ) );
-            Assert.That( guidElements.First( ).Value, Is.EqualTo( "34579b9f-8ac1-464a-805a-abe564da8848" ).IgnoreCase );
-        }
-
-        [ Test ]
-        public void SerializePasswordTimestampToElement( )
-        {
-            // Setup
-            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda },
-                                                          new Guid( ),
-                                                          new DateTime( 634022874410500302 ),
-                                                          "No note" ) );
-            // Exercise
-            _serializer.Save( _passwordStore, _outputStream );
-            // Verify
-            XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = rootElement.Elements( PasswordStoreSerializer.PasswordElement ).First( );
-            IEnumerable<XElement> timestampElements = passwordElement.Elements( PasswordStoreSerializer.TimestampElement );
-            Assert.That( timestampElements.Count( ), Is.EqualTo( 1 ) );
-            Assert.That( timestampElements.First( ).Value, Is.EqualTo( "634022874410500302" ) );
+            IEnumerable<XElement> keyElements = passwordElement.Elements( PasswordStoreSerializer.KeyElement );
+            Assert.That( keyElements.Count( ), Is.EqualTo( 1 ) );
+            Assert.That( keyElements.First( ).Value, Is.EqualTo( "key" ) );
         }
 
         [ Test ]
@@ -139,9 +134,22 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( noteElements.First( ).Value, Is.EqualTo( "No note" ) );
         }
 
-        private XElement ReadSerializedXml( )
+        [ Test ]
+        public void SerializePasswordTimestampToElement( )
         {
-            return XElement.Parse( Encoding.Default.GetString( _outputStream.ToArray( ) ) );
+            // Setup
+            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda },
+                                                          new Guid( ),
+                                                          new DateTime( 634022874410500302 ),
+                                                          "No note" ) );
+            // Exercise
+            _serializer.Save( _passwordStore, _outputStream );
+            // Verify
+            XElement rootElement = ReadSerializedXml( );
+            XElement passwordElement = rootElement.Elements( PasswordStoreSerializer.PasswordElement ).First( );
+            IEnumerable<XElement> timestampElements = passwordElement.Elements( PasswordStoreSerializer.TimestampElement );
+            Assert.That( timestampElements.Count( ), Is.EqualTo( 1 ) );
+            Assert.That( timestampElements.First( ).Value, Is.EqualTo( "634022874410500302" ) );
         }
     }
 }

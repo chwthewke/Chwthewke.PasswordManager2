@@ -10,27 +10,32 @@ namespace Chwthewke.PasswordManager.Test.Storage
     [ TestFixture ]
     public class PasswordStoreSerializerLoadTest
     {
-        private IPasswordStoreSerializer _serializer;
-        private MemoryStream _inputStream;
-        private IPasswordStore _passwordStore;
-
         [ SetUp ]
         public void SetUpSerializer( )
         {
-            _serializer = new PasswordStoreSerializer( );
+            _serializer = new PasswordStoreSerializer( new UTF8Encoding( false ) );
             _inputStream = new MemoryStream( );
             _passwordStore = new PasswordStore( );
         }
+
+        [ TearDown ]
+        public void TearDownMemoryStream( )
+        {
+            _inputStream.Dispose( );
+        }
+
+        private IPasswordStoreSerializer _serializer;
+        private MemoryStream _inputStream;
+        private IPasswordStore _passwordStore;
 
         [ Test ]
         public void LoadEmptyPasswordStore( )
         {
             // Setup
-            new XElement( PasswordStoreSerializer.PasswordStoreElement ).Save( _inputStream );
-            _inputStream.Flush(  );
-            var tr = new StreamReader( _inputStream );
-            Console.WriteLine( "We read [" + tr.ReadToEnd( ) + "]" );
-            Console.WriteLine( "Content is [" + Encoding.Default.GetString( _inputStream.ToArray( ) ) + "]" );
+            TextWriter tw = new StreamWriter( _inputStream, new UTF8Encoding( false ) );
+            new XElement( PasswordStoreSerializer.PasswordStoreElement ).Save( tw );
+            _inputStream.Seek( 0, SeekOrigin.Begin );
+
             // Exercise
             _serializer.Load( _passwordStore, _inputStream );
             // Verify

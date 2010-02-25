@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
 
@@ -17,10 +16,15 @@ namespace Chwthewke.PasswordManager.Storage
         public const string TimestampElement = "timestamp";
         public const string NoteElement = "note";
 
+        public PasswordStoreSerializer( Encoding encoding )
+        {
+            _encoding = encoding;
+        }
+
         public void Save( IPasswordStore passwordStore, Stream outputStream )
         {
             XElement root = ToXml( passwordStore );
-            using ( TextWriter tw = new StreamWriter( outputStream, Encoding.UTF8 ) )
+            using ( TextWriter tw = new StreamWriter( outputStream, _encoding ) )
                 root.Save( tw );
         }
 
@@ -41,7 +45,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         public void Load( IPasswordStore passwordStore, Stream inputStream )
         {
-            using ( TextReader tr = new StreamReader( inputStream, Encoding.UTF8 ) )
+            using ( TextReader tr = new StreamReader( inputStream, _encoding ) )
             {
                 XElement xml = XElement.Load( tr );
                 LoadFromXml( passwordStore, xml );
@@ -52,5 +56,7 @@ namespace Chwthewke.PasswordManager.Storage
         {
             throw new NotImplementedException( );
         }
+
+        private readonly Encoding _encoding;
     }
 }

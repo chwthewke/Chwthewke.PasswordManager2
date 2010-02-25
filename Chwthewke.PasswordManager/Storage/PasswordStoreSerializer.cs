@@ -9,7 +9,6 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public class PasswordStoreSerializer : IPasswordStoreSerializer
     {
-
         public const string PasswordStoreElement = "password-store";
         public const string PasswordElement = "password";
         public const string KeyElement = "key";
@@ -21,7 +20,7 @@ namespace Chwthewke.PasswordManager.Storage
         public void Save( IPasswordStore passwordStore, Stream outputStream )
         {
             XElement root = ToXml( passwordStore );
-            using( TextWriter tw = new StreamWriter( outputStream, Encoding.UTF8 ) )
+            using ( TextWriter tw = new StreamWriter( outputStream, Encoding.UTF8 ) )
                 root.Save( tw );
         }
 
@@ -32,20 +31,20 @@ namespace Chwthewke.PasswordManager.Storage
 
         private static XElement ToXml( PasswordInfo password )
         {
-            return new XElement( PasswordElement, 
-                new XElement( KeyElement, password.Key ),
-                new XElement( HashElement, Convert.ToBase64String( password.Hash ) ),
-                new XElement( GuidElement, password.MasterPasswordId.ToString( ) ),
-                new XElement( TimestampElement, password.CreationTime.Ticks ),
-                new XElement( NoteElement, password.Note ) );
+            return new XElement( PasswordElement,
+                                 new XElement( KeyElement, password.Key ),
+                                 new XElement( HashElement, Convert.ToBase64String( password.Hash ) ),
+                                 new XElement( GuidElement, password.MasterPasswordId.ToString( ) ),
+                                 new XElement( TimestampElement, password.CreationTime.Ticks ),
+                                 new XElement( NoteElement, password.Note ) );
         }
 
         public void Load( IPasswordStore passwordStore, Stream inputStream )
         {
-            using( TextReader tr = new StreamReader( inputStream, Encoding.UTF8 ) )
+            using ( TextReader tr = new StreamReader( inputStream, Encoding.UTF8 ) )
             {
-                XElement xml = XElement.Load(inputStream);
-                LoadFromXml(passwordStore, xml);
+                XElement xml = XElement.Load( tr );
+                LoadFromXml( passwordStore, xml );
             }
         }
 
@@ -53,6 +52,5 @@ namespace Chwthewke.PasswordManager.Storage
         {
             throw new NotImplementedException( );
         }
-
     }
 }

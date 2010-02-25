@@ -32,9 +32,23 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         private XElement ReadSerializedXml( )
         {
-            string text = new UTF8Encoding( false ).GetString( _outputStream.ToArray( ) );
-            Console.WriteLine( "Text: [{0}]", text );
-            return XElement.Parse( text );
+            return XElement.Parse( SerializedXml );
+        }
+
+        private string SerializedXml
+        {
+            get { return new UTF8Encoding( false ).GetString( _outputStream.ToArray( ) ); }
+        }
+
+        [ Test ]
+        public void DocumentHasNoXmlDeclaration( )
+        {
+            // Setup
+            // Exercise
+            _serializer.Save( _passwordStore, _outputStream );
+            // Verify
+            XDocument xDocument = XDocument.Parse( SerializedXml );
+            Assert.That( xDocument.Declaration, Is.Null );
         }
 
         [ Test ]

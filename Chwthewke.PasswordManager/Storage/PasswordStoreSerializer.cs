@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Xml;
 using System.Xml.Linq;
 using System.Linq;
 
@@ -24,8 +25,11 @@ namespace Chwthewke.PasswordManager.Storage
         public void Save( IPasswordStore passwordStore, Stream outputStream )
         {
             XElement root = ToXml( passwordStore );
-            using ( TextWriter tw = new StreamWriter( outputStream, _encoding ) )
-                root.Save( tw );
+            using (
+                XmlWriter xw = XmlWriter.Create( outputStream,
+                                                 new XmlWriterSettings
+                                                     { OmitXmlDeclaration = true, Encoding = _encoding } ) )
+                root.Save( xw );
         }
 
         private static XElement ToXml( IPasswordStore passwordStore )
@@ -48,13 +52,26 @@ namespace Chwthewke.PasswordManager.Storage
             using ( TextReader tr = new StreamReader( inputStream, _encoding ) )
             {
                 XElement xml = XElement.Load( tr );
-                LoadFromXml( passwordStore, xml );
+                ReadFromXml( passwordStore, xml );
             }
         }
 
-        private void LoadFromXml( IPasswordStore passwordStore, XElement xml )
+        private static void ReadFromXml( IPasswordStore passwordStore, XElement xml )
         {
-            throw new NotImplementedException( );
+            foreach ( XElement passwordElement in xml.Elements( PasswordElement ) )
+                ReadPasswordFromXml( passwordStore, passwordElement );
+        }
+
+        private static void ReadPasswordFromXml( IPasswordStore passwordStore, XElement passwordElement )
+        {
+            XElement key = passwordElement.Element( KeyElement );
+            if ( key == null )
+                return;
+            
+            PasswordInfo passwordInfo = new PasswordInfo( key.Value,
+                                                          new byte[0], default( Guid ), default( DateTime ),
+                                                          default( string ) );
+            passwordStore.AddOrUpdate( passwordInfo );
         }
 
         private readonly Encoding _encoding;

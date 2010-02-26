@@ -39,12 +39,14 @@ namespace Chwthewke.PasswordManager.Storage
 
         private static XElement ToXml( PasswordInfo password )
         {
-            return new XElement( PasswordElement,
-                                 new XElement( KeyElement, password.Key ),
-                                 new XElement( HashElement, Convert.ToBase64String( password.Hash ) ),
-                                 new XElement( GuidElement, password.MasterPasswordId.ToString( ) ),
-                                 new XElement( TimestampElement, password.CreationTime.Ticks ),
-                                 new XElement( NoteElement, password.Note ) );
+            var xElement = new XElement( PasswordElement,
+                                         new XElement( KeyElement, password.Key ),
+                                         new XElement( HashElement, Convert.ToBase64String( password.Hash ) ),
+                                         new XElement( GuidElement, password.MasterPasswordId.ToString( ) ),
+                                         new XElement( TimestampElement, password.CreationTime.Ticks ) );
+            if ( password.Note != null )
+                xElement.Add( new XElement( NoteElement, password.Note ) );
+            return xElement;
         }
 
         public void Load( IPasswordStore passwordStore, Stream inputStream )
@@ -65,14 +67,19 @@ namespace Chwthewke.PasswordManager.Storage
         private static void ReadPasswordFromXml( IPasswordStore passwordStore, XElement passwordElement )
         {
             XElement key = passwordElement.Element( KeyElement );
-            XElement base64Hash = passwordElement.Element( HashElement );
-            if ( key == null || base64Hash == null )
+            XElement hash = passwordElement.Element( HashElement );
+            XElement guid = passwordElement.Element( GuidElement );
+            XElement timestamp = passwordElement.Element( TimestampElement );
+            XElement note = passwordElement.Element( NoteElement );
+
+            if ( key == null || hash == null || guid == null || timestamp == null )
                 return;
 
             PasswordInfo passwordInfo = new PasswordInfo( key.Value,
-                                                          Convert.FromBase64String( base64Hash.Value ),
-                                                          default( Guid ), default( DateTime ),
-                                                          default( string ) );
+                                                          Convert.FromBase64String( hash.Value ),
+                                                          Guid.Parse( guid.Value ),
+                                                          new DateTime( long.Parse( timestamp.Value ) ),
+                                                          note == null ? null : note.Value );
             passwordStore.AddOrUpdate( passwordInfo );
         }
 

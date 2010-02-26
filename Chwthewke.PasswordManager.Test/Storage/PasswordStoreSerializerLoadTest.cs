@@ -82,6 +82,65 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( passwordInfo.Hash.SequenceEqual( new byte[ ] { 0x44, 0x66 } ) );
         }
 
+        [ Test ]
+        public void LoadReadsMasterPasswordGuidFromElement( )
+        {
+            // Setup
+            Guid guid = Guid.Parse( "34579b9f-8ac1-464a-805a-abe564da8848" );
+            SaveXml( new XElement( PasswordStoreSerializer.PasswordStoreElement,
+                                   ( XElement )
+                                   new SerializedPassword( "aKey" ) { MasterPasswordId = guid } ) );
+            // Exercise
+            _serializer.Load( _passwordStore, _inputStream );
+            // Verify
+            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordInfo.MasterPasswordId, Is.EqualTo( guid ) );
+        }
+
+        [ Test ]
+        public void LoadReadsCreationDateFromElement( )
+        {
+            // Setup
+            DateTime creationTime = new DateTime( 634022874410500302 );
+            SaveXml( new XElement( PasswordStoreSerializer.PasswordStoreElement,
+                                   ( XElement )
+                                   new SerializedPassword( "aKey" ) { CreationTime = creationTime } ) );
+            // Exercise
+            _serializer.Load( _passwordStore, _inputStream );
+            // Verify
+            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordInfo.CreationTime, Is.EqualTo( creationTime ) );
+        }
+
+
+        [ Test ]
+        public void LoadReadsNoteFromElement( )
+        {
+            // Setup
+            string note = "a Note";
+            SaveXml( new XElement( PasswordStoreSerializer.PasswordStoreElement,
+                                   ( XElement ) new SerializedPassword( "aKey" ) { Note = note } ) );
+            // Exercise
+            _serializer.Load( _passwordStore, _inputStream );
+            // Verify
+            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordInfo.Note, Is.EqualTo( note ) );
+        }
+
+        [ Test ]
+        public void LoadReadsNullNoteFromMissingNoteElement( )
+        {
+            // Setup
+            SaveXml( new XElement( PasswordStoreSerializer.PasswordStoreElement,
+                                   ( XElement ) new SerializedPassword( "aKey" ) ) );
+            // Exercise
+            _serializer.Load( _passwordStore, _inputStream );
+            // Verify
+            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordInfo.Note, Is.Null );
+        }
+
+
         private void SaveXml( XElement xElement )
         {
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings

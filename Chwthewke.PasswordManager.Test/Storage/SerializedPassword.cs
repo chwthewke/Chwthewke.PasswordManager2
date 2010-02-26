@@ -27,12 +27,18 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         public static explicit operator XElement( SerializedPassword builder )
         {
-            return new XElement( PasswordStoreSerializer.PasswordElement,
-                                 new XElement( PasswordStoreSerializer.KeyElement, builder.Key ),
-                                 new XElement( PasswordStoreSerializer.HashElement, Convert.ToBase64String( builder.Hash ) ),
-                                 new XElement( PasswordStoreSerializer.GuidElement, builder.MasterPasswordId.ToString( ) ),
-                                 new XElement( PasswordStoreSerializer.TimestampElement, builder.CreationTime.Ticks ),
-                                 new XElement( PasswordStoreSerializer.NoteElement, builder.Note ) );
+            var xElement = new XElement( PasswordStoreSerializer.PasswordElement,
+                                         new XElement( PasswordStoreSerializer.KeyElement, builder.Key ),
+                                         new XElement( PasswordStoreSerializer.HashElement,
+                                                       Convert.ToBase64String( builder.Hash ) ),
+                                         new XElement( PasswordStoreSerializer.GuidElement,
+                                                       builder.MasterPasswordId.ToString( ) ),
+                                         new XElement( PasswordStoreSerializer.TimestampElement,
+                                                       builder.CreationTime.Ticks ) );
+            if ( builder.Note != null )
+                xElement.Add( new XElement( PasswordStoreSerializer.NoteElement, builder.Note ) );
+
+            return xElement;
         }
 
         private readonly string _key;

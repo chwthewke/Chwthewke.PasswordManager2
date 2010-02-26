@@ -5,6 +5,7 @@ using System.Xml;
 using System.Xml.Linq;
 using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
@@ -28,7 +29,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
         private IPasswordStoreSerializer _serializer;
         private MemoryStream _inputStream;
         private IPasswordStore _passwordStore;
-        private XmlWriter _xmlWriter;
 
         [ Test ]
         public void LoadEmptyPasswordStore( )
@@ -39,6 +39,47 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
             Assert.That( _passwordStore.Passwords, Is.Empty );
+        }
+
+
+        [ Test ]
+        public void LoadMultiplePasswords( )
+        {
+            // Setup
+            SaveXml( new XElement( PasswordStoreSerializer.PasswordStoreElement,
+                                   ( XElement ) new SerializedPassword( "aKey" ),
+                                   ( XElement ) new SerializedPassword( "anotherKey" ) ) );
+            // Exercise
+            _serializer.Load( _passwordStore, _inputStream );
+            // Verify
+            Assert.That( _passwordStore.Passwords, Has.Count.EqualTo( 2 ) );
+        }
+
+
+        [ Test ]
+        public void LoadReadsPasswordKeyFromElement( )
+        {
+            // Setup
+            SaveXml( new XElement( PasswordStoreSerializer.PasswordStoreElement,
+                                   ( XElement ) new SerializedPassword( "aKey" ) ) );
+            // Exercise
+            _serializer.Load( _passwordStore, _inputStream );
+            // Verify
+            PasswordInfo passwordInfo = _passwordStore.Passwords.First( );
+            Assert.That( passwordInfo.Key, Is.EqualTo( "aKey" ) );
+        }
+
+        [ Test ]
+        public void LoadReadsPasswordHashFromElement( )
+        {
+            // Setup
+            SaveXml( new XElement( PasswordStoreSerializer.PasswordStoreElement,
+                                   ( XElement ) new SerializedPassword( "aKey" ) { Hash = new byte[ ] { 0x44, 0x66 } } ) );
+            // Exercise
+            _serializer.Load( _passwordStore, _inputStream );
+            // Verify
+            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordInfo.Hash.SequenceEqual( new byte[ ] { 0x44, 0x66 } ) );
         }
 
         private void SaveXml( XElement xElement )
@@ -52,25 +93,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
                 xElement.Save( xmlWriter );
 
             _inputStream.Seek( 0, SeekOrigin.Begin );
-        }
-
-        [ Test ]
-        public void LoadMultiplePasswords( )
-        {
-            // Setup
-            SaveXml( new XElement( PasswordStoreSerializer.PasswordStoreElement,
-                                   MakePasswordElement( "aKey" ),
-                                   MakePasswordElement( "anotherKey" ) ) );
-            // Exercise
-            _serializer.Load( _passwordStore, _inputStream );
-            // Verify
-            Assert.That( _passwordStore.Passwords, Has.Count.EqualTo( 2 ) );
-        }
-
-        private static XElement MakePasswordElement( string key )
-        {
-            return new XElement( PasswordStoreSerializer.PasswordElement,
-                                 new XElement( PasswordStoreSerializer.KeyElement, key ) );
         }
     }
 }

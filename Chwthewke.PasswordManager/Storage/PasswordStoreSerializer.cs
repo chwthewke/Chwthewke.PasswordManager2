@@ -65,11 +65,13 @@ namespace Chwthewke.PasswordManager.Storage
         private static void ReadPasswordFromXml( IPasswordStore passwordStore, XElement passwordElement )
         {
             XElement key = passwordElement.Element( KeyElement );
-            if ( key == null )
+            XElement base64Hash = passwordElement.Element( HashElement );
+            if ( key == null || base64Hash == null )
                 return;
-            
+
             PasswordInfo passwordInfo = new PasswordInfo( key.Value,
-                                                          new byte[0], default( Guid ), default( DateTime ),
+                                                          Convert.FromBase64String( base64Hash.Value ),
+                                                          default( Guid ), default( DateTime ),
                                                           default( string ) );
             passwordStore.AddOrUpdate( passwordInfo );
         }

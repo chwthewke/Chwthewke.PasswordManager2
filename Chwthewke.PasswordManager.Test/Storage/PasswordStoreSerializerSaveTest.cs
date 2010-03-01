@@ -54,10 +54,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializeMultiplePasswords( )
         {
             // Setup
-            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda }, new Guid( ),
-                                                          new DateTime( ), "No note" ) );
-            _passwordStore.AddOrUpdate( new PasswordInfo( "otherKey", new byte[ ] { 0x55, 0xef }, new Guid( ),
-                                                          new DateTime( ), "Still no note" ) );
+            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
+                                                          default( Guid ), default( DateTime ), "No note" ) );
+            _passwordStore.AddOrUpdate( new PasswordInfo( "otherKey", new byte[ ] { 0x55, 0xef }, default( Guid ),
+                                                          default( Guid ), default( DateTime ), "Still no note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
@@ -70,8 +70,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializePasswordKeyToElement( )
         {
             // Setup
-            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda }, new Guid( ),
-                                                          new DateTime( ), "No note" ) );
+            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
+                                                          default( Guid ), default( DateTime ), "No note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
@@ -87,8 +87,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializePasswordHashToElement( )
         {
             // Setup
-            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda }, new Guid( ),
-                                                          new DateTime( ), "No note" ) );
+            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
+                                                          default( Guid ), default( DateTime ), "No note" ) );
 
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
@@ -106,13 +106,32 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda },
                                                           new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
-                                                          new DateTime( ), "No note" ) );
+                                                          default( Guid ), default( DateTime ), "No note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             XElement passwordElement = rootElement.Elements( PasswordStoreSerializer.PasswordElement ).First( );
-            IEnumerable<XElement> guidElements = passwordElement.Elements( PasswordStoreSerializer.GuidElement );
+            IEnumerable<XElement> guidElements =
+                passwordElement.Elements( PasswordStoreSerializer.MasterPasswordIdElement );
+            Assert.That( guidElements.Count( ), Is.EqualTo( 1 ) );
+            Assert.That( guidElements.First( ).Value, Is.EqualTo( "34579b9f-8ac1-464a-805a-abe564da8848" ).IgnoreCase );
+        }
+
+        [ Test ]
+        public void SerializePasswordSettingsGuidToElement( )
+        {
+            // Setup
+            _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
+                                                          new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
+                                                          default( DateTime ), "No note" ) );
+            // Exercise
+            _serializer.Save( _passwordStore, _outputStream );
+            // Verify
+            XElement rootElement = ReadSerializedXml( );
+            XElement passwordElement = rootElement.Elements( PasswordStoreSerializer.PasswordElement ).First( );
+            IEnumerable<XElement> guidElements =
+                passwordElement.Elements( PasswordStoreSerializer.PasswordSettingsIdElement );
             Assert.That( guidElements.Count( ), Is.EqualTo( 1 ) );
             Assert.That( guidElements.First( ).Value, Is.EqualTo( "34579b9f-8ac1-464a-805a-abe564da8848" ).IgnoreCase );
         }
@@ -123,7 +142,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda },
-                                                          new Guid( ),
+                                                          default( Guid ), default( Guid ),
                                                           new DateTime( 634022874410500302 ),
                                                           "No note" ) );
             // Exercise
@@ -141,7 +160,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda },
-                                                          new Guid( ),
+                                                          default( Guid ), default( Guid ),
                                                           new DateTime( 634022874410500302 ),
                                                           "No note" ) );
             // Exercise
@@ -159,7 +178,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordInfo( "key", new byte[ ] { 0x55, 0xda },
-                                                          new Guid( ),
+                                                          default( Guid ), default( Guid ),
                                                           new DateTime( 634022874410500302 ),
                                                           null ) );
             // Exercise

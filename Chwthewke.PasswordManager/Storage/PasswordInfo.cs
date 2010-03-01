@@ -11,11 +11,18 @@ namespace Chwthewke.PasswordManager.Storage
 
         public Guid MasterPasswordId { get; private set; }
 
+        public Guid PasswordSettingsId { get; private set; }
+
         public DateTime CreationTime { get; private set; }
 
         public string Note { get; private set; }
 
-        public PasswordInfo( string key, byte[ ] hash, Guid masterPasswordId, DateTime creationTime, string note )
+        public PasswordInfo( string key,
+                             byte[ ] hash,
+                             Guid masterPasswordId,
+                             Guid passwordFactoryId,
+                             DateTime creationTime,
+                             string note )
         {
             if ( key == null )
                 throw new ArgumentNullException( "key" );
@@ -25,6 +32,7 @@ namespace Chwthewke.PasswordManager.Storage
             Key = key;
             Hash = hash;
             MasterPasswordId = masterPasswordId;
+            PasswordSettingsId = passwordFactoryId;
             CreationTime = creationTime;
             Note = note;
         }

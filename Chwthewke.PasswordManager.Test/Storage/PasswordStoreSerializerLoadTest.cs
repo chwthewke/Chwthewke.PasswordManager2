@@ -98,6 +98,23 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         [ Test ]
+        public void LoadReadsPasswordSettingsGuidFromElement( )
+        {
+            // Setup
+            Guid guid = Guid.Parse( "34579b9f-8ac1-464a-805a-abe564da8848" );
+            SaveXml( new XElement( PasswordStoreSerializer.PasswordStoreElement,
+                                   ( XElement )
+                                   new SerializedPassword( "aKey" ) { PasswordSettingsId = guid } ) );
+            // Exercise
+            Console.WriteLine( new UTF8Encoding( false ).GetString( _inputStream.ToArray( ) ) );
+
+            _serializer.Load( _passwordStore, _inputStream );
+            // Verify
+            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordInfo.PasswordSettingsId, Is.EqualTo( guid ) );
+        }
+
+        [ Test ]
         public void LoadReadsCreationDateFromElement( )
         {
             // Setup

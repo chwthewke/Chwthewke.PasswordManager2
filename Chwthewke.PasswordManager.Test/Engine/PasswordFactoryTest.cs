@@ -27,8 +27,9 @@ namespace Chwthewke.PasswordManager.Test.Engine
             IBaseConverter converter = _converterMock.Object;
             // Exercise
             // Verify
-            Assert.That( new TestDelegate( ( ) => new PasswordFactory( new Sha512( ), converter, symbols50, 8 ) ),
-                         Throws.InstanceOf( typeof ( ArgumentException ) ) );
+            Assert.That(
+                new TestDelegate( ( ) => new PasswordFactory( default( Guid ), new Sha512( ), converter, symbols50, 8 ) ),
+                Throws.InstanceOf( typeof ( ArgumentException ) ) );
         }
 
         [ Test ]
@@ -39,7 +40,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             _converterMock.Setup( c => c.Base ).Returns( 16 );
             _converterMock.Setup( c => c.BytesNeeded( It.IsAny<int>( ) ) ).Returns( 64 );
             // Exercise
-            new PasswordFactory( new Sha512( ), _converterMock.Object, symbols16, 8 );
+            new PasswordFactory( default( Guid ), new Sha512( ), _converterMock.Object, symbols16, 8 );
             // Verify
         }
 
@@ -52,7 +53,8 @@ namespace Chwthewke.PasswordManager.Test.Engine
             _converterMock.Setup( c => c.BytesNeeded( It.IsAny<int>( ) ) ).Returns( 65 );
             // Exercise
             Assert.That(
-                new TestDelegate( ( ) => new PasswordFactory( new Sha512( ), _converterMock.Object, symbols16, 8 ) ),
+                new TestDelegate(
+                    ( ) => new PasswordFactory( default( Guid ), new Sha512( ), _converterMock.Object, symbols16, 8 ) ),
                 Throws.InstanceOf( typeof ( ArgumentException ) ) );
             // Verify
         }
@@ -72,7 +74,8 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             Alphabet alphabet = Alphabets.Symbols92;
 
-            IPasswordFactory engine = new PasswordFactory( new Sha512( ), _converterMock.Object, alphabet, 12 );
+            IPasswordFactory engine = new PasswordFactory( default( Guid ), new Sha512( ), _converterMock.Object,
+                                                           alphabet, 12 );
 
             // Exercise
             string password = engine.MakePassword( domain, SecureTest.Wrap( masterPassword ) );

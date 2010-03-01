@@ -9,12 +9,12 @@ namespace Chwthewke.PasswordManager.Engine
     {
         public const string Salt = "tsU&yUaZulAs4eOV";
 
-        private readonly IHash _hash;
-        private readonly IBaseConverter _converter;
-        private readonly Alphabet _alphabet;
-        private readonly int _length;
+        public Guid Id
+        {
+            get { return _id; }
+        }
 
-        public PasswordFactory( IHash hash, IBaseConverter converter, Alphabet alphabet, int length )
+        public PasswordFactory( Guid id, IHash hash, IBaseConverter converter, Alphabet alphabet, int length )
         {
             if ( hash == null )
                 throw new ArgumentNullException( "hash" );
@@ -31,6 +31,7 @@ namespace Chwthewke.PasswordManager.Engine
             _converter = converter;
             _length = length;
             _alphabet = alphabet;
+            _id = id;
         }
 
         public string MakePassword( string key, SecureString masterPassword )
@@ -72,5 +73,11 @@ namespace Chwthewke.PasswordManager.Engine
             if ( array == null ) return;
             Array.Clear( array, 0, array.Length );
         }
+
+        private readonly IHash _hash;
+        private readonly IBaseConverter _converter;
+        private readonly Alphabet _alphabet;
+        private readonly int _length;
+        private readonly Guid _id;
     }
 }

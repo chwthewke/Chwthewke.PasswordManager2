@@ -21,6 +21,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         public Guid MasterPasswordId { get; set; }
 
+        public Guid PasswordSettingsId { get; set; }
+
         public DateTime CreationTime { get; set; }
 
         public string Note { get; set; }
@@ -31,8 +33,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                          new XElement( PasswordStoreSerializer.KeyElement, builder.Key ),
                                          new XElement( PasswordStoreSerializer.HashElement,
                                                        Convert.ToBase64String( builder.Hash ) ),
-                                         new XElement( PasswordStoreSerializer.GuidElement,
+                                         new XElement( PasswordStoreSerializer.MasterPasswordIdElement,
                                                        builder.MasterPasswordId.ToString( ) ),
+                                         new XElement( PasswordStoreSerializer.PasswordSettingsIdElement,
+                                                       builder.PasswordSettingsId.ToString( ) ),
                                          new XElement( PasswordStoreSerializer.TimestampElement,
                                                        builder.CreationTime.Ticks ) );
             if ( builder.Note != null )

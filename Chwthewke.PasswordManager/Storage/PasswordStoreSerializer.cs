@@ -13,7 +13,8 @@ namespace Chwthewke.PasswordManager.Storage
         public const string PasswordElement = "password";
         public const string KeyElement = "key";
         public const string HashElement = "hash";
-        public const string GuidElement = "guid";
+        public const string MasterPasswordIdElement = "master-password";
+        public const string PasswordSettingsIdElement = "password-settings";
         public const string TimestampElement = "timestamp";
         public const string NoteElement = "note";
 
@@ -25,10 +26,9 @@ namespace Chwthewke.PasswordManager.Storage
         public void Save( IPasswordStore passwordStore, Stream outputStream )
         {
             XElement root = ToXml( passwordStore );
-            using (
-                XmlWriter xw = XmlWriter.Create( outputStream,
-                                                 new XmlWriterSettings
-                                                     { OmitXmlDeclaration = true, Encoding = _encoding } ) )
+            XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
+                                                      { OmitXmlDeclaration = true, Encoding = _encoding };
+            using ( XmlWriter xw = XmlWriter.Create( outputStream, xmlWriterSettings ) )
                 root.Save( xw );
         }
 
@@ -42,7 +42,9 @@ namespace Chwthewke.PasswordManager.Storage
             var xElement = new XElement( PasswordElement,
                                          new XElement( KeyElement, password.Key ),
                                          new XElement( HashElement, Convert.ToBase64String( password.Hash ) ),
-                                         new XElement( GuidElement, password.MasterPasswordId.ToString( ) ),
+                                         new XElement( MasterPasswordIdElement, password.MasterPasswordId.ToString( ) ),
+                                         new XElement( PasswordSettingsIdElement,
+                                                       password.PasswordSettingsId.ToString( ) ),
                                          new XElement( TimestampElement, password.CreationTime.Ticks ) );
             if ( password.Note != null )
                 xElement.Add( new XElement( NoteElement, password.Note ) );
@@ -68,16 +70,19 @@ namespace Chwthewke.PasswordManager.Storage
         {
             XElement key = passwordElement.Element( KeyElement );
             XElement hash = passwordElement.Element( HashElement );
-            XElement guid = passwordElement.Element( GuidElement );
+            XElement masterPasswordId = passwordElement.Element( MasterPasswordIdElement );
+            XElement passwordSettingsId = passwordElement.Element( PasswordSettingsIdElement );
             XElement timestamp = passwordElement.Element( TimestampElement );
             XElement note = passwordElement.Element( NoteElement );
 
-            if ( key == null || hash == null || guid == null || timestamp == null )
+            if ( key == null || hash == null || masterPasswordId == null || passwordSettingsId == null ||
+                 timestamp == null )
                 return;
 
             PasswordInfo passwordInfo = new PasswordInfo( key.Value,
                                                           Convert.FromBase64String( hash.Value ),
-                                                          Guid.Parse( guid.Value ),
+                                                          Guid.Parse( masterPasswordId.Value ),
+                                                          Guid.Parse( passwordSettingsId.Value ),
                                                           new DateTime( long.Parse( timestamp.Value ) ),
                                                           note == null ? null : note.Value );
             passwordStore.AddOrUpdate( passwordInfo );

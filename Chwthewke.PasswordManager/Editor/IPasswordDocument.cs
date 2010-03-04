@@ -1,4 +1,5 @@
-﻿using Chwthewke.PasswordManager.Engine;
+﻿using System.Collections.Generic;
+using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Editor
@@ -7,7 +8,9 @@ namespace Chwthewke.PasswordManager.Editor
     {
         string Key { get; set; }
 
-        string GeneratedPassword( IPasswordFactory factory );
+        IEnumerable<Pair<string, PasswordInfo>> GeneratedPasswords { get; }
+
+        // prolly GeneratePasswords here actually
 
         PasswordInfo SavedPasswordInfo { get; }
     }

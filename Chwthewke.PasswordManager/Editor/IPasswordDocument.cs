@@ -6,12 +6,8 @@ namespace Chwthewke.PasswordManager.Editor
 {
     public interface IPasswordDocument
     {
-        string Key { get; set; }
+        string GeneratedPassword { get; }
 
-        IEnumerable<Pair<string, PasswordInfo>> GeneratedPasswords { get; }
-
-        // prolly GeneratePasswords here actually
-
-        PasswordInfo SavedPasswordInfo { get; }
+        PasswordInfo SavablePasswordInfo { get; }
     }
 }

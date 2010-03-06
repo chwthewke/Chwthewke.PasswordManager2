@@ -5,10 +5,16 @@ namespace Chwthewke.PasswordManager.Editor
 {
     public interface IPasswordEditor
     {
-        IPasswordDocument NewDocument( );
+        string Key { get; set; }
 
-        IEnumerable<IPasswordFactory> PasswordFactories { get; }
+        void Reset( );
 
-        void GeneratePasswords( IPasswordDocument document, byte[ ] masterPassword );
+        void GeneratePasswords( byte[ ] masterPassword );
+
+        IEnumerable<IPasswordGenerator> PasswordSlots { get; }
+
+        IPasswordGenerator SavedSlot { get; }
+
+        IPasswordDocument GeneratedPassword( IPasswordGenerator slot );
     }
 }

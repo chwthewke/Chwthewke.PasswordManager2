@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    internal class PasswordFactory : IPasswordFactory
+    internal class PasswordGenerator : IPasswordGenerator
     {
         public const string Salt = "tsU&yUaZulAs4eOV";
 
@@ -14,7 +14,7 @@ namespace Chwthewke.PasswordManager.Engine
             get { return _id; }
         }
 
-        public PasswordFactory( Guid id, IHash hash, IBaseConverter converter, Alphabet alphabet, int length )
+        public PasswordGenerator( Guid id, IHash hash, IBaseConverter converter, Alphabet alphabet, int length )
         {
             if ( hash == null )
                 throw new ArgumentNullException( "hash" );

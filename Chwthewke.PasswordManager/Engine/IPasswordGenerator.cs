@@ -3,7 +3,7 @@ using System.Security;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    public interface IPasswordFactory
+    public interface IPasswordGenerator
     {
         Guid Id { get; }
 

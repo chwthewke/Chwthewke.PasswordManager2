@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Security;
 using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Editor
@@ -9,7 +10,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         void Reset( );
 
-        void GeneratePasswords( byte[ ] masterPassword );
+        void GeneratePasswords( SecureString masterPassword );
 
         IEnumerable<IPasswordGenerator> PasswordSlots { get; }
 

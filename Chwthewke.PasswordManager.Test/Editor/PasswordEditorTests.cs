@@ -63,13 +63,30 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _editor.Key = "aKey";
             SecureString masterPassword = SecureTest.Wrap( "mpmp" );
             _generator1Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword1" );
-            _generator2Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword2" );
             // Exercise
             _editor.GeneratePasswords( masterPassword );
             // Verify
             _generator1Mock.Verify( pg => pg.MakePassword( "aKey", masterPassword ) );
             Assert.That( _editor.GeneratedPassword( _generator1Mock.Object ).GeneratedPassword, Is.EqualTo( "generatedPassword1" ) );
             _generator2Mock.Verify( pg => pg.MakePassword( "aKey", masterPassword ) );
+        }
+
+        [ Test ]
+        public void ResetReturnsToInitialState( )
+        {
+            // Setup
+            _editor.Key = "aKey";
+            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            _generator1Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword1" );
+            _editor.GeneratePasswords( masterPassword );
+            // Exercise
+            _editor.Reset( );
+            // Verify
+            Assert.That( _editor.Key, Is.EqualTo( string.Empty ) );
+            Assert.That( _editor.SavedSlot, Is.Null );
+            Assert.That( _editor.PasswordSlots.All( s => _editor.GeneratedPassword( s ) == null ) );
+            Assert.That( _editor.PasswordSlots,
+                         Is.EquivalentTo( new[ ] { _generator1Mock.Object, _generator2Mock.Object } ) );
         }
 
         private IPasswordEditor _editor;
@@ -93,7 +110,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
          * 
          * document.Key = smth
          * editor.GeneratePasswords( document, myMasterPassword )
-         * document.GeneratedPasswords : list of Pairs <string, PasswordInfo> (password, savable info)
+         * document.GeneratedPasswords : list of Pairs <string, passwordDigest> (password, savable info)
          * 
          * remark : password info points to password settings & master password by hteir respective guid
          * 

@@ -4,12 +4,12 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public interface IPasswordStore
     {
-        PasswordInfo AddOrUpdate( PasswordInfo passwordInfo );
+        PasswordDigest AddOrUpdate( PasswordDigest passwordDigest );
 
-        bool Remove( PasswordInfo passwordInfo );
+        bool Remove( PasswordDigest passwordDigest );
 
-        IEnumerable<PasswordInfo> Passwords { get; }
+        IEnumerable<PasswordDigest> Passwords { get; }
 
-        PasswordInfo FindPasswordInfo( string key );
+        PasswordDigest FindPasswordInfo( string key );
     }
 }

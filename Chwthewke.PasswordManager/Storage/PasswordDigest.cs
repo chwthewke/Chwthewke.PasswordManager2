@@ -3,7 +3,7 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    public class PasswordInfo : IEquatable<PasswordInfo>
+    public class PasswordDigest : IEquatable<PasswordDigest>
     {
         public string Key { get; private set; }
 
@@ -17,7 +17,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         public string Note { get; private set; }
 
-        public PasswordInfo( string key,
+        public PasswordDigest( string key,
                              byte[ ] hash,
                              Guid masterPasswordId,
                              Guid passwordFactoryId,
@@ -41,8 +41,8 @@ namespace Chwthewke.PasswordManager.Storage
         {
             if ( ReferenceEquals( null, obj ) ) return false;
             if ( ReferenceEquals( this, obj ) ) return true;
-            if ( obj.GetType( ) != typeof ( PasswordInfo ) ) return false;
-            return Equals( ( PasswordInfo ) obj );
+            if ( obj.GetType( ) != typeof ( PasswordDigest ) ) return false;
+            return Equals( ( PasswordDigest ) obj );
         }
 
         public override int GetHashCode( )
@@ -58,7 +58,7 @@ namespace Chwthewke.PasswordManager.Storage
             }
         }
 
-        public bool Equals( PasswordInfo other )
+        public bool Equals( PasswordDigest other )
         {
             if ( ReferenceEquals( null, other ) ) return false;
             if ( ReferenceEquals( this, other ) ) return true;
@@ -67,12 +67,12 @@ namespace Chwthewke.PasswordManager.Storage
                    Equals( other.Note, Note );
         }
 
-        public static bool operator ==( PasswordInfo left, PasswordInfo right )
+        public static bool operator ==( PasswordDigest left, PasswordDigest right )
         {
             return Equals( left, right );
         }
 
-        public static bool operator !=( PasswordInfo left, PasswordInfo right )
+        public static bool operator !=( PasswordDigest left, PasswordDigest right )
         {
             return !Equals( left, right );
         }

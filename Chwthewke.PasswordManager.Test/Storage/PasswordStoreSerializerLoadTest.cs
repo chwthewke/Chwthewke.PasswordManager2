@@ -65,8 +65,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Exercise
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
-            PasswordInfo passwordInfo = _passwordStore.Passwords.First( );
-            Assert.That( passwordInfo.Key, Is.EqualTo( "aKey" ) );
+            PasswordDigest passwordDigest = _passwordStore.Passwords.First( );
+            Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
         }
 
         [ Test ]
@@ -78,8 +78,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Exercise
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
-            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
-            Assert.That( passwordInfo.Hash.SequenceEqual( new byte[ ] { 0x44, 0x66 } ) );
+            PasswordDigest passwordDigest = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordDigest.Hash.SequenceEqual( new byte[ ] { 0x44, 0x66 } ) );
         }
 
         [ Test ]
@@ -93,8 +93,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Exercise
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
-            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
-            Assert.That( passwordInfo.MasterPasswordId, Is.EqualTo( guid ) );
+            PasswordDigest passwordDigest = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordDigest.MasterPasswordId, Is.EqualTo( guid ) );
         }
 
         [ Test ]
@@ -110,8 +110,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
-            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
-            Assert.That( passwordInfo.PasswordSettingsId, Is.EqualTo( guid ) );
+            PasswordDigest passwordDigest = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordDigest.PasswordSettingsId, Is.EqualTo( guid ) );
         }
 
         [ Test ]
@@ -125,8 +125,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Exercise
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
-            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
-            Assert.That( passwordInfo.CreationTime, Is.EqualTo( creationTime ) );
+            PasswordDigest passwordDigest = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordDigest.CreationTime, Is.EqualTo( creationTime ) );
         }
 
 
@@ -140,8 +140,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Exercise
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
-            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
-            Assert.That( passwordInfo.Note, Is.EqualTo( note ) );
+            PasswordDigest passwordDigest = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordDigest.Note, Is.EqualTo( note ) );
         }
 
         [ Test ]
@@ -153,8 +153,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Exercise
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
-            PasswordInfo passwordInfo = _passwordStore.FindPasswordInfo( "aKey" );
-            Assert.That( passwordInfo.Note, Is.Null );
+            PasswordDigest passwordDigest = _passwordStore.FindPasswordInfo( "aKey" );
+            Assert.That( passwordDigest.Note, Is.Null );
         }
 
 

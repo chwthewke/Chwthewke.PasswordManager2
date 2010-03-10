@@ -15,7 +15,7 @@ namespace Chwthewke.PasswordManager.Editor
             get { return _generatedPassword; }
         }
 
-        public PasswordInfo SavablePasswordInfo
+        public PasswordDigest SavablePasswordDigest
         {
             get { throw new NotImplementedException( ); }
         }

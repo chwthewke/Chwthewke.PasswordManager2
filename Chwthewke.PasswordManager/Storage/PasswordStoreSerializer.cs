@@ -37,7 +37,7 @@ namespace Chwthewke.PasswordManager.Storage
             return new XElement( PasswordStoreElement, passwordStore.Passwords.Select( ToXml ) );
         }
 
-        private static XElement ToXml( PasswordInfo password )
+        private static XElement ToXml( PasswordDigest password )
         {
             var xElement = new XElement( PasswordElement,
                                          new XElement( KeyElement, password.Key ),
@@ -79,13 +79,13 @@ namespace Chwthewke.PasswordManager.Storage
                  timestamp == null )
                 return;
 
-            PasswordInfo passwordInfo = new PasswordInfo( key.Value,
+            PasswordDigest passwordDigest = new PasswordDigest( key.Value,
                                                           Convert.FromBase64String( hash.Value ),
                                                           Guid.Parse( masterPasswordId.Value ),
                                                           Guid.Parse( passwordSettingsId.Value ),
                                                           new DateTime( long.Parse( timestamp.Value ) ),
                                                           note == null ? null : note.Value );
-            passwordStore.AddOrUpdate( passwordInfo );
+            passwordStore.AddOrUpdate( passwordDigest );
         }
 
         private readonly Encoding _encoding;

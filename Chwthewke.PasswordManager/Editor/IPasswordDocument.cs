@@ -8,6 +8,6 @@ namespace Chwthewke.PasswordManager.Editor
     {
         string GeneratedPassword { get; }
 
-        PasswordInfo SavablePasswordInfo { get; }
+        PasswordDigest SavablePasswordDigest { get; }
     }
 }

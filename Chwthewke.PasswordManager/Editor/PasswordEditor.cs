@@ -18,7 +18,8 @@ namespace Chwthewke.PasswordManager.Editor
 
         public void Reset( )
         {
-            throw new NotImplementedException( );
+            Key = string.Empty;
+            _generatedPasswords.Clear(  );
         }
 
         public void GeneratePasswords( SecureString masterPassword )

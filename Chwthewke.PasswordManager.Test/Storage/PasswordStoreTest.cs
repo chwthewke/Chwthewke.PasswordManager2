@@ -28,11 +28,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void AddMakesPasswordInfoAvailableToFindAndPasswords( )
         {
             // Setup
-            PasswordInfo stored = new PasswordInfo( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
+            PasswordDigest stored = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
                                                     default( Guid ), default( DateTime ), "a Note" );
             // Exercise
             _passwordStorage.AddOrUpdate( stored );
-            PasswordInfo retrieved = _passwordStorage.FindPasswordInfo( "myKey" );
+            PasswordDigest retrieved = _passwordStorage.FindPasswordInfo( "myKey" );
             // Verify
             Assert.That( retrieved, Is.EqualTo( stored ) );
             Assert.That( _passwordStorage.Passwords, Has.Count.EqualTo( 1 ) );
@@ -43,14 +43,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void UpdateMakesNewPasswordInfoAvailable( )
         {
             // Setup
-            PasswordInfo storedFirst = new PasswordInfo( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
+            PasswordDigest storedFirst = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
                                                          default( Guid ), default( DateTime ), "a Note" );
             _passwordStorage.AddOrUpdate( storedFirst );
-            PasswordInfo updated = new PasswordInfo( "myKey", new byte[ ] { 0x84, 0xbb }, default( Guid ),
+            PasswordDigest updated = new PasswordDigest( "myKey", new byte[ ] { 0x84, 0xbb }, default( Guid ),
                                                      default( Guid ), default( DateTime ), "a new Note" );
             // Exercise
             _passwordStorage.AddOrUpdate( updated );
-            PasswordInfo retrieved = _passwordStorage.FindPasswordInfo( "myKey" );
+            PasswordDigest retrieved = _passwordStorage.FindPasswordInfo( "myKey" );
             // Verify
             Assert.That( retrieved, Is.EqualTo( updated ) );
             Assert.That( _passwordStorage.Passwords, Has.Count.EqualTo( 1 ) );
@@ -61,9 +61,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void AddMultiplePasswordMakesAllAvailable( )
         {
             // Setup
-            PasswordInfo storedFirst = new PasswordInfo( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
+            PasswordDigest storedFirst = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
                                                          default( Guid ), default( DateTime ), "a Note" );
-            PasswordInfo storedSecond = new PasswordInfo( "myNewKey", new byte[ ] { 0x84, 0xbb }, default( Guid ),
+            PasswordDigest storedSecond = new PasswordDigest( "myNewKey", new byte[ ] { 0x84, 0xbb }, default( Guid ),
                                                           default( Guid ), default( DateTime ), "a new Note" );
             // Exercise
             _passwordStorage.AddOrUpdate( storedFirst );
@@ -78,7 +78,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void RemovePasswordMakesItUnavailable( )
         {
             // Setup
-            PasswordInfo stored = new PasswordInfo( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
+            PasswordDigest stored = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
                                                     default( Guid ), default( DateTime ), "a Note" );
             _passwordStorage.AddOrUpdate( stored );
             // Exercise
@@ -92,9 +92,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void RemovePasswordCopyMakesItUnavailable( )
         {
             // Setup
-            PasswordInfo stored = new PasswordInfo( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
+            PasswordDigest stored = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
                                                     default( Guid ), default( DateTime ), "a Note" );
-            PasswordInfo storedCopy = new PasswordInfo( "myKey", new byte[ ] { 0x55, 0xad }, stored.MasterPasswordId,
+            PasswordDigest storedCopy = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, stored.MasterPasswordId,
                                                         stored.PasswordSettingsId, stored.CreationTime, "a Note" );
             _passwordStorage.AddOrUpdate( stored );
             // Exercise

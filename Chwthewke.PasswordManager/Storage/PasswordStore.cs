@@ -5,32 +5,32 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public class PasswordStore : IPasswordStore
     {
-        public PasswordInfo AddOrUpdate( PasswordInfo passwordInfo )
+        public PasswordDigest AddOrUpdate( PasswordDigest passwordDigest )
         {
-            PasswordInfo result = FindPasswordInfo( passwordInfo.Key );
+            PasswordDigest result = FindPasswordInfo( passwordDigest.Key );
 
-            _passwords[ passwordInfo.Key ] = passwordInfo;
+            _passwords[ passwordDigest.Key ] = passwordDigest;
 
             return result;
         }
 
-        public bool Remove( PasswordInfo passwordInfo )
+        public bool Remove( PasswordDigest passwordDigest )
         {
-            return _passwords.Remove( new KeyValuePair<string, PasswordInfo>( passwordInfo.Key, passwordInfo ) );
+            return _passwords.Remove( new KeyValuePair<string, PasswordDigest>( passwordDigest.Key, passwordDigest ) );
         }
 
-        public IEnumerable<PasswordInfo> Passwords
+        public IEnumerable<PasswordDigest> Passwords
         {
-            get { return new List<PasswordInfo>( _passwords.Values ); }
+            get { return new List<PasswordDigest>( _passwords.Values ); }
         }
 
-        public PasswordInfo FindPasswordInfo( string key )
+        public PasswordDigest FindPasswordInfo( string key )
         {
-            PasswordInfo result;
+            PasswordDigest result;
             _passwords.TryGetValue( key, out result );
             return result;
         }
 
-        private readonly IDictionary<string, PasswordInfo> _passwords = new Dictionary<string, PasswordInfo>( );
+        private readonly IDictionary<string, PasswordDigest> _passwords = new Dictionary<string, PasswordDigest>( );
     }
 }

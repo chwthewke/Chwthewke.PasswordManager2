@@ -95,7 +95,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             PasswordDigest stored = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
                                                     default( Guid ), default( DateTime ), "a Note" );
             PasswordDigest storedCopy = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, stored.MasterPasswordId,
-                                                        stored.PasswordSettingsId, stored.CreationTime, "a Note" );
+                                                        stored.PasswordGeneratorId, stored.CreationTime, "a Note" );
             _passwordStorage.AddOrUpdate( stored );
             // Exercise
             _passwordStorage.Remove( storedCopy );

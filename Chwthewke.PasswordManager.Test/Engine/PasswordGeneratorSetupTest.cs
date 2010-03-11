@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Engine
 {
     [ TestFixture ]
-    public class PasswordFactoryTest
+    public class PasswordGeneratorSetupTest
     {
         private Mock<IBaseConverter> _converterMock;
 

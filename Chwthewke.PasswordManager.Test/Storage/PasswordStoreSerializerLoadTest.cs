@@ -111,7 +111,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
             PasswordDigest passwordDigest = _passwordStore.FindPasswordInfo( "aKey" );
-            Assert.That( passwordDigest.PasswordSettingsId, Is.EqualTo( guid ) );
+            Assert.That( passwordDigest.PasswordGeneratorId, Is.EqualTo( guid ) );
         }
 
         [ Test ]

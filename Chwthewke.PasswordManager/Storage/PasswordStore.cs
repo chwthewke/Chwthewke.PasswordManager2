@@ -5,13 +5,9 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public class PasswordStore : IPasswordStore
     {
-        public PasswordDigest AddOrUpdate( PasswordDigest passwordDigest )
+        public void AddOrUpdate( PasswordDigest passwordDigest )
         {
-            PasswordDigest result = FindPasswordInfo( passwordDigest.Key );
-
             _passwords[ passwordDigest.Key ] = passwordDigest;
-
-            return result;
         }
 
         public bool Remove( PasswordDigest passwordDigest )

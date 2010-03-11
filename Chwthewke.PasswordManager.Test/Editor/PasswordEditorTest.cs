@@ -10,7 +10,7 @@ using System.Linq;
 namespace Chwthewke.PasswordManager.Test.Editor
 {
     [ TestFixture ]
-    public class PasswordEditorTests
+    public class PasswordEditorTest
     {
         [ SetUp ]
         public void SetUpEditor( )

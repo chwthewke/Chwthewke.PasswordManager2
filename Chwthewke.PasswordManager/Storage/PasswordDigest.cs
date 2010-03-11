@@ -11,7 +11,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         public Guid MasterPasswordId { get; private set; }
 
-        public Guid PasswordSettingsId { get; private set; }
+        public Guid PasswordGeneratorId { get; private set; }
 
         public DateTime CreationTime { get; private set; }
 
@@ -20,7 +20,7 @@ namespace Chwthewke.PasswordManager.Storage
         public PasswordDigest( string key,
                              byte[ ] hash,
                              Guid masterPasswordId,
-                             Guid passwordFactoryId,
+                             Guid passwordGeneratorId,
                              DateTime creationTime,
                              string note )
         {
@@ -32,7 +32,7 @@ namespace Chwthewke.PasswordManager.Storage
             Key = key;
             Hash = hash;
             MasterPasswordId = masterPasswordId;
-            PasswordSettingsId = passwordFactoryId;
+            PasswordGeneratorId = passwordGeneratorId;
             CreationTime = creationTime;
             Note = note;
         }

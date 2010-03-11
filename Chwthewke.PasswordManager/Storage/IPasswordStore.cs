@@ -4,7 +4,7 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public interface IPasswordStore
     {
-        PasswordDigest AddOrUpdate( PasswordDigest passwordDigest );
+        void AddOrUpdate( PasswordDigest passwordDigest );
 
         bool Remove( PasswordDigest passwordDigest );
 

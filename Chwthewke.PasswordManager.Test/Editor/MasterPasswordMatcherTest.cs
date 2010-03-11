@@ -9,7 +9,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 {
     [TestFixture]
     [Ignore]
-    public class MasterPasswordMatcherTests
+    public class MasterPasswordMatcherTest
     {
         [ Test ]
         public void MatchMasterPassword( )

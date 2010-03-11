@@ -44,7 +44,7 @@ namespace Chwthewke.PasswordManager.Storage
                                          new XElement( HashElement, Convert.ToBase64String( password.Hash ) ),
                                          new XElement( MasterPasswordIdElement, password.MasterPasswordId.ToString( ) ),
                                          new XElement( PasswordSettingsIdElement,
-                                                       password.PasswordSettingsId.ToString( ) ),
+                                                       password.PasswordGeneratorId.ToString( ) ),
                                          new XElement( TimestampElement, password.CreationTime.Ticks ) );
             if ( password.Note != null )
                 xElement.Add( new XElement( NoteElement, password.Note ) );

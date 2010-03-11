@@ -27,6 +27,6 @@ namespace Chwthewke.PasswordManager.Storage
         private readonly IHash _hasher;
         private readonly ITimeProvider _timeProvider;
 
-        private const string DigestSalt = @"$xZ[u(-Trf";
+        internal const string DigestSalt = @"$xZ[u(-Trf";
     }
 }

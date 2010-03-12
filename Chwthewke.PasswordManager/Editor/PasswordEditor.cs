@@ -19,7 +19,7 @@ namespace Chwthewke.PasswordManager.Editor
         public void Reset( )
         {
             Key = string.Empty;
-            _generatedPasswords.Clear(  );
+            _generatedPasswords.Clear( );
         }
 
         public void GeneratePasswords( SecureString masterPassword )

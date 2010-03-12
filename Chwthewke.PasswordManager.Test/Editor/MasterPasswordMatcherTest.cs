@@ -13,10 +13,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
     {
         private IMasterPasswordMatcher _matcher;
 
-        [SetUp]
+        [ SetUp ]
         public void SetUpMasterPasswordMatcher( )
         {
-            _matcher = new MasterPasswordMatcher( new[ ] { PasswordGenerators.AlphaNumeric, PasswordGenerators.Full }, new Sha512( ) );
+            _matcher = new MasterPasswordMatcher( new[ ] { PasswordGenerators.AlphaNumeric, PasswordGenerators.Full },
+                                                  new Sha512( ) );
         }
 
         [ Test ]

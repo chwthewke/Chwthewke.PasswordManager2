@@ -29,7 +29,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             PasswordDigest stored = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
-                                                    default( Guid ), default( DateTime ), "a Note" );
+                                                        default( Guid ), default( DateTime ), "a Note" );
             // Exercise
             _passwordStorage.AddOrUpdate( stored );
             PasswordDigest retrieved = _passwordStorage.FindPasswordInfo( "myKey" );
@@ -44,10 +44,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             PasswordDigest storedFirst = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
-                                                         default( Guid ), default( DateTime ), "a Note" );
+                                                             default( Guid ), default( DateTime ), "a Note" );
             _passwordStorage.AddOrUpdate( storedFirst );
             PasswordDigest updated = new PasswordDigest( "myKey", new byte[ ] { 0x84, 0xbb }, default( Guid ),
-                                                     default( Guid ), default( DateTime ), "a new Note" );
+                                                         default( Guid ), default( DateTime ), "a new Note" );
             // Exercise
             _passwordStorage.AddOrUpdate( updated );
             PasswordDigest retrieved = _passwordStorage.FindPasswordInfo( "myKey" );
@@ -62,9 +62,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             PasswordDigest storedFirst = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
-                                                         default( Guid ), default( DateTime ), "a Note" );
+                                                             default( Guid ), default( DateTime ), "a Note" );
             PasswordDigest storedSecond = new PasswordDigest( "myNewKey", new byte[ ] { 0x84, 0xbb }, default( Guid ),
-                                                          default( Guid ), default( DateTime ), "a new Note" );
+                                                              default( Guid ), default( DateTime ), "a new Note" );
             // Exercise
             _passwordStorage.AddOrUpdate( storedFirst );
             _passwordStorage.AddOrUpdate( storedSecond );
@@ -79,7 +79,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             PasswordDigest stored = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
-                                                    default( Guid ), default( DateTime ), "a Note" );
+                                                        default( Guid ), default( DateTime ), "a Note" );
             _passwordStorage.AddOrUpdate( stored );
             // Exercise
             _passwordStorage.Remove( stored );
@@ -93,9 +93,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             PasswordDigest stored = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, default( Guid ),
-                                                    default( Guid ), default( DateTime ), "a Note" );
+                                                        default( Guid ), default( DateTime ), "a Note" );
             PasswordDigest storedCopy = new PasswordDigest( "myKey", new byte[ ] { 0x55, 0xad }, stored.MasterPasswordId,
-                                                        stored.PasswordGeneratorId, stored.CreationTime, "a Note" );
+                                                            stored.PasswordGeneratorId, stored.CreationTime, "a Note" );
             _passwordStorage.AddOrUpdate( stored );
             // Exercise
             _passwordStorage.Remove( storedCopy );

@@ -55,9 +55,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
-                                                          default( Guid ), default( DateTime ), "No note" ) );
+                                                            default( Guid ), default( DateTime ), "No note" ) );
             _passwordStore.AddOrUpdate( new PasswordDigest( "otherKey", new byte[ ] { 0x55, 0xef }, default( Guid ),
-                                                          default( Guid ), default( DateTime ), "Still no note" ) );
+                                                            default( Guid ), default( DateTime ), "Still no note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
@@ -71,7 +71,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
-                                                          default( Guid ), default( DateTime ), "No note" ) );
+                                                            default( Guid ), default( DateTime ), "No note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
@@ -88,7 +88,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
-                                                          default( Guid ), default( DateTime ), "No note" ) );
+                                                            default( Guid ), default( DateTime ), "No note" ) );
 
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
@@ -105,8 +105,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
-                                                          new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
-                                                          default( Guid ), default( DateTime ), "No note" ) );
+                                                            new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
+                                                            default( Guid ), default( DateTime ), "No note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
@@ -123,8 +123,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
-                                                          new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
-                                                          default( DateTime ), "No note" ) );
+                                                            new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
+                                                            default( DateTime ), "No note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
@@ -142,9 +142,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
-                                                          default( Guid ), default( Guid ),
-                                                          new DateTime( 634022874410500302 ),
-                                                          "No note" ) );
+                                                            default( Guid ), default( Guid ),
+                                                            new DateTime( 634022874410500302 ),
+                                                            "No note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
@@ -160,9 +160,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
-                                                          default( Guid ), default( Guid ),
-                                                          new DateTime( 634022874410500302 ),
-                                                          "No note" ) );
+                                                            default( Guid ), default( Guid ),
+                                                            new DateTime( 634022874410500302 ),
+                                                            "No note" ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify
@@ -178,9 +178,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             _passwordStore.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
-                                                          default( Guid ), default( Guid ),
-                                                          new DateTime( 634022874410500302 ),
-                                                          null ) );
+                                                            default( Guid ), default( Guid ),
+                                                            new DateTime( 634022874410500302 ),
+                                                            null ) );
             // Exercise
             _serializer.Save( _passwordStore, _outputStream );
             // Verify

@@ -67,7 +67,8 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _editor.GeneratePasswords( masterPassword );
             // Verify
             _generator1Mock.Verify( pg => pg.MakePassword( "aKey", masterPassword ) );
-            Assert.That( _editor.GeneratedPassword( _generator1Mock.Object ).GeneratedPassword, Is.EqualTo( "generatedPassword1" ) );
+            Assert.That( _editor.GeneratedPassword( _generator1Mock.Object ).GeneratedPassword,
+                         Is.EqualTo( "generatedPassword1" ) );
             _generator2Mock.Verify( pg => pg.MakePassword( "aKey", masterPassword ) );
         }
 

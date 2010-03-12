@@ -18,11 +18,11 @@ namespace Chwthewke.PasswordManager.Storage
         public string Note { get; private set; }
 
         public PasswordDigest( string key,
-                             byte[ ] hash,
-                             Guid masterPasswordId,
-                             Guid passwordGeneratorId,
-                             DateTime creationTime,
-                             string note )
+                               byte[ ] hash,
+                               Guid masterPasswordId,
+                               Guid passwordGeneratorId,
+                               DateTime creationTime,
+                               string note )
         {
             if ( key == null )
                 throw new ArgumentNullException( "key" );

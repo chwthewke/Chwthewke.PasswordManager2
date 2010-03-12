@@ -55,7 +55,8 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Guid passwordGeneratorId = Guid.Parse( "18E7700B-234C-4389-9A8B-3D3134EC42FA" );
             string note = "A nonsensical Note";
             // Exercise
-            PasswordDigest digest = _digester.Digest( key, "generatedPassword", masterPasswordId, passwordGeneratorId, note );
+            PasswordDigest digest = _digester.Digest( key, "generatedPassword", masterPasswordId, passwordGeneratorId,
+                                                      note );
             // Verify
             Assert.That( digest.Key, Is.EqualTo( key ) );
             Assert.That( digest.MasterPasswordId, Is.EqualTo( masterPasswordId ) );

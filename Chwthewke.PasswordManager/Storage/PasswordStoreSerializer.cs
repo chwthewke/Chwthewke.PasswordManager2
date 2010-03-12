@@ -80,11 +80,11 @@ namespace Chwthewke.PasswordManager.Storage
                 return;
 
             PasswordDigest passwordDigest = new PasswordDigest( key.Value,
-                                                          Convert.FromBase64String( hash.Value ),
-                                                          Guid.Parse( masterPasswordId.Value ),
-                                                          Guid.Parse( passwordSettingsId.Value ),
-                                                          new DateTime( long.Parse( timestamp.Value ) ),
-                                                          note == null ? null : note.Value );
+                                                                Convert.FromBase64String( hash.Value ),
+                                                                Guid.Parse( masterPasswordId.Value ),
+                                                                Guid.Parse( passwordSettingsId.Value ),
+                                                                new DateTime( long.Parse( timestamp.Value ) ),
+                                                                note == null ? null : note.Value );
             passwordStore.AddOrUpdate( passwordDigest );
         }
 

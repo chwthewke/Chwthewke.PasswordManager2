@@ -1,3 +1,4 @@
+using System;
 using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
@@ -7,19 +8,43 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {
-    [TestFixture]
-    [Ignore]
+    [ TestFixture ]
     public class MasterPasswordMatcherTest
     {
+        private IMasterPasswordMatcher _matcher;
+
+        [SetUp]
+        public void SetUpMasterPasswordMatcher( )
+        {
+            _matcher = new MasterPasswordMatcher( new[ ] { PasswordGenerators.AlphaNumeric, PasswordGenerators.Full }, new Sha512( ) );
+        }
+
+        [ Test ]
+        public void CannotMatchMasterWhenMissingPasswordGenerator( )
+        {
+            // Setup
+            PasswordDigest digest = new PasswordDigest( "aKey", new byte[ ] { 0xda }, default( Guid ),
+                                                        Guid.Parse( "656A5218-892E-4666-A3A9-70766C089044" ),
+                                                        new DateTime( ), string.Empty );
+            // Exercise
+            bool masterPasswordMatches = _matcher.MatchMasterPassword( SecureTest.Wrap( "masterPassword" ), digest );
+            // Verify
+            Assert.That( masterPasswordMatches, Is.False );
+        }
+
         [ Test ]
         public void MatchMasterPassword( )
         {
             // Setup
-            IPasswordGenerator generator = PasswordGenerators.AlphaNumeric;
             SecureString masterPassword = SecureTest.Wrap( "mpmp" );
-            string password = generator.MakePassword( "key1", masterPassword );
+            string generatedPassword = PasswordGenerators.AlphaNumeric.MakePassword( "key1", masterPassword );
+            PasswordDigester digester = new PasswordDigester( new Sha512( ), new TimeProvider( ) );
+            PasswordDigest digest = digester.Digest( "key1", generatedPassword, default( Guid ),
+                                                     PasswordGenerators.AlphaNumeric.Id, string.Empty );
             // Exercise
+            bool match = _matcher.MatchMasterPassword( masterPassword, digest );
             // Verify
+            Assert.That( match, Is.True );
         }
     }
 }

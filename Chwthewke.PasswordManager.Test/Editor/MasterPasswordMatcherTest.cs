@@ -33,6 +33,23 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( masterPasswordMatches, Is.False );
         }
 
+
+        [ Test ]
+        public void DoNotMatchMasterPasswordIfHashMismatch( )
+        {
+            // Setup
+            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            string generatedPassword = PasswordGenerators.AlphaNumeric.MakePassword( "key1", masterPassword );
+            PasswordDigester digester = new PasswordDigester( new Sha512( ), new TimeProvider( ) );
+            PasswordDigest digest = digester.Digest( "key1", generatedPassword, default( Guid ),
+                                                     PasswordGenerators.AlphaNumeric.Id, string.Empty );
+            // Exercise
+            bool match = _matcher.MatchMasterPassword( SecureTest.Wrap( "omnomnom" ), digest );
+            // Verify
+            Assert.That( match, Is.False );
+        }
+
+
         [ Test ]
         public void MatchMasterPassword( )
         {

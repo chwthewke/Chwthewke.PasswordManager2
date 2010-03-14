@@ -41,7 +41,7 @@ namespace Chwthewke.PasswordManager.Editor
             get { return null; }
         }
 
-        public IPasswordDocument GeneratedPassword( IPasswordGenerator slot )
+        public PasswordDocument GeneratedPassword( IPasswordGenerator slot )
         {
             string generatedPassword;
             _generatedPasswords.TryGetValue( slot, out generatedPassword );

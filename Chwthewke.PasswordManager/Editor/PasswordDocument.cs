@@ -3,7 +3,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Editor
 {
-    public class PasswordDocument : IPasswordDocument
+    public class PasswordDocument   
     {
         public PasswordDocument( string generatedPassword )
         {

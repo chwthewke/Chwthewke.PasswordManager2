@@ -7,6 +7,7 @@ namespace Chwthewke.PasswordManager.Editor
     public interface IPasswordEditor
     {
         string Key { get; set; }
+        string Note { get; set; }
 
         void Reset( );
 
@@ -14,8 +15,8 @@ namespace Chwthewke.PasswordManager.Editor
 
         IEnumerable<IPasswordGenerator> PasswordSlots { get; }
 
-        IPasswordGenerator SavedSlot { get; }
-
         PasswordDocument GeneratedPassword( IPasswordGenerator slot );
+
+        IPasswordGenerator SavedSlot { get; }
     }
 }

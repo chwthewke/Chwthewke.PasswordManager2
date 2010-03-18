@@ -5,7 +5,7 @@ using Chwthewke.PasswordManager.Storage;
 using Moq;
 using NUnit.Framework;
 
-namespace Chwthewke.PasswordManager.Test.Engine
+namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
     public class PasswordDigesterTests
@@ -64,7 +64,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Assert.That( digest.Note, Is.EqualTo( note ) );
         }
 
-        private PasswordDigester _digester;
+        private IPasswordDigester _digester;
 
         private Mock<IHash> _hashMock;
         private Mock<ITimeProvider> _timeProviderMock;

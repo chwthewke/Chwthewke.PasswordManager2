@@ -15,7 +15,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         public DateTime CreationTime { get; private set; }
 
-        public string Note { get; private set; }
+        public string Note { get; set; }
 
         public PasswordDigest( string key,
                                byte[ ] hash,

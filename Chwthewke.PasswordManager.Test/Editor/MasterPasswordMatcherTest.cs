@@ -40,7 +40,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             SecureString masterPassword = SecureTest.Wrap( "mpmp" );
             string generatedPassword = PasswordGenerators.AlphaNumeric.MakePassword( "key1", masterPassword );
-            PasswordDigester digester = new PasswordDigester( new Sha512( ), new TimeProvider( ) );
+            IPasswordDigester digester = new PasswordDigester( new Sha512( ), new TimeProvider( ) );
             PasswordDigest digest = digester.Digest( "key1", generatedPassword, default( Guid ),
                                                      PasswordGenerators.AlphaNumeric.Id, string.Empty );
             // Exercise
@@ -56,7 +56,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             SecureString masterPassword = SecureTest.Wrap( "mpmp" );
             string generatedPassword = PasswordGenerators.AlphaNumeric.MakePassword( "key1", masterPassword );
-            PasswordDigester digester = new PasswordDigester( new Sha512( ), new TimeProvider( ) );
+            IPasswordDigester digester = new PasswordDigester( new Sha512( ), new TimeProvider( ) );
             PasswordDigest digest = digester.Digest( "key1", generatedPassword, default( Guid ),
                                                      PasswordGenerators.AlphaNumeric.Id, string.Empty );
             // Exercise

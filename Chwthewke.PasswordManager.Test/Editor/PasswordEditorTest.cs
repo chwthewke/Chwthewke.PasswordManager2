@@ -2,6 +2,7 @@ using System;
 using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
+using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using Moq;
 using NUnit.Framework;
@@ -18,7 +19,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _generator1Mock = new Mock<IPasswordGenerator>( );
             _generator2Mock = new Mock<IPasswordGenerator>( );
 
-            _editor = new PasswordEditor( new[ ] { _generator1Mock.Object, _generator2Mock.Object } );
+            _masterPasswordFinderMock = new Mock<IMasterPasswordFinder>( );
+            _passwordDigesterMock = new Mock<IPasswordDigester>( );
+
+            _editor = new PasswordEditor( new[ ] { _generator1Mock.Object, _generator2Mock.Object },
+                                          _masterPasswordFinderMock.Object, _passwordDigesterMock.Object );
         }
 
         [ Test ]
@@ -28,6 +33,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Exercise
             // Verify
             Assert.That( _editor.Key, Is.EqualTo( string.Empty ) );
+            Assert.That( _editor.Note, Is.EqualTo( string.Empty ) );
             Assert.That( _editor.SavedSlot, Is.Null );
             Assert.That( _editor.PasswordSlots.All( s => _editor.GeneratedPassword( s ) == null ) );
             Assert.That( _editor.PasswordSlots,
@@ -73,6 +79,20 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
         [ Test ]
+        public void ModifyKeyResetsGeneratedPasswords( )
+        {
+            // Setup
+            _editor.Key = "aKey";
+            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            _generator1Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword1" );
+            _editor.GeneratePasswords( masterPassword );
+            // Exercise
+            _editor.Key = "aNewKey";
+            // Verify
+            Assert.That( _editor.GeneratedPassword( _generator1Mock.Object ), Is.Null );
+        }
+
+        [ Test ]
         public void ResetReturnsToInitialState( )
         {
             // Setup
@@ -84,16 +104,44 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _editor.Reset( );
             // Verify
             Assert.That( _editor.Key, Is.EqualTo( string.Empty ) );
+            Assert.That( _editor.Note, Is.EqualTo( string.Empty ) );
             Assert.That( _editor.SavedSlot, Is.Null );
             Assert.That( _editor.PasswordSlots.All( s => _editor.GeneratedPassword( s ) == null ) );
             Assert.That( _editor.PasswordSlots,
                          Is.EquivalentTo( new[ ] { _generator1Mock.Object, _generator2Mock.Object } ) );
         }
 
+        [ Test ]
+        public void GeneratedPasswordDocumentsContainDigestsOfGeneratedPasswords( )
+        {
+            // Setup
+            string key = "aKey";
+            string generatedPassword = "generatedPassword1";
+            Guid generatorId = Guid.Parse( "DD6838A1-1091-447E-87DE-4022F9F9F246" );
+
+            _editor.Key = key;
+            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+
+            _generator1Mock.Setup( g => g.MakePassword( key, masterPassword ) ).Returns( generatedPassword );
+            _generator1Mock.Setup( g => g.Id ).Returns( generatorId );
+            // Exercise
+            _editor.GeneratePasswords( masterPassword );
+            // Verify
+            var passwordDocument = _editor.GeneratedPassword( _generator1Mock.Object );
+            _passwordDigesterMock.Verify( d => d.Digest( It.Is<string>( k => k == key ),
+                                                         It.Is<string>( p => p == generatedPassword ),
+                                                         It.IsAny<Guid>( ),
+                                                         It.Is<Guid>( g => g == generatorId ),
+                                                         It.Is<string>( s => s == string.Empty ) ) );
+            //_masterPasswordFinderMock.Verify( f => f.IdentifyMasterPassword( masterPassword ) );
+        }
+
         private IPasswordEditor _editor;
 
         private Mock<IPasswordGenerator> _generator1Mock;
         private Mock<IPasswordGenerator> _generator2Mock;
+        private Mock<IMasterPasswordFinder> _masterPasswordFinderMock;
+        private Mock<IPasswordDigester> _passwordDigesterMock;
 
         // Use cases, bitches !
         /*

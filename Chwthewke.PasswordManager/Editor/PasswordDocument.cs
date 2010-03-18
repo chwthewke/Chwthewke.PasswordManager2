@@ -5,9 +5,10 @@ namespace Chwthewke.PasswordManager.Editor
 {
     public class PasswordDocument   
     {
-        public PasswordDocument( string generatedPassword )
+        public PasswordDocument( string generatedPassword, PasswordDigest digest )
         {
             _generatedPassword = generatedPassword;
+            _digest = digest;
         }
 
         public string GeneratedPassword
@@ -17,9 +18,10 @@ namespace Chwthewke.PasswordManager.Editor
 
         public PasswordDigest SavablePasswordDigest
         {
-            get { throw new NotImplementedException( ); }
+            get { return _digest; }
         }
 
         private readonly string _generatedPassword;
+        private readonly PasswordDigest _digest;
     }
 }

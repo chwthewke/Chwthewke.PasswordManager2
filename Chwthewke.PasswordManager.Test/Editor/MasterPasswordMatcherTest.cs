@@ -4,6 +4,7 @@ using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
+using Chwthewke.PasswordManager.Test.Storage;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Editor
@@ -24,9 +25,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void CannotMatchMasterWhenMissingPasswordGenerator( )
         {
             // Setup
-            PasswordDigest digest = new PasswordDigest( "aKey", new byte[ ] { 0xda }, default( Guid ),
-                                                        Guid.Parse( "656A5218-892E-4666-A3A9-70766C089044" ),
-                                                        new DateTime( ), string.Empty );
+            PasswordDigest digest =
+                new PasswordDigestBuilder( )
+                    .WithMasterPasswordId( Guid.Parse( "656A5218-892E-4666-A3A9-70766C089044" ) );
+
+                
             // Exercise
             bool masterPasswordMatches = _matcher.MatchMasterPassword( SecureTest.Wrap( "masterPassword" ), digest );
             // Verify

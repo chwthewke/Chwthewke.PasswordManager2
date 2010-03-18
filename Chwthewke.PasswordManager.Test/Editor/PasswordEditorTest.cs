@@ -1,9 +1,11 @@
 using System;
+using System.Linq.Expressions;
 using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
+using Chwthewke.PasswordManager.Test.Storage;
 using Moq;
 using NUnit.Framework;
 using System.Linq;
@@ -119,6 +121,17 @@ namespace Chwthewke.PasswordManager.Test.Editor
             string generatedPassword = "generatedPassword1";
             Guid generatorId = Guid.Parse( "DD6838A1-1091-447E-87DE-4022F9F9F246" );
 
+            Expression<Func<IPasswordDigester, PasswordDigest>> digestPassword =
+                d => d.Digest( It.Is<string>( k => k == key ),
+                               It.Is<string>( p => p == generatedPassword ),
+                               It.IsAny<Guid>( ),
+                               It.Is<Guid>( g => g == generatorId ),
+                               It.Is<string>( s => s == string.Empty ) );
+
+            PasswordDigest passwordDigest = new PasswordDigestBuilder( );
+            _passwordDigesterMock.Setup( digestPassword ).Returns( passwordDigest );
+
+
             _editor.Key = key;
             SecureString masterPassword = SecureTest.Wrap( "mpmp" );
 
@@ -128,12 +141,55 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _editor.GeneratePasswords( masterPassword );
             // Verify
             var passwordDocument = _editor.GeneratedPassword( _generator1Mock.Object );
-            _passwordDigesterMock.Verify( d => d.Digest( It.Is<string>( k => k == key ),
-                                                         It.Is<string>( p => p == generatedPassword ),
-                                                         It.IsAny<Guid>( ),
-                                                         It.Is<Guid>( g => g == generatorId ),
-                                                         It.Is<string>( s => s == string.Empty ) ) );
+            _passwordDigesterMock.Verify( digestPassword );
+            Assert.That( passwordDocument.GeneratedPassword, Is.EqualTo( generatedPassword ) );
+            Assert.That( passwordDocument.SavablePasswordDigest, Is.SameAs( passwordDigest ) );
             //_masterPasswordFinderMock.Verify( f => f.IdentifyMasterPassword( masterPassword ) );
+        }
+
+        [ Test ]
+        public void GeneratedPasswordDocumentUsesMasterPasswordIdFromFinder( )
+        {
+            // Setup
+            string key = "aKey";
+            _editor.Key = key;
+            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+
+            Guid guid = Guid.Parse( "AC89E273-C063-4E2D-8A72-FE52B118A665" );
+            _masterPasswordFinderMock.Setup( f => f.IdentifyMasterPassword( masterPassword ) )
+                .Returns( guid );
+
+            // Exercise
+            _editor.GeneratePasswords( masterPassword );
+            // Verify
+            _masterPasswordFinderMock.Verify( f => f.IdentifyMasterPassword( masterPassword ) );
+            _passwordDigesterMock.Verify( d => d.Digest( It.Is<string>( k => k == key ),
+                                                         It.IsAny<string>( ),
+                                                         It.Is<Guid>( g => g == guid ),
+                                                         It.IsAny<Guid>( ),
+                                                         It.IsAny<string>( ) ) );
+        }
+
+        [ Test ]
+        public void GeneratedPasswordDocumentUsesNewNonZeroGuidIfFinderFails( )
+        {
+            // Setup
+            string key = "aKey";
+            _editor.Key = key;
+            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+
+            _masterPasswordFinderMock.Setup( f => f.IdentifyMasterPassword( masterPassword ) )
+                .Returns( ( Guid? ) null );
+
+            // Exercise
+            _editor.GeneratePasswords( masterPassword );
+            // Verify
+            _masterPasswordFinderMock.Verify( f => f.IdentifyMasterPassword( masterPassword ) );
+            _passwordDigesterMock.Verify( d => d.Digest( It.Is<string>( k => k == key ),
+                                                         It.IsAny<string>( ),
+                                                         It.Is<Guid>( g => g != default( Guid ) ),
+                                                         It.IsAny<Guid>( ),
+                                                         It.IsAny<string>( ) ) );
         }
 
         private IPasswordEditor _editor;

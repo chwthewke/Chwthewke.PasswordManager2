@@ -3,6 +3,7 @@ using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
+using Chwthewke.PasswordManager.Test.Storage;
 using Moq;
 using NUnit.Framework;
 
@@ -20,13 +21,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             _store = new PasswordStore( );
             _masterPasswordId = Guid.Parse( "DAAB4016-AF5C-4C79-900E-B01E8D771C12" );
-            _store.AddOrUpdate( new PasswordDigest( "key1", new byte[0], _masterPasswordId, default( Guid ),
-                                                    new DateTime( ),
-                                                    string.Empty ) );
-            _store.AddOrUpdate( new PasswordDigest( "key2", new byte[0],
-                                                    Guid.Parse( "88D42578-664E-43E0-986E-816E6BFC2562" ),
-                                                    default( Guid ), new DateTime( ),
-                                                    string.Empty ) );
+            _store.AddOrUpdate(
+                new PasswordDigestBuilder( ).WithKey( "key1" ).WithMasterPasswordId( _masterPasswordId ) );
+            _store.AddOrUpdate(
+                new PasswordDigestBuilder( ).WithKey( "key2" ).WithMasterPasswordId(
+                    Guid.Parse( "88D42578-664E-43E0-986E-816E6BFC2562" ) ) );
             _matcherMock = new Mock<IMasterPasswordMatcher>( );
         }
 
@@ -44,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( guid, Is.EqualTo( _masterPasswordId ) );
         }
 
-        [Test]
+        [ Test ]
         public void CannotFindMasterPasswordInStoreWhenNoDigestMatches( )
         {
             // Setup
@@ -56,7 +55,5 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
             Assert.That( guid.HasValue, Is.False );
         }
-
-
     }
 }

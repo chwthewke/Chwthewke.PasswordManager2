@@ -24,11 +24,12 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _masterPasswordFinderMock = new Mock<IMasterPasswordFinder>( );
 
             _passwordDigesterMock = new Mock<IPasswordDigester>( );
-            _passwordDigesterMock.Setup(
-                d =>
-                d.Digest( It.IsAny<string>( ), It.IsAny<string>( ), It.IsAny<Guid>( ), It.IsAny<Guid>( ),
-                          It.IsAny<string>( ) ) )
-                .Returns( new PasswordDigestBuilder( ) );
+            _digestAnything = d => d.Digest( It.IsAny<string>( ),
+                                             It.IsAny<string>( ),
+                                             It.IsAny<Guid>( ),
+                                             It.IsAny<Guid>( ),
+                                             It.IsAny<string>( ) );
+            _passwordDigesterMock.Setup( _digestAnything ).Returns( new PasswordDigestBuilder( ) );
 
             _storage = new PasswordStore( );
 
@@ -229,43 +230,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
                 Is.All.EqualTo( note ) );
         }
 
-        [ Test ]
-        public void SaveNoopsIfNoPasswordsAreGenerated( )
-        {
-            // Setup
-            _editor.Key = "aKey";
-            // Exercise
-            _editor.SavedSlot = _generator1Mock.Object;
-            // Verify
-            Assert.That( _storage.Passwords, Is.Empty );
-        }
-
-        [ Test ]
-        public void SaveAddsDigestToStore( )
-        {
-            // Setup
-
-            // Exercise
-            // Verify
-        }
-
-        [ Test ]
-        public void SaveOtherSlotRemovesPreviousDigestFromStore( )
-        {
-            // Setup
-
-            // Exercise
-            // Verify
-        }
-
-        [ Test ]
-        public void SetSavedSlotToNullRemovesDigestFromStore( )
-        {
-            // Setup
-
-            // Exercise
-            // Verify
-        }
 
         private IPasswordEditor _editor;
 
@@ -274,5 +238,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
         private Mock<IMasterPasswordFinder> _masterPasswordFinderMock;
         private Mock<IPasswordDigester> _passwordDigesterMock;
         private PasswordStore _storage;
+        private Expression<Func<IPasswordDigester, PasswordDigest>> _digestAnything;
     }
 }

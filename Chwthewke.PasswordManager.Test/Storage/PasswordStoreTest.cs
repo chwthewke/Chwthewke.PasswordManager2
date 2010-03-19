@@ -79,28 +79,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
             PasswordDigest stored = new PasswordDigestBuilder( ).WithKey( "aKey" );
             _passwordStorage.AddOrUpdate( stored );
             // Exercise
-            _passwordStorage.Remove( stored );
+            _passwordStorage.Remove( "aKey" );
             // Verify
             Assert.That( _passwordStorage.Passwords, Has.Count.EqualTo( 0 ) );
             Assert.That( _passwordStorage.FindPasswordInfo( "aKey" ), Is.Null );
         }
 
-        [ Test ]
-        public void RemovePasswordCopyMakesItUnavailable( )
-        {
-            // Setup
-            PasswordDigest stored =
-                new PasswordDigestBuilder( ).WithKey( "aKey" ).WithHash( new byte[ ] { 0x55, 0xad } ).WithNote( "a Note" );
-            PasswordDigest storedCopy =
-                new PasswordDigestBuilder( ).WithKey( "aKey" ).WithHash( new byte[ ] { 0x55, 0xad } ).WithNote( "a Note" );
-
-            _passwordStorage.AddOrUpdate( stored );
-            // Exercise
-            _passwordStorage.Remove( storedCopy );
-            // Verify
-            Assert.That( storedCopy == stored );
-            Assert.That( _passwordStorage.Passwords, Has.Count.EqualTo( 0 ) );
-            Assert.That( _passwordStorage.FindPasswordInfo( "aKey" ), Is.Null );
-        }
     }
 }

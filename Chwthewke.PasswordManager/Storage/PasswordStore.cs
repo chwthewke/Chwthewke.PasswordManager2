@@ -10,9 +10,9 @@ namespace Chwthewke.PasswordManager.Storage
             _passwords[ passwordDigest.Key ] = passwordDigest;
         }
 
-        public bool Remove( PasswordDigest passwordDigest )
+        public bool Remove( string key )
         {
-            return _passwords.Remove( new KeyValuePair<string, PasswordDigest>( passwordDigest.Key, passwordDigest ) );
+            return _passwords.Remove( key );
         }
 
         public IEnumerable<PasswordDigest> Passwords

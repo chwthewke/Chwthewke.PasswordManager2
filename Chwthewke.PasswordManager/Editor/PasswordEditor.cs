@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Editor
 {
@@ -77,8 +76,28 @@ namespace Chwthewke.PasswordManager.Editor
 
         public IPasswordGenerator SavedSlot
         {
-            get { return null; }
-            set { }
+            get { return _savedSlot; }
+            set
+            {
+                if ( _savedSlot == value )
+                    return;
+                _savedSlot = value;
+                UpdateSavedPassword( );
+            }
+        }
+
+        private void UpdateSavedPassword( )
+        {
+            if ( _savedSlot == null )
+            {
+                _passwordStore.Remove( Key );
+                return;
+            }
+
+            PasswordDocument document = GeneratedPassword( _savedSlot );
+            if ( document == null )
+                return;
+            _passwordStore.AddOrUpdate( document.SavablePasswordDigest );
         }
 
         public PasswordDocument GeneratedPassword( IPasswordGenerator slot )
@@ -91,6 +110,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         private string _key;
         private string _note;
+        private IPasswordGenerator _savedSlot;
 
         private readonly IDictionary<IPasswordGenerator, PasswordDocument> _passwordDocuments =
             new Dictionary<IPasswordGenerator, PasswordDocument>( );

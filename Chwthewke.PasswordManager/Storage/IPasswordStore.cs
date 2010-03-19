@@ -6,7 +6,7 @@ namespace Chwthewke.PasswordManager.Storage
     {
         void AddOrUpdate( PasswordDigest passwordDigest );
 
-        bool Remove( PasswordDigest passwordDigest );
+        bool Remove( string key );
 
         IEnumerable<PasswordDigest> Passwords { get; }
 

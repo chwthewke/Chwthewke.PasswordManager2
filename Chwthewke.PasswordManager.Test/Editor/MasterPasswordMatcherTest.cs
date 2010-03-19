@@ -29,7 +29,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
                 new PasswordDigestBuilder( )
                     .WithMasterPasswordId( Guid.Parse( "656A5218-892E-4666-A3A9-70766C089044" ) );
 
-                
+
             // Exercise
             bool masterPasswordMatches = _matcher.MatchMasterPassword( SecureTest.Wrap( "masterPassword" ), digest );
             // Verify

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Security;
 using System.Text;
@@ -11,6 +12,9 @@ namespace Chwthewke.PasswordManager.Editor
     {
         public MasterPasswordMatcher( IEnumerable<IPasswordGenerator> generators, IHash hash )
         {
+            if ( hash == null )
+                throw new ArgumentNullException( "hash" );
+
             _generators = new List<IPasswordGenerator>( generators );
             _hash = hash;
         }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Editor
 {
@@ -10,11 +11,13 @@ namespace Chwthewke.PasswordManager.Editor
     {
         public PasswordEditor( IEnumerable<IPasswordGenerator> generators,
                                IMasterPasswordFinder masterPasswordFinder,
-                               IPasswordDigester digester )
+                               IPasswordDigester digester,
+                               IPasswordStore passwordStore )
         {
             _passwordGenerators = new List<IPasswordGenerator>( generators );
             _masterPasswordFinder = masterPasswordFinder;
             _digester = digester;
+            _passwordStore = passwordStore;
             Reset( );
         }
 
@@ -26,7 +29,7 @@ namespace Chwthewke.PasswordManager.Editor
             {
                 if ( value == _key )
                     return;
-                _generatedPasswordDocuments.Clear( );
+                _passwordDocuments.Clear( );
                 _key = value;
             }
         }
@@ -39,8 +42,9 @@ namespace Chwthewke.PasswordManager.Editor
                 if ( _note == value )
                     return;
                 _note = value;
-                foreach ( var generatedPasswordDocument in _generatedPasswordDocuments.Values )
-                    generatedPasswordDocument.SavablePasswordDigest.Note = _note;
+                foreach ( var passwordDocument in _passwordDocuments.Values )
+                    if ( passwordDocument != null )
+                        passwordDocument.SavablePasswordDigest.Note = _note;
             }
         }
 
@@ -60,7 +64,7 @@ namespace Chwthewke.PasswordManager.Editor
             foreach ( IPasswordGenerator generator in PasswordSlots )
             {
                 string generatedPassword = generator.MakePassword( Key, masterPassword );
-                _generatedPasswordDocuments[ generator ] =
+                _passwordDocuments[ generator ] =
                     new PasswordDocument( generatedPassword,
                                           _digester.Digest( Key, generatedPassword, masterPasswordId, generator.Id, Note ) );
             }
@@ -74,12 +78,13 @@ namespace Chwthewke.PasswordManager.Editor
         public IPasswordGenerator SavedSlot
         {
             get { return null; }
+            set { }
         }
 
         public PasswordDocument GeneratedPassword( IPasswordGenerator slot )
         {
             PasswordDocument generatedPasswordDocument;
-            _generatedPasswordDocuments.TryGetValue( slot, out generatedPasswordDocument );
+            _passwordDocuments.TryGetValue( slot, out generatedPasswordDocument );
 
             return generatedPasswordDocument;
         }
@@ -87,11 +92,12 @@ namespace Chwthewke.PasswordManager.Editor
         private string _key;
         private string _note;
 
-        private readonly IDictionary<IPasswordGenerator, PasswordDocument> _generatedPasswordDocuments =
+        private readonly IDictionary<IPasswordGenerator, PasswordDocument> _passwordDocuments =
             new Dictionary<IPasswordGenerator, PasswordDocument>( );
 
         private readonly IList<IPasswordGenerator> _passwordGenerators;
         private readonly IMasterPasswordFinder _masterPasswordFinder;
         private readonly IPasswordDigester _digester;
+        private readonly IPasswordStore _passwordStore;
     }
 }

@@ -20,6 +20,9 @@ namespace Chwthewke.PasswordManager.Storage
 
         public PasswordStoreSerializer( Encoding encoding )
         {
+            if ( encoding == null )
+                throw new ArgumentNullException( "encoding" );
+
             _encoding = encoding;
         }
 

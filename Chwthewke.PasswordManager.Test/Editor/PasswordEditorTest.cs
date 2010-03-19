@@ -18,14 +18,32 @@ namespace Chwthewke.PasswordManager.Test.Editor
         [ SetUp ]
         public void SetUpEditor( )
         {
-            _generator1Mock = new Mock<IPasswordGenerator>( );
-            _generator2Mock = new Mock<IPasswordGenerator>( );
+            _generator1Mock = CreateMockGenerator( "defaultGeneratedPassword1" );
+            _generator2Mock = CreateMockGenerator( "defaultGeneratedPassword2" );
 
             _masterPasswordFinderMock = new Mock<IMasterPasswordFinder>( );
+
             _passwordDigesterMock = new Mock<IPasswordDigester>( );
+            _passwordDigesterMock.Setup(
+                d =>
+                d.Digest( It.IsAny<string>( ), It.IsAny<string>( ), It.IsAny<Guid>( ), It.IsAny<Guid>( ),
+                          It.IsAny<string>( ) ) )
+                .Returns( new PasswordDigestBuilder( ) );
+
+            _storage = new PasswordStore( );
 
             _editor = new PasswordEditor( new[ ] { _generator1Mock.Object, _generator2Mock.Object },
-                                          _masterPasswordFinderMock.Object, _passwordDigesterMock.Object );
+                                          _masterPasswordFinderMock.Object,
+                                          _passwordDigesterMock.Object,
+                                          _storage );
+        }
+
+        private Mock<IPasswordGenerator> CreateMockGenerator( string defaultPassword )
+        {
+            var generator1Mock = new Mock<IPasswordGenerator>( );
+            generator1Mock.Setup( g => g.MakePassword( It.IsAny<string>( ), It.IsAny<SecureString>( ) ) ).Returns(
+                defaultPassword );
+            return generator1Mock;
         }
 
         [ Test ]
@@ -119,6 +137,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             string key = "aKey";
             string generatedPassword = "generatedPassword1";
+            string note = "a Note.";
             Guid generatorId = Guid.Parse( "DD6838A1-1091-447E-87DE-4022F9F9F246" );
 
             Expression<Func<IPasswordDigester, PasswordDigest>> digestPassword =
@@ -126,13 +145,14 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                It.Is<string>( p => p == generatedPassword ),
                                It.IsAny<Guid>( ),
                                It.Is<Guid>( g => g == generatorId ),
-                               It.Is<string>( s => s == string.Empty ) );
+                               It.Is<string>( s => s == note ) );
 
             PasswordDigest passwordDigest = new PasswordDigestBuilder( );
             _passwordDigesterMock.Setup( digestPassword ).Returns( passwordDigest );
 
 
             _editor.Key = key;
+            _editor.Note = note;
             SecureString masterPassword = SecureTest.Wrap( "mpmp" );
 
             _generator1Mock.Setup( g => g.MakePassword( key, masterPassword ) ).Returns( generatedPassword );
@@ -144,7 +164,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _passwordDigesterMock.Verify( digestPassword );
             Assert.That( passwordDocument.GeneratedPassword, Is.EqualTo( generatedPassword ) );
             Assert.That( passwordDocument.SavablePasswordDigest, Is.SameAs( passwordDigest ) );
-            //_masterPasswordFinderMock.Verify( f => f.IdentifyMasterPassword( masterPassword ) );
         }
 
         [ Test ]
@@ -192,34 +211,68 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                                          It.IsAny<string>( ) ) );
         }
 
+        [ Test ]
+        public void NoteChangeMutatesGeneratedDocuments( )
+        {
+            // Setup
+            _editor.Key = "aKey";
+            _editor.Note = "a Ntoe.";
+            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+
+            _editor.GeneratePasswords( masterPassword );
+            string note = "a Note.";
+            // Exercise
+            _editor.Note = note;
+            // Verify
+            Assert.That(
+                _editor.PasswordSlots.Select( s => _editor.GeneratedPassword( s ).SavablePasswordDigest.Note ),
+                Is.All.EqualTo( note ) );
+        }
+
+        [ Test ]
+        public void SaveNoopsIfNoPasswordsAreGenerated( )
+        {
+            // Setup
+            _editor.Key = "aKey";
+            // Exercise
+            _editor.SavedSlot = _generator1Mock.Object;
+            // Verify
+            Assert.That( _storage.Passwords, Is.Empty );
+        }
+
+        [ Test ]
+        public void SaveAddsDigestToStore( )
+        {
+            // Setup
+
+            // Exercise
+            // Verify
+        }
+
+        [ Test ]
+        public void SaveOtherSlotRemovesPreviousDigestFromStore( )
+        {
+            // Setup
+
+            // Exercise
+            // Verify
+        }
+
+        [ Test ]
+        public void SetSavedSlotToNullRemovesDigestFromStore( )
+        {
+            // Setup
+
+            // Exercise
+            // Verify
+        }
+
         private IPasswordEditor _editor;
 
         private Mock<IPasswordGenerator> _generator1Mock;
         private Mock<IPasswordGenerator> _generator2Mock;
         private Mock<IMasterPasswordFinder> _masterPasswordFinderMock;
         private Mock<IPasswordDigester> _passwordDigesterMock;
-
-        // Use cases, bitches !
-        /*
-         * IPasswordEditor _editor;
-         * 
-         * 1) Create new password "form"
-         * 
-         * _editor.Reset( );
-         * Assert.That( _editor.Key == string.Empty );
-         * Assert.That( _editor.SavedSlot == null );
-         * Assert.That( _editor.GeneratedPassword( slot ) == null ); for any in PasswordSlots
-         * 
-         * 2) Saving a password
-         * (after 1 above)
-         * 
-         * document.Key = smth
-         * editor.GeneratePasswords( document, myMasterPassword )
-         * document.GeneratedPasswords : list of Pairs <string, passwordDigest> (password, savable info)
-         * 
-         * remark : password info points to password settings & master password by hteir respective guid
-         * 
-         * 
-         */
+        private PasswordStore _storage;
     }
 }

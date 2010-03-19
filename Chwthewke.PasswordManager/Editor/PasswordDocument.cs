@@ -3,10 +3,15 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Editor
 {
-    public class PasswordDocument   
+    public class PasswordDocument
     {
         public PasswordDocument( string generatedPassword, PasswordDigest digest )
         {
+            if ( generatedPassword == null )
+                throw new ArgumentNullException( "generatedPassword" );
+            if ( digest == null )
+                throw new ArgumentNullException( "digest" );
+
             _generatedPassword = generatedPassword;
             _digest = digest;
         }

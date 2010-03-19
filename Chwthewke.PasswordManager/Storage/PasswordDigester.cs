@@ -9,6 +9,11 @@ namespace Chwthewke.PasswordManager.Storage
     {
         public PasswordDigester( IHash hasher, ITimeProvider timeProvider )
         {
+            if ( hasher == null )
+                throw new ArgumentNullException( "hasher" );
+            if ( timeProvider == null )
+                throw new ArgumentNullException( "timeProvider" );
+
             _hasher = hasher;
             _timeProvider = timeProvider;
         }

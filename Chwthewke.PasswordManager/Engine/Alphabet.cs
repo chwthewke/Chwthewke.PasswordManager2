@@ -9,6 +9,8 @@ namespace Chwthewke.PasswordManager.Engine
 
         public Alphabet( string symbols )
         {
+            if ( symbols == null )
+                throw new ArgumentNullException( "symbols" );
             _symbols = symbols;
         }
 

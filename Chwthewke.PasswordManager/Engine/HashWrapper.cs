@@ -6,7 +6,7 @@ using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    public class HashWrapper : IHash2
+    public class HashWrapper : IHash
     {
         public HashWrapper( HashAlgorithm hashAlgorithm )
         {
@@ -15,20 +15,20 @@ namespace Chwthewke.PasswordManager.Engine
             _hashAlgorithm = hashAlgorithm;
         }
 
-        public IHash2 Append( byte[ ] bytes )
+        public IHash Append( byte[ ] bytes )
         {
             _hashAlgorithm.TransformBlock( bytes, 0, bytes.Length, null, 0 );
             return this;
         }
 
-        public IHash2 Append( string str, Encoding encoding )
+        public IHash Append( string str, Encoding encoding )
         {
             if ( encoding == null )
                 throw new ArgumentNullException( "encoding" );
             return Append( encoding.GetBytes( str ) );
         }
 
-        public IHash2 Append( SecureString secureString, Encoding encoding )
+        public IHash Append( SecureString secureString, Encoding encoding )
         {
             if ( secureString == null )
                 throw new ArgumentNullException( "secureString" );

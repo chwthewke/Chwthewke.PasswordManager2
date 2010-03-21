@@ -13,7 +13,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         [ SetUp ]
         public void SetUpPasswordDigester( )
         {
-            _hashMock = new Mock<IHash2>( );
+            _hashMock = new Mock<IHash>( );
             var hashFactoryMock = new Mock<IHashFactory>( );
             
             hashFactoryMock.Setup( f => f.GetHash(  ) ).Returns( _hashMock.Object );
@@ -71,7 +71,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         private IPasswordDigester _digester;
 
-        private Mock<IHash2> _hashMock;
+        private Mock<IHash> _hashMock;
         private Mock<ITimeProvider> _timeProviderMock;
     }
 }

@@ -8,7 +8,7 @@ namespace Chwthewke.PasswordManager.Engine
 {
     internal class Sha512Factory : IHashFactory
     {
-        public IHash2 GetHash( )
+        public IHash GetHash( )
         {
             return new HashWrapper( GetSha512HashAlgorithm( ) );
         }

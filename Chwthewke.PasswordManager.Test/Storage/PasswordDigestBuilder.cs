@@ -9,7 +9,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         private byte[ ] _hash = new byte[ ] { };
         private Guid _masterPasswordId = default( Guid );
         private Guid _passwordGeneratorId = default( Guid );
-        private DateTime _creationTime = new DateTime( );
+        private DateTime _creationTime;
         private string _note = string.Empty;
 
         public PasswordDigestBuilder WithKey( string key )

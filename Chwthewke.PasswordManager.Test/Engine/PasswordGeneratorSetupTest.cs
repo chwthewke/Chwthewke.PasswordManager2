@@ -55,7 +55,8 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Exercise
             Assert.That(
                 new TestDelegate(
-                    ( ) => new PasswordGenerator( default( Guid ), Hashes.Sha512Factory, _converterMock.Object, symbols16, 8 ) ),
+                    ( ) =>
+                    new PasswordGenerator( default( Guid ), Hashes.Sha512Factory, _converterMock.Object, symbols16, 8 ) ),
                 Throws.InstanceOf( typeof ( ArgumentException ) ) );
             // Verify
         }
@@ -75,7 +76,8 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             Alphabet alphabet = Alphabets.Symbols92;
 
-            IPasswordGenerator engine = new PasswordGenerator( default( Guid ), Hashes.Sha512Factory, _converterMock.Object,
+            IPasswordGenerator engine = new PasswordGenerator( default( Guid ), Hashes.Sha512Factory,
+                                                               _converterMock.Object,
                                                                alphabet, 12 );
 
             // Exercise
@@ -83,7 +85,8 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Verify
             byte[ ] hash =
-                Hashes.Sha512Factory.GetHash( ).Append( Encoding.UTF8.GetBytes( PasswordGenerator.Salt + masterPassword + domain ) )
+                Hashes.Sha512Factory.GetHash( ).Append(
+                    Encoding.UTF8.GetBytes( PasswordGenerator.Salt + masterPassword + domain ) )
                     .GetValue( );
             _converterMock.Verify( c => c.BytesNeeded( 12 ) );
             _converterMock.Verify( c => c.ConvertBytesToDigits( hash, 12 ) );

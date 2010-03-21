@@ -1,4 +1,3 @@
-using System;
 using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
 
@@ -84,6 +83,5 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( _passwordStorage.Passwords, Has.Count.EqualTo( 0 ) );
             Assert.That( _passwordStorage.FindPasswordInfo( "aKey" ), Is.Null );
         }
-
     }
 }

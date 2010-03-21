@@ -15,8 +15,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             _hashMock = new Mock<IHash>( );
             var hashFactoryMock = new Mock<IHashFactory>( );
-            
-            hashFactoryMock.Setup( f => f.GetHash(  ) ).Returns( _hashMock.Object );
+
+            hashFactoryMock.Setup( f => f.GetHash( ) ).Returns( _hashMock.Object );
             _hashMock.Setup( h => h.Append( It.IsAny<string>( ), It.IsAny<Encoding>( ) ) ).Returns( _hashMock.Object );
 
             _timeProviderMock = new Mock<ITimeProvider>( );
@@ -29,7 +29,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             const string generatedPassword = "aPassword";
             byte[ ] fakeHash = new byte[ ] { 0x50, 0x51, 0x52 };
-            _hashMock.Setup( h => h.GetValue(  ) ).Returns( fakeHash );
+            _hashMock.Setup( h => h.GetValue( ) ).Returns( fakeHash );
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", generatedPassword, default( Guid ), default( Guid ), "" );
             // Verify

@@ -16,7 +16,8 @@ namespace Chwthewke.PasswordManager.Engine
 
         private static PasswordGenerator Sha512Generator( Guid id, Alphabet alphabet, int passwordLength )
         {
-            return new PasswordGenerator( id, Hashes.Sha512Factory, new BigIntegerBaseConverter( alphabet.Length ), alphabet,
+            return new PasswordGenerator( id, Hashes.Sha512Factory, new BigIntegerBaseConverter( alphabet.Length ),
+                                          alphabet,
                                           passwordLength );
         }
 

@@ -67,8 +67,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
 
             // Exercise
-            Assert.That( new TestDelegate( ( ) => _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "mpmp" ) ) ),
-                         Throws.InstanceOf( typeof ( InvalidOperationException ) ) );
+            Assert.That(
+                new TestDelegate( ( ) => _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "mpmp" ) ) ),
+                Throws.InstanceOf( typeof ( InvalidOperationException ) ) );
             // Verify
         }
 
@@ -78,8 +79,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             _editor.Key = "\t    \t ";
             // Exercise
-            Assert.That( new TestDelegate( ( ) => _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "mpmp" ) ) ),
-                         Throws.InstanceOf( typeof ( InvalidOperationException ) ) );
+            Assert.That(
+                new TestDelegate( ( ) => _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "mpmp" ) ) ),
+                Throws.InstanceOf( typeof ( InvalidOperationException ) ) );
             // Verify
         }
 

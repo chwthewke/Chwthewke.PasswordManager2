@@ -31,7 +31,8 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
 
             // Exercise
-            bool masterPasswordMatches = _matcher.MatchMasterPassword( HashWrapperWithSha512Test.Wrap( "masterPassword" ), digest );
+            bool masterPasswordMatches =
+                _matcher.MatchMasterPassword( HashWrapperWithSha512Test.Wrap( "masterPassword" ), digest );
             // Verify
             Assert.That( masterPasswordMatches, Is.False );
         }

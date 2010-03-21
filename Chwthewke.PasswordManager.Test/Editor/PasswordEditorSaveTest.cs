@@ -1,4 +1,3 @@
-using System;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -14,8 +13,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void SetUpEditor( )
         {
             _storage = new PasswordStore( );
-
-            IHashFactory hash = Hashes.Sha512Factory;
 
             IPasswordGenerator[ ] passwordGenerators = new[ ]
                                                            { PasswordGenerators.AlphaNumeric, PasswordGenerators.Full };

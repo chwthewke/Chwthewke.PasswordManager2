@@ -1,6 +1,3 @@
-using System;
-using System.Security.Cryptography;
-
 namespace Chwthewke.PasswordManager.Engine
 {
     public static class Hashes

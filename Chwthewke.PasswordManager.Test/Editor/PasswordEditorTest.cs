@@ -67,7 +67,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
 
             // Exercise
-            Assert.That( new TestDelegate( ( ) => _editor.GeneratePasswords( SecureTest.Wrap( "mpmp" ) ) ),
+            Assert.That( new TestDelegate( ( ) => _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "mpmp" ) ) ),
                          Throws.InstanceOf( typeof ( InvalidOperationException ) ) );
             // Verify
         }
@@ -78,7 +78,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             _editor.Key = "\t    \t ";
             // Exercise
-            Assert.That( new TestDelegate( ( ) => _editor.GeneratePasswords( SecureTest.Wrap( "mpmp" ) ) ),
+            Assert.That( new TestDelegate( ( ) => _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "mpmp" ) ) ),
                          Throws.InstanceOf( typeof ( InvalidOperationException ) ) );
             // Verify
         }
@@ -88,7 +88,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
             _generator1Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword1" );
             // Exercise
             _editor.GeneratePasswords( masterPassword );
@@ -104,7 +104,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
             _generator1Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword1" );
             _editor.GeneratePasswords( masterPassword );
             // Exercise
@@ -118,7 +118,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
             _generator1Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword1" );
             _editor.GeneratePasswords( masterPassword );
             // Exercise
@@ -154,7 +154,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             _editor.Key = key;
             _editor.Note = note;
-            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
 
             _generator1Mock.Setup( g => g.MakePassword( key, masterPassword ) ).Returns( generatedPassword );
             _generator1Mock.Setup( g => g.Id ).Returns( generatorId );
@@ -173,7 +173,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             string key = "aKey";
             _editor.Key = key;
-            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
 
             Guid guid = Guid.Parse( "AC89E273-C063-4E2D-8A72-FE52B118A665" );
             _masterPasswordFinderMock.Setup( f => f.IdentifyMasterPassword( masterPassword ) )
@@ -196,7 +196,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             string key = "aKey";
             _editor.Key = key;
-            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
 
             _masterPasswordFinderMock.Setup( f => f.IdentifyMasterPassword( masterPassword ) )
                 .Returns( ( Guid? ) null );
@@ -218,7 +218,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             _editor.Key = "aKey";
             _editor.Note = "a Ntoe.";
-            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
 
             _editor.GeneratePasswords( masterPassword );
             string note = "a Note.";

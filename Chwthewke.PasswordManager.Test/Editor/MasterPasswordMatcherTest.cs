@@ -18,7 +18,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void SetUpMasterPasswordMatcher( )
         {
             _matcher = new MasterPasswordMatcher( new[ ] { PasswordGenerators.AlphaNumeric, PasswordGenerators.Full },
-                                                  new Sha512( ) );
+                                                  Hashes.Sha512Factory );
         }
 
         [ Test ]
@@ -31,7 +31,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
 
             // Exercise
-            bool masterPasswordMatches = _matcher.MatchMasterPassword( SecureTest.Wrap( "masterPassword" ), digest );
+            bool masterPasswordMatches = _matcher.MatchMasterPassword( HashWrapperWithSha512Test.Wrap( "masterPassword" ), digest );
             // Verify
             Assert.That( masterPasswordMatches, Is.False );
         }
@@ -41,13 +41,13 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void DoNotMatchMasterPasswordIfHashMismatch( )
         {
             // Setup
-            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
             string generatedPassword = PasswordGenerators.AlphaNumeric.MakePassword( "key1", masterPassword );
-            IPasswordDigester digester = new PasswordDigester( new Sha512( ), new TimeProvider( ) );
+            IPasswordDigester digester = new PasswordDigester( Hashes.Sha512Factory, new TimeProvider( ) );
             PasswordDigest digest = digester.Digest( "key1", generatedPassword, default( Guid ),
                                                      PasswordGenerators.AlphaNumeric.Id, string.Empty );
             // Exercise
-            bool match = _matcher.MatchMasterPassword( SecureTest.Wrap( "omnomnom" ), digest );
+            bool match = _matcher.MatchMasterPassword( HashWrapperWithSha512Test.Wrap( "omnomnom" ), digest );
             // Verify
             Assert.That( match, Is.False );
         }
@@ -57,9 +57,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void MatchMasterPassword( )
         {
             // Setup
-            SecureString masterPassword = SecureTest.Wrap( "mpmp" );
+            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
             string generatedPassword = PasswordGenerators.AlphaNumeric.MakePassword( "key1", masterPassword );
-            IPasswordDigester digester = new PasswordDigester( new Sha512( ), new TimeProvider( ) );
+            IPasswordDigester digester = new PasswordDigester( Hashes.Sha512Factory, new TimeProvider( ) );
             PasswordDigest digest = digester.Digest( "key1", generatedPassword, default( Guid ),
                                                      PasswordGenerators.AlphaNumeric.Id, string.Empty );
             // Exercise

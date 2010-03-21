@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Text;
 using Chwthewke.PasswordManager.Engine;
 
@@ -7,14 +6,14 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public class PasswordDigester : IPasswordDigester
     {
-        public PasswordDigester( IHash hasher, ITimeProvider timeProvider )
+        public PasswordDigester( IHashFactory hashFactory, ITimeProvider timeProvider )
         {
-            if ( hasher == null )
-                throw new ArgumentNullException( "hasher" );
+            if ( hashFactory == null )
+                throw new ArgumentNullException( "hashFactory" );
             if ( timeProvider == null )
                 throw new ArgumentNullException( "timeProvider" );
 
-            _hasher = hasher;
+            _hashFactory = hashFactory;
             _timeProvider = timeProvider;
         }
 
@@ -24,12 +23,15 @@ namespace Chwthewke.PasswordManager.Storage
                                       Guid passwordGeneratorId,
                                       string note )
         {
-            byte[ ] hash = _hasher.Hash( Encoding.UTF8.GetBytes( DigestSalt + generatedPassword ) );
+            byte[ ] hash = _hashFactory.GetHash( )
+                .Append( DigestSalt, Encoding.UTF8 )
+                .Append( generatedPassword, Encoding.UTF8 )
+                .GetValue( );
             return new PasswordDigest( key, hash, masterPasswordId, passwordGeneratorId, _timeProvider.Now, note );
         }
 
 
-        private readonly IHash _hasher;
+        private readonly IHashFactory _hashFactory;
         private readonly ITimeProvider _timeProvider;
 
         internal const string DigestSalt = @"$xZ[u(-Trf";

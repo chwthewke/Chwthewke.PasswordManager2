@@ -29,7 +29,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Verify
             Assert.That(
                 new TestDelegate(
-                    ( ) => new PasswordGenerator( default( Guid ), new Sha512( ), converter, symbols50, 8 ) ),
+                    ( ) => new PasswordGenerator( default( Guid ), Hashes.Sha512Factory, converter, symbols50, 8 ) ),
                 Throws.InstanceOf( typeof ( ArgumentException ) ) );
         }
 
@@ -41,7 +41,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             _converterMock.Setup( c => c.Base ).Returns( 16 );
             _converterMock.Setup( c => c.BytesNeeded( It.IsAny<int>( ) ) ).Returns( 64 );
             // Exercise
-            new PasswordGenerator( default( Guid ), new Sha512( ), _converterMock.Object, symbols16, 8 );
+            new PasswordGenerator( default( Guid ), Hashes.Sha512Factory, _converterMock.Object, symbols16, 8 );
             // Verify
         }
 
@@ -55,7 +55,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Exercise
             Assert.That(
                 new TestDelegate(
-                    ( ) => new PasswordGenerator( default( Guid ), new Sha512( ), _converterMock.Object, symbols16, 8 ) ),
+                    ( ) => new PasswordGenerator( default( Guid ), Hashes.Sha512Factory, _converterMock.Object, symbols16, 8 ) ),
                 Throws.InstanceOf( typeof ( ArgumentException ) ) );
             // Verify
         }
@@ -75,15 +75,16 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             Alphabet alphabet = Alphabets.Symbols92;
 
-            IPasswordGenerator engine = new PasswordGenerator( default( Guid ), new Sha512( ), _converterMock.Object,
+            IPasswordGenerator engine = new PasswordGenerator( default( Guid ), Hashes.Sha512Factory, _converterMock.Object,
                                                                alphabet, 12 );
 
             // Exercise
-            string password = engine.MakePassword( domain, SecureTest.Wrap( masterPassword ) );
+            string password = engine.MakePassword( domain, HashWrapperWithSha512Test.Wrap( masterPassword ) );
 
             // Verify
             byte[ ] hash =
-                new Sha512( ).Hash( Encoding.UTF8.GetBytes( PasswordGenerator.Salt + masterPassword + domain ) );
+                Hashes.Sha512Factory.GetHash( ).Append( Encoding.UTF8.GetBytes( PasswordGenerator.Salt + masterPassword + domain ) )
+                    .GetValue( );
             _converterMock.Verify( c => c.BytesNeeded( 12 ) );
             _converterMock.Verify( c => c.ConvertBytesToDigits( hash, 12 ) );
             Assert.That( password, Is.EquivalentTo( alphabet.ToString( bytes ) ) );

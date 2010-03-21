@@ -37,7 +37,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _matcherMock.Setup( m => m.MatchMasterPassword( It.IsAny<SecureString>( ), It.IsAny<PasswordDigest>( ) ) )
                 .Returns( ( SecureString s, PasswordDigest d ) => d.MasterPasswordId == _masterPasswordId );
             // Exercise
-            Guid? guid = finder.IdentifyMasterPassword( SecureTest.Wrap( "toto" ) );
+            Guid? guid = finder.IdentifyMasterPassword( HashWrapperWithSha512Test.Wrap( "toto" ) );
             // Verify
             Assert.That( guid.HasValue, Is.True );
             Assert.That( guid, Is.EqualTo( _masterPasswordId ) );
@@ -51,7 +51,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _matcherMock.Setup( m => m.MatchMasterPassword( It.IsAny<SecureString>( ), It.IsAny<PasswordDigest>( ) ) )
                 .Returns( false );
             // Exercise
-            Guid? guid = finder.IdentifyMasterPassword( SecureTest.Wrap( "toto" ) );
+            Guid? guid = finder.IdentifyMasterPassword( HashWrapperWithSha512Test.Wrap( "toto" ) );
             // Verify
             Assert.That( guid.HasValue, Is.False );
         }

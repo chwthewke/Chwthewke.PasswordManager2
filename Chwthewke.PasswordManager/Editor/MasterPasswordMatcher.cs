@@ -10,13 +10,13 @@ namespace Chwthewke.PasswordManager.Editor
 {
     public class MasterPasswordMatcher : IMasterPasswordMatcher
     {
-        public MasterPasswordMatcher( IEnumerable<IPasswordGenerator> generators, IHash hash )
+        public MasterPasswordMatcher( IEnumerable<IPasswordGenerator> generators, IHashFactory hashFactory )
         {
-            if ( hash == null )
-                throw new ArgumentNullException( "hash" );
+            if ( hashFactory == null )
+                throw new ArgumentNullException( "hashFactory" );
 
             _generators = new List<IPasswordGenerator>( generators );
-            _hash = hash;
+            _hashFactory = hashFactory;
         }
 
         public bool MatchMasterPassword( SecureString masterPassword, PasswordDigest passwordDigest )
@@ -25,12 +25,14 @@ namespace Chwthewke.PasswordManager.Editor
             if ( generator == null )
                 return false;
             string generatedPassword = generator.MakePassword( passwordDigest.Key, masterPassword );
-            return
-                _hash.Hash( Encoding.UTF8.GetBytes( PasswordDigester.DigestSalt + generatedPassword ) ).SequenceEqual(
-                    passwordDigest.Hash );
+            return _hashFactory.GetHash( )
+                .Append( PasswordDigester.DigestSalt, Encoding.UTF8 )
+                .Append( generatedPassword, Encoding.UTF8 )
+                .GetValue( )
+                .SequenceEqual( passwordDigest.Hash );
         }
 
-        private readonly IHash _hash;
+        private readonly IHashFactory _hashFactory;
         private readonly IEnumerable<IPasswordGenerator> _generators;
     }
 }

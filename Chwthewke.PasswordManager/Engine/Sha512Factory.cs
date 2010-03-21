@@ -1,25 +1,24 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Security.Cryptography;
+using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    public class Sha512 : IHash
+    internal class Sha512Factory : IHashFactory
     {
-        public int Size
+        public IHash2 GetHash( )
+        {
+            return new HashWrapper( GetSha512HashAlgorithm( ) );
+        }
+
+        public int HashSize
         {
             get { return 64; }
         }
 
-        public byte[ ] Hash( byte[ ] bytes )
-        {
-            if ( bytes == null )
-                throw new ArgumentNullException( "bytes", "Argument cannot be null." );
-
-            using ( SHA512 hash = GetHash( ) )
-                return hash.ComputeHash( bytes );
-        }
-
-        private static SHA512 GetHash( )
+        public static SHA512 GetSha512HashAlgorithm( )
         {
             SHA512 hash;
             try

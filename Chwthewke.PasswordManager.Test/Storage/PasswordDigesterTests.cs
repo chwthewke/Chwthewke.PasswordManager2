@@ -13,9 +13,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
         [ SetUp ]
         public void SetUpPasswordDigester( )
         {
-            _hashMock = new Mock<IHash>( );
+            _hashMock = new Mock<IHash2>( );
+            var hashFactoryMock = new Mock<IHashFactory>( );
+            
+            hashFactoryMock.Setup( f => f.GetHash(  ) ).Returns( _hashMock.Object );
+            _hashMock.Setup( h => h.Append( It.IsAny<string>( ), It.IsAny<Encoding>( ) ) ).Returns( _hashMock.Object );
+
             _timeProviderMock = new Mock<ITimeProvider>( );
-            _digester = new PasswordDigester( _hashMock.Object, _timeProviderMock.Object );
+            _digester = new PasswordDigester( hashFactoryMock.Object, _timeProviderMock.Object );
         }
 
         [ Test ]
@@ -23,13 +28,13 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             const string generatedPassword = "aPassword";
-            byte[ ] bytesToHash = Encoding.UTF8.GetBytes( PasswordDigester.DigestSalt + generatedPassword );
             byte[ ] fakeHash = new byte[ ] { 0x50, 0x51, 0x52 };
-            _hashMock.Setup( h => h.Hash( bytesToHash ) ).Returns( fakeHash );
+            _hashMock.Setup( h => h.GetValue(  ) ).Returns( fakeHash );
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", generatedPassword, default( Guid ), default( Guid ), "" );
             // Verify
-            _hashMock.Verify( h => h.Hash( bytesToHash ) );
+            _hashMock.Verify( h => h.Append( PasswordDigester.DigestSalt, Encoding.UTF8 ) );
+            _hashMock.Verify( h => h.Append( generatedPassword, Encoding.UTF8 ) );
             Assert.That( digest.Hash, Is.EqualTo( fakeHash ) );
         }
 
@@ -66,7 +71,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         private IPasswordDigester _digester;
 
-        private Mock<IHash> _hashMock;
+        private Mock<IHash2> _hashMock;
         private Mock<ITimeProvider> _timeProviderMock;
     }
 }

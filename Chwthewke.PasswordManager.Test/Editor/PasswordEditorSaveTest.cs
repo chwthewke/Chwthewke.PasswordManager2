@@ -1,3 +1,4 @@
+using System;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -14,14 +15,15 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             _storage = new PasswordStore( );
 
-            IHash hash = new Sha512( );
+            IHashFactory hash = Hashes.Sha512Factory;
 
             IPasswordGenerator[ ] passwordGenerators = new[ ]
                                                            { PasswordGenerators.AlphaNumeric, PasswordGenerators.Full };
             _editor = new PasswordEditor( passwordGenerators,
                                           new MasterPasswordFinder( _storage,
-                                                                    new MasterPasswordMatcher( passwordGenerators, hash ) ),
-                                          new PasswordDigester( hash, new TimeProvider( ) ),
+                                                                    new MasterPasswordMatcher( passwordGenerators,
+                                                                                               Hashes.Sha512Factory ) ),
+                                          new PasswordDigester( Hashes.Sha512Factory, new TimeProvider( ) ),
                                           _storage );
         }
 
@@ -41,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            _editor.GeneratePasswords( SecureTest.Wrap( "abc" ) );
+            _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "abc" ) );
             // Exercise
             _editor.SavedSlot = PasswordGenerators.AlphaNumeric;
             // Verify
@@ -58,7 +60,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            _editor.GeneratePasswords( SecureTest.Wrap( "abc" ) );
+            _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "abc" ) );
             _editor.SavedSlot = PasswordGenerators.AlphaNumeric;
             // Exercise
             _editor.SavedSlot = PasswordGenerators.Full;
@@ -76,7 +78,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            _editor.GeneratePasswords( SecureTest.Wrap( "abc" ) );
+            _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "abc" ) );
             _editor.SavedSlot = PasswordGenerators.AlphaNumeric;
             // Exercise
             _editor.SavedSlot = null;
@@ -89,7 +91,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            _editor.GeneratePasswords( SecureTest.Wrap( "abc" ) );
+            _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "abc" ) );
             _editor.SavedSlot = PasswordGenerators.AlphaNumeric;
             string note = "Hey I forgot a note.";
             // Exercise

@@ -7,11 +7,11 @@ using System.Windows;
 // General Information about an assembly is controlled through the following 
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
-[assembly: AssemblyTitle( "Chwthewke.PasswordManager.App" )]
+[assembly: AssemblyTitle( "Chwthewke.PasswordManager.Migration" )]
 [assembly: AssemblyDescription( "" )]
 [assembly: AssemblyConfiguration( "" )]
 [assembly: AssemblyCompany( "www.chwthewke.net" )]
-[assembly: AssemblyProduct( "Chwthewke.PasswordManager.App" )]
+[assembly: AssemblyProduct( "Chwthewke.PasswordManager.Migration" )]
 [assembly: AssemblyCopyright( "Copyright © www.chwthewke.net 2010" )]
 [assembly: AssemblyTrademark( "" )]
 [assembly: AssemblyCulture( "" )]

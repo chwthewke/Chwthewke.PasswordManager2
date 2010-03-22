@@ -1,9 +1,7 @@
-using System;
 using System.Collections.Generic;
 using System.IO;
 using Chwthewke.PasswordManager.Migration;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.Migration
 {
@@ -29,18 +27,13 @@ orange,0,PVOAs/nF37894oBc3gUgs3wQVmjxnd4YLp9hRAJ/AAKDqvUc/vtqaHfzVKCfQPDPqu1k624
             // Exercise
             IEnumerable<LegacyItem> items = loader.Load( reader );
             // Verify
-            LegacyItem[ ] itemsArray = items.ToArray( );
             LegacyItem[ ] expected = new[ ]
                                          {
                                              new LegacyItem( "twitter", false ),
                                              new LegacyItem( "orange", true )
                                          };
 
-            Console.WriteLine( itemsArray[ 0 ] );
-            Console.WriteLine( expected[ 0 ] );
-            Assert.That( itemsArray[ 0 ], Is.EqualTo( expected[ 0 ] ) );
-
-            Assert.That( itemsArray.SequenceEqual( expected ) );
+            Assert.That( items, Is.EquivalentTo( expected ) );
         }
     }
 }

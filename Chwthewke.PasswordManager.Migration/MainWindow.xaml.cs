@@ -5,15 +5,10 @@
     /// </summary>
     public partial class MainWindow
     {
-        public MainWindow( )
+        public MainWindow(  )
         {
             InitializeComponent( );
         }
 
-        public ImporterViewModel ViewModel
-        {
-            get { return DataContext as ImporterViewModel; }
-            set { DataContext = value; }
-        }
     }
 }

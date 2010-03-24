@@ -6,7 +6,7 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Migration
 {
-    public class LegacyItemLoader
+    public class LegacyItemLoader : ILegacyItemLoader
     {
         private const string SettingsFqn = "Chwthewke.PasswordManager.WpfGui.Properties.Settings";
         private const string SettingTag = "setting";

@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security;
+using System.Windows;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
 using Microsoft.Win32;
@@ -29,6 +30,7 @@ namespace Chwthewke.PasswordManager.Migration
                     return;
                 _sourceFile = value;
                 RaisePropertyChanged( ( ) => SourceFile );
+                CommandManager.InvalidateRequerySuggested( );
             }
         }
 
@@ -41,6 +43,21 @@ namespace Chwthewke.PasswordManager.Migration
                     return;
                 _numPasswords = value;
                 RaisePropertyChanged( ( ) => NumPasswords );
+                CommandManager.InvalidateRequerySuggested( );
+            }
+        }
+
+        private string _passwordsTooltip;
+
+        public string PasswordsTooltip
+        {
+            get { return _passwordsTooltip; }
+            set
+            {
+                if ( _passwordsTooltip == value )
+                    return;
+                _passwordsTooltip = value;
+                RaisePropertyChanged( ( ) => PasswordsTooltip );
             }
         }
 
@@ -66,7 +83,26 @@ namespace Chwthewke.PasswordManager.Migration
 
         private void Import( SecureString masterPassword )
         {
-            throw new NotImplementedException( );
+            if ( !CanImport( masterPassword ) )
+                return;
+
+            try
+            {
+                IEnumerable<LegacyItem> items = _loader.Load( File.OpenText( SourceFile ) );
+                _importer.Import( items, masterPassword );
+
+                NumPasswords = _importer.NumPasswords;
+                PasswordsTooltip = string.Join( ", ", _importer.PasswordKeys );
+            }
+            catch ( Exception e )
+            {
+                ShowException( e );
+            }
+        }
+
+        private void ShowException( Exception e )
+        {
+            MessageBox.Show( e.Message, "Error", MessageBoxButton.OK, MessageBoxImage.Error );
         }
 
         private bool CheckSourceFile( )
@@ -100,7 +136,25 @@ namespace Chwthewke.PasswordManager.Migration
 
         private void Save( )
         {
-            throw new NotImplementedException( );
+            SaveFileDialog dialog = new SaveFileDialog
+                                        {
+                                            CustomPlaces = _settingsCustomPlaces,
+                                            InitialDirectory = FileDialogCustomPlaces.Desktop.Path,
+                                            DefaultExt = ".pmd"
+                                        };
+
+            bool? result = dialog.ShowDialog( );
+            if ( !result.Value )
+                return;
+
+            try
+            {
+                _importer.Save( dialog.FileName );
+            }
+            catch ( Exception e )
+            {
+                ShowException( e );
+            }
         }
 
         private string _sourceFile;

@@ -5,10 +5,21 @@
     /// </summary>
     public partial class MainWindow
     {
-        public MainWindow(  )
+        public MainWindow( ) : this( null )
         {
+        }
+
+        public MainWindow( MainViewModel viewModel )
+        {
+            if ( viewModel != null )
+                ViewModel = viewModel;
             InitializeComponent( );
         }
 
+        public MainViewModel ViewModel
+        {
+            get { return DataContext as MainViewModel; }
+            set { DataContext = value; }
+        }
     }
 }

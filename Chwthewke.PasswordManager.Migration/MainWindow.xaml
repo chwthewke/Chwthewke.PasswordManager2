@@ -3,8 +3,15 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:Migration="clr-namespace:Chwthewke.PasswordManager.Migration"
         Title="MainWindow"
-        Height="350"
-        Width="525">
-    <Migration:ImporterPanel />
-
+        Height="300"
+        MinHeight="300"
+        Width="800"
+        MinWidth="600">
+    <Window.Resources>
+        <DataTemplate DataType="{x:Type Migration:ImporterViewModel}">
+            <Migration:ImporterPanel />
+        </DataTemplate>
+    </Window.Resources>
+    <ContentPresenter Margin="10" Content="{Binding Importer}" />
+    
 </Window>

@@ -174,5 +174,6 @@ namespace Chwthewke.PasswordManager.Migration
                     FileDialogCustomPlaces.Documents,
                     FileDialogCustomPlaces.LocalApplicationData,
                 };
+
     }
 }

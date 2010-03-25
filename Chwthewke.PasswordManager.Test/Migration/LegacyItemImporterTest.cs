@@ -10,7 +10,6 @@ namespace Chwthewke.PasswordManager.Test.Migration
     {
         private Mock<IPasswordStore> _passwordStoreMock;
         private Mock<IPasswordDigester> _passwordDigesterMock;
-        private Mock<IMasterPasswordFinder> _masterPasswordFinderMock;
         private Mock<IPasswordStoreSerializer> _serializerMock;
         private LegacyItemImporter _importer;
 
@@ -21,12 +20,9 @@ namespace Chwthewke.PasswordManager.Test.Migration
 
             _passwordDigesterMock = new Mock<IPasswordDigester>( );
 
-            _masterPasswordFinderMock = new Mock<IMasterPasswordFinder>( );
-
             _serializerMock = new Mock<IPasswordStoreSerializer>( );
 
-            _importer = new LegacyItemImporter( _passwordStoreMock.Object, _passwordDigesterMock.Object,
-                                                _masterPasswordFinderMock.Object, _serializerMock.Object );
+            _importer = new LegacyItemImporter( _passwordStoreMock.Object, _passwordDigesterMock.Object, _serializerMock.Object );
         }
     }
 }

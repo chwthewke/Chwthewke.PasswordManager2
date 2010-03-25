@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Security;
-using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using System.Linq;
@@ -13,12 +12,10 @@ namespace Chwthewke.PasswordManager.Migration
     {
         public LegacyItemImporter( IPasswordStore passwordStore,
                                    IPasswordDigester passwordDigester,
-                                   IMasterPasswordFinder masterPasswordFinder,
                                    IPasswordStoreSerializer serializer )
         {
             _passwordStore = passwordStore;
             _serializer = serializer;
-            _masterPasswordFinder = masterPasswordFinder;
             _passwordDigester = passwordDigester;
         }
 
@@ -45,14 +42,13 @@ namespace Chwthewke.PasswordManager.Migration
 
         public void Import( IEnumerable<LegacyItem> items, SecureString masterPassword )
         {
-            Guid masterPasswordId = _masterPasswordFinder.IdentifyMasterPassword( masterPassword ) ?? Guid.NewGuid( );
+            Guid masterPasswordId = _passwordStore.IdentifyMasterPassword( masterPassword ) ?? Guid.NewGuid( );
             foreach ( LegacyItem legacyItem in items )
                 Import( legacyItem, masterPassword, masterPasswordId );
         }
 
         private readonly IPasswordStore _passwordStore;
         private readonly IPasswordDigester _passwordDigester;
-        private readonly IMasterPasswordFinder _masterPasswordFinder;
         private readonly IPasswordStoreSerializer _serializer;
 
         public void Save( string fileName )

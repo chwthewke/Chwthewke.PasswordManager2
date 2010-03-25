@@ -81,7 +81,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
                                                                alphabet, 12 );
 
             // Exercise
-            string password = engine.MakePassword( domain, HashWrapperWithSha512Test.Wrap( masterPassword ) );
+            string password = engine.MakePassword( domain, Util.Secure( masterPassword ) );
 
             // Verify
             byte[ ] hash =

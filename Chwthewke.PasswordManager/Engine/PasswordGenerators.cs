@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Engine
 {
@@ -13,6 +15,12 @@ namespace Chwthewke.PasswordManager.Engine
         {
             get { return _full; }
         }
+
+        public static IEnumerable<IPasswordGenerator> All
+        {
+            get { return new[ ] { _alphaNumeric, _full }; }
+        }
+
 
         private static PasswordGenerator Sha512Generator( Guid id, Alphabet alphabet, int passwordLength )
         {

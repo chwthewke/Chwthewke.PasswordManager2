@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 using System.Xml.Linq;
+using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
 
@@ -17,7 +18,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             _serializer = new PasswordStoreSerializer( new UTF8Encoding( false ) );
             _outputStream = new MemoryStream( );
-            _passwordStore = new PasswordStore( );
+            _passwordStore = new PasswordStore( PasswordGenerators.All, new Sha512Factory( ) );
         }
 
         [ TearDown ]

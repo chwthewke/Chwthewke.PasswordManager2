@@ -21,8 +21,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _generator1Mock = CreateMockGenerator( "defaultGeneratedPassword1" );
             _generator2Mock = CreateMockGenerator( "defaultGeneratedPassword2" );
 
-            _masterPasswordFinderMock = new Mock<IMasterPasswordFinder>( );
-
             _passwordDigesterMock = new Mock<IPasswordDigester>( );
             _digestAnything = d => d.Digest( It.IsAny<string>( ),
                                              It.IsAny<string>( ),
@@ -31,10 +29,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                              It.IsAny<string>( ) );
             _passwordDigesterMock.Setup( _digestAnything ).Returns( new PasswordDigestBuilder( ) );
 
-            _storage = new PasswordStore( );
+            _storageMock = new Mock<IPasswordStore>( );
+            _storage = _storageMock.Object;
 
             _editor = new PasswordEditor( new[ ] { _generator1Mock.Object, _generator2Mock.Object },
-                                          _masterPasswordFinderMock.Object,
                                           _passwordDigesterMock.Object,
                                           _storage );
         }
@@ -68,7 +66,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             // Exercise
             Assert.That(
-                new TestDelegate( ( ) => _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "mpmp" ) ) ),
+                new TestDelegate( ( ) => _editor.GeneratePasswords( Util.Secure( "mpmp" ) ) ),
                 Throws.InstanceOf( typeof ( InvalidOperationException ) ) );
             // Verify
         }
@@ -80,7 +78,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _editor.Key = "\t    \t ";
             // Exercise
             Assert.That(
-                new TestDelegate( ( ) => _editor.GeneratePasswords( HashWrapperWithSha512Test.Wrap( "mpmp" ) ) ),
+                new TestDelegate( ( ) => _editor.GeneratePasswords( Util.Secure( "mpmp" ) ) ),
                 Throws.InstanceOf( typeof ( InvalidOperationException ) ) );
             // Verify
         }
@@ -90,7 +88,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
+            SecureString masterPassword = Util.Secure( "mpmp" );
             _generator1Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword1" );
             // Exercise
             _editor.GeneratePasswords( masterPassword );
@@ -106,7 +104,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
+            SecureString masterPassword = Util.Secure( "mpmp" );
             _generator1Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword1" );
             _editor.GeneratePasswords( masterPassword );
             // Exercise
@@ -120,7 +118,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _editor.Key = "aKey";
-            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
+            SecureString masterPassword = Util.Secure( "mpmp" );
             _generator1Mock.Setup( pg => pg.MakePassword( "aKey", masterPassword ) ).Returns( "generatedPassword1" );
             _editor.GeneratePasswords( masterPassword );
             // Exercise
@@ -156,7 +154,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             _editor.Key = key;
             _editor.Note = note;
-            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
+            SecureString masterPassword = Util.Secure( "mpmp" );
 
             _generator1Mock.Setup( g => g.MakePassword( key, masterPassword ) ).Returns( generatedPassword );
             _generator1Mock.Setup( g => g.Id ).Returns( generatorId );
@@ -175,16 +173,16 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             string key = "aKey";
             _editor.Key = key;
-            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
+            SecureString masterPassword = Util.Secure( "mpmp" );
 
             Guid guid = Guid.Parse( "AC89E273-C063-4E2D-8A72-FE52B118A665" );
-            _masterPasswordFinderMock.Setup( f => f.IdentifyMasterPassword( masterPassword ) )
+            _storageMock.Setup( f => f.IdentifyMasterPassword( masterPassword ) )
                 .Returns( guid );
 
             // Exercise
             _editor.GeneratePasswords( masterPassword );
             // Verify
-            _masterPasswordFinderMock.Verify( f => f.IdentifyMasterPassword( masterPassword ) );
+            _storageMock.Verify( f => f.IdentifyMasterPassword( masterPassword ) );
             _passwordDigesterMock.Verify( d => d.Digest( It.Is<string>( k => k == key ),
                                                          It.IsAny<string>( ),
                                                          It.Is<Guid>( g => g == guid ),
@@ -198,15 +196,15 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             string key = "aKey";
             _editor.Key = key;
-            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
+            SecureString masterPassword = Util.Secure( "mpmp" );
 
-            _masterPasswordFinderMock.Setup( f => f.IdentifyMasterPassword( masterPassword ) )
+            _storageMock.Setup( f => f.IdentifyMasterPassword( masterPassword ) )
                 .Returns( ( Guid? ) null );
 
             // Exercise
             _editor.GeneratePasswords( masterPassword );
             // Verify
-            _masterPasswordFinderMock.Verify( f => f.IdentifyMasterPassword( masterPassword ) );
+            _storageMock.Verify( f => f.IdentifyMasterPassword( masterPassword ) );
             _passwordDigesterMock.Verify( d => d.Digest( It.Is<string>( k => k == key ),
                                                          It.IsAny<string>( ),
                                                          It.Is<Guid>( g => g != default( Guid ) ),
@@ -220,7 +218,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             _editor.Key = "aKey";
             _editor.Note = "a Ntoe.";
-            SecureString masterPassword = HashWrapperWithSha512Test.Wrap( "mpmp" );
+            SecureString masterPassword = Util.Secure( "mpmp" );
 
             _editor.GeneratePasswords( masterPassword );
             string note = "a Note.";
@@ -237,9 +235,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
         private Mock<IPasswordGenerator> _generator1Mock;
         private Mock<IPasswordGenerator> _generator2Mock;
-        private Mock<IMasterPasswordFinder> _masterPasswordFinderMock;
         private Mock<IPasswordDigester> _passwordDigesterMock;
-        private PasswordStore _storage;
+        private IPasswordStore _storage;
         private Expression<Func<IPasswordDigester, PasswordDigest>> _digestAnything;
+        private Mock<IPasswordStore> _storageMock;
     }
 }

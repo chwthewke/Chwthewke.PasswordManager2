@@ -66,19 +66,11 @@ namespace Chwthewke.PasswordManager.Test.Engine
         {
             // Setup
             // Exercise
-            _hashWrapper.Append( Wrap( Input ), Encoding.UTF8 );
+            _hashWrapper.Append( Util.Secure( Input ), Encoding.UTF8 );
             // Verify
             Assert.That( _hashWrapper.GetValue( ), Is.EquivalentTo( _output ) );
         }
 
-
-        internal static SecureString Wrap( IEnumerable<char> s )
-        {
-            SecureString result = new SecureString( );
-            foreach ( char c in s )
-                result.AppendChar( c );
-            return result;
-        }
 
         private HashWrapper _hashWrapper;
 

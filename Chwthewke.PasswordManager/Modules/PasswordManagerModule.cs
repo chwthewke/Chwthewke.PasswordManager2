@@ -1,6 +1,5 @@
 using System.Text;
 using Autofac;
-using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 
@@ -10,16 +9,18 @@ namespace Chwthewke.PasswordManager.Modules
     {
         protected override void Load( ContainerBuilder builder )
         {
-            builder.RegisterType<PasswordStore>( ).As<IPasswordStore>( ).SingleInstance( );
-
-            builder.RegisterType<MasterPasswordFinder>( ).As<IMasterPasswordFinder>( );
-            builder.RegisterType<MasterPasswordMatcher>( ).As<IMasterPasswordMatcher>( );
-            
+            // Engine
             builder.RegisterType<PasswordDigester>( ).As<IPasswordDigester>( );
 
             builder.RegisterType<Sha512Factory>( ).As<IHashFactory>( );
+            
             builder.RegisterType<TimeProvider>( ).As<ITimeProvider>( );
 
+            builder.RegisterInstance( PasswordGenerators.AlphaNumeric ).As<IPasswordGenerator>( );
+            builder.RegisterInstance( PasswordGenerators.Full ).As<IPasswordGenerator>( );
+
+            // Storage
+            builder.RegisterType<PasswordStore>( ).As<IPasswordStore>( ).SingleInstance( );
 
             builder.RegisterInstance( new UTF8Encoding( false ) ).As<Encoding>( );
 

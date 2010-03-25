@@ -9,12 +9,10 @@ namespace Chwthewke.PasswordManager.Editor
     public class PasswordEditor : IPasswordEditor
     {
         public PasswordEditor( IEnumerable<IPasswordGenerator> generators,
-                               IMasterPasswordFinder masterPasswordFinder,
                                IPasswordDigester digester,
                                IPasswordStore passwordStore )
         {
             _passwordGenerators = new List<IPasswordGenerator>( generators );
-            _masterPasswordFinder = masterPasswordFinder;
             _digester = digester;
             _passwordStore = passwordStore;
             Reset( );
@@ -58,7 +56,7 @@ namespace Chwthewke.PasswordManager.Editor
             if ( string.IsNullOrWhiteSpace( Key ) )
                 throw new InvalidOperationException( "Cannot generate passwords with an empty key." );
 
-            Guid masterPasswordId = _masterPasswordFinder.IdentifyMasterPassword( masterPassword ) ?? Guid.NewGuid( );
+            Guid masterPasswordId = _passwordStore.IdentifyMasterPassword( masterPassword ) ?? Guid.NewGuid( );
 
             foreach ( IPasswordGenerator generator in PasswordSlots )
             {
@@ -116,7 +114,6 @@ namespace Chwthewke.PasswordManager.Editor
             new Dictionary<IPasswordGenerator, PasswordDocument>( );
 
         private readonly IList<IPasswordGenerator> _passwordGenerators;
-        private readonly IMasterPasswordFinder _masterPasswordFinder;
         private readonly IPasswordDigester _digester;
         private readonly IPasswordStore _passwordStore;
     }

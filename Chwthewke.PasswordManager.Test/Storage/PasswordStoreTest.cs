@@ -1,3 +1,4 @@
+using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
 
@@ -11,7 +12,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         [ SetUp ]
         public void SetUpPasswordStore( )
         {
-            _passwordStorage = new PasswordStore( );
+            _passwordStorage = new PasswordStore( PasswordGenerators.All, new Sha512Factory(  ) );
         }
 
         [ Test ]

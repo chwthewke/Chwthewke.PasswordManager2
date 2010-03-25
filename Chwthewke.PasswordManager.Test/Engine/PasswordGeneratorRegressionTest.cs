@@ -16,7 +16,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                PasswordGenerators.AlphaNumeric.MakePassword( Key, HashWrapperWithSha512Test.Wrap( Password ) );
+                PasswordGenerators.AlphaNumeric.MakePassword( Key, Util.Secure( Password ) );
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( "deDYrBiXvMHN" ) );
         }
@@ -28,7 +28,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                PasswordGenerators.Full.MakePassword( Key, HashWrapperWithSha512Test.Wrap( Password ) );
+                PasswordGenerators.Full.MakePassword( Key, Util.Secure( Password ) );
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( "(Z'?6G3(w(" ) );
         }

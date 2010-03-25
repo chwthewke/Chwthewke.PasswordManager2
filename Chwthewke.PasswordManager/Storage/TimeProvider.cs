@@ -6,7 +6,7 @@ namespace Chwthewke.PasswordManager.Storage
     {
         public DateTime Now
         {
-            get { return new DateTime( ); }
+            get { return DateTime.Now; }
         }
     }
 }

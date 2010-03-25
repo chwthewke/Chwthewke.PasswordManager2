@@ -30,7 +30,14 @@ namespace Chwthewke.PasswordManager.Storage
         {
             XElement root = ToXml( passwordStore );
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
-                                                      { OmitXmlDeclaration = true, Encoding = _encoding };
+                                                      {
+                                                          OmitXmlDeclaration = true,
+                                                          Encoding = _encoding,
+                                                          ConformanceLevel = ConformanceLevel.Document,
+                                                          Indent = true,
+                                                          IndentChars = "  ",
+                                                          
+                                                      };
             using ( XmlWriter xw = XmlWriter.Create( outputStream, xmlWriterSettings ) )
                 root.Save( xw );
         }

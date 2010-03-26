@@ -1,5 +1,6 @@
 using System.Text;
 using Autofac;
+using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 
@@ -9,6 +10,10 @@ namespace Chwthewke.PasswordManager.Modules
     {
         protected override void Load( ContainerBuilder builder )
         {
+            // Editor
+
+            builder.RegisterType<PasswordEditor>( ).As<IPasswordEditor>( );
+            
             // Engine
             builder.RegisterType<PasswordDigester>( ).As<IPasswordDigester>( );
 

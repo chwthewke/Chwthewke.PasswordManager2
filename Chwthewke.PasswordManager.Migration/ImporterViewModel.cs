@@ -6,6 +6,7 @@ using System.Windows;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
 using Microsoft.Win32;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Migration
 {
@@ -19,6 +20,8 @@ namespace Chwthewke.PasswordManager.Migration
 
             _loader = loader;
             _importer = importer;
+
+            PasswordsTooltip = MakePasswordsTooltip( );
         }
 
         public string SourceFile
@@ -92,12 +95,26 @@ namespace Chwthewke.PasswordManager.Migration
                 _importer.Import( items, masterPassword );
 
                 NumPasswords = _importer.NumPasswords;
-                PasswordsTooltip = string.Join( ", ", _importer.PasswordKeys );
+                PasswordsTooltip = MakePasswordsTooltip( );
             }
             catch ( Exception e )
             {
                 ShowException( e );
             }
+        }
+
+        private string MakePasswordsTooltip( )
+        {
+            if ( _importer.NumPasswords == 0 )
+                return "Nothing imported yet.";
+
+            return _importer.PasswordKeys.Aggregate( ( p, k ) =>
+                                                         {
+                                                             int lineLength = p.Length - p.LastIndexOf( '\n' );
+                                                             string pad = lineLength > 120 ? ",\n" : ", ";
+                                                             return p + pad + k;
+                                                         } );
+
         }
 
         private void ShowException( Exception e )
@@ -174,6 +191,5 @@ namespace Chwthewke.PasswordManager.Migration
                     FileDialogCustomPlaces.Documents,
                     FileDialogCustomPlaces.LocalApplicationData,
                 };
-
     }
 }

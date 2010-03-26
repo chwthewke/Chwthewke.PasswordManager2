@@ -60,6 +60,11 @@
                     Margin="5 0" VerticalAlignment="Center">
             <TextBlock>Passwords imported:</TextBlock>
             <TextBlock Text="{Binding NumPasswords}" />
+            <StackPanel.ToolTip>
+                <ToolTip Background="LemonChiffon">
+                    <TextBlock Text="{Binding PasswordsTooltip}" />
+                </ToolTip>
+            </StackPanel.ToolTip>
         </StackPanel>
 
         <Button Grid.Row="2"

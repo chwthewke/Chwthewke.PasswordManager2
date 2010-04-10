@@ -1,10 +1,22 @@
 using System;
+using System.Collections.ObjectModel;
+using System.Security;
+using System.Windows.Input;
 using Chwthewke.MvvmUtils;
+using Chwthewke.PasswordManager.Editor;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
+        public PasswordEditorViewModel( IPasswordEditor editor )
+        {
+            _editor = editor;
+            _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
+            _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
+            _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
+        }
+
         public string Key
         {
             get { return _key; }
@@ -30,10 +42,74 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
+        public string Note
+        {
+            get { return _note; }
+            set
+            {
+                if ( _note == value )
+                    return;
+                _note = value;
+                RaisePropertyChanged( ( ) => Note );
+            }
+        }
+
+        public ObservableCollection<PasswordSlotViewModel> Slots
+        {
+            get { return _slots; }
+        }
 
 
-        private string _key;
-        private string _title;
+        public ICommand SaveCommand
+        {
+            get { return _saveCommand; }
+        }
 
+        public ICommand DeleteCommand
+        {
+            get { return _deleteCommand; }
+        }
+
+        public ICommand CopyCommand
+        {
+            get { return _copyCommand; }
+        }
+
+        private bool CanExecuteSave( )
+        {
+            return false;
+        }
+
+        private void ExecuteSave( ) {}
+
+        private bool CanExecuteDelete( )
+        {
+            return false;
+        }
+
+        private void ExecuteDelete( ) {}
+
+        private bool CanExecuteCopy( )
+        {
+            return false;
+        }
+
+        private void ExecuteCopy( ) {}
+
+        private readonly IPasswordEditor _editor;
+
+        private string _key = string.Empty;
+        private string _title = NewTitle;
+        private string _note = string.Empty;
+
+        private readonly ObservableCollection<PasswordSlotViewModel> _slots =
+            new ObservableCollection<PasswordSlotViewModel>( );
+
+
+        private readonly ICommand _saveCommand;
+        private readonly ICommand _deleteCommand;
+        private readonly ICommand _copyCommand;
+
+        public static string NewTitle = "(new)";
     }
 }

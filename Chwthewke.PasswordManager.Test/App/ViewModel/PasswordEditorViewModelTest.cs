@@ -53,14 +53,40 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         }
 
         [ Test ]
-        public void GeneratedPasswordsSlotsInitiallyPresent( )
+        public void GeneratedPasswordsSlotsInitiallyPresentWithoutContent( )
         {
             // Setup
-            
+
             // Exercise
             // Verify
             Assert.That( _viewModel.Slots, Is.Not.Empty );
             Assert.That( _viewModel.Slots.Select( s => s.Generator ), Is.EquivalentTo( _editor.PasswordSlots ) );
+            Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+        }
+
+        [ Test ]
+        public void PasswordsAreNotGeneratedWithoutAKey( )
+        {
+            // Setup
+
+            // Exercise
+            _viewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            // Verify
+            Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+        }
+
+        [ Test ]
+        public void PasswordsAreGeneratedWithKeyAndMasterPassword( )
+        {
+            // Setup
+            _viewModel.Key = "abc";
+            SecureString masterPassword = Util.Secure( "12345" );
+            // Exercise
+            _viewModel.UpdateMasterPassword( masterPassword );
+            // Verify
+            Assert.That(
+                _viewModel.Slots.Select( s => s.Content == s.Generator.MakePassword( "abc", masterPassword ) ),
+                Has.All.True );
         }
     }
 }

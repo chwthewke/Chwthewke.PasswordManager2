@@ -4,6 +4,7 @@ using System.Security;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.Editor;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -12,6 +13,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public PasswordEditorViewModel( IPasswordEditor editor )
         {
             _editor = editor;
+            _slots = new ObservableCollection<PasswordSlotViewModel>(
+                _editor.PasswordSlots.Select( g => new PasswordSlotViewModel( g ) ) );
+
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
@@ -59,7 +63,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _slots; }
         }
 
-
         public ICommand SaveCommand
         {
             get { return _saveCommand; }
@@ -73,6 +76,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public ICommand CopyCommand
         {
             get { return _copyCommand; }
+        }
+
+        public void UpdateMasterPassword( SecureString masterPassword )
+        {
+            if ( string.IsNullOrWhiteSpace( Key ) )
+                return;
+            foreach ( PasswordSlotViewModel slot in _slots )
+                slot.Content = slot.Generator.MakePassword( Key, masterPassword );
         }
 
         private bool CanExecuteSave( )
@@ -102,8 +113,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private string _title = NewTitle;
         private string _note = string.Empty;
 
-        private readonly ObservableCollection<PasswordSlotViewModel> _slots =
-            new ObservableCollection<PasswordSlotViewModel>( );
+        private readonly ObservableCollection<PasswordSlotViewModel> _slots;
 
 
         private readonly ICommand _saveCommand;

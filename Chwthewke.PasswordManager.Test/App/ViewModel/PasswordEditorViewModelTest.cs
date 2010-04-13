@@ -35,14 +35,24 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Exercise
             // Verify
             Assert.That( _viewModel.Key, Is.EqualTo( string.Empty ) );
-            Assert.That( _viewModel.Title, Is.EqualTo( "(new)" ) );
+            Assert.That( _viewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle ) );
             Assert.That( _viewModel.Note, Is.EqualTo( string.Empty ) );
             Assert.That( _viewModel.SaveCommand.CanExecute( new SecureString( ) ), Is.False );
             Assert.That( _viewModel.DeleteCommand.CanExecute( new SecureString( ) ), Is.False );
             Assert.That( _viewModel.CopyCommand.CanExecute( new SecureString( ) ), Is.False );
         }
 
-        [ Test ]
+        [Test]
+        public void TitleNotUpdatedByKeyInWhitespace( )
+        {
+            // Setup
+            // Exercise
+            _viewModel.Key = "  \t";
+            // Verify
+            Assert.That( _viewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle ) );
+        }
+
+        [Test]
         public void TitleUpdatedByKeyUpdates( )
         {
             // Setup
@@ -64,7 +74,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 
-        [ Test ]
+        [Test]
         public void PasswordsAreNotGeneratedWithoutAKey( )
         {
             // Setup
@@ -75,7 +85,18 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 
-        [ Test ]
+        [Test]
+        public void PasswordsAreNotGeneratedWithWhitespaceOnlyKey( )
+        {
+            // Setup
+            _viewModel.Key = "  \t";
+            // Exercise
+            _viewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            // Verify
+            Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+        }
+
+        [Test]
         public void PasswordsAreGeneratedWithKeyAndMasterPassword( )
         {
             // Setup

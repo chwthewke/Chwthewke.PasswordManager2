@@ -30,7 +30,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                     return;
                 _key = value;
                 RaisePropertyChanged( ( ) => Key );
-                Title = Key + "*";
+                Title = IsKeyValid ? Key + "*" : NewTitle;
             }
         }
 
@@ -80,10 +80,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void UpdateMasterPassword( SecureString masterPassword )
         {
-            if ( string.IsNullOrWhiteSpace( Key ) )
+            if ( !IsKeyValid )
                 return;
             foreach ( PasswordSlotViewModel slot in _slots )
                 slot.Content = slot.Generator.MakePassword( Key, masterPassword );
+        }
+
+        private bool IsKeyValid
+        {
+            get { return !string.IsNullOrWhiteSpace( Key ); }
         }
 
         private bool CanExecuteSave( )
@@ -120,6 +125,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _deleteCommand;
         private readonly ICommand _copyCommand;
 
-        public static string NewTitle = "(new)";
+        public const string NewTitle = "(new)";
     }
 }

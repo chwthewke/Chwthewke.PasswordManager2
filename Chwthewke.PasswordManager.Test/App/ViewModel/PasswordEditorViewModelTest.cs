@@ -2,7 +2,6 @@ using System.Security;
 using Autofac;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Editor;
-using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Modules;
 using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
@@ -42,7 +41,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.CopyCommand.CanExecute( new SecureString( ) ), Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void TitleNotUpdatedByKeyInWhitespace( )
         {
             // Setup
@@ -52,7 +51,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle ) );
         }
 
-        [Test]
+        [ Test ]
         public void TitleUpdatedByKeyUpdates( )
         {
             // Setup
@@ -74,7 +73,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordsAreNotGeneratedWithoutAKey( )
         {
             // Setup
@@ -85,7 +84,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordsAreNotGeneratedWithWhitespaceOnlyKey( )
         {
             // Setup
@@ -96,7 +95,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordsAreGeneratedWithKeyAndMasterPassword( )
         {
             // Setup
@@ -108,6 +107,47 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That(
                 _viewModel.Slots.Select( s => s.Content == s.Generator.MakePassword( "abc", masterPassword ) ),
                 Has.All.True );
+        }
+
+        [ Test ]
+        [ Ignore ]
+        public void GeneratedPasswordsAreUpdatedOnKeyUpdate( )
+        {
+            // Setup
+            _viewModel.Key = "abc";
+            _viewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            // Exercise
+            _viewModel.Key = "abcd";
+            // Verify
+            Assert.That(
+                _viewModel.Slots.Select( s => s.Content == s.Generator.MakePassword( "abcd", Util.Secure( "12345" ) ) ),
+                Has.All.True );
+        }
+
+        [ Test ]
+        [ Ignore ]
+        public void GeneratedPasswordsAreClearedOnKeyClear( )
+        {
+            // Setup
+            _viewModel.Key = "abc";
+            _viewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            // Exercise
+            _viewModel.Key = string.Empty;
+            // Verify
+            Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+        }
+
+        [ Test ]
+        [ Ignore ]
+        public void GeneratedPasswordsAreClearedOnMasterPasswordClear( )
+        {
+            // Setup
+            _viewModel.Key = "abc";
+            _viewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            // Exercise
+            _viewModel.UpdateMasterPassword( Util.Secure( string.Empty ) );
+            // Verify
+            Assert.That( _viewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
     }
 }

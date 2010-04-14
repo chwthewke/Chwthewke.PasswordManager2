@@ -3,3 +3,4 @@ glob:*.user
 glob:_ReSharper.*
 glob:*/bin
 glob:*/obj
+glob:doc/~$*

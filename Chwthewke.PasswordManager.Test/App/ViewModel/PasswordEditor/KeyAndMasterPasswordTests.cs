@@ -47,7 +47,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
             // Verify
-            Assert.That( ViewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
         }
 
         [ Test ]
@@ -60,12 +60,11 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.UpdateMasterPassword( masterPassword );
             // Verify
             Assert.That(
-                ViewModel.Slots.Select( s => s.Content == s.Generator.MakePassword( "abc", masterPassword ) ),
+                ViewModel.Slots.Select( s => s.Content == s.Generator.MakePassword( "abc", masterPassword ) ).ToList( ),
                 Has.All.True );
         }
 
         [ Test ]
-        [ Ignore ]
         public void GeneratedPasswordsAreUpdatedOnKeyUpdate( )
         {
             // Setup
@@ -75,12 +74,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.Key = "abcd";
             // Verify
             Assert.That(
-                ViewModel.Slots.Select( s => s.Content == s.Generator.MakePassword( "abcd", Util.Secure( "12345" ) ) ),
+                ViewModel.Slots
+                    .Select( s => s.Content == s.Generator.MakePassword( "abcd", Util.Secure( "12345" ) ) )
+                    .ToList( ),
                 Has.All.True );
         }
 
         [ Test ]
-        [ Ignore ]
         public void GeneratedPasswordsAreClearedOnKeyClear( )
         {
             // Setup
@@ -89,11 +89,10 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Key = string.Empty;
             // Verify
-            Assert.That( ViewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
         }
 
         [ Test ]
-        [ Ignore ]
         public void GeneratedPasswordsAreClearedOnMasterPasswordClear( )
         {
             // Setup
@@ -102,7 +101,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.UpdateMasterPassword( Util.Secure( string.Empty ) );
             // Verify
-            Assert.That( ViewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
         }
     }
 }

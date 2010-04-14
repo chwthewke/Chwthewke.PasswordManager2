@@ -107,8 +107,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                    ( XElement )
                                    new SerializedPassword( "aKey" ) { PasswordSettingsId = guid } ) );
             // Exercise
-            Console.WriteLine( new UTF8Encoding( false ).GetString( _inputStream.ToArray( ) ) );
-
             _serializer.Load( _passwordStore, _inputStream );
             // Verify
             PasswordDigest passwordDigest = _passwordStore.FindPasswordInfo( "aKey" );

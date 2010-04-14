@@ -30,7 +30,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                     return;
                 _key = value;
                 RaisePropertyChanged( ( ) => Key );
-                Title = IsKeyValid ? Key + "*" : NewTitle;
+                OnKeyChanged( );
             }
         }
 
@@ -80,15 +80,39 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void UpdateMasterPassword( SecureString masterPassword )
         {
-            if ( !IsKeyValid )
-                return;
+            _masterPassword = masterPassword;
+            UpdateGeneratedPasswords( );
+        }
+
+        private void OnKeyChanged( )
+        {
+            Title = IsKeyValid ? Key + "*" : NewTitle;
+            UpdateGeneratedPasswords( );
+        }
+
+        private void UpdateGeneratedPasswords( )
+        {
+            if ( ShouldGeneratePasswords )
+                UpdateSlots( slot => slot.Generator.MakePassword( Key, _masterPassword ) );
+            else
+                UpdateSlots( slot => string.Empty );
+        }
+
+
+        private void UpdateSlots( Func<PasswordSlotViewModel, string> slotContent )
+        {
             foreach ( PasswordSlotViewModel slot in _slots )
-                slot.Content = slot.Generator.MakePassword( Key, masterPassword );
+                slot.Content = slotContent( slot );
         }
 
         private bool IsKeyValid
         {
             get { return !string.IsNullOrWhiteSpace( Key ); }
+        }
+
+        private bool ShouldGeneratePasswords
+        {
+            get { return IsKeyValid && _masterPassword != null && _masterPassword.Length > 0; }
         }
 
         private bool CanExecuteSave( )
@@ -117,6 +141,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private string _key = string.Empty;
         private string _title = NewTitle;
         private string _note = string.Empty;
+        private SecureString _masterPassword = null;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
 

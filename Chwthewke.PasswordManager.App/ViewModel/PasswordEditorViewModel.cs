@@ -1,5 +1,6 @@
 using System;
 using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Security;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
@@ -15,6 +16,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _editor = editor;
             _slots = new ObservableCollection<PasswordSlotViewModel>(
                 _editor.PasswordSlots.Select( g => new PasswordSlotViewModel( g ) ) );
+            foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
+                passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;
 
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
@@ -58,6 +61,19 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
+        public bool CanSelectPasswordSlot
+        {
+            get { return _canSelectPasswordSlot; }
+            set
+            {
+                if ( _canSelectPasswordSlot == value )
+                    return;
+                _canSelectPasswordSlot = value;
+                RaisePropertyChanged( ( ) => CanSelectPasswordSlot );
+            }
+        }
+
+
         public ObservableCollection<PasswordSlotViewModel> Slots
         {
             get { return _slots; }
@@ -92,7 +108,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void UpdateGeneratedPasswords( )
         {
-            if ( ShouldGeneratePasswords )
+            CanSelectPasswordSlot = IsKeyValid && _masterPassword != null && _masterPassword.Length > 0;
+
+            if ( CanSelectPasswordSlot )
                 UpdateSlots( slot => slot.Generator.MakePassword( Key, _masterPassword ) );
             else
                 UpdateSlots( slot => string.Empty );
@@ -110,9 +128,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return !string.IsNullOrWhiteSpace( Key ); }
         }
 
-        private bool ShouldGeneratePasswords
+        private void OnSlotPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
-            get { return IsKeyValid && _masterPassword != null && _masterPassword.Length > 0; }
+            //throw new NotImplementedException( );
         }
 
         private bool CanExecuteSave( )
@@ -142,9 +160,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private string _title = NewTitle;
         private string _note = string.Empty;
         private SecureString _masterPassword = null;
+        private bool _canSelectPasswordSlot;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
-
 
         private readonly ICommand _saveCommand;
         private readonly ICommand _deleteCommand;

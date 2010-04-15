@@ -4,15 +4,30 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
-    public class PasswordSlotViewModel: ObservableObject {
+    public class PasswordSlotViewModel : ObservableObject
+    {
         public PasswordSlotViewModel( IPasswordGenerator generator )
         {
+            if ( generator == null )
+                throw new ArgumentNullException( "generator" );
             _generator = generator;
         }
 
         public IPasswordGenerator Generator
         {
             get { return _generator; }
+        }
+
+        public bool IsSelected
+        {
+            get { return _isSelected; }
+            set
+            {
+                if ( _isSelected == value )
+                    return;
+                _isSelected = value;
+                RaisePropertyChanged( ( ) => IsSelected );
+            }
         }
 
         public string Content
@@ -28,6 +43,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         }
 
         private string _content = string.Empty;
+        private bool _isSelected;
+
         private readonly IPasswordGenerator _generator;
     }
 }

@@ -64,15 +64,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public bool CanSelectPasswordSlot
         {
             get { return _canSelectPasswordSlot; }
-            set
+            private set
             {
                 if ( _canSelectPasswordSlot == value )
                     return;
                 _canSelectPasswordSlot = value;
                 RaisePropertyChanged( ( ) => CanSelectPasswordSlot );
+                foreach ( PasswordSlotViewModel slot in Slots )
+                    slot.IsSelected &= _canSelectPasswordSlot;
             }
         }
-
 
         public ObservableCollection<PasswordSlotViewModel> Slots
         {
@@ -130,12 +131,18 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void OnSlotPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
-            //throw new NotImplementedException( );
+            if ( e.PropertyName == "IsSelected" )
+                CommandManager.InvalidateRequerySuggested( );
+        }
+
+        private bool HasPassword( )
+        {
+            return Slots.Any( s => s.IsSelected );
         }
 
         private bool CanExecuteSave( )
         {
-            return false;
+            return HasPassword( );
         }
 
         private void ExecuteSave( ) {}
@@ -149,7 +156,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private bool CanExecuteCopy( )
         {
-            return false;
+            return HasPassword(  );
         }
 
         private void ExecuteCopy( ) {}
@@ -159,7 +166,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private string _key = string.Empty;
         private string _title = NewTitle;
         private string _note = string.Empty;
-        private SecureString _masterPassword = null;
+        private SecureString _masterPassword;
         private bool _canSelectPasswordSlot;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;

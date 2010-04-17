@@ -33,7 +33,7 @@ namespace Chwthewke.PasswordManager.Migration
                     return;
                 _sourceFile = value;
                 RaisePropertyChanged( ( ) => SourceFile );
-                CommandManager.InvalidateRequerySuggested( );
+                _importCommand.RaiseCanExecuteChanged( );
             }
         }
 
@@ -46,7 +46,7 @@ namespace Chwthewke.PasswordManager.Migration
                     return;
                 _numPasswords = value;
                 RaisePropertyChanged( ( ) => NumPasswords );
-                CommandManager.InvalidateRequerySuggested( );
+                _saveCommand.RaiseCanExecuteChanged( );
             }
         }
 
@@ -114,7 +114,6 @@ namespace Chwthewke.PasswordManager.Migration
                                                              string pad = lineLength > 120 ? ",\n" : ", ";
                                                              return p + pad + k;
                                                          } );
-
         }
 
         private void ShowException( Exception e )
@@ -177,9 +176,9 @@ namespace Chwthewke.PasswordManager.Migration
         private string _sourceFile;
         private int _numPasswords;
 
-        private readonly ICommand _importCommand;
-        private readonly ICommand _browseSettingsCommand;
-        private readonly ICommand _saveCommand;
+        private readonly IUpdatableCommand _importCommand;
+        private readonly IUpdatableCommand _browseSettingsCommand;
+        private readonly IUpdatableCommand _saveCommand;
 
         private readonly LegacyItemLoader _loader;
         private readonly LegacyItemImporter _importer;

@@ -1,4 +1,3 @@
-using System.Windows.Input;
 using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
 
@@ -13,14 +12,18 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
             ViewModel.Key = "abcd";
             ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
-            bool requeryWasSuggested = false;
-            CommandManager.RequerySuggested += ( s, e ) => { requeryWasSuggested = true; };
+            
+            bool copyCommandCanExecuteChanged = false;
+            ViewModel.CopyCommand.CanExecuteChanged += ( s, e ) => { copyCommandCanExecuteChanged = true; };
+            bool saveCommandCanExecuteChanged = false;
+            ViewModel.SaveCommand.CanExecuteChanged += ( s, e ) => { saveCommandCanExecuteChanged = true; };
             // Exercise
             ViewModel.Slots[ 0 ].IsSelected = true;
             // Verify
             Assert.That( ViewModel.CopyCommand.CanExecute( null ), Is.True );
             Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.True );
-            //Assert.That( requeryWasSuggested );
+            Assert.That( copyCommandCanExecuteChanged, Is.True );
+            Assert.That( saveCommandCanExecuteChanged, Is.True );
         }
 
         [ Test ]
@@ -30,15 +33,19 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.Key = "abcd";
             ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
             ViewModel.Slots[ 0 ].IsSelected = true;
-            bool requeryWasSuggested = false;
-            CommandManager.RequerySuggested += ( s, e ) => { requeryWasSuggested = true; };
+
+            bool copyCommandCanExecuteChanged = false;
+            ViewModel.CopyCommand.CanExecuteChanged += ( s, e ) => { copyCommandCanExecuteChanged = true; };
+            bool saveCommandCanExecuteChanged = false;
+            ViewModel.SaveCommand.CanExecuteChanged += ( s, e ) => { saveCommandCanExecuteChanged = true; };
             // Exercise
             ViewModel.Key = string.Empty;
             // Verify
             Assert.That( ViewModel.Slots[ 0 ].IsSelected, Is.False );
             Assert.That( ViewModel.CopyCommand.CanExecute( null ), Is.False );
             Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.False );
-            //Assert.That( requeryWasSuggested );
+            Assert.That( copyCommandCanExecuteChanged, Is.True );
+            Assert.That( saveCommandCanExecuteChanged, Is.True );
         }
     }
 }

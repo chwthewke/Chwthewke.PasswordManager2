@@ -132,7 +132,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void OnSlotPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
             if ( e.PropertyName == "IsSelected" )
-                CommandManager.InvalidateRequerySuggested( );
+            {
+                _saveCommand.RaiseCanExecuteChanged( );
+                _copyCommand.RaiseCanExecuteChanged( );
+            }
         }
 
         private bool HasPassword( )
@@ -171,9 +174,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
 
-        private readonly ICommand _saveCommand;
-        private readonly ICommand _deleteCommand;
-        private readonly ICommand _copyCommand;
+        private readonly IUpdatableCommand _saveCommand;
+        private readonly IUpdatableCommand _deleteCommand;
+        private readonly IUpdatableCommand _copyCommand;
 
         public const string NewTitle = "(new)";
     }

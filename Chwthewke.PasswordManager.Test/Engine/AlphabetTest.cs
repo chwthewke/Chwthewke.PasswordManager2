@@ -29,5 +29,16 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Verify
             Assert.That( symbols, Is.EqualTo( "1809785" ) );
         }
+
+        [ Test ]
+        public void AlphabetLengthIsSymbolsLength( )
+        {
+            // Setup
+            const string symbols10 = "0123456789";
+            // Exercise
+            Alphabet alphabet = new Alphabet( symbols10 );
+            // Verify
+            Assert.That( alphabet.Length, Is.EqualTo( symbols10.Length ) );
+        }
     }
 }

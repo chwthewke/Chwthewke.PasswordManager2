@@ -1,6 +1,8 @@
 using Autofac;
+using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Modules;
+using Moq;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
@@ -9,6 +11,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
     {
         protected PasswordManager.App.ViewModel.PasswordEditorViewModel ViewModel;
         protected IPasswordEditor Editor;
+        protected Mock<IClipboardService> ClipboardServiceMock;
 
         [ SetUp ]
         public void SetUpPasswordEditorViewModel( )
@@ -19,7 +22,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 
             Editor = container.Resolve<IPasswordEditor>( );
 
-            ViewModel = new PasswordManager.App.ViewModel.PasswordEditorViewModel( Editor );
+            ClipboardServiceMock = new Mock<IClipboardService>( );
+
+            ViewModel = new PasswordManager.App.ViewModel.PasswordEditorViewModel( Editor, ClipboardServiceMock.Object );
         }
     }
 }

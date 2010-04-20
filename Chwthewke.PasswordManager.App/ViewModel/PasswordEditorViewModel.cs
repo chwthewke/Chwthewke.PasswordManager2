@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Security;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
+using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 using System.Linq;
 
@@ -11,9 +12,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
-        public PasswordEditorViewModel( IPasswordEditor editor )
+        public PasswordEditorViewModel( IPasswordEditor editor, IClipboardService clipboardService )
         {
             _editor = editor;
+            _clipboardService = clipboardService;
             _slots = new ObservableCollection<PasswordSlotViewModel>(
                 _editor.PasswordSlots.Select( g => new PasswordSlotViewModel( g ) ) );
             foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
@@ -138,14 +140,22 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
-        private bool HasPassword( )
+        private bool HasPassword
         {
-            return Slots.Any( s => s.IsSelected );
+            get { return Slots.Any( s => s.IsSelected ); }
+        }
+
+        private PasswordSlotViewModel SelectedSlot
+        {
+            get
+            {
+                return Slots.First( s => s.IsSelected );
+            }
         }
 
         private bool CanExecuteSave( )
         {
-            return HasPassword( );
+            return HasPassword;
         }
 
         private void ExecuteSave( ) {}
@@ -159,12 +169,18 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private bool CanExecuteCopy( )
         {
-            return HasPassword(  );
+            return HasPassword;
         }
 
-        private void ExecuteCopy( ) {}
+        private void ExecuteCopy( )
+        {
+            if ( !CanExecuteCopy( ) )
+                return;
+            _clipboardService.CopyToClipboard( SelectedSlot.Content );
+        }
 
         private readonly IPasswordEditor _editor;
+        private readonly IClipboardService _clipboardService;
 
         private string _key = string.Empty;
         private string _title = NewTitle;

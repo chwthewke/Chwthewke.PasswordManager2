@@ -12,7 +12,7 @@ namespace Chwthewke.PasswordManager.Migration
 {
     public class ImporterViewModel : ObservableObject
     {
-        public ImporterViewModel( LegacyItemLoader loader, LegacyItemImporter importer )
+        public ImporterViewModel( ILegacyItemLoader loader, ILegacyItemImporter importer )
         {
             _importCommand = new RelayCommand<SecureString>( Import, CanImport );
             _browseSettingsCommand = new RelayCommand( BrowseSourceFile );
@@ -180,8 +180,8 @@ namespace Chwthewke.PasswordManager.Migration
         private readonly IUpdatableCommand _browseSettingsCommand;
         private readonly IUpdatableCommand _saveCommand;
 
-        private readonly LegacyItemLoader _loader;
-        private readonly LegacyItemImporter _importer;
+        private readonly ILegacyItemLoader _loader;
+        private readonly ILegacyItemImporter _importer;
 
         private static readonly IList<FileDialogCustomPlace> _settingsCustomPlaces =
             new List<FileDialogCustomPlace>

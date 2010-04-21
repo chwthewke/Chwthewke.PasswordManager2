@@ -122,6 +122,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public event EventHandler LoadRequested;
 
+        public void LoadPasswordDigest( PasswordDigest digest )
+        {
+            Key = digest.Key;
+            Note = digest.Note;
+            PasswordSlotViewModel slot = Slots.FirstOrDefault( s => s.Generator.Id == digest.PasswordGeneratorId );
+            if ( slot != null )
+                slot.IsSelected = true;
+        }
+
         public void UpdateMasterPassword( SecureString masterPassword )
         {
             _masterPassword = masterPassword;
@@ -131,7 +140,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void OnKeyChanged( )
         {
             Title = IsKeyValid ? Key + "*" : NewTitle;
-            _loadEnabled = _passwordStore.Passwords.Any( d => d.Key == _key );
+            LoadEnabled = _passwordStore.Passwords.Any( d => d.Key == _key );
             UpdateGeneratedPasswords( );
         }
 

@@ -36,11 +36,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _key; }
             set
             {
-                if ( _key == value )
+                if ( _key == value || IsKeyReadOnly )
                     return;
                 _key = value;
-                RaisePropertyChanged( ( ) => Key );
-                OnKeyChanged( );
+                OnKeyChanged( false );
             }
         }
 
@@ -85,12 +84,24 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public bool LoadEnabled
         {
             get { return _loadEnabled; }
-            set
+            private set
             {
                 if ( _loadEnabled == value )
                     return;
                 _loadEnabled = value;
                 RaisePropertyChanged( ( ) => LoadEnabled );
+            }
+        }
+
+        public bool IsKeyReadOnly
+        {
+            get { return _isKeyReadOnly; }
+            set
+            {
+                if ( _isKeyReadOnly == value )
+                    return;
+                _isKeyReadOnly = value;
+                RaisePropertyChanged( ( ) => IsKeyReadOnly );
             }
         }
 
@@ -124,7 +135,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void LoadPasswordDigest( PasswordDigest digest )
         {
-            Key = digest.Key;
+            //
+            // THIS BLOCK : not exactly pristine.
+            // IDEA : Add a nullable "backing document/digest" to this class, use it to determine key writability
+            _key = digest.Key;
+            OnKeyChanged( true );
+            //
             Note = digest.Note;
             PasswordSlotViewModel slot = Slots.FirstOrDefault( s => s.Generator.Id == digest.PasswordGeneratorId );
             if ( slot != null )
@@ -137,10 +153,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             UpdateGeneratedPasswords( );
         }
 
-        private void OnKeyChanged( )
+        private void OnKeyChanged( bool makeReadonly )
         {
-            Title = IsKeyValid ? Key + "*" : NewTitle;
-            LoadEnabled = _passwordStore.Passwords.Any( d => d.Key == _key );
+            RaisePropertyChanged( ( ) => Key );
+            IsKeyReadOnly = makeReadonly;
+            string titleSuffix = IsKeyReadOnly ? "" : "*";
+            Title = IsKeyValid ? Key + titleSuffix : NewTitle;
+            LoadEnabled = !IsKeyReadOnly && _passwordStore.Passwords.Any( d => d.Key == _key );
             UpdateGeneratedPasswords( );
         }
 
@@ -238,6 +257,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private SecureString _masterPassword;
         private bool _canSelectPasswordSlot;
         private bool _loadEnabled;
+        private bool _isKeyReadOnly;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
 

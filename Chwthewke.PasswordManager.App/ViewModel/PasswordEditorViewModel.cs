@@ -7,14 +7,18 @@ using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 using System.Linq;
+using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
-        public PasswordEditorViewModel( IPasswordEditor editor, IClipboardService clipboardService )
+        public PasswordEditorViewModel( IPasswordEditor editor,
+                                        IPasswordStore passwordStore,
+                                        IClipboardService clipboardService )
         {
             _editor = editor;
+            _passwordStore = passwordStore;
             _clipboardService = clipboardService;
             _slots = new ObservableCollection<PasswordSlotViewModel>(
                 _editor.PasswordSlots.Select( g => new PasswordSlotViewModel( g ) ) );
@@ -24,6 +28,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
+            _loadCommand = new RelayCommand( ExecuteLoad );
         }
 
         public string Key
@@ -42,7 +47,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public string Title
         {
             get { return _title; }
-            set
+            private set
             {
                 if ( _title == value )
                     return;
@@ -77,6 +82,19 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
+        public bool LoadEnabled
+        {
+            get { return _loadEnabled; }
+            set
+            {
+                if ( _loadEnabled == value )
+                    return;
+                _loadEnabled = value;
+                RaisePropertyChanged( ( ) => LoadEnabled );
+            }
+        }
+
+
         public ObservableCollection<PasswordSlotViewModel> Slots
         {
             get { return _slots; }
@@ -97,6 +115,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _copyCommand; }
         }
 
+        public ICommand LoadCommand
+        {
+            get { return _loadCommand; }
+        }
+
+        public event EventHandler LoadRequested;
+
         public void UpdateMasterPassword( SecureString masterPassword )
         {
             _masterPassword = masterPassword;
@@ -106,6 +131,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void OnKeyChanged( )
         {
             Title = IsKeyValid ? Key + "*" : NewTitle;
+            _loadEnabled = _passwordStore.Passwords.Any( d => d.Key == _key );
             UpdateGeneratedPasswords( );
         }
 
@@ -147,10 +173,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private PasswordSlotViewModel SelectedSlot
         {
-            get
-            {
-                return Slots.First( s => s.IsSelected );
-            }
+            get { return Slots.First( s => s.IsSelected ); }
         }
 
         private bool CanExecuteSave( )
@@ -158,7 +181,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             return HasPassword;
         }
 
-        private void ExecuteSave( ) {}
+        private void ExecuteSave( )
+        {
+            if ( !CanExecuteSave( ) )
+                return;
+            _editor.Key = Key;
+            _editor.Note = Note;
+            _editor.GeneratePasswords( _masterPassword );
+            _editor.SavedSlot = SelectedSlot.Generator;
+        }
 
         private bool CanExecuteDelete( )
         {
@@ -179,7 +210,17 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _clipboardService.CopyToClipboard( SelectedSlot.Content );
         }
 
+        private void ExecuteLoad( )
+        {
+            if ( !LoadEnabled )
+                return;
+            EventHandler loadRequested = LoadRequested;
+            if ( loadRequested != null )
+                loadRequested( this, EventArgs.Empty );
+        }
+
         private readonly IPasswordEditor _editor;
+        private readonly IPasswordStore _passwordStore;
         private readonly IClipboardService _clipboardService;
 
         private string _key = string.Empty;
@@ -187,12 +228,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private string _note = string.Empty;
         private SecureString _masterPassword;
         private bool _canSelectPasswordSlot;
+        private bool _loadEnabled;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
 
         private readonly IUpdatableCommand _saveCommand;
         private readonly IUpdatableCommand _deleteCommand;
         private readonly IUpdatableCommand _copyCommand;
+        private readonly IUpdatableCommand _loadCommand;
 
         public const string NewTitle = "(new)";
     }

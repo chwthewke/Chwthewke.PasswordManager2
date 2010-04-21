@@ -10,7 +10,7 @@ namespace Chwthewke.PasswordManager.App.Services
         {
             try
             {
-                Clipboard.SetData( DataFormats.Text, value );
+                Clipboard.SetData( DataFormats.UnicodeText, value );
             }
             catch ( COMException )
             {

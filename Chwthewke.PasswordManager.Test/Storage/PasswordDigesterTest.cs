@@ -8,7 +8,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
-    public class PasswordDigesterTests
+    public class PasswordDigesterTest
     {
         [ SetUp ]
         public void SetUpPasswordDigester( )

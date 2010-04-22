@@ -7,9 +7,8 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
-    public class CommandsTest : TestWithStoreBase
+    public class CopySaveTest : TestWithStoreBase
     {
-
         [ Test ]
         public void CopyPasswordWhenCommandAvailable( )
         {
@@ -26,7 +25,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         }
 
         [ Test ]
-        public void SavePasswordWhenAvailable( )
+        public void SavePasswordWhenCommandAvailable( )
         {
             // Setup
             ViewModel.Key = "abc";
@@ -37,8 +36,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.SaveCommand.Execute( null );
             // Verify
-            StoreMock.Verify( store => store.AddOrUpdate( 
+            StoreMock.Verify( store => store.AddOrUpdate(
                 It.Is<PasswordDigest>( d => d == Editor.GeneratedPassword( slot.Generator ).SavablePasswordDigest ) ) );
         }
+
     }
 }

@@ -18,5 +18,7 @@ namespace Chwthewke.PasswordManager.Editor
         PasswordDocument GeneratedPassword( IPasswordGenerator slot );
 
         IPasswordGenerator SavedSlot { get; set; }
+        
+        void LoadFromStore( string key );
     }
 }

@@ -131,9 +131,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _loadCommand; }
         }
 
-        public event EventHandler LoadRequested;
 
-        public void LoadPasswordDigest( string key )
+        public void UpdateMasterPassword( SecureString masterPassword )
+        {
+            _masterPassword = masterPassword;
+            UpdateGeneratedPasswords( );
+        }
+
+        private void LoadPasswordDigest( string key )
         {
 
             //
@@ -149,19 +154,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 slot.IsSelected = true;
         }
 
-        public void UpdateMasterPassword( SecureString masterPassword )
-        {
-            _masterPassword = masterPassword;
-            UpdateGeneratedPasswords( );
-        }
-
         private void OnKeyChanged( bool makeReadonly )
         {
             RaisePropertyChanged( ( ) => Key );
             IsDigestLoaded = makeReadonly;
             string titleSuffix = IsDigestLoaded ? "" : "*";
             Title = IsKeyValid ? Key + titleSuffix : NewTitle;
-            LoadEnabled = !IsDigestLoaded && _passwordStore.Passwords.Any( d => d.Key == _key );
+            LoadEnabled = !IsDigestLoaded && _passwordStore.FindPasswordInfo( Key ) != null;
             UpdateGeneratedPasswords( );
         }
 
@@ -250,9 +249,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             if ( !LoadEnabled )
                 return;
-            EventHandler loadRequested = LoadRequested;
-            if ( loadRequested != null )
-                loadRequested( this, EventArgs.Empty );
+            LoadPasswordDigest( Key );
         }
 
         private readonly IPasswordEditor _editor;

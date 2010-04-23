@@ -12,8 +12,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LoadEnablesWhenTypingStoredKey( )
         {
             // Setup
-            StoreMock.Setup( s => s.Passwords ).Returns( new PasswordDigest[ ]
-                                                              { new PasswordDigestBuilder( ).WithKey( "abcd" ) } );
+            StoreMock.Setup( s => s.FindPasswordInfo( "abcd" ) )
+                .Returns( new PasswordDigestBuilder( ).WithKey( "abcd" ) );
             // Exercise
             ViewModel.Key = "abcd";
             // Verify
@@ -45,18 +45,5 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.LoadEnabled, Is.False );
         }
 
-        [ Test ]
-        public void ExecuteLoadRaisesLoadRequestedEvent( )
-        {
-            // Setup
-            StoreMock.Setup( s => s.Passwords ).Returns( new PasswordDigest[ ] { new PasswordDigestBuilder( ).WithKey( "abcd" ) } );
-            ViewModel.Key = "abcd";
-            bool loadWasRequested = false;
-            ViewModel.LoadRequested += ( s, e ) => { if ( s == ViewModel ) loadWasRequested = true; };
-            // Exercise
-            ViewModel.LoadCommand.Execute( null );
-            // Verify
-            Assert.That( loadWasRequested, Is.True );
-        }
     }
 }

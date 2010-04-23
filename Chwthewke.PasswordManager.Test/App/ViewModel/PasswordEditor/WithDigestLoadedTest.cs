@@ -1,3 +1,4 @@
+using System;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
@@ -20,12 +21,18 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithNote( "yadda yadda" );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel.LoadPasswordDigest( digest.Key );
+            ViewModel_LoadPasswordDigest( digest.Key );
             // Verify
             Assert.That( ViewModel.Key, Is.EqualTo( "abde" ) );
             Assert.That( ViewModel.Slots.First( s => s.Generator == PasswordGenerators.AlphaNumeric ).IsSelected );
             Assert.That( ViewModel.Note, Is.EqualTo( "yadda yadda" ) );
             Assert.That( ViewModel.Title, Is.EqualTo( "abde" ) );
+        }
+
+        private void ViewModel_LoadPasswordDigest( string key )
+        {
+            ViewModel.Key = key;
+            ViewModel.LoadCommand.Execute( null );
         }
 
         [ Test ]
@@ -38,7 +45,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithNote( "yadda yadda" );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel.LoadPasswordDigest( digest.Key );
+            ViewModel_LoadPasswordDigest( digest.Key );
             // Verify
             Assert.That( ViewModel.DeleteCommand.CanExecute( null ), Is.True );
         }
@@ -52,7 +59,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id )
                 .WithNote( "yadda yadda" );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
-            ViewModel.LoadPasswordDigest( digest.Key );
+            ViewModel_LoadPasswordDigest( digest.Key );
             // Exercise
             ViewModel.DeleteCommand.Execute( null );
             // Verify
@@ -76,7 +83,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel.LoadPasswordDigest( digest.Key );
+            ViewModel_LoadPasswordDigest( digest.Key );
             // Verify
             Assert.That( ViewModel.LoadEnabled, Is.False );
         }
@@ -91,7 +98,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithGeneratorId( PasswordGenerators.Full.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel.LoadPasswordDigest( digest.Key );
+            ViewModel_LoadPasswordDigest( digest.Key );
             // Verify
             Assert.That( ViewModel.IsDigestLoaded, Is.True );
         }
@@ -104,7 +111,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithKey( "abde" )
                 .WithGeneratorId( PasswordGenerators.Full.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
-            ViewModel.LoadPasswordDigest( digest.Key );
+            ViewModel_LoadPasswordDigest( digest.Key );
             // Exercise
             ViewModel.Key = "abcd";
             // Verify
@@ -120,7 +127,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel.LoadPasswordDigest( digest.Key );
+            ViewModel_LoadPasswordDigest( digest.Key );
             // Verify
             Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
             ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
@@ -135,7 +142,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithKey( "abde" )
                 .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
-            ViewModel.LoadPasswordDigest( digest.Key );
+            ViewModel_LoadPasswordDigest( digest.Key );
             ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
             // Exercise
             ViewModel.UpdateMasterPassword( Util.Secure( string.Empty ) );

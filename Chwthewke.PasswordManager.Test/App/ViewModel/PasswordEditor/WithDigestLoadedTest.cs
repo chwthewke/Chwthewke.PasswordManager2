@@ -12,7 +12,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
     public class WithDigestLoadedTest : TestWithStoreBase
     {
         [ Test ]
-        public void LoadDigestSetsRelevantFields( )
+        public void LoadPasswordSetsRelevantFields( )
         {
             // Setup
             PasswordDigest digest = new PasswordDigestBuilder( )
@@ -21,7 +21,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithNote( "yadda yadda" );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel_LoadPasswordDigest( digest.Key );
+            ViewModel.Key = digest.Key;
+            ViewModel.LoadCommand.Execute( null );
             // Verify
             Assert.That( ViewModel.Key, Is.EqualTo( "abde" ) );
             Assert.That( ViewModel.Slots.First( s => s.Generator == PasswordGenerators.AlphaNumeric ).IsSelected );
@@ -29,14 +30,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.Title, Is.EqualTo( "abde" ) );
         }
 
-        private void ViewModel_LoadPasswordDigest( string key )
-        {
-            ViewModel.Key = key;
-            ViewModel.LoadCommand.Execute( null );
-        }
-
         [ Test ]
-        public void LoadDigestAllowsDeleteCommand( )
+        public void LoadPasswordAllowsDeleteCommand( )
         {
             // Setup
             PasswordDigest digest = new PasswordDigestBuilder( )
@@ -45,29 +40,14 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithNote( "yadda yadda" );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel_LoadPasswordDigest( digest.Key );
+            ViewModel.Key = digest.Key;
+            ViewModel.LoadCommand.Execute( null );
             // Verify
             Assert.That( ViewModel.DeleteCommand.CanExecute( null ), Is.True );
         }
 
         [ Test ]
-        public void DeletePasswordWhenCommandAvailable( )
-        {
-            // Setup
-            PasswordDigest digest = new PasswordDigestBuilder( )
-                .WithKey( "abde" )
-                .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id )
-                .WithNote( "yadda yadda" );
-            StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
-            ViewModel_LoadPasswordDigest( digest.Key );
-            // Exercise
-            ViewModel.DeleteCommand.Execute( null );
-            // Verify
-            StoreMock.Verify( store => store.Remove( "abde" ) );
-        }
-
-        [ Test ]
-        public void LoadDigestCannotBeRepeated( )
+        public void LoadPasswordCannotBeRepeated( )
         {
             // Setup
             StoreMock.Setup( sm => sm.Passwords ).Returns(
@@ -83,13 +63,14 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel_LoadPasswordDigest( digest.Key );
+            ViewModel.Key = digest.Key;
+            ViewModel.LoadCommand.Execute( null );
             // Verify
             Assert.That( ViewModel.LoadEnabled, Is.False );
         }
 
         [ Test ]
-        public void LoadDigestMakesDigestLoaded( )
+        public void LoadPasswordMakesPasswordLoaded( )
         {
             // Setup
 
@@ -98,20 +79,22 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithGeneratorId( PasswordGenerators.Full.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel_LoadPasswordDigest( digest.Key );
+            ViewModel.Key = digest.Key;
+            ViewModel.LoadCommand.Execute( null );
             // Verify
-            Assert.That( ViewModel.IsDigestLoaded, Is.True );
+            Assert.That( ViewModel.IsPasswordLoaded, Is.True );
         }
 
         [ Test ]
-        public void LoadDigestMakesKeyUnmodifiable( )
+        public void LoadPasswordMakesKeyUnmodifiable( )
         {
             // Setup
             PasswordDigest digest = new PasswordDigestBuilder( )
                 .WithKey( "abde" )
                 .WithGeneratorId( PasswordGenerators.Full.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
-            ViewModel_LoadPasswordDigest( digest.Key );
+            ViewModel.Key = digest.Key;
+            ViewModel.LoadCommand.Execute( null );
             // Exercise
             ViewModel.Key = "abcd";
             // Verify
@@ -119,7 +102,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         }
 
         [ Test ]
-        public void LoadDigestMakesPasswordSlotSelectionUnmodifiable( )
+        public void LoadPasswordMakesPasswordSlotSelectionUnmodifiable( )
         {
             // Setup
             PasswordDigest digest = new PasswordDigestBuilder( )
@@ -127,7 +110,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                 .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
             // Exercise
-            ViewModel_LoadPasswordDigest( digest.Key );
+            ViewModel.Key = digest.Key;
+            ViewModel.LoadCommand.Execute( null );
             // Verify
             Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
             ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
@@ -135,19 +119,59 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         }
 
         [ Test ]
-        public void LoadDigestPreventsPasswordSlotSelectionFromClear( )
+        public void LoadPasswordPreventsPasswordSlotSelectionFromClear( )
         {
             // Setup
             PasswordDigest digest = new PasswordDigestBuilder( )
                 .WithKey( "abde" )
                 .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id );
             StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
-            ViewModel_LoadPasswordDigest( digest.Key );
+            ViewModel.Key = digest.Key;
+            ViewModel.LoadCommand.Execute( null );
             ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
             // Exercise
             ViewModel.UpdateMasterPassword( Util.Secure( string.Empty ) );
             // Verify
             Assert.That( ViewModel.Slots.Any( slot => slot.IsSelected ) );
+        }
+
+        [ Test ]
+        public void DeletePasswordWhenCommandAvailable( )
+        {
+            // Setup
+            PasswordDigest digest = new PasswordDigestBuilder( )
+                .WithKey( "abde" )
+                .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id )
+                .WithNote( "yadda yadda" );
+            StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
+            ViewModel.Key = digest.Key;
+            ViewModel.LoadCommand.Execute( null );
+            // Exercise
+            ViewModel.DeleteCommand.Execute( null );
+            // Verify
+            StoreMock.Verify( store => store.Remove( "abde" ) );
+        }
+
+        [ Test ]
+        public void DeletePasswordResetsEditor( )
+        {
+            // Setup
+            PasswordDigest digest = new PasswordDigestBuilder( )
+                .WithKey( "abde" )
+                .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id )
+                .WithNote( "yadda yadda" );
+            StoreMock.Setup( store => store.FindPasswordInfo( digest.Key ) ).Returns( digest );
+            ViewModel.Key = digest.Key;
+            ViewModel.LoadCommand.Execute( null );
+            // Exercise
+            ViewModel.DeleteCommand.Execute( null );
+            // Verify
+            Assert.That( ViewModel.Key, Is.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.Note, Is.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
+            Assert.That( ViewModel.Slots.All( slot => !slot.IsSelected ) );
+            Assert.That( ViewModel.LoadEnabled, Is.False );
+            Assert.That( ViewModel.IsPasswordLoaded, Is.False );
         }
     }
 }

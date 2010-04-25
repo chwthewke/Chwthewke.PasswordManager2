@@ -36,7 +36,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _key; }
             set
             {
-                if ( _key == value || IsDigestLoaded )
+                if ( _key == value || IsPasswordLoaded )
                     return;
                 _key = value;
                 OnKeyChanged( false );
@@ -93,15 +93,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
-        public bool IsDigestLoaded
+        public bool IsPasswordLoaded
         {
-            get { return _isDigestLoaded; }
+            get { return _isPasswordLoaded; }
             set
             {
-                if ( _isDigestLoaded == value )
+                if ( _isPasswordLoaded == value )
                     return;
-                _isDigestLoaded = value;
-                RaisePropertyChanged( ( ) => IsDigestLoaded );
+                _isPasswordLoaded = value;
+                RaisePropertyChanged( ( ) => IsPasswordLoaded );
             }
         }
 
@@ -140,7 +140,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void LoadPasswordDigest( string key )
         {
-
             //
             // THIS BLOCK : not exactly pristine.
             // IDEA : Add a nullable "backing document/digest" to this class, use it to determine key writability
@@ -157,16 +156,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void OnKeyChanged( bool makeReadonly )
         {
             RaisePropertyChanged( ( ) => Key );
-            IsDigestLoaded = makeReadonly;
-            string titleSuffix = IsDigestLoaded ? "" : "*";
+            IsPasswordLoaded = makeReadonly;
+            string titleSuffix = IsPasswordLoaded ? "" : "*";
             Title = IsKeyValid ? Key + titleSuffix : NewTitle;
-            LoadEnabled = !IsDigestLoaded && _passwordStore.FindPasswordInfo( Key ) != null;
+            LoadEnabled = !IsPasswordLoaded && _passwordStore.FindPasswordInfo( Key ) != null;
             UpdateGeneratedPasswords( );
         }
 
         private void UpdateGeneratedPasswords( )
         {
-            CanSelectPasswordSlot = IsKeyValid && !IsDigestLoaded && _masterPassword != null && _masterPassword.Length > 0;
+            CanSelectPasswordSlot = IsKeyValid && !IsPasswordLoaded && _masterPassword != null && _masterPassword.Length > 0;
 
             if ( CanSelectPasswordSlot )
                 UpdateSlots( slot => slot.Generator.MakePassword( Key, _masterPassword ) );
@@ -222,7 +221,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private bool CanExecuteDelete( )
         {
-            return IsDigestLoaded;
+            return IsPasswordLoaded;
         }
 
         private void ExecuteDelete( )
@@ -231,6 +230,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 return;
             _editor.Key = Key;
             _editor.SavedSlot = null;
+            _editor.Reset( );
+
+            IsPasswordLoaded = false;
+            Key = string.Empty;
+            Note = string.Empty;
+            foreach ( PasswordSlotViewModel slot in Slots )
+            {
+                slot.IsSelected = false;
+            }
         }
 
         private bool CanExecuteCopy( )
@@ -262,7 +270,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private SecureString _masterPassword;
         private bool _canSelectPasswordSlot;
         private bool _loadEnabled;
-        private bool _isDigestLoaded;
+        private bool _isPasswordLoaded;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
 

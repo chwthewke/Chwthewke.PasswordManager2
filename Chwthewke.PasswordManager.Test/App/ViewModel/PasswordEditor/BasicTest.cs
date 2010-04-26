@@ -21,9 +21,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.Key, Is.EqualTo( string.Empty ) );
             Assert.That( ViewModel.Title, Is.EqualTo( PasswordManager.App.ViewModel.PasswordEditorViewModel.NewTitle ) );
             Assert.That( ViewModel.Note, Is.EqualTo( string.Empty ) );
-            Assert.That( ViewModel.SaveCommand.CanExecute( new SecureString( ) ), Is.False );
-            Assert.That( ViewModel.DeleteCommand.CanExecute( new SecureString( ) ), Is.False );
-            Assert.That( ViewModel.CopyCommand.CanExecute( new SecureString( ) ), Is.False );
+            Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.False );
+            Assert.That( ViewModel.DeleteCommand.CanExecute( null ), Is.False );
+            Assert.That( ViewModel.CopyCommand.CanExecute( null ), Is.False );
         }
 
 

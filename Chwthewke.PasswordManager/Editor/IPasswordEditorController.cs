@@ -1,5 +1,6 @@
 using System;
 using System.Security;
+using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Editor
 {
@@ -9,10 +10,13 @@ namespace Chwthewke.PasswordManager.Editor
         string Note { get; set; }
 
         SecureString MasterPassword { get; set; }
-        Guid? MasterPasswordId { get; set; }
+        Guid? MasterPasswordId { get; }
 
-        bool IsPasswordLoaded { get; set; }
-        bool IsDirty { get; set; }
+        bool IsPasswordLoaded { get; }
+        bool IsDirty { get; }
+
+        IPasswordGenerator Generator { get; set; }
+        string GeneratedPassword { get; }
 
         void LoadPassword( );
         void UnloadPassword( );

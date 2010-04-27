@@ -12,6 +12,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         SecureString MasterPassword { get; set; }
         Guid? MasterPasswordId { get; }
+        Guid? ExpectedMasterPasswordId { get; }
 
         bool IsKeyStored { get; }
         bool IsPasswordLoaded { get; }

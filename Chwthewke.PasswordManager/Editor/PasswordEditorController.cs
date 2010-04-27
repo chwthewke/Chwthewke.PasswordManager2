@@ -3,13 +3,16 @@ using System.Collections.Generic;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Editor
 {
     internal class PasswordEditorController : IPasswordEditorController
     {
-        public PasswordEditorController( IPasswordStore passwordStore, IPasswordDigester digester, 
-            Func<Guid> newGuidFactory, IEnumerable<IPasswordGenerator> generators )
+        public PasswordEditorController( IPasswordStore passwordStore,
+                                         IPasswordDigester digester,
+                                         Func<Guid> newGuidFactory,
+                                         IEnumerable<IPasswordGenerator> generators )
         {
             _passwordStore = passwordStore;
             _newGuidFactory = newGuidFactory;
@@ -27,12 +30,22 @@ namespace Chwthewke.PasswordManager.Editor
             {
                 if ( value == _key )
                     return;
+                if ( IsPasswordLoaded )
+                    return;
                 _key = value;
-                OnKeyChanged( );
+                IsDirty = true;
             }
         }
 
-        public string Note { get; set; }
+        public string Note
+        {
+            get { return _note; }
+            set
+            {
+                _note = value;
+                UpdateDirtiness( );
+            }
+        }
 
         public SecureString MasterPassword { get; set; }
 
@@ -41,9 +54,11 @@ namespace Chwthewke.PasswordManager.Editor
             get { return _passwordStore.IdentifyMasterPassword( MasterPassword ); }
         }
 
+        public Guid? ExpectedMasterPasswordId { get; private set; }
+
         public bool IsKeyStored
         {
-            get { throw new NotImplementedException( ); }
+            get { return GetDigest( ) != null; }
         }
 
         public bool IsPasswordLoaded { get; private set; }
@@ -52,7 +67,15 @@ namespace Chwthewke.PasswordManager.Editor
 
         public IEnumerable<IPasswordGenerator> Generators { get; private set; }
 
-        public IPasswordGenerator SelectedGenerator { get; set; }
+        public IPasswordGenerator SelectedGenerator
+        {
+            get { return _selectedGenerator; }
+            set
+            {
+                _selectedGenerator = value;
+                UpdateDirtiness( );
+            }
+        }
 
         public string GeneratedPassword( IPasswordGenerator generator )
         {
@@ -65,7 +88,18 @@ namespace Chwthewke.PasswordManager.Editor
 
         public void LoadPassword( )
         {
-            throw new NotImplementedException( );
+            if ( IsPasswordLoaded )
+                return;
+
+            PasswordDigest digest = GetDigest( );
+            if ( digest == null )
+                return;
+
+            Note = digest.Note;
+            ExpectedMasterPasswordId = digest.MasterPasswordId;
+            SelectedGenerator = GeneratorById( digest.PasswordGeneratorId );
+            IsDirty = false;
+            IsPasswordLoaded = true;
         }
 
         public void UnloadPassword( )
@@ -81,8 +115,8 @@ namespace Chwthewke.PasswordManager.Editor
             if ( string.IsNullOrEmpty( password ) )
                 return;
 
-            Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory();
-            _passwordStore.AddOrUpdate( _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id, Note ));
+            Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
+            _passwordStore.AddOrUpdate( _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id, Note ) );
         }
 
         public void DeletePassword( )
@@ -92,14 +126,31 @@ namespace Chwthewke.PasswordManager.Editor
 
         // PRIVATE
 
-        private void OnKeyChanged( )
+        private IPasswordGenerator GeneratorById( Guid passwordGeneratorId )
         {
-            IsDirty = true;
+            return Generators.FirstOrDefault( g => g.Id == passwordGeneratorId );
+        }
+
+        private PasswordDigest GetDigest( )
+        {
+            return _passwordStore.FindPasswordInfo( Key );
+        }
+
+        private void UpdateDirtiness( )
+        {
+            if ( !IsPasswordLoaded )
+                return;
+            PasswordDigest digest = GetDigest( );
+            IsDirty = Note != digest.Note
+                      || SelectedGenerator.Id != digest.PasswordGeneratorId;
         }
 
         private readonly IPasswordStore _passwordStore;
         private readonly IPasswordDigester _digester;
         private readonly Func<Guid> _newGuidFactory;
+
         private string _key;
+        private string _note;
+        private IPasswordGenerator _selectedGenerator;
     }
 }

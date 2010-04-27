@@ -15,7 +15,5 @@ namespace Chwthewke.PasswordManager.Storage
         PasswordDigest FindPasswordInfo( string key );
 
         Guid? IdentifyMasterPassword( SecureString masterPassword );
-
-        bool MatchMasterPassword( PasswordDigest dig, SecureString masterPassword );
     }
 }

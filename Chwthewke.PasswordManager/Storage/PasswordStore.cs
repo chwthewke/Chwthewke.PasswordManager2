@@ -49,7 +49,7 @@ namespace Chwthewke.PasswordManager.Storage
             return matchingDigest != null ? matchingDigest.MasterPasswordId : ( Guid? ) null;
         }
 
-        public bool MatchMasterPassword( PasswordDigest dig, SecureString masterPassword )
+        private bool MatchMasterPassword( PasswordDigest dig, SecureString masterPassword )
         {
             IPasswordGenerator generator = _generators.FirstOrDefault( g => g.Id == dig.PasswordGeneratorId );
             if ( generator == null )

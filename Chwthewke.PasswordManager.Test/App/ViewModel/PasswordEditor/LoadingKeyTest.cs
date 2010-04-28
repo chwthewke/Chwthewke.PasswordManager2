@@ -17,7 +17,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Key = "abcd";
             // Verify
-            Assert.That( ViewModel.LoadEnabled, Is.True );
+            Assert.That( ViewModel.IsLoadEnabled, Is.True );
         }
 
         [ Test ]
@@ -29,7 +29,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Key = "abc";
             // Verify
-            Assert.That( ViewModel.LoadEnabled, Is.False );
+            Assert.That( ViewModel.IsLoadEnabled, Is.False );
         }
 
         [ Test ]
@@ -42,7 +42,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.Key = "abcd";
             ViewModel.Key = "abcde";
             // Verify
-            Assert.That( ViewModel.LoadEnabled, Is.False );
+            Assert.That( ViewModel.IsLoadEnabled, Is.False );
         }
 
     }

@@ -3,10 +3,12 @@ using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Security;
 using System.Windows.Input;
+using Autofac;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 using System.Linq;
+using Chwthewke.PasswordManager.Modules;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
@@ -17,11 +19,21 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                                         IPasswordStore passwordStore,
                                         IClipboardService clipboardService )
         {
-            _editor = editor;
+            ContainerBuilder containerBuilder = new ContainerBuilder( );
+            containerBuilder.RegisterModule( new PasswordManagerModule( ) );
+            _controller = containerBuilder.Build( ).Resolve<IPasswordEditorController>( );
+
+            //_editor = editor;
             _passwordStore = passwordStore;
             _clipboardService = clipboardService;
+/*
             _slots = new ObservableCollection<PasswordSlotViewModel>(
                 _editor.PasswordSlots.Select( g => new PasswordSlotViewModel( g ) ) );
+*/
+            _slots = new ObservableCollection<PasswordSlotViewModel>(
+                _controller.Generators.Select( g => new PasswordSlotViewModel( g ) ) );
+//
+
             foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
                 passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;
 
@@ -33,13 +45,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public string Key
         {
-            get { return _key; }
+            get { return _controller.Key; }
             set
             {
-                if ( _key == value || IsPasswordLoaded )
+                if ( IsKeyReadonly )
                     return;
-                _key = value;
-                OnKeyChanged( false );
+                _controller.Key = value;
+                //OnKeyChanged( false );
+                RaisePropertyChanged( ( ) => Key );
+                Update( );
             }
         }
 
@@ -57,12 +71,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public string Note
         {
-            get { return _note; }
+            get { return _controller.Note; }
             set
             {
-                if ( _note == value )
-                    return;
-                _note = value;
+                _controller.Note = value;
                 RaisePropertyChanged( ( ) => Note );
             }
         }
@@ -81,27 +93,27 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
-        public bool LoadEnabled
+        public bool IsLoadEnabled
         {
-            get { return _loadEnabled; }
+            get { return _isLoadEnabled; }
             private set
             {
-                if ( _loadEnabled == value )
+                if ( _isLoadEnabled == value )
                     return;
-                _loadEnabled = value;
-                RaisePropertyChanged( ( ) => LoadEnabled );
+                _isLoadEnabled = value;
+                RaisePropertyChanged( ( ) => IsLoadEnabled );
             }
         }
 
-        public bool IsPasswordLoaded
+        public bool IsKeyReadonly
         {
-            get { return _isPasswordLoaded; }
-            set
+            get { return _isKeyReadonly; }
+            private set
             {
-                if ( _isPasswordLoaded == value )
+                if ( _isKeyReadonly == value )
                     return;
-                _isPasswordLoaded = value;
-                RaisePropertyChanged( ( ) => IsPasswordLoaded );
+                _isKeyReadonly = value;
+                RaisePropertyChanged( ( ) => IsKeyReadonly );
             }
         }
 
@@ -134,56 +146,50 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void UpdateMasterPassword( SecureString masterPassword )
         {
-            _masterPassword = masterPassword;
-            UpdateGeneratedPasswords( );
+            _controller.MasterPassword = masterPassword;
+            Update( );
         }
 
-        private void LoadPasswordDigest( string key )
-        {
-            //
-            // THIS BLOCK : not exactly pristine.
-            // IDEA : Add a nullable "backing document/digest" to this class, use it to determine key writability
-            _editor.LoadFromStore( key );
-            _key = _editor.Key;
-            OnKeyChanged( true );
-            //
-            Note = _editor.Note;
-            PasswordSlotViewModel slot = Slots.FirstOrDefault( s => s.Generator.Id == _editor.SavedSlot.Id );
-            if ( slot != null )
-                slot.IsSelected = true;
-        }
-
+/*
         private void OnKeyChanged( bool makeReadonly )
         {
             RaisePropertyChanged( ( ) => Key );
-            IsPasswordLoaded = makeReadonly;
-            string titleSuffix = IsPasswordLoaded ? "" : "*";
+            IsKeyReadonly = makeReadonly;
+            string titleSuffix = IsKeyReadonly ? "" : "*";
             Title = IsKeyValid ? Key + titleSuffix : NewTitle;
-            LoadEnabled = !IsPasswordLoaded && _passwordStore.FindPasswordInfo( Key ) != null;
+            IsLoadEnabled = !IsKeyReadonly && _passwordStore.FindPasswordInfo( Key ) != null;
             UpdateGeneratedPasswords( );
         }
+*/
 
+/*
         private void UpdateGeneratedPasswords( )
         {
-            CanSelectPasswordSlot = IsKeyValid && !IsPasswordLoaded && _masterPassword != null && _masterPassword.Length > 0;
+            CanSelectPasswordSlot = IsKeyValid && !IsKeyReadonly && _masterPassword != null &&
+                                    _masterPassword.Length > 0;
 
             if ( CanSelectPasswordSlot )
                 UpdateSlots( slot => slot.Generator.MakePassword( Key, _masterPassword ) );
             else
                 UpdateSlots( slot => string.Empty );
         }
+*/
 
 
+/*
         private void UpdateSlots( Func<PasswordSlotViewModel, string> slotContent )
         {
             foreach ( PasswordSlotViewModel slot in _slots )
                 slot.Content = slotContent( slot );
         }
+*/
 
+/*
         private bool IsKeyValid
         {
             get { return !string.IsNullOrWhiteSpace( Key ); }
         }
+*/
 
         private void OnSlotPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
@@ -196,9 +202,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private bool HasPassword
         {
-            get { return Slots.Any( s => s.IsSelected ); }
+            get { return CanSelectPasswordSlot && Slots.Any( s => s.IsSelected ); }
         }
 
+        [ Obsolete ]
         private PasswordSlotViewModel SelectedSlot
         {
             get { return Slots.First( s => s.IsSelected ); }
@@ -213,32 +220,21 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             if ( !CanExecuteSave( ) )
                 return;
-            _editor.Key = Key;
-            _editor.Note = Note;
-            _editor.GeneratePasswords( _masterPassword );
-            _editor.SavedSlot = SelectedSlot.Generator;
+            _controller.SavePassword( );
         }
 
         private bool CanExecuteDelete( )
         {
-            return IsPasswordLoaded;
+            return _controller.IsPasswordLoaded;
         }
 
         private void ExecuteDelete( )
         {
             if ( !CanExecuteDelete( ) )
                 return;
-            _editor.Key = Key;
-            _editor.SavedSlot = null;
-            _editor.Reset( );
 
-            IsPasswordLoaded = false;
-            Key = string.Empty;
-            Note = string.Empty;
-            foreach ( PasswordSlotViewModel slot in Slots )
-            {
-                slot.IsSelected = false;
-            }
+            _controller.DeletePassword( );
+            Update( );
         }
 
         private bool CanExecuteCopy( )
@@ -250,17 +246,57 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             if ( !CanExecuteCopy( ) )
                 return;
-            _clipboardService.CopyToClipboard( SelectedSlot.Content );
+            _clipboardService.CopyToClipboard( _controller.GeneratedPassword( _controller.SelectedGenerator ) );
         }
 
         private void ExecuteLoad( )
         {
-            if ( !LoadEnabled )
+            if ( !IsLoadEnabled )
                 return;
-            LoadPasswordDigest( Key );
+            _controller.LoadPassword( );
+            Update( );
         }
 
-        private readonly IPasswordEditor _editor;
+        private void Update( )
+        {
+            Title = DeriveTitle( );
+            CanSelectPasswordSlot = DeriveCanSelectPassword( );
+            IsLoadEnabled = DeriveLoadEnabled( );
+            IsKeyReadonly = DeriveKeyReadonly( );
+
+            foreach ( var slot in Slots )
+            {
+                slot.Content = _controller.GeneratedPassword( slot.Generator );
+                slot.IsSelected = _controller.SelectedGenerator == slot.Generator;
+            }
+        }
+
+        private bool DeriveKeyReadonly( )
+        {
+            return _controller.IsPasswordLoaded;
+        }
+
+        private bool DeriveLoadEnabled( )
+        {
+            return _controller.IsKeyStored && !_controller.IsPasswordLoaded;
+        }
+
+        private bool DeriveCanSelectPassword( )
+        {
+            return !_controller.Generators.All( g => string.IsNullOrEmpty( _controller.GeneratedPassword( g ) ) );
+        }
+
+        private string DeriveTitle( )
+        {
+            string title = string.IsNullOrWhiteSpace( Key ) ? NewTitle : Key;
+
+            return _controller.IsDirty ? title + "*" : title;
+        }
+
+
+        private readonly IPasswordEditorController _controller;
+
+        //private readonly IPasswordEditor _editor;
         private readonly IPasswordStore _passwordStore;
         private readonly IClipboardService _clipboardService;
 
@@ -269,8 +305,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private string _note = string.Empty;
         private SecureString _masterPassword;
         private bool _canSelectPasswordSlot;
-        private bool _loadEnabled;
-        private bool _isPasswordLoaded;
+        private bool _isLoadEnabled;
+        private bool _isKeyReadonly;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
 

@@ -66,7 +66,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.Key = digest.Key;
             ViewModel.LoadCommand.Execute( null );
             // Verify
-            Assert.That( ViewModel.LoadEnabled, Is.False );
+            Assert.That( ViewModel.IsLoadEnabled, Is.False );
         }
 
         [ Test ]
@@ -82,7 +82,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.Key = digest.Key;
             ViewModel.LoadCommand.Execute( null );
             // Verify
-            Assert.That( ViewModel.IsPasswordLoaded, Is.True );
+            Assert.That( ViewModel.IsKeyReadonly, Is.True );
         }
 
         [ Test ]
@@ -170,8 +170,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.Note, Is.EqualTo( string.Empty ) );
             Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
             Assert.That( ViewModel.Slots.All( slot => !slot.IsSelected ) );
-            Assert.That( ViewModel.LoadEnabled, Is.False );
-            Assert.That( ViewModel.IsPasswordLoaded, Is.False );
+            Assert.That( ViewModel.IsLoadEnabled, Is.False );
+            Assert.That( ViewModel.IsKeyReadonly, Is.False );
         }
     }
 }

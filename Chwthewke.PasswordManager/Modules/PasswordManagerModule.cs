@@ -1,3 +1,4 @@
+using System;
 using System.Text;
 using Autofac;
 using Chwthewke.PasswordManager.Editor;
@@ -13,7 +14,7 @@ namespace Chwthewke.PasswordManager.Modules
             // Editor
 
             builder.RegisterType<PasswordEditor>( ).As<IPasswordEditor>( );
-            
+            builder.RegisterType<PasswordEditorController>( ).As<IPasswordEditorController>( );
             // Engine
             builder.RegisterType<PasswordDigester>( ).As<IPasswordDigester>( );
 
@@ -25,10 +26,11 @@ namespace Chwthewke.PasswordManager.Modules
             builder.RegisterInstance( PasswordGenerators.Full ).As<IPasswordGenerator>( );
 
             // Storage
+
+            builder.RegisterInstance<Func<Guid>>( ( ) => Guid.NewGuid( ) ).As<Func<Guid>>( );
+
             builder.RegisterType<PasswordStore>( ).As<IPasswordStore>( ).SingleInstance( );
-
             builder.RegisterInstance( new UTF8Encoding( false ) ).As<Encoding>( );
-
             builder.RegisterType<PasswordStoreSerializer>( ).As<IPasswordStoreSerializer>( );
         }
     }

@@ -2,6 +2,7 @@ using System;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
+using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
 using Moq;
 using NUnit.Framework;
@@ -41,7 +42,17 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.IsDirty );
         }
 
-        [Test]
+        [ Test ]
+        public void ChangeMasterPasswordMakesEditorDirty( )
+        {
+            // Setup
+            // Exercise
+            _controller.MasterPassword = Util.Secure( "123456" );
+            // Verify
+            Assert.That( _controller.IsDirty );
+        }
+
+        [ Test ]
         public void ChangeSelectedGeneratorMakesEditorDirty( )
         {
             // Setup
@@ -52,9 +63,35 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.IsDirty );
         }
 
-        // SaveWhenNotDirtyHasNoEffect
-        // SaveWithoutMatchingMasterPasswordHasNoEffect
-        // SaveWithDifferentNoteAndGeneratorUpdatesStore
+        [ Test ]
+        public void SaveWithDifferentNoteAndGeneratorUpdatesStore( )
+        {
+            // Setup
+            const string note = "a somewhat longer note.";
+            IPasswordGenerator generator = PasswordGenerators.Full;
+            _controller.Note = note;
+            _controller.SelectedGenerator = generator;
+
+            _controller.MasterPassword = Util.Secure( "123456" );
+            // Exercise
+            _controller.SavePassword( );
+            // Verify
+            _storeMock.Verify( store => store.AddOrUpdate( It.Is<PasswordDigest>(
+                d => d.Note == note && d.PasswordGeneratorId == generator.Id
+                                                               ) ) );
+        }
+
+
+        [ Test ]
+        public void SaveWhenNotDirtyHasNoEffect( )
+        {
+            // Setup
+            // Exercise
+            _controller.SavePassword( );
+            // Verify
+            _storeMock.Verify( store => store.AddOrUpdate( It.IsAny<PasswordDigest>( ) ), Times.Never( ) );
+        }
+
 
         private IPasswordEditorController _controller;
         private Mock<IPasswordStore> _storeMock;

@@ -47,7 +47,15 @@ namespace Chwthewke.PasswordManager.Editor
             }
         }
 
-        public SecureString MasterPassword { get; set; }
+        public SecureString MasterPassword
+        {
+            get { return _masterPassword; }
+            set
+            {
+                _masterPassword = value;
+                UpdateDirtiness( );
+            }
+        }
 
         public Guid? MasterPasswordId
         {
@@ -142,7 +150,8 @@ namespace Chwthewke.PasswordManager.Editor
                 return;
             PasswordDigest digest = GetDigest( );
             IsDirty = Note != digest.Note
-                      || SelectedGenerator.Id != digest.PasswordGeneratorId;
+                      || SelectedGenerator.Id != digest.PasswordGeneratorId
+                      || ExpectedMasterPasswordId != _passwordStore.IdentifyMasterPassword( MasterPassword );
         }
 
         private readonly IPasswordStore _passwordStore;
@@ -152,5 +161,6 @@ namespace Chwthewke.PasswordManager.Editor
         private string _key;
         private string _note;
         private IPasswordGenerator _selectedGenerator;
+        private SecureString _masterPassword;
     }
 }

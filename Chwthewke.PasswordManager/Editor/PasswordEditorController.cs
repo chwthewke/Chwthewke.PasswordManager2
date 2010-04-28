@@ -129,7 +129,11 @@ namespace Chwthewke.PasswordManager.Editor
 
         public void DeletePassword( )
         {
-            throw new NotImplementedException( );
+            if ( !IsPasswordLoaded )
+                return;
+            _passwordStore.Remove( Key );
+            IsDirty = true;
+            IsPasswordLoaded = false;
         }
 
         // PRIVATE

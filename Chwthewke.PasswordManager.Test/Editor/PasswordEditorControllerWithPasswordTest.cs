@@ -1,4 +1,5 @@
 using System;
+using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -90,6 +91,41 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _controller.SavePassword( );
             // Verify
             _storeMock.Verify( store => store.AddOrUpdate( It.IsAny<PasswordDigest>( ) ), Times.Never( ) );
+        }
+
+
+        [ Test ]
+        public void DeleteRemovesPasswordFromStore( )
+        {
+            // Setup
+            string key = _controller.Key;
+            // Exercise
+            _controller.DeletePassword( );
+            // Verify
+            _storeMock.Verify( store => store.Remove( key ) );
+        }
+
+        [ Test ]
+        public void DeleteKeepsFieldsUntouched( )
+        {
+            // Setup
+            string key = _controller.Key;
+            string note = _controller.Note;
+            SecureString masterPassword = _controller.MasterPassword;
+            IPasswordGenerator selectedGenerator = _controller.SelectedGenerator;
+            // Exercise
+            _controller.DeletePassword( );
+            // Verify
+            _storeMock.Setup( s => s.FindPasswordInfo( key ) ).Returns( ( PasswordDigest ) null );
+
+            Assert.That( _controller.Key, Is.EqualTo( key ) );
+            Assert.That( _controller.Note, Is.EqualTo( note ) );
+            Assert.That( _controller.MasterPassword, Is.EqualTo( masterPassword ) );
+            Assert.That( _controller.SelectedGenerator, Is.EqualTo( selectedGenerator ) );
+
+            Assert.That( _controller.IsDirty, Is.True );
+            Assert.That( _controller.IsPasswordLoaded, Is.False );
+            Assert.That( _controller.IsKeyStored, Is.False );
         }
 
 

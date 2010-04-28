@@ -23,6 +23,9 @@ namespace Chwthewke.PasswordManager.Editor
         string GeneratedPassword( IPasswordGenerator generator );
 
         void LoadPassword( );
+
+        // TODO Unload is probably pointless
+        [ Obsolete ]
         void UnloadPassword( );
 
         void SavePassword( );

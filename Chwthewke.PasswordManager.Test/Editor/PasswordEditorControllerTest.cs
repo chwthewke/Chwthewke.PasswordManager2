@@ -300,7 +300,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
         }
 
-        [Test]
+        [ Test ]
         public void LoadPasswordMakesKeyUnmodifiable( )
         {
             // Setup
@@ -314,6 +314,17 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _controller.Key = "abcd";
             // Verify
             Assert.That( _controller.Key, Is.EqualTo( "abde" ) );
+        }
+
+        [ Test ]
+        public void DeleteHasNoEffectIfPasswordNotLoaded( )
+        {
+            // Setup
+            string key = _controller.Key;
+            // Exercise
+            _controller.DeletePassword( );
+            // Verify
+            _storeMock.Verify( store => store.Remove( key ), Times.Never( ) );
         }
 
         private IPasswordEditorController _controller;

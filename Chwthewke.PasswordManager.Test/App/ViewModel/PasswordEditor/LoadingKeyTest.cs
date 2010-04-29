@@ -1,4 +1,6 @@
+using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
+using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
 using NUnit.Framework;
 
@@ -12,8 +14,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LoadEnablesWhenTypingStoredKey( )
         {
             // Setup
-            StoreMock.Setup( s => s.FindPasswordInfo( "abcd" ) )
-                .Returns( new PasswordDigestBuilder( ).WithKey( "abcd" ) );
+
+            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, Util.Secure( "123" ) );
             // Exercise
             ViewModel.Key = "abcd";
             // Verify
@@ -24,8 +26,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LoadDoesNotEnableUntilStoredKeyFullyTyped( )
         {
             // Setup
-            StoreMock.Setup( s => s.Passwords ).Returns( new PasswordDigest[ ]
-                                                              { new PasswordDigestBuilder( ).WithKey( "abcd" ) } );
+            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, Util.Secure( "123" ) );
             // Exercise
             ViewModel.Key = "abc";
             // Verify
@@ -36,8 +37,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LoadDoesNotEnableAfterStoredKeyTyped( )
         {
             // Setup
-            StoreMock.Setup( s => s.Passwords ).Returns( new PasswordDigest[ ]
-                                                              { new PasswordDigestBuilder( ).WithKey( "abcd" ) } );
+            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, Util.Secure( "123" ) );
             // Exercise
             ViewModel.Key = "abcd";
             ViewModel.Key = "abcde";

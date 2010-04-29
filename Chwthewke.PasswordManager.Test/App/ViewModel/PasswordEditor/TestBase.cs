@@ -3,7 +3,6 @@ using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Modules;
-using Chwthewke.PasswordManager.Storage;
 using Moq;
 using NUnit.Framework;
 
@@ -12,7 +11,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
     public class TestBase
     {
         protected PasswordEditorViewModel ViewModel;
-        protected IPasswordEditor Editor;
+        protected IPasswordEditorController Editor;
         protected Mock<IClipboardService> ClipboardServiceMock;
 
         [ SetUp ]
@@ -22,11 +21,11 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             builder.RegisterModule( new PasswordManagerModule( ) );
             IContainer container = builder.Build( );
 
-            Editor = container.Resolve<IPasswordEditor>( );
+            Editor = container.Resolve<IPasswordEditorController>( );
 
             ClipboardServiceMock = new Mock<IClipboardService>( );
 
-            ViewModel = new PasswordEditorViewModel( Editor, container.Resolve<IPasswordStore>( ), ClipboardServiceMock.Object );
+            ViewModel = new PasswordEditorViewModel( Editor, ClipboardServiceMock.Object );
         }
     }
 }

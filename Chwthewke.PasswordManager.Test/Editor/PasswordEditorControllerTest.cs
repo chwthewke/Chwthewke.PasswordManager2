@@ -40,7 +40,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.Generators, Is.EquivalentTo( PasswordGenerators.All ) );
         }
 
-        [ Test ]
+        [Test]
         public void KeyModificationMakesDirty( )
         {
             // Setup
@@ -50,7 +50,17 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.IsDirty, Is.True );
         }
 
-        [ Test ]
+        [Test]
+        public void NoteModificationMakesDirty( )
+        {
+            // Setup
+            // Exercise
+            _controller.Note = "abcd";
+            // Verify
+            Assert.That( _controller.IsDirty, Is.True );
+        }
+
+        [Test]
         public void PasswordsAreNotGeneratedWithoutAKey( )
         {
             // Setup

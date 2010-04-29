@@ -1,4 +1,5 @@
 using Chwthewke.PasswordManager.App.ViewModel;
+using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Moq;
 using NUnit.Framework;
@@ -11,7 +12,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         [ SetUp ]
         public void SetUp( )
         {
-            IPasswordGenerator generator = new Mock<IPasswordGenerator>( ).Object;
+            IPasswordGenerator generator = PasswordGenerators.Full;
             _viewModel = new PasswordSlotViewModel( generator );
         }
 
@@ -27,14 +28,27 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( propertyChanged );
         }
 
-        [ Test ]
-        public void IsSelectedPropertyChanged( )
+        [Test]
+        public void IsSelectedPropertyChangedToTrue( )
         {
             // Setup
             bool propertyChanged = false;
             _viewModel.PropertyChanged += ( s, e ) => { propertyChanged |= e.PropertyName == "IsSelected"; };
             // Exercise
             _viewModel.IsSelected = true;
+            // Verify
+            Assert.That( propertyChanged );
+        }
+
+        [Test]
+        public void IsSelectedPropertyChangedToFalse( )
+        {
+            // Setup
+            _viewModel.IsSelected = true;
+            bool propertyChanged = false;
+            _viewModel.PropertyChanged += ( s, e ) => { propertyChanged |= e.PropertyName == "IsSelected"; };
+            // Exercise
+            _viewModel.IsSelected = false;
             // Verify
             Assert.That( propertyChanged );
         }

@@ -1,3 +1,4 @@
+using System.Security;
 using Autofac;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
@@ -13,26 +14,39 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
     public class TestWithStoreBase
     {
         protected PasswordEditorViewModel ViewModel;
-        protected IPasswordEditor Editor;
+        protected IPasswordEditorController Editor;
         protected Mock<IClipboardService> ClipboardServiceMock;
-        protected Mock<IPasswordStore> StoreMock;
+        private IContainer _container;
+        //protected Mock<IPasswordStore> StoreMock;
 
-        [SetUp]
+        [ SetUp ]
         public void SetUpPasswordEditorViewModel( )
         {
             ContainerBuilder builder = new ContainerBuilder( );
             builder.RegisterModule( new PasswordManagerModule( ) );
-            IContainer container = builder.Build( );
+            _container = builder.Build( );
 
-            StoreMock = new Mock<IPasswordStore>( );
-            Editor = new PasswordManager.Editor.PasswordEditor( PasswordGenerators.All,
-                                                                 container.Resolve<IPasswordDigester>( ),
-                                                                 StoreMock.Object );
+            Editor = _container.Resolve<IPasswordEditorController>( );
 
             ClipboardServiceMock = new Mock<IClipboardService>( );
 
-            ViewModel = new PasswordEditorViewModel( Editor, StoreMock.Object, ClipboardServiceMock.Object );
+            ViewModel = new PasswordEditorViewModel( Editor, ClipboardServiceMock.Object );
         }
 
+        protected IPasswordStore PasswordStore
+        {
+            get { return _container.Resolve<IPasswordStore>( ); }
+        }
+
+        protected void AddPassword( string key, string note, IPasswordGenerator generator, SecureString masterPassword )
+        {
+            IPasswordEditorController controller = _container.Resolve<IPasswordEditorController>( );
+            controller.Key = key;
+            controller.Note = note;
+            controller.SelectedGenerator = generator;
+            controller.MasterPassword = masterPassword;
+
+            controller.SavePassword( );
+        }
     }
 }

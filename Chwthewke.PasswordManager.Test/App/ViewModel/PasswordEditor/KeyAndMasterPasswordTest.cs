@@ -1,5 +1,6 @@
 using System.Linq;
 using System.Security;
+using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
 
@@ -9,13 +10,23 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
     public class KeyAndMasterPasswordTest : TestBase
     {
         [ Test ]
-        public void TitleNotUpdatedByKeyInWhitespace( )
+        public void TitleNotUsingKeyInWhitespace( )
         {
             // Setup
             // Exercise
             ViewModel.Key = "  \t";
             // Verify
-            Assert.That( ViewModel.Title, Is.EqualTo( PasswordManager.App.ViewModel.PasswordEditorViewModel.NewTitle ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle + "*" ) );
+        }
+
+        [ Test ]
+        public void TitleDirtiedByNoteUpdate( )
+        {
+            // Setup
+            // Exercise
+            ViewModel.Note = "yiddi yoddo";
+            // Verify
+            Assert.That( ViewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle + "*" ) );
         }
 
         [ Test ]

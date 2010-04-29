@@ -33,7 +33,7 @@ namespace Chwthewke.PasswordManager.Editor
                 if ( IsPasswordLoaded )
                     return;
                 _key = value;
-                IsDirty = true;
+                UpdateDirtiness( );
             }
         }
 
@@ -151,11 +151,17 @@ namespace Chwthewke.PasswordManager.Editor
         private void UpdateDirtiness( )
         {
             if ( !IsPasswordLoaded )
-                return;
-            PasswordDigest digest = GetDigest( );
-            IsDirty = Note != digest.Note
-                      || SelectedGenerator.Id != digest.PasswordGeneratorId
-                      || ExpectedMasterPasswordId != _passwordStore.IdentifyMasterPassword( MasterPassword );
+            {
+                IsDirty = !( string.IsNullOrEmpty( Key ) && string.IsNullOrEmpty( Note ) );
+            }
+            else
+            {
+                PasswordDigest digest = GetDigest( );
+                IsDirty = Note != digest.Note
+                          || SelectedGenerator == null
+                          || SelectedGenerator.Id != digest.PasswordGeneratorId
+                          || ExpectedMasterPasswordId != _passwordStore.IdentifyMasterPassword( MasterPassword );
+            }
         }
 
         private readonly IPasswordStore _passwordStore;

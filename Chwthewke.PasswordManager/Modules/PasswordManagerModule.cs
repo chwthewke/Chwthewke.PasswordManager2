@@ -13,8 +13,7 @@ namespace Chwthewke.PasswordManager.Modules
         {
             // Editor
 
-            builder.RegisterType<PasswordEditor>( ).As<IPasswordEditor>( );
-            builder.RegisterType<PasswordEditorController>( ).As<IPasswordEditorController>( );
+            builder.RegisterType<PasswordEditorController>( ).As<IPasswordEditorController>( ).InstancePerDependency( );
             // Engine
             builder.RegisterType<PasswordDigester>( ).As<IPasswordDigester>( );
 

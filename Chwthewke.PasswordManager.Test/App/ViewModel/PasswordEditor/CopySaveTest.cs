@@ -36,9 +36,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.SaveCommand.Execute( null );
             // Verify
-            StoreMock.Verify( store => store.AddOrUpdate(
-                It.Is<PasswordDigest>( d => d == Editor.GeneratedPassword( slot.Generator ).SavablePasswordDigest ) ) );
+            Assert.That( PasswordStore.FindPasswordInfo("abc"), Is.Not.Null );
         }
-
     }
 }

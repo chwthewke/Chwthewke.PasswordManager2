@@ -1,3 +1,5 @@
+using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Security;
@@ -12,13 +14,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     public class PasswordEditorViewModel : ObservableObject
     {
         public PasswordEditorViewModel( IPasswordEditorController controller,
-                                        IClipboardService clipboardService )
+                                        IClipboardService clipboardService,
+                                        IEnumerable<PasswordSlotViewModel> passwordSlots )
         {
             _controller = controller;
 
             _clipboardService = clipboardService;
-            _slots = new ObservableCollection<PasswordSlotViewModel>(
-                _controller.Generators.Select( g => new PasswordSlotViewModel( g ) ) );
+            _slots = new ObservableCollection<PasswordSlotViewModel>( passwordSlots );
 
             foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
                 passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;
@@ -27,7 +29,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
             _loadCommand = new RelayCommand( ExecuteLoad );
+            _closeCommand = new RelayCommand( RaiseCloseRequested );
         }
+
+        public event EventHandler StoreModified;
+
+        public event EventHandler CloseRequested;
 
         public string Key
         {
@@ -129,11 +136,29 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _loadCommand; }
         }
 
+        public ICommand CloseCommand
+        {
+            get { return _closeCommand; }
+        }
 
         public void UpdateMasterPassword( SecureString masterPassword )
         {
             _controller.MasterPassword = masterPassword;
             Update( );
+        }
+
+        private void RaiseStoreModified( )
+        {
+            EventHandler storeModified = StoreModified;
+            if (storeModified != null)
+                storeModified( this, EventArgs.Empty );
+        }
+
+        private void RaiseCloseRequested( )
+        {
+            EventHandler closeRequested = CloseRequested;
+            if (closeRequested != null)
+                closeRequested( this, EventArgs.Empty );
         }
 
         private void OnSlotPropertyChanged( object sender, PropertyChangedEventArgs e )
@@ -163,6 +188,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( !CanExecuteSave( ) )
                 return;
             _controller.SavePassword( );
+            RaiseStoreModified( );
         }
 
         private bool CanExecuteDelete( )
@@ -177,6 +203,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             _controller.DeletePassword( );
             Update( );
+            RaiseStoreModified( );
         }
 
         private bool CanExecuteCopy( )
@@ -252,6 +279,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly IUpdatableCommand _deleteCommand;
         private readonly IUpdatableCommand _copyCommand;
         private readonly IUpdatableCommand _loadCommand;
+        private readonly ICommand _closeCommand;
 
         public const string NewTitle = "(new)";
     }

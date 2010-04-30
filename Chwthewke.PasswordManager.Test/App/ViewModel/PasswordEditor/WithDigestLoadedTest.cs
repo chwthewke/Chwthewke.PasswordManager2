@@ -120,6 +120,22 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         }
 
         [ Test ]
+        public void DeletePasswordRaisesStoreModified( )
+        {
+            // Setup
+            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, Util.Secure( "123" ) );
+            ViewModel.Key = "abde";
+            ViewModel.LoadCommand.Execute( null );
+
+            bool storeModifiedRaised = false;
+            ViewModel.StoreModified += ( s, e ) => { storeModifiedRaised = true; };
+            // Exercise
+            ViewModel.DeleteCommand.Execute( null );
+            // Verify
+            Assert.That( storeModifiedRaised, Is.True );
+        }
+
+        [ Test ]
         public void DeletePasswordDoesNotResetEditor( )
         {
             // Setup

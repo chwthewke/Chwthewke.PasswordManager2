@@ -35,8 +35,20 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             // Verify
             Assert.That( ViewModel.Slots, Is.Not.Empty );
-            Assert.That( ViewModel.Slots.Select( s => s.Generator ), Is.EquivalentTo( Editor.Generators ) );
+            Assert.That( ViewModel.Slots.Select( s => s.Generator ), Is.EquivalentTo( Controller.Generators ) );
             Assert.That( ViewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+        }
+
+        [ Test ]
+        public void CloseCommandRaisesCloseRequested( )
+        {
+            // Setup
+            bool closeRequested = false;
+            ViewModel.CloseRequested += ( s, e ) => { closeRequested = true; };
+            // Exercise
+            ViewModel.CloseCommand.Execute( null );
+            // Verify
+            Assert.That( closeRequested, Is.True );
         }
 
     }

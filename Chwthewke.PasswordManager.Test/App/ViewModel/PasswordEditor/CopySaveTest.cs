@@ -38,5 +38,23 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Verify
             Assert.That( PasswordStore.FindPasswordInfo("abc"), Is.Not.Null );
         }
+
+        [Test]
+        public void SavePasswordRaisesStoreModified( )
+        {
+            // Setup
+            ViewModel.Key = "abc";
+            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            PasswordSlotViewModel slot = ViewModel.Slots[ 0 ];
+            slot.IsSelected = true;
+            Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.True );
+            bool storeModifiedRaised = false;
+            ViewModel.StoreModified += ( s, e ) => { storeModifiedRaised = true; };
+            // Exercise
+            ViewModel.SaveCommand.Execute( null );
+            // Verify
+            Assert.That( storeModifiedRaised, Is.True );
+        }
+
     }
 }

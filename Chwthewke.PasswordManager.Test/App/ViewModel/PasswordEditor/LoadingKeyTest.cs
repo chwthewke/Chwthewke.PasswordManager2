@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
-    public class LoadingKeyTest : TestWithStoreBase
+    public class LoadingKeyTest : PasswordEditorTestBase
     {
 
         [ Test ]

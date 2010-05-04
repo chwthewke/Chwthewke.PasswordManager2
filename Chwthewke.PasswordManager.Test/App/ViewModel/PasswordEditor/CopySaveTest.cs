@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
-    public class CopySaveTest : TestWithStoreBase
+    public class CopySaveTest : PasswordEditorTestBase
     {
         [ Test ]
         public void CopyPasswordWhenCommandAvailable( )

@@ -12,10 +12,10 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
-    public class TestWithStoreBase
+    public abstract class PasswordEditorTestBase
     {
         protected PasswordEditorViewModel ViewModel;
-        private IPasswordEditorController _controller;
+        protected IPasswordEditorController Controller;
         protected Mock<IClipboardService> ClipboardServiceMock;
         private IContainer _container;
 
@@ -24,14 +24,17 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             ContainerBuilder builder = new ContainerBuilder( );
             builder.RegisterModule( new PasswordManagerModule( ) );
+            builder.Register( c => c.Resolve<IPasswordEditorControllerFactory>( ).CreatePasswordEditorController( ) )
+                .As<IPasswordEditorController>( );
+
             _container = builder.Build( );
 
-            _controller = _container.Resolve<IPasswordEditorController>( );
+            Controller = _container.Resolve<IPasswordEditorController>( );
 
             ClipboardServiceMock = new Mock<IClipboardService>( );
 
-            ViewModel = new PasswordEditorViewModel( _controller, ClipboardServiceMock.Object, 
-                PasswordGenerators.All.Select( g => new PasswordSlotViewModel( g ) ) );
+            ViewModel = new PasswordEditorViewModel( Controller, ClipboardServiceMock.Object,
+                                                     PasswordGenerators.All.Select( g => new PasswordSlotViewModel( g ) ) );
         }
 
         protected IPasswordStore PasswordStore

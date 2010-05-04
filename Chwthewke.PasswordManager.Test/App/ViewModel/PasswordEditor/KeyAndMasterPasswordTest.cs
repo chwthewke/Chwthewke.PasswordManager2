@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
-    public class KeyAndMasterPasswordTest : TestBase
+    public class KeyAndMasterPasswordTest : PasswordEditorTestBase
     {
         [ Test ]
         public void TitleNotUsingKeyInWhitespace( )

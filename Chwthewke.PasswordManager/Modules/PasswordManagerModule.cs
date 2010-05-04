@@ -11,15 +11,14 @@ namespace Chwthewke.PasswordManager.Modules
     {
         protected override void Load( ContainerBuilder builder )
         {
-            // Editor
+            // Controller
+            builder.RegisterType<PasswordEditorControllerFactory>( ).As<IPasswordEditorControllerFactory>( ).SingleInstance( );
 
-            builder.RegisterType<PasswordEditorController>( ).As<IPasswordEditorController>( ).InstancePerDependency( );
             // Engine
-            builder.RegisterType<PasswordDigester>( ).As<IPasswordDigester>( );
+            builder.RegisterType<PasswordDigester>( ).As<IPasswordDigester>( ).SingleInstance(  );
 
-            builder.RegisterType<Sha512Factory>( ).As<IHashFactory>( );
-            
-            builder.RegisterType<TimeProvider>( ).As<ITimeProvider>( );
+            builder.RegisterType<Sha512Factory>( ).As<IHashFactory>( ).SingleInstance(  );
+            builder.RegisterType<TimeProvider>( ).As<ITimeProvider>( ).SingleInstance(  );
 
             builder.RegisterInstance( PasswordGenerators.AlphaNumeric ).As<IPasswordGenerator>( );
             builder.RegisterInstance( PasswordGenerators.Full ).As<IPasswordGenerator>( );
@@ -29,8 +28,9 @@ namespace Chwthewke.PasswordManager.Modules
             builder.RegisterInstance<Func<Guid>>( ( ) => Guid.NewGuid( ) ).As<Func<Guid>>( );
 
             builder.RegisterType<PasswordStore>( ).As<IPasswordStore>( ).SingleInstance( );
-            builder.RegisterInstance( new UTF8Encoding( false ) ).As<Encoding>( );
             builder.RegisterType<PasswordStoreSerializer>( ).As<IPasswordStoreSerializer>( );
+
+            builder.RegisterInstance( new UTF8Encoding( false ) ).As<Encoding>( );
         }
     }
 }

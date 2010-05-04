@@ -1,15 +1,10 @@
-using System.Security;
-using Autofac;
-using Chwthewke.PasswordManager.Editor;
-using Chwthewke.PasswordManager.Modules;
-using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
 using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
-    public class BasicTest : TestBase
+    public class BasicTest : PasswordEditorTestBase
     {
 
         [ Test ]

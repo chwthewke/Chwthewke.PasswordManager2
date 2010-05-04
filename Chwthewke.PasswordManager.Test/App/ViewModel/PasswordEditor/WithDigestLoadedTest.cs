@@ -9,7 +9,7 @@ using System.Linq;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
-    public class WithDigestLoadedTest : TestWithStoreBase
+    public class WithDigestLoadedTest : PasswordEditorTestBase
     {
         [ Test ]
         public void LoadPasswordSetsRelevantFields( )

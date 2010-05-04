@@ -4,7 +4,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
-    public class PasswordSlotSelectionTest : TestBase
+    public class PasswordSlotSelectionTest : PasswordEditorTestBase
     {
         [ Test ]
         public void SelectingPasswordEnablesCopySave( )

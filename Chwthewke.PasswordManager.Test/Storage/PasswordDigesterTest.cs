@@ -2,7 +2,6 @@ using System;
 using System.Text;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
-using Moq;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Storage
@@ -13,14 +12,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         [ SetUp ]
         public void SetUpPasswordDigester( )
         {
-            _hashMock = new Mock<IHash>( );
-            var hashFactoryMock = new Mock<IHashFactory>( );
-
-            hashFactoryMock.Setup( f => f.GetHash( ) ).Returns( _hashMock.Object );
-            _hashMock.Setup( h => h.Append( It.IsAny<string>( ), It.IsAny<Encoding>( ) ) ).Returns( _hashMock.Object );
-
-            _timeProviderMock = new Mock<ITimeProvider>( );
-            _digester = new PasswordDigester( hashFactoryMock.Object, _timeProviderMock.Object );
+            _timeProviderStub = new TimeProviderStub( );
+            _hashFactory = new Sha512Factory( );
+            _digester = new PasswordDigester( _hashFactory, _timeProviderStub );
         }
 
         [ Test ]
@@ -28,14 +22,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             const string generatedPassword = "aPassword";
-            byte[ ] fakeHash = new byte[ ] { 0x50, 0x51, 0x52 };
-            _hashMock.Setup( h => h.GetValue( ) ).Returns( fakeHash );
+            byte[ ] expectedHash = _hashFactory.GetHash( )
+                .Append( PasswordDigester.DigestSalt, Encoding.UTF8 )
+                .Append( generatedPassword, Encoding.UTF8 )
+                .GetValue( );
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", generatedPassword, default( Guid ), default( Guid ), "" );
             // Verify
-            _hashMock.Verify( h => h.Append( PasswordDigester.DigestSalt, Encoding.UTF8 ) );
-            _hashMock.Verify( h => h.Append( generatedPassword, Encoding.UTF8 ) );
-            Assert.That( digest.Hash, Is.EqualTo( fakeHash ) );
+            Assert.That( digest.Hash, Is.EqualTo( expectedHash ) );
         }
 
         [ Test ]
@@ -43,7 +37,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             DateTime creationTime = new DateTime( 123456789123456L );
-            _timeProviderMock.Setup( tpm => tpm.Now ).Returns( creationTime );
+            _timeProviderStub.TimeProviderImpl = ( ) => creationTime;
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ), "" );
             // Verify
@@ -55,10 +49,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void PasswordDigesterPassesOtherAttributes( )
         {
             // Setup
-            string key = "aKey";
+            const string key = "aKey";
             Guid masterPasswordId = Guid.Parse( "1E22C5D2-8399-42D9-B474-95B7C0FEB5AF" );
             Guid passwordGeneratorId = Guid.Parse( "18E7700B-234C-4389-9A8B-3D3134EC42FA" );
-            string note = "A nonsensical Note";
+            const string note = "A nonsensical Note";
             // Exercise
             PasswordDigest digest = _digester.Digest( key, "generatedPassword", masterPasswordId, passwordGeneratorId,
                                                       note );
@@ -70,8 +64,23 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         private IPasswordDigester _digester;
+        private TimeProviderStub _timeProviderStub;
+        private Sha512Factory _hashFactory;
 
-        private Mock<IHash> _hashMock;
-        private Mock<ITimeProvider> _timeProviderMock;
+        private class TimeProviderStub : ITimeProvider
+        {
+            public TimeProviderStub( )
+            {
+                TimeProviderImpl = ( ) => new DateTime( );
+            }
+
+            internal Func<DateTime> TimeProviderImpl { private get; set; }
+
+            public DateTime Now
+            {
+                get { return TimeProviderImpl( ); }
+            }
+        }
+
     }
 }

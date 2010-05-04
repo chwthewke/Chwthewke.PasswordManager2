@@ -6,7 +6,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 {
     public abstract class BaseConverterTestBase
     {
-        protected abstract IBaseConverter GetConverter( int theBase );
+        internal abstract IBaseConverter GetConverter( int theBase );
 
         [ Test ]
         public void Test12Base64DigitsNeeds72Bits( )

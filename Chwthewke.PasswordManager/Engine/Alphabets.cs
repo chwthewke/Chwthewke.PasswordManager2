@@ -1,6 +1,6 @@
 namespace Chwthewke.PasswordManager.Engine
 {
-    public static class Alphabets
+    internal static class Alphabets
     {
         internal static readonly Alphabet Symbols92 = new Alphabet( SymbolsString92 );
         internal static readonly Alphabet Symbols62 = new Alphabet( SymbolsString62 );

@@ -7,7 +7,7 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    public class PasswordStore : IPasswordStore
+    internal class PasswordStore : IPasswordStore
     {
         public PasswordStore( IEnumerable<IPasswordGenerator> generators, IHashFactory hashFactory )
         {

@@ -1,31 +1,30 @@
 using System;
-using System.Collections.Generic;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
-using Chwthewke.PasswordManager.Engine;
 using System.Linq;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public interface IPasswordEditorFactory
     {
-        PasswordEditorViewModel CreatePasswordEditor( IPasswordEditorController controller );
+        PasswordEditorViewModel CreatePasswordEditor( );
     }
 
     class PasswordEditorFactory : IPasswordEditorFactory {
-        public PasswordEditorFactory( IClipboardService clipboardService, IEnumerable<IPasswordGenerator> generators )
+        public PasswordEditorFactory( IClipboardService clipboardService, IPasswordEditorControllerFactory controllerFactory )
         {
-            this._clipboardService = clipboardService;
-            _generators = generators;
+            _clipboardService = clipboardService;
+            _controllerFactory = controllerFactory;
         }
 
-        public PasswordEditorViewModel CreatePasswordEditor( IPasswordEditorController controller )
+        public PasswordEditorViewModel CreatePasswordEditor( )
         {
+            IPasswordEditorController controller = _controllerFactory.CreatePasswordEditorController( );
             return new PasswordEditorViewModel( controller, _clipboardService,
-               _generators.Select( g => new PasswordSlotViewModel( g ) ) );
+               controller.Generators.Select( g => new PasswordSlotViewModel( g ) ) );
         }
 
-        private readonly IEnumerable<IPasswordGenerator> _generators;
+        private readonly IPasswordEditorControllerFactory _controllerFactory;
         private readonly IClipboardService _clipboardService;
     }
 }

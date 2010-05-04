@@ -7,7 +7,7 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    public class PasswordStoreSerializer : IPasswordStoreSerializer
+    internal class PasswordStoreSerializer : IPasswordStoreSerializer
     {
         public const string PasswordStoreElement = "password-store";
         public const string PasswordElement = "password";

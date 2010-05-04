@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    public interface IHash
+    internal interface IHash
     {
         IHash Append( byte[ ] bytes );
 

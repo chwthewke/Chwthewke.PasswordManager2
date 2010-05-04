@@ -12,7 +12,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             _store = store;
             _editorFactory = editorFactory;
-            _openEditorCommand = new RelayCommand( ( ) => OpenNewEditor( null ) );
+            _openEditorCommand = new RelayCommand( ( ) => OpenNewEditorInternal( null ) );
             UpdatePasswords( );
         }
 
@@ -31,14 +31,41 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _openEditorCommand; }
         }
 
-        private void OpenNewEditor( string passwordKey )
+        public void OpenNewEditor( string passwordKey )
         {
-            
+            if ( !string.IsNullOrEmpty( passwordKey ) )
+                OpenNewEditorInternal( passwordKey );
+        }
+
+        private void OpenNewEditorInternal( string passwordKey )
+        {
+            PasswordEditorViewModel editor = _editorFactory.CreatePasswordEditor( );
+            if ( passwordKey != null )
+            {
+                editor.Key = passwordKey;
+                editor.LoadCommand.Execute( null );
+            }
+            editor.CloseRequested += EditorRequestedClose;
+            editor.StoreModified += StoreModified;
+
+            Editors.Add( editor );
+        }
+
+        private void StoreModified( object sender, EventArgs e )
+        {
+            throw new NotImplementedException( );
+        }
+
+        private void EditorRequestedClose( object sender, EventArgs e )
+        {
+            throw new NotImplementedException( );
         }
 
         private void CloseEditor( PasswordEditorViewModel editor )
         {
-            
+            editor.CloseRequested -= EditorRequestedClose;
+            editor.StoreModified -= StoreModified;
+            Editors.Remove( editor );
         }
         
         private void UpdatePasswords( )

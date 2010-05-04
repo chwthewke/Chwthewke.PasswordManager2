@@ -1,6 +1,6 @@
 namespace Chwthewke.PasswordManager.Engine
 {
-    public interface IBaseConverter
+    internal interface IBaseConverter
     {
         int Base { get; }
 

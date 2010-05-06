@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
@@ -48,7 +49,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            _controller.MasterPassword = Util.Secure( "123456" );
+            _controller.MasterPassword = "123456".ToSecureString( );
             // Verify
             Assert.That( _controller.IsDirty );
         }
@@ -73,7 +74,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _controller.Note = note;
             _controller.SelectedGenerator = generator;
 
-            _controller.MasterPassword = Util.Secure( "123456" );
+            _controller.MasterPassword = "123456".ToSecureString( );
             // Exercise
             _controller.SavePassword( );
             // Verify

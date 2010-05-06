@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using Chwthewke.PasswordManager.App.ViewModel;
@@ -45,7 +46,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
 
             // Exercise
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
             Assert.That( ViewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
             Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
@@ -57,7 +58,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
             ViewModel.Key = "  \t";
             // Exercise
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
             Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
             Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
@@ -68,7 +69,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abc";
-            SecureString masterPassword = Util.Secure( "12345" );
+            SecureString masterPassword = "12345".ToSecureString( );
             // Exercise
             ViewModel.UpdateMasterPassword( masterPassword );
             // Verify
@@ -83,13 +84,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abc";
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Exercise
             ViewModel.Key = "abcd";
             // Verify
             Assert.That(
                 ViewModel.Slots
-                    .Select( s => s.Content == s.Generator.MakePassword( "abcd", Util.Secure( "12345" ) ) )
+                    .Select( s => s.Content == s.Generator.MakePassword( "abcd", "12345".ToSecureString( ) ) )
                     .ToList( ),
                 Has.All.True );
             Assert.That( ViewModel.CanSelectPasswordSlot, Is.True );
@@ -100,7 +101,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abc";
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Exercise
             ViewModel.Key = string.Empty;
             // Verify
@@ -113,9 +114,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abc";
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Exercise
-            ViewModel.UpdateMasterPassword( Util.Secure( string.Empty ) );
+            ViewModel.UpdateMasterPassword( string.Empty.ToSecureString( ) );
             // Verify
             Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
             Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );

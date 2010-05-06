@@ -17,7 +17,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         protected PasswordEditorViewModel ViewModel;
         protected IPasswordEditorController Controller;
         protected Mock<IClipboardService> ClipboardServiceMock;
-        private IContainer _container;
+        protected IContainer Container;
 
         [ SetUp ]
         public void SetUpPasswordEditorViewModel( )
@@ -27,9 +27,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             builder.Register( c => c.Resolve<IPasswordEditorControllerFactory>( ).CreatePasswordEditorController( ) )
                 .As<IPasswordEditorController>( );
 
-            _container = builder.Build( );
+            Container = builder.Build( );
 
-            Controller = _container.Resolve<IPasswordEditorController>( );
+            Controller = Container.Resolve<IPasswordEditorController>( );
 
             ClipboardServiceMock = new Mock<IClipboardService>( );
 
@@ -39,18 +39,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 
         protected IPasswordStore PasswordStore
         {
-            get { return _container.Resolve<IPasswordStore>( ); }
-        }
-
-        protected void AddPassword( string key, string note, IPasswordGenerator generator, SecureString masterPassword )
-        {
-            IPasswordEditorController controller = _container.Resolve<IPasswordEditorController>( );
-            controller.Key = key;
-            controller.Note = note;
-            controller.SelectedGenerator = generator;
-            controller.MasterPassword = masterPassword;
-
-            controller.SavePassword( );
+            get { return Container.Resolve<IPasswordStore>( ); }
         }
     }
 }

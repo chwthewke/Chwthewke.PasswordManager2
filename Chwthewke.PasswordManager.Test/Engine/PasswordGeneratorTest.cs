@@ -1,4 +1,6 @@
 using System;
+using System.Collections.Generic;
+using System.Security;
 using System.Text;
 using Chwthewke.PasswordManager.Engine;
 using Moq;
@@ -65,7 +67,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
                 new PasswordGenerator( default( Guid ), new Sha512Factory( ), baseConverter, alphabet, 10 );
 
             // Exercise
-            string password = engine.MakePassword( domain, Util.Secure( masterPassword ) );
+            string password = engine.MakePassword( domain, masterPassword.ToSecureString( ) );
 
             // Verify
             byte[ ] hash =

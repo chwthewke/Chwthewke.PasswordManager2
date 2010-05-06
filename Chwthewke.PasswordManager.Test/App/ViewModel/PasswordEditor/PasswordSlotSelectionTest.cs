@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Security;
 using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
 
@@ -11,7 +13,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abcd";
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             
             bool copyCommandCanExecuteChanged = false;
             ViewModel.CopyCommand.CanExecuteChanged += ( s, e ) => { copyCommandCanExecuteChanged = true; };
@@ -31,7 +33,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abcd";
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             ViewModel.Slots[ 0 ].IsSelected = true;
 
             bool copyCommandCanExecuteChanged = false;

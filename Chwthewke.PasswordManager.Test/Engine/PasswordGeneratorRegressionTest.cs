@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using NUnit.Framework;
 
@@ -16,7 +18,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                PasswordGenerators.AlphaNumeric.MakePassword( Key, Util.Secure( Password ) );
+                PasswordGenerators.AlphaNumeric.MakePassword( Key, Password.ToSecureString( ) );
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( "deDYrBiXvMHN" ) );
         }
@@ -28,7 +30,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                PasswordGenerators.Full.MakePassword( Key, Util.Secure( Password ) );
+                PasswordGenerators.Full.MakePassword( Key, Password.ToSecureString( ) );
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( "(Z'?6G3(w(" ) );
         }

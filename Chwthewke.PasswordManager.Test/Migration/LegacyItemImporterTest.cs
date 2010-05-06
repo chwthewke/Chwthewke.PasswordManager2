@@ -42,7 +42,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
                                                           new LegacyItem( "aKey", false ),
                                                           new LegacyItem( "anotherKey", true ),
                                                       };
-            SecureString masterPassword = Util.Secure( "p@ssw" );
+            SecureString masterPassword = "p@ssw".ToSecureString( );
 
             // Exercise
             _importer.Import( legacyItems, masterPassword );
@@ -55,7 +55,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
         public void ImportAddsDigestsToStore( )
         {
             // Setup
-            SecureString masterPassword = Util.Secure( "p@ssw" );
+            SecureString masterPassword = "p@ssw".ToSecureString( );
 
             PasswordDigest passwordDigest1 = new PasswordDigestBuilder( ).WithKey( "aKey" );
             _passwordDigesterMock.Setup( DoDigest( "aKey", masterPassword, PasswordGenerators.Full ) )

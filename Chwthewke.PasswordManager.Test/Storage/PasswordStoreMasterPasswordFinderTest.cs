@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -29,7 +30,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void FindMasterPasswordInStoreWhenDigestMatches( )
         {
             // Setup
-            SecureString masterPassword = Util.Secure( "toto" );
+            SecureString masterPassword = "toto".ToSecureString( );
             PasswordDigest matchingDigest =
                 _digester.Digest( "key1",
                                   PasswordGenerators.Full.MakePassword( "key1", masterPassword ),
@@ -40,7 +41,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             
             PasswordDigest notMatchingDigest =
                 _digester.Digest( "key2",
-                                  PasswordGenerators.Full.MakePassword( "key2", Util.Secure( "tata" ) ),
+                                  PasswordGenerators.Full.MakePassword( "key2", "tata".ToSecureString( ) ),
                                   Guid.NewGuid( ),
                                   PasswordGenerators.Full.Id,
                                   string.Empty );
@@ -58,13 +59,13 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             PasswordDigest notMatchingDigest =
                 _digester.Digest( "key1",
-                                  PasswordGenerators.Full.MakePassword( "key1", Util.Secure( "tata" ) ),
+                                  PasswordGenerators.Full.MakePassword( "key1", "tata".ToSecureString( ) ),
                                   Guid.NewGuid( ),
                                   PasswordGenerators.Full.Id,
                                   string.Empty );
             _store.AddOrUpdate( notMatchingDigest );
             // Exercise
-            Guid? guid = _store.IdentifyMasterPassword( Util.Secure( "toto" ) );
+            Guid? guid = _store.IdentifyMasterPassword( "toto".ToSecureString( ) );
             // Verify
             Assert.That( guid.HasValue, Is.False );
         }

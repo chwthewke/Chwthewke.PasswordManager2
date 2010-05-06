@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Security;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
@@ -14,7 +16,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abc";
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             PasswordSlotViewModel slot = ViewModel.Slots[ 0 ];
             slot.IsSelected = true;
             Assert.That( ViewModel.CopyCommand.CanExecute( null ), Is.True );
@@ -29,7 +31,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abc";
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             PasswordSlotViewModel slot = ViewModel.Slots[ 0 ];
             slot.IsSelected = true;
             Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.True );
@@ -44,7 +46,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abc";
-            ViewModel.UpdateMasterPassword( Util.Secure( "12345" ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             PasswordSlotViewModel slot = ViewModel.Slots[ 0 ];
             slot.IsSelected = true;
             Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.True );

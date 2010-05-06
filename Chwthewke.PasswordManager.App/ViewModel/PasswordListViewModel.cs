@@ -1,8 +1,9 @@
-using System;
+﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.Storage;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -13,12 +14,17 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _store = store;
             _editorFactory = editorFactory;
             _openEditorCommand = new RelayCommand( ( ) => OpenNewEditorInternal( null ) );
-            UpdatePasswords( );
+            UpdateList( );
         }
 
         public ObservableCollection<PasswordListItem> Items
         {
             get { return _items; }
+            private set
+            {
+                _items = value;
+                RaisePropertyChanged( ( ) => Items );
+            }
         }
 
         public ObservableCollection<PasswordEditorViewModel> Editors
@@ -53,12 +59,24 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void StoreModified( object sender, EventArgs e )
         {
-            throw new NotImplementedException( );
+            UpdateList( );
         }
+
+        private void UpdateList( )
+        {
+            Items = new ObservableCollection<PasswordListItem>(
+                from password in _store.Passwords
+                orderby password.Key
+                select new PasswordListItem { Name = password.Key, MasterPasswordGuid = password.MasterPasswordId }
+                );
+        }
+
 
         private void EditorRequestedClose( object sender, EventArgs e )
         {
-            throw new NotImplementedException( );
+            PasswordEditorViewModel editor = sender as PasswordEditorViewModel;
+            if ( editor != null )
+                CloseEditor( editor );
         }
 
         private void CloseEditor( PasswordEditorViewModel editor )
@@ -67,16 +85,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             editor.StoreModified -= StoreModified;
             Editors.Remove( editor );
         }
-        
-        private void UpdatePasswords( )
-        {
-            throw new NotImplementedException( );
-        }
 
+        private ObservableCollection<PasswordListItem> _items;
 
-        private readonly ObservableCollection<PasswordListItem> _items = 
-            new ObservableCollection<PasswordListItem>( );
-        private readonly ObservableCollection<PasswordEditorViewModel> _editors = 
+        private readonly ObservableCollection<PasswordEditorViewModel> _editors =
             new ObservableCollection<PasswordEditorViewModel>( );
 
         private readonly ICommand _openEditorCommand;

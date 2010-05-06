@@ -66,7 +66,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         {
             // Setup
             // Exercise
-            _hashWrapper.Append( Util.Secure( Input ), Encoding.UTF8 );
+            _hashWrapper.Append( Input.ToSecureString( ), Encoding.UTF8 );
             // Verify
             Assert.That( _hashWrapper.GetValue( ), Is.EquivalentTo( _output ) );
         }

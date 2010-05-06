@@ -1,3 +1,5 @@
+using System.Collections.Generic;
+using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
@@ -15,7 +17,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
 
-            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, Util.Secure( "123" ) );
+            Container.AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             // Exercise
             ViewModel.Key = "abcd";
             // Verify
@@ -26,7 +28,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LoadDoesNotEnableUntilStoredKeyFullyTyped( )
         {
             // Setup
-            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, Util.Secure( "123" ) );
+            Container.AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             // Exercise
             ViewModel.Key = "abc";
             // Verify
@@ -37,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LoadDoesNotEnableAfterStoredKeyTyped( )
         {
             // Setup
-            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, Util.Secure( "123" ) );
+            Container.AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             // Exercise
             ViewModel.Key = "abcd";
             ViewModel.Key = "abcde";

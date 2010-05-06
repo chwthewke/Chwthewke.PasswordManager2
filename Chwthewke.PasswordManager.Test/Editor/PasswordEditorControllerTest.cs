@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
@@ -66,7 +67,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
 
             // Exercise
-            _controller.MasterPassword = Util.Secure( "12345" );
+            _controller.MasterPassword = "12345".ToSecureString( );
             // Verify
             Assert.That( _controller.Generators.All( g => _controller.GeneratedPassword( g ) == string.Empty ), Is.True );
         }
@@ -78,7 +79,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             // Exercise
             _controller.Key = "  \t";
-            _controller.MasterPassword = Util.Secure( "12345" );
+            _controller.MasterPassword = "12345".ToSecureString( );
             // Verify
             Assert.That( _controller.Generators.All( g => _controller.GeneratedPassword( g ) == string.Empty ), Is.True );
         }
@@ -99,7 +100,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             string key = "abcd";
-            SecureString masterPassword = Util.Secure( "12345" );
+            SecureString masterPassword = "12345".ToSecureString( );
             // Exercise
             _controller.Key = key;
             _controller.MasterPassword = masterPassword;
@@ -119,7 +120,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             string key = "abcd";
-            SecureString masterPassword = Util.Secure( "12345" );
+            SecureString masterPassword = "12345".ToSecureString( );
             _controller.Key = key;
             _controller.MasterPassword = masterPassword;
             // Exercise
@@ -135,11 +136,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             string key = "abcd";
-            SecureString masterPassword = Util.Secure( "12345" );
+            SecureString masterPassword = "12345".ToSecureString( );
             _controller.Key = key;
             _controller.MasterPassword = masterPassword;
             // Exercise
-            _controller.MasterPassword = Util.Secure( string.Empty );
+            _controller.MasterPassword = string.Empty.ToSecureString( );
             // Verify
             Assert.That(
                 _controller.Generators.All( g => _controller.GeneratedPassword( g ) == string.Empty ),
@@ -151,7 +152,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             Guid guid = new Guid( "AEBE0ECF-D80D-48AE-B9BE-1EF4B2D72605" );
-            SecureString masterPassword = Util.Secure( "12456" );
+            SecureString masterPassword = "12456".ToSecureString( );
             _storeMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) )
                 .Returns( guid );
             // Exercise
@@ -164,7 +165,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void MasterPasswordIdNullIfNotFoundInStore( )
         {
             // Setup
-            SecureString masterPassword = Util.Secure( "12456" );
+            SecureString masterPassword = "12456".ToSecureString( );
             _storeMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) )
                 .Returns( ( Guid? ) null );
             // Exercise
@@ -189,7 +190,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             _controller.Key = "abcd";
-            _controller.MasterPassword = Util.Secure( "1234" );
+            _controller.MasterPassword = "1234".ToSecureString( );
             // Exercise
             _controller.SavePassword( );
             // Verify
@@ -201,7 +202,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             string key = "abcd";
-            SecureString masterPassword = Util.Secure( "1234" );
+            SecureString masterPassword = "1234".ToSecureString( );
             string note = "some note";
             IPasswordGenerator generator = PasswordGenerators.Full;
 
@@ -228,7 +229,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             string key = "abcd";
-            SecureString masterPassword = Util.Secure( "1234" );
+            SecureString masterPassword = "1234".ToSecureString( );
             string note = "some note";
             IPasswordGenerator generator = PasswordGenerators.AlphaNumeric;
 

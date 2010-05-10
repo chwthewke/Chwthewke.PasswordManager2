@@ -24,6 +24,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             ContainerBuilder builder = new ContainerBuilder( );
             builder.RegisterModule( new PasswordManagerModule( ) );
+            builder.RegisterModule( new UninitializedPasswordStorage( ) );
             builder.Register( c => c.Resolve<IPasswordEditorControllerFactory>( ).CreatePasswordEditorController( ) )
                 .As<IPasswordEditorController>( );
 

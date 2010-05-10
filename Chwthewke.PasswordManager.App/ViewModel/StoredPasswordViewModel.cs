@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Windows.Media;
 using Chwthewke.MvvmUtils;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
-    public class PasswordListItem : ObservableObject
+    public class StoredPasswordViewModel : ObservableObject
     {
         public string Name
         {
@@ -29,10 +30,21 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
+        public Color MasterPasswordColor
+        {
+            get { return _masterPasswordColor; }
+            set
+            {
+                if ( _masterPasswordColor == value )
+                    return;
+                _masterPasswordColor = value;
+                RaisePropertyChanged( ( ) => MasterPasswordColor );
+            }
+        }
 
         private string _name;
         private Guid _masterPasswordGuid;
-
+        private Color _masterPasswordColor;
 
 
     }

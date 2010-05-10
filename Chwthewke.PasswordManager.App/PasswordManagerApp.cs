@@ -1,6 +1,6 @@
 using System.Windows;
 using Autofac;
-using Chwthewke.PasswordManager.App.Configuration;
+using Chwthewke.PasswordManager.App.Modules;
 
 namespace Chwthewke.PasswordManager.App
 {
@@ -8,7 +8,7 @@ namespace Chwthewke.PasswordManager.App
     {
         public static void Main( string[ ] args )
         {
-            IContainer container = new AppConfiguration( ).ConfigureContainer( );
+            IContainer container = AppConfiguration.ConfigureContainer( );
             PasswordManagerApp passwordManagerApp = container.Resolve<PasswordManagerApp>( );
             passwordManagerApp.Run( passwordManagerApp.MainWindow );
         }

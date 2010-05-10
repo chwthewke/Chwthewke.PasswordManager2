@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Windows.Input;
+using System.Windows.Media;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.Storage;
 using System.Linq;
@@ -9,15 +10,18 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordListViewModel : ObservableObject
     {
-        public PasswordListViewModel( IPasswordStore store, IPasswordEditorFactory editorFactory )
+        public PasswordListViewModel( IPasswordStore store,
+                                      IPasswordEditorFactory editorFactory,
+                                      IGuidToColorConverter guidConverter )
         {
             _store = store;
             _editorFactory = editorFactory;
+            _guidConverter = guidConverter;
             _openEditorCommand = new RelayCommand( ( ) => OpenNewEditorInternal( null ) );
             UpdateList( );
         }
 
-        public ObservableCollection<PasswordListItem> Items
+        public ObservableCollection<StoredPasswordViewModel> Items
         {
             get { return _items; }
             private set
@@ -64,10 +68,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void UpdateList( )
         {
-            Items = new ObservableCollection<PasswordListItem>(
+            Items = new ObservableCollection<StoredPasswordViewModel>(
                 from password in _store.Passwords
                 orderby password.Key
-                select new PasswordListItem { Name = password.Key, MasterPasswordGuid = password.MasterPasswordId }
+                select new StoredPasswordViewModel
+                           {
+                               Name = password.Key,
+                               MasterPasswordGuid = password.MasterPasswordId,
+                               MasterPasswordColor = _guidConverter.Convert( password.MasterPasswordId )
+                           }
                 );
         }
 
@@ -86,7 +95,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Editors.Remove( editor );
         }
 
-        private ObservableCollection<PasswordListItem> _items;
+        private ObservableCollection<StoredPasswordViewModel> _items;
 
         private readonly ObservableCollection<PasswordEditorViewModel> _editors =
             new ObservableCollection<PasswordEditorViewModel>( );
@@ -94,5 +103,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _openEditorCommand;
         private readonly IPasswordStore _store;
         private readonly IPasswordEditorFactory _editorFactory;
+        private readonly IGuidToColorConverter _guidConverter;
     }
 }

@@ -1,5 +1,5 @@
 using Autofac;
-using Chwthewke.PasswordManager.App.Services;
+using Chwthewke.PasswordManager.App.Modules;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Modules;
@@ -18,12 +18,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         {
             ContainerBuilder containerBuilder = new ContainerBuilder( );
             containerBuilder.RegisterModule( new PasswordManagerModule( ) );
-            containerBuilder.RegisterType<ClipboardService>( ).As<IClipboardService>( );
-            containerBuilder.RegisterType<PasswordEditorFactory>( ).As<IPasswordEditorFactory>( );
+            containerBuilder.RegisterModule( new UninitializedPasswordStorage( ) );
+            containerBuilder.RegisterModule( new ApplicationServices( ) );
             _container = containerBuilder.Build( );
 
             _passwordList = new PasswordListViewModel( _container.Resolve<IPasswordStore>( ),
-                                                       _container.Resolve<IPasswordEditorFactory>( ) );
+                                                       _container.Resolve<IPasswordEditorFactory>( ),
+                                                       _container.Resolve<IGuidToColorConverter>( ) );
         }
 
         [ Test ]
@@ -35,7 +36,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             _container.AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "1234".ToSecureString( ) );
             // Exercise
             _passwordList = new PasswordListViewModel( _container.Resolve<IPasswordStore>( ),
-                                                       _container.Resolve<IPasswordEditorFactory>( ) );
+                                                       _container.Resolve<IPasswordEditorFactory>( ),
+                                                       _container.Resolve<IGuidToColorConverter>( ) );
             // Verify
             Assert.That( _passwordList.Items.Select( x => x.Name ).ToArray( ),
                          Is.EqualTo( new[ ] { "abc", "abcd", "abde" } ) );
@@ -94,7 +96,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _passwordList.Editors, Is.Empty );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordListIsNoLongerUpdatedByClosedEditorChange( )
         {
             // Setup

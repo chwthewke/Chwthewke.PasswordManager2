@@ -81,14 +81,12 @@ namespace Chwthewke.PasswordManager.Test.Migration
         public void SaveCallsSerializer( )
         {
             // Setup
-
             try
             {
                 // Exercise
                 _importer.Save( "__tmp__" );
                 // Verify
-                _serializerMock.Verify( s => s.Save( _passwordStoreMock.Object,
-                                                     It.Is<FileStream>( fs => fs.Name.EndsWith( @"\__tmp__" ) ) ) );
+                _serializerMock.Verify( s => s.Save( _passwordStoreMock.Object, It.IsAny<TextWriter>() ) );
             }
             finally
             {

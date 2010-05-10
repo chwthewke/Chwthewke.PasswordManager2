@@ -6,10 +6,16 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class DataLifeCycle
     {
+        public DataLifeCycle( IPasswordStore passwordStore, IPasswordStoreSerializer serializer )
+        {
+            _passwordStore = passwordStore;
+            _serializer = serializer;
+        }
+
         public void Load( )
         {
             string serializedPasswordStore = Settings.Default.PasswordStore;
-            _serializer.Load( _passwordStore, new MemoryStream( ) );
+            _serializer.Load( _passwordStore, new StringReader( serializedPasswordStore ) );
         }
 
         public void Save( )

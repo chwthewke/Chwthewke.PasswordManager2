@@ -18,28 +18,20 @@ namespace Chwthewke.PasswordManager.Storage
         public const string TimestampElement = "timestamp";
         public const string NoteElement = "note";
 
-        public PasswordStoreSerializer( Encoding encoding )
-        {
-            if ( encoding == null )
-                throw new ArgumentNullException( "encoding" );
 
-            _encoding = encoding;
-        }
-
-        public void Save( IPasswordStore passwordStore, Stream outputStream )
+        public void Save( IPasswordStore passwordStore, TextWriter writer )
         {
             XElement root = ToXml( passwordStore );
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
                                                       {
                                                           OmitXmlDeclaration = true,
-                                                          Encoding = _encoding,
                                                           ConformanceLevel = ConformanceLevel.Document,
                                                           Indent = true,
                                                           IndentChars = "  ",
                                                           
                                                       };
-            using ( XmlWriter xw = XmlWriter.Create( outputStream, xmlWriterSettings ) )
-                root.Save( xw );
+            using ( XmlWriter xw = XmlWriter.Create( writer, xmlWriterSettings ) )
+                if ( xw != null ) root.Save( xw );
         }
 
         private static XElement ToXml( IPasswordStore passwordStore )
@@ -61,13 +53,10 @@ namespace Chwthewke.PasswordManager.Storage
             return xElement;
         }
 
-        public void Load( IPasswordStore passwordStore, Stream inputStream )
+        public void Load( IPasswordStore passwordStore, TextReader textReader )
         {
-            using ( TextReader tr = new StreamReader( inputStream, _encoding ) )
-            {
-                XElement xml = XElement.Load( tr );
-                ReadFromXml( passwordStore, xml );
-            }
+            XElement xml = XElement.Load( textReader );
+            ReadFromXml( passwordStore, xml );
         }
 
         private static void ReadFromXml( IPasswordStore passwordStore, XElement xml )
@@ -98,6 +87,5 @@ namespace Chwthewke.PasswordManager.Storage
             passwordStore.AddOrUpdate( passwordDigest );
         }
 
-        private readonly Encoding _encoding;
     }
 }

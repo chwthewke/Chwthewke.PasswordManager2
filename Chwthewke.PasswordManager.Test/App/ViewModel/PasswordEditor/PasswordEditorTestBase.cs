@@ -7,6 +7,7 @@ using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Modules;
 using Chwthewke.PasswordManager.Storage;
+using Chwthewke.PasswordManager.Test.Storage;
 using Moq;
 using NUnit.Framework;
 

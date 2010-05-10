@@ -1,8 +1,7 @@
-﻿using System.Text;
-using Autofac;
+﻿using Autofac;
 using Chwthewke.PasswordManager.Storage;
 
-namespace Chwthewke.PasswordManager.Modules
+namespace Chwthewke.PasswordManager.Test.Storage
 {
     public class UninitializedPasswordStorage : Module
     {
@@ -12,7 +11,6 @@ namespace Chwthewke.PasswordManager.Modules
             builder.RegisterType<PasswordStore>( ).As<IPasswordStore>( ).SingleInstance( );
             builder.RegisterType<PasswordStoreSerializer>( ).As<IPasswordStoreSerializer>( );
 
-            builder.RegisterInstance( new UTF8Encoding( false ) ).As<Encoding>( );
         }
     }
 }

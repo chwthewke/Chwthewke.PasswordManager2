@@ -54,7 +54,8 @@ namespace Chwthewke.PasswordManager.Migration
         public void Save( string fileName )
         {
             using ( FileStream outputStream = File.OpenWrite( fileName ) )
-                _serializer.Save( _passwordStore, outputStream );
+            using ( TextWriter writer = new StreamWriter( outputStream ) )
+                _serializer.Save( _passwordStore, writer );
         }
     }
 }

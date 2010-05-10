@@ -26,9 +26,7 @@ namespace Chwthewke.PasswordManager.Migration
 
         private void PasswordChanged( object sender, RoutedEventArgs e )
         {
-            BindingExpression be = _import.GetBindingExpression( ButtonBase.CommandParameterProperty );
-            if ( be != null )
-                be.UpdateTarget( );
+            ViewModel.UpdateMasterPassword( _password.SecurePassword );
         }
     }
 }

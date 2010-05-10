@@ -14,7 +14,7 @@ namespace Chwthewke.PasswordManager.Migration
     {
         public ImporterViewModel( ILegacyItemLoader loader, ILegacyItemImporter importer )
         {
-            _importCommand = new RelayCommand<SecureString>( Import, CanImport );
+            _importCommand = new RelayCommand( Import, CanImport );
             _browseSettingsCommand = new RelayCommand( BrowseSourceFile );
             _saveCommand = new RelayCommand( Save, CanSave );
 
@@ -79,20 +79,26 @@ namespace Chwthewke.PasswordManager.Migration
             get { return _saveCommand; }
         }
 
-        private bool CanImport( SecureString masterPassword )
+        public void UpdateMasterPassword( SecureString masterPassword )
         {
-            return CheckSourceFile( ) && masterPassword.Length > 0;
+            _masterPassword = masterPassword;
+            _importCommand.RaiseCanExecuteChanged( );
         }
 
-        private void Import( SecureString masterPassword )
+        private bool CanImport( )
         {
-            if ( !CanImport( masterPassword ) )
+            return CheckSourceFile( ) && _masterPassword.Length > 0;
+        }
+
+        private void Import( )
+        {
+            if ( !CanImport( ) )
                 return;
 
             try
             {
                 IEnumerable<LegacyItem> items = _loader.Load( File.OpenText( SourceFile ) );
-                _importer.Import( items, masterPassword );
+                _importer.Import( items, _masterPassword );
 
                 NumPasswords = _importer.NumPasswords;
                 PasswordsTooltip = MakePasswordsTooltip( );
@@ -134,7 +140,7 @@ namespace Chwthewke.PasswordManager.Migration
         {
             OpenFileDialog dialog = new OpenFileDialog
                                         {
-                                            CustomPlaces = _settingsCustomPlaces,
+                                            CustomPlaces = SettingsCustomPlaces,
                                             DereferenceLinks = true,
                                             InitialDirectory = FileDialogCustomPlaces.LocalApplicationData.Path
                                         };
@@ -154,7 +160,7 @@ namespace Chwthewke.PasswordManager.Migration
         {
             SaveFileDialog dialog = new SaveFileDialog
                                         {
-                                            CustomPlaces = _settingsCustomPlaces,
+                                            CustomPlaces = SettingsCustomPlaces,
                                             InitialDirectory = FileDialogCustomPlaces.Desktop.Path,
                                             DefaultExt = ".pmd"
                                         };
@@ -183,12 +189,14 @@ namespace Chwthewke.PasswordManager.Migration
         private readonly ILegacyItemLoader _loader;
         private readonly ILegacyItemImporter _importer;
 
-        private static readonly IList<FileDialogCustomPlace> _settingsCustomPlaces =
+        private static readonly IList<FileDialogCustomPlace> SettingsCustomPlaces =
             new List<FileDialogCustomPlace>
                 {
                     FileDialogCustomPlaces.Desktop,
                     FileDialogCustomPlaces.Documents,
                     FileDialogCustomPlaces.LocalApplicationData,
                 };
+
+        private SecureString _masterPassword = new SecureString( );
     }
 }

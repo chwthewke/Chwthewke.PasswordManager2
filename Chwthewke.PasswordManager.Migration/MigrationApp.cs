@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using Autofac;
 using Chwthewke.PasswordManager.Modules;
+using Chwthewke.PasswordManager.Test.Storage;
 
 namespace Chwthewke.PasswordManager.Migration
 {
@@ -12,6 +13,7 @@ namespace Chwthewke.PasswordManager.Migration
         {
             ContainerBuilder builder = new ContainerBuilder( );
             builder.RegisterModule( new PasswordManagerModule( ) );
+            builder.RegisterModule( new UninitializedPasswordStorageModule( ) );
             builder.RegisterModule( new MigrationModule( ) );
 
             MigrationApp app = builder.Build( ).Resolve<MigrationApp>( );

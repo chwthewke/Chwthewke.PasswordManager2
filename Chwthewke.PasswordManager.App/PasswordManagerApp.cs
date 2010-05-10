@@ -1,21 +1,46 @@
+using System;
 using System.Windows;
 using Autofac;
 using Chwthewke.PasswordManager.App.Modules;
+using Chwthewke.PasswordManager.App.Services;
+using Chwthewke.PasswordManager.App.ViewModel;
 
 namespace Chwthewke.PasswordManager.App
 {
     public class PasswordManagerApp : Application
     {
+        [ STAThread ]
         public static void Main( string[ ] args )
         {
             IContainer container = AppConfiguration.ConfigureContainer( );
             PasswordManagerApp passwordManagerApp = container.Resolve<PasswordManagerApp>( );
-            passwordManagerApp.Run( passwordManagerApp.MainWindow );
+
+            passwordManagerApp.Start( );
         }
 
-        public PasswordManagerApp( MainWindow mainWindow )
+        public PasswordManagerApp( PasswordManagerWindow passwordManagerWindow,
+                                   Func<IPasswordPersistenceService> persistenceServiceProvider )
         {
-            MainWindow = mainWindow;
+            MainWindow = passwordManagerWindow;
+            _passwordList = passwordManagerWindow.ViewModel.PasswordList;
+            _persistenceService = persistenceServiceProvider( );
         }
+
+        private void Start( )
+        {
+            SetupPersistence( );
+            Run( MainWindow );
+        }
+
+        private void SetupPersistence( )
+        {
+            _persistenceService.Start( );
+            _passwordList.SaveRequested += ( s, e ) => _persistenceService.Save( );
+            Exit += ( s, e ) => _persistenceService.Stop( );
+        }
+
+
+        private readonly IPasswordPersistenceService _persistenceService;
+        private readonly PasswordListViewModel _passwordList;
     }
 }

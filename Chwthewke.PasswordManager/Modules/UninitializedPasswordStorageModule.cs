@@ -3,7 +3,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
-    public class UninitializedPasswordStorage : Module
+    public class UninitializedPasswordStorageModule : Module
     {
         protected override void Load( ContainerBuilder builder )
         {

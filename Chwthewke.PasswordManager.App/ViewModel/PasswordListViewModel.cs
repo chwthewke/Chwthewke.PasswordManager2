@@ -47,6 +47,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 OpenNewEditorInternal( passwordKey );
         }
 
+        public event EventHandler SaveRequested;
+
         private void OpenNewEditorInternal( string passwordKey )
         {
             PasswordEditorViewModel editor = _editorFactory.CreatePasswordEditor( );
@@ -64,6 +66,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void StoreModified( object sender, EventArgs e )
         {
             UpdateList( );
+            RaiseSaveRequested( );
+        }
+
+        private void RaiseSaveRequested( )
+        {
+            EventHandler saveRequested = SaveRequested;
+            if (saveRequested != null)
+                saveRequested( this, EventArgs.Empty );
         }
 
         private void UpdateList( )

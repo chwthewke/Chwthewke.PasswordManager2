@@ -14,7 +14,8 @@
         </Grid.RowDefinitions>
         <Grid.ColumnDefinitions>
             <ColumnDefinition Width="1*" />
-            <ColumnDefinition Width="3*" />
+            <ColumnDefinition Width="2*" />
+            <ColumnDefinition Width="1*" />
             <ColumnDefinition Width="1*" />
         </Grid.ColumnDefinitions>
 
@@ -25,11 +26,12 @@
         <TextBox Text="{Binding SourceFile, Mode=TwoWay}"
                  Margin="5 0"
                  Grid.Column="1"
+                 Grid.ColumnSpan="2"
                  Grid.Row="0"
                  VerticalAlignment="Center"
                  x:Name="_sourceFile" />
         <Button Margin="5 0"
-                Grid.Column="2"
+                Grid.Column="3"
                 Grid.Row="0"
                 VerticalAlignment="Center"
                 Command="{Binding BrowseSettingsCommand}">Browse...</Button>
@@ -41,12 +43,13 @@
                VerticalAlignment="Center"
                Target="{Binding ElementName=_password}">Master password:</Label>
         <PasswordBox Grid.Column="1"
+                     Grid.ColumnSpan="2"
                      Grid.Row="1"
                      VerticalAlignment="Center"
                      Margin="5 0"
                      x:Name="_password" PasswordChanged="PasswordChanged"/>
         <Button Grid.Row="1"
-                Grid.Column="2"
+                Grid.Column="3"
                 Margin="5 0"
                 x:Name="_import"
                 Command="{Binding ImportCommand}"
@@ -71,5 +74,10 @@
                 Command="{Binding SaveCommand}"
                 Margin="5 0"
                 VerticalAlignment="Center">Save...</Button>
+        <Button Grid.Row="2"
+                Grid.Column="3"
+                Command="{Binding SaveToSettingsCommand}"
+                Margin="5 0"
+                VerticalAlignment="Center">Save to user.config</Button>
     </Grid>
 </UserControl>

@@ -19,7 +19,7 @@ namespace Chwthewke.PasswordManager.App.Services
         {
             try
             {
-                _serializer.Load( _passwordStore, new StringReader( _settings.PasswordStore ) );
+                _serializer.Load( _passwordStore, new StringReader( _settings.PasswordDatabase ) );
             }
             catch ( Exception e )
             {
@@ -31,12 +31,13 @@ namespace Chwthewke.PasswordManager.App.Services
         {
             TextWriter writer = new StringWriter( );
             _serializer.Save( _passwordStore, writer );
-            _settings.PasswordStore = writer.ToString( );
+            _settings.PasswordDatabase = writer.ToString( );
         }
 
         public void Stop( )
         {
             Save( );
+            _settings.Save( );
         }
 
         private readonly Settings _settings;

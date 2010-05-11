@@ -2,6 +2,7 @@ using System;
 using System.Windows;
 using Autofac;
 using Chwthewke.PasswordManager.App.Modules;
+using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
 
@@ -35,10 +36,10 @@ namespace Chwthewke.PasswordManager.App
         private void SetupPersistence( )
         {
             _persistenceService.Start( );
+            _passwordList.UpdateList( );
             _passwordList.SaveRequested += ( s, e ) => _persistenceService.Save( );
             Exit += ( s, e ) => _persistenceService.Stop( );
         }
-
 
         private readonly IPasswordPersistenceService _persistenceService;
         private readonly PasswordListViewModel _passwordList;

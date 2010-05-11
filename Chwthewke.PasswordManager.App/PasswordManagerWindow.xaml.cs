@@ -22,5 +22,10 @@ namespace Chwthewke.PasswordManager.App
             get { return DataContext as PasswordManagerViewModel; }
             set { DataContext = value; }
         }
+
+        private void Button_Click( object sender, RoutedEventArgs e )
+        {
+
+        }
     }
 }

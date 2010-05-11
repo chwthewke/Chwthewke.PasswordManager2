@@ -5,6 +5,7 @@ using System.Security;
 using System.Windows;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
+using Chwthewke.PasswordManager.Migration.Properties;
 using Microsoft.Win32;
 using System.Linq;
 
@@ -17,6 +18,7 @@ namespace Chwthewke.PasswordManager.Migration
             _importCommand = new RelayCommand( Import, CanImport );
             _browseSettingsCommand = new RelayCommand( BrowseSourceFile );
             _saveCommand = new RelayCommand( Save, CanSave );
+            _saveToSettingsCommand = new RelayCommand( SaveToSettings, CanSave );
 
             _loader = loader;
             _importer = importer;
@@ -47,6 +49,7 @@ namespace Chwthewke.PasswordManager.Migration
                 _numPasswords = value;
                 RaisePropertyChanged( ( ) => NumPasswords );
                 _saveCommand.RaiseCanExecuteChanged( );
+                _saveToSettingsCommand.RaiseCanExecuteChanged(  );
             }
         }
 
@@ -77,6 +80,11 @@ namespace Chwthewke.PasswordManager.Migration
         public ICommand SaveCommand
         {
             get { return _saveCommand; }
+        }
+
+        public ICommand SaveToSettingsCommand
+        {
+            get { return _saveToSettingsCommand; }
         }
 
         public void UpdateMasterPassword( SecureString masterPassword )
@@ -179,12 +187,19 @@ namespace Chwthewke.PasswordManager.Migration
             }
         }
 
+        private void SaveToSettings( )
+        {
+            Settings.Default.PasswordDatabase = _importer.ToString( );
+            Settings.Default.Save( );
+        }
+
         private string _sourceFile;
         private int _numPasswords;
 
         private readonly IUpdatableCommand _importCommand;
         private readonly IUpdatableCommand _browseSettingsCommand;
         private readonly IUpdatableCommand _saveCommand;
+        private readonly IUpdatableCommand _saveToSettingsCommand;
 
         private readonly ILegacyItemLoader _loader;
         private readonly ILegacyItemImporter _importer;

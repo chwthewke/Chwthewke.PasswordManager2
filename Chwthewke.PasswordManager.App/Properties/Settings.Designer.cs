@@ -26,12 +26,12 @@ namespace Chwthewke.PasswordManager.App.Properties {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("")]
-        public string PasswordStore {
+        public string PasswordDatabase {
             get {
-                return ((string)(this["PasswordStore"]));
+                return ((string)(this["PasswordDatabase"]));
             }
             set {
-                this["PasswordStore"] = value;
+                this["PasswordDatabase"] = value;
             }
         }
     }

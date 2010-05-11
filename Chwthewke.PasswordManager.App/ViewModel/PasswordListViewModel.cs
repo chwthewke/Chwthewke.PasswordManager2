@@ -76,7 +76,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 saveRequested( this, EventArgs.Empty );
         }
 
-        private void UpdateList( )
+        public void UpdateList( )
         {
             Items = new ObservableCollection<StoredPasswordViewModel>(
                 from password in _store.Passwords

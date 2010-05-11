@@ -1,6 +1,5 @@
 ﻿using System;
 using Chwthewke.MvvmUtils;
-using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel

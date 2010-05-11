@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.InteropServices;
 using System.Windows;
 
@@ -12,9 +11,7 @@ namespace Chwthewke.PasswordManager.App.Services
             {
                 Clipboard.SetData( DataFormats.UnicodeText, value );
             }
-            catch ( COMException )
-            {
-            }
+            catch ( COMException ) {}
         }
     }
 }

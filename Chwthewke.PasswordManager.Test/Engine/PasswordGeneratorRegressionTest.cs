@@ -1,5 +1,3 @@
-using System.Collections.Generic;
-using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using NUnit.Framework;
 

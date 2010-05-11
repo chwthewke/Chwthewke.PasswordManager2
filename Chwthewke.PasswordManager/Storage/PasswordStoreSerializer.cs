@@ -1,8 +1,8 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
@@ -27,7 +27,6 @@ namespace Chwthewke.PasswordManager.Storage
                                                           ConformanceLevel = ConformanceLevel.Document,
                                                           Indent = true,
                                                           IndentChars = "  ",
-                                                          
                                                       };
             using ( XmlWriter xw = XmlWriter.Create( writer, xmlWriterSettings ) )
                 if ( xw != null ) root.Save( xw );
@@ -85,6 +84,5 @@ namespace Chwthewke.PasswordManager.Storage
                                                                 note == null ? null : note.Value );
             passwordStore.AddOrUpdate( passwordDigest );
         }
-
     }
 }

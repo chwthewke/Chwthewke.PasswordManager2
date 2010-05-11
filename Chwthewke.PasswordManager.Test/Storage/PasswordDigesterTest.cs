@@ -81,6 +81,5 @@ namespace Chwthewke.PasswordManager.Test.Storage
                 get { return TimeProviderImpl( ); }
             }
         }
-
     }
 }

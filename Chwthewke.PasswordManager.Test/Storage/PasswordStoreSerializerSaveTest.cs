@@ -2,7 +2,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Text;
 using System.Xml.Linq;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -16,7 +15,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         [ SetUp ]
         public void SetUpSerializer( )
         {
-            _serializer = new PasswordStoreSerializer(  );
+            _serializer = new PasswordStoreSerializer( );
             _writer = new StringWriter( );
             _passwordStore = new PasswordStore( PasswordGenerators.All, new Sha512Factory( ) );
         }

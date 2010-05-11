@@ -1,13 +1,13 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security;
 using System.Windows;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.Migration.Properties;
 using Microsoft.Win32;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Migration
 {
@@ -49,7 +49,7 @@ namespace Chwthewke.PasswordManager.Migration
                 _numPasswords = value;
                 RaisePropertyChanged( ( ) => NumPasswords );
                 _saveCommand.RaiseCanExecuteChanged( );
-                _saveToSettingsCommand.RaiseCanExecuteChanged(  );
+                _saveToSettingsCommand.RaiseCanExecuteChanged( );
             }
         }
 

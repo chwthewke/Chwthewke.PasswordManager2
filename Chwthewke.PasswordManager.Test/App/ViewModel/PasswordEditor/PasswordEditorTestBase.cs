@@ -1,5 +1,4 @@
 using System.Linq;
-using System.Security;
 using Autofac;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;

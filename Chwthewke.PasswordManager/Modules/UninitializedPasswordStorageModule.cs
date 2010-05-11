@@ -10,7 +10,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Storage
             builder.RegisterType<PasswordStore>( ).As<IPasswordStore>( ).SingleInstance( );
             builder.RegisterType<PasswordStoreSerializer>( ).As<IPasswordStoreSerializer>( );
-
         }
     }
 }

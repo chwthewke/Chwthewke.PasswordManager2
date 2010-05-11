@@ -86,7 +86,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
                 // Exercise
                 _importer.Save( "__tmp__" );
                 // Verify
-                _serializerMock.Verify( s => s.Save( _passwordStoreMock.Object, It.IsAny<TextWriter>() ) );
+                _serializerMock.Verify( s => s.Save( _passwordStoreMock.Object, It.IsAny<TextWriter>( ) ) );
             }
             finally
             {

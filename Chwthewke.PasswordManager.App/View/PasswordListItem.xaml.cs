@@ -1,6 +1,4 @@
-﻿using System.Windows.Controls;
-
-namespace Chwthewke.PasswordManager.App.View
+﻿namespace Chwthewke.PasswordManager.App.View
 {
     /// <summary>
     /// Interaction logic for PasswordListItem.xaml

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;

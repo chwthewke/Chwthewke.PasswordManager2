@@ -1,3 +1,4 @@
+using System.Linq;
 using Autofac;
 using Chwthewke.PasswordManager.App.Modules;
 using Chwthewke.PasswordManager.App.ViewModel;
@@ -7,7 +8,6 @@ using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {

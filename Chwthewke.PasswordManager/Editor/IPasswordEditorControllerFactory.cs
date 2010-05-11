@@ -1,6 +1,7 @@
 ﻿namespace Chwthewke.PasswordManager.Editor
 {
-    public interface IPasswordEditorControllerFactory {
+    public interface IPasswordEditorControllerFactory
+    {
         IPasswordEditorController CreatePasswordEditorController( );
     }
 }

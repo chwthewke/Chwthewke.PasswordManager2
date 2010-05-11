@@ -2,12 +2,12 @@ using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
+using System.Linq;
 using System.Security;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -150,14 +150,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void RaiseStoreModified( )
         {
             EventHandler storeModified = StoreModified;
-            if (storeModified != null)
+            if ( storeModified != null )
                 storeModified( this, EventArgs.Empty );
         }
 
         private void RaiseCloseRequested( )
         {
             EventHandler closeRequested = CloseRequested;
-            if (closeRequested != null)
+            if ( closeRequested != null )
                 closeRequested( this, EventArgs.Empty );
         }
 

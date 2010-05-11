@@ -1,7 +1,5 @@
 using Chwthewke.PasswordManager.App.ViewModel;
-using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
-using Moq;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
@@ -28,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( propertyChanged );
         }
 
-        [Test]
+        [ Test ]
         public void IsSelectedPropertyChangedToTrue( )
         {
             // Setup
@@ -40,7 +38,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( propertyChanged );
         }
 
-        [Test]
+        [ Test ]
         public void IsSelectedPropertyChangedToFalse( )
         {
             // Setup

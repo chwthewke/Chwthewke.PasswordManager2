@@ -2,7 +2,6 @@ using System;
 using System.Windows;
 using Autofac;
 using Chwthewke.PasswordManager.App.Modules;
-using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
 

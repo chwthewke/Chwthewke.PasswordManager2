@@ -1,10 +1,9 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Windows.Input;
-using System.Windows.Media;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.Storage;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -72,7 +71,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void RaiseSaveRequested( )
         {
             EventHandler saveRequested = SaveRequested;
-            if (saveRequested != null)
+            if ( saveRequested != null )
                 saveRequested( this, EventArgs.Empty );
         }
 

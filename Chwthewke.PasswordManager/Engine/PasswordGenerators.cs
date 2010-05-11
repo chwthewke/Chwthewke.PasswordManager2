@@ -38,6 +38,5 @@ namespace Chwthewke.PasswordManager.Engine
 
         private static readonly PasswordGenerator _full =
             Sha512Generator( Guid.Parse( "CCF1451C-4B30-45A4-99B0-D54EC3C3A7EE" ), Alphabets.Symbols92, 10 );
-
     }
 }

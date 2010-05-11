@@ -1,9 +1,6 @@
 using System;
-using System.Collections.Generic;
-using System.Security;
 using System.Text;
 using Chwthewke.PasswordManager.Engine;
-using Moq;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Engine

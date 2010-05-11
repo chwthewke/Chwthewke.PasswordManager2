@@ -1,10 +1,10 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Migration
 {

@@ -1,12 +1,12 @@
-using NUnit.Framework;
 using System.Linq;
+using Chwthewke.PasswordManager.App.ViewModel;
+using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
     public class BasicTest : PasswordEditorTestBase
     {
-
         [ Test ]
         public void InitialStateIsVoid( )
         {
@@ -14,7 +14,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             // Verify
             Assert.That( ViewModel.Key, Is.EqualTo( string.Empty ) );
-            Assert.That( ViewModel.Title, Is.EqualTo( PasswordManager.App.ViewModel.PasswordEditorViewModel.NewTitle ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle ) );
             Assert.That( ViewModel.Note, Is.EqualTo( string.Empty ) );
             Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.False );
             Assert.That( ViewModel.DeleteCommand.CanExecute( null ), Is.False );
@@ -45,6 +45,5 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Verify
             Assert.That( closeRequested, Is.True );
         }
-
     }
 }

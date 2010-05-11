@@ -1,7 +1,4 @@
-using System.Collections.Generic;
-using System.Security;
 using Chwthewke.PasswordManager.App.ViewModel;
-using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using Moq;
 using NUnit.Framework;
@@ -38,10 +35,10 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.SaveCommand.Execute( null );
             // Verify
-            Assert.That( PasswordStore.FindPasswordInfo("abc"), Is.Not.Null );
+            Assert.That( PasswordStore.FindPasswordInfo( "abc" ), Is.Not.Null );
         }
 
-        [Test]
+        [ Test ]
         public void SavePasswordRaisesStoreModified( )
         {
             // Setup
@@ -57,6 +54,5 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Verify
             Assert.That( storeModifiedRaised, Is.True );
         }
-
     }
 }

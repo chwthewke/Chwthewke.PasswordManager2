@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -23,7 +22,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _digester = new PasswordDigester( hashFactory, new TimeProvider( ) );
 
             _masterPasswordId = Guid.Parse( "DAAB4016-AF5C-4C79-900E-B01E8D771C12" );
-
         }
 
         [ Test ]
@@ -34,11 +32,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
             PasswordDigest matchingDigest =
                 _digester.Digest( "key1",
                                   PasswordGenerators.Full.MakePassword( "key1", masterPassword ),
-                                  _masterPasswordId, 
+                                  _masterPasswordId,
                                   PasswordGenerators.Full.Id,
                                   string.Empty );
             _store.AddOrUpdate( matchingDigest );
-            
+
             PasswordDigest notMatchingDigest =
                 _digester.Digest( "key2",
                                   PasswordGenerators.Full.MakePassword( "key2", "tata".ToSecureString( ) ),

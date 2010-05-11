@@ -1,5 +1,5 @@
 using System;
-using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
@@ -8,7 +8,6 @@ using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
 using Moq;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {
@@ -41,7 +40,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.Generators, Is.EquivalentTo( PasswordGenerators.All ) );
         }
 
-        [Test]
+        [ Test ]
         public void KeyModificationMakesDirty( )
         {
             // Setup
@@ -51,7 +50,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.IsDirty, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void NoteModificationMakesDirty( )
         {
             // Setup
@@ -61,7 +60,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.IsDirty, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordsAreNotGeneratedWithoutAKey( )
         {
             // Setup

@@ -1,9 +1,5 @@
-using System.Collections.Generic;
-using System.Security;
 using Chwthewke.PasswordManager.Engine;
-using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
-using Chwthewke.PasswordManager.Test.Storage;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
@@ -11,7 +7,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
     [ TestFixture ]
     public class LoadingKeyTest : PasswordEditorTestBase
     {
-
         [ Test ]
         public void LoadEnablesWhenTypingStoredKey( )
         {
@@ -46,6 +41,5 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Verify
             Assert.That( ViewModel.IsLoadEnabled, Is.False );
         }
-
     }
 }

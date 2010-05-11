@@ -4,8 +4,10 @@ using Chwthewke.PasswordManager.Editor;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
-    class PasswordEditorFactory : IPasswordEditorFactory {
-        public PasswordEditorFactory( IClipboardService clipboardService, IPasswordEditorControllerFactory controllerFactory )
+    internal class PasswordEditorFactory : IPasswordEditorFactory
+    {
+        public PasswordEditorFactory( IClipboardService clipboardService,
+                                      IPasswordEditorControllerFactory controllerFactory )
         {
             _clipboardService = clipboardService;
             _controllerFactory = controllerFactory;

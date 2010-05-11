@@ -3,7 +3,8 @@ using System.Windows.Media;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
-    public interface IGuidToColorConverter {
+    public interface IGuidToColorConverter
+    {
         Color Convert( Guid guid );
     }
 }

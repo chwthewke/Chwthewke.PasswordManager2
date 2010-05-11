@@ -45,7 +45,5 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private string _name;
         private Guid _masterPasswordGuid;
         private Color _masterPasswordColor;
-
-
     }
 }

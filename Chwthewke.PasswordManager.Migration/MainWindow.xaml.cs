@@ -5,9 +5,7 @@
     /// </summary>
     public partial class MainWindow
     {
-        public MainWindow( ) : this( null )
-        {
-        }
+        public MainWindow( ) : this( null ) {}
 
         public MainWindow( MainViewModel viewModel )
         {

@@ -8,7 +8,8 @@ namespace Chwthewke.PasswordManager.App.Services
     internal class SettingsPasswordsDatabase : IPasswordPersistenceService
     {
         public SettingsPasswordsDatabase( Settings settings,
-            IPasswordStore passwordStore, IPasswordStoreSerializer serializer )
+                                          IPasswordStore passwordStore,
+                                          IPasswordStoreSerializer serializer )
         {
             _settings = settings;
             _passwordStore = passwordStore;

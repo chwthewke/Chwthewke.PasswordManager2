@@ -1,12 +1,7 @@
-using System;
-using System.Collections.Generic;
-using System.Security;
-using Chwthewke.PasswordManager.Engine;
-using Chwthewke.PasswordManager.Storage;
-using Chwthewke.PasswordManager.Test.Engine;
-using Chwthewke.PasswordManager.Test.Storage;
-using NUnit.Framework;
 using System.Linq;
+using Chwthewke.PasswordManager.Engine;
+using Chwthewke.PasswordManager.Test.Engine;
+using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {

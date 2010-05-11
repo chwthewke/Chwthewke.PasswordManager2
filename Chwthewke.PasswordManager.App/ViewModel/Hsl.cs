@@ -6,7 +6,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public static class Hsl
     {
-        public static Color ToRgb( double h, double s, double l ) {
+        public static Color ToRgb( double h, double s, double l )
+        {
             if ( h < 0 || h >= 360 )
                 throw new ArgumentOutOfRangeException( "h", h, Resources.Hsl_ToColor_h_range );
             if ( s < 0 || s > 1 )

@@ -7,11 +7,12 @@
         MinHeight="300"
         Width="800"
         MinWidth="600">
-    <Window.Resources>
-        <DataTemplate DataType="{x:Type Migration:ImporterViewModel}">
-            <Migration:ImporterPanel />
-        </DataTemplate>
-    </Window.Resources>
-    <ContentPresenter Margin="10" Content="{Binding Importer}" />
-    
+	<Window.Resources>
+		<DataTemplate DataType="{x:Type Migration:ImporterViewModel}">
+			<Migration:ImporterPanel />
+		</DataTemplate>
+	</Window.Resources>
+	<ContentPresenter Margin="10"
+	                  Content="{Binding Importer}" />
+
 </Window>

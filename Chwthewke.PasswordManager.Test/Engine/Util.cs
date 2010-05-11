@@ -13,5 +13,4 @@ namespace Chwthewke.PasswordManager.Test.Engine
             return result;
         }
     }
-
 }

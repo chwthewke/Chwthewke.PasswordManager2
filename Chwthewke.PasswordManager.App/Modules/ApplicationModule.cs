@@ -3,7 +3,6 @@ using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Storage;
-using Module = Autofac.Module;
 
 namespace Chwthewke.PasswordManager.App.Modules
 {

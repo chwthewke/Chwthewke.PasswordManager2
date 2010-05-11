@@ -1,12 +1,12 @@
 using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Xml;
 using System.Xml.Linq;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
@@ -172,6 +172,5 @@ namespace Chwthewke.PasswordManager.Test.Storage
         private StringReader _inputReader;
         private IPasswordStore _passwordStore;
         private string _input;
-
     }
 }

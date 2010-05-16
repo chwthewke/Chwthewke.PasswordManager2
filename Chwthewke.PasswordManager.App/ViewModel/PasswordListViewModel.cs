@@ -35,15 +35,29 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _editors; }
         }
 
+        public PasswordEditorViewModel ActiveEditor
+        {
+            get { return _activeEditor; }
+            set
+            {
+                if ( _activeEditor == value )
+                    return;
+                _activeEditor = value;
+                RaisePropertyChanged( ( ) => ActiveEditor );
+            }
+        }
+
+
+
         public ICommand OpenEditorCommand
         {
             get { return _openEditorCommand; }
         }
 
-        public void OpenNewEditor( string passwordKey )
+        public void OpenNewEditor( StoredPasswordViewModel password )
         {
-            if ( !string.IsNullOrEmpty( passwordKey ) )
-                OpenNewEditorInternal( passwordKey );
+            if ( password != null && !string.IsNullOrEmpty( password.Name ) )
+                OpenNewEditorInternal( password.Name );
         }
 
         public event EventHandler SaveRequested;
@@ -60,6 +74,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             editor.StoreModified += StoreModified;
 
             Editors.Add( editor );
+            ActiveEditor = editor;
         }
 
         private void StoreModified( object sender, EventArgs e )
@@ -105,6 +120,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         }
 
         private ObservableCollection<StoredPasswordViewModel> _items;
+        private PasswordEditorViewModel _activeEditor;
 
         private readonly ObservableCollection<PasswordEditorViewModel> _editors =
             new ObservableCollection<PasswordEditorViewModel>( );

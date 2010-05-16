@@ -54,6 +54,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _passwordList.Editors.Count, Is.EqualTo( 1 ) );
             Assert.That( _passwordList.Editors[ 0 ].Key, Is.EqualTo( string.Empty ) );
             Assert.That( _passwordList.Editors[ 0 ].IsKeyReadonly, Is.False );
+            Assert.That( _passwordList.ActiveEditor, Is.SameAs( _passwordList.Editors[0] ) );
         }
 
         [ Test ]
@@ -62,11 +63,12 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Setup
             _container.AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             // Exercise
-            _passwordList.OpenNewEditor( "abc" );
+            _passwordList.OpenNewEditor( _passwordList.Items[ 0 ] );
             // Verify
             Assert.That( _passwordList.Editors.Count, Is.EqualTo( 1 ) );
             Assert.That( _passwordList.Editors[ 0 ].Key, Is.EqualTo( "abc" ) );
             Assert.That( _passwordList.Editors[ 0 ].IsKeyReadonly, Is.True );
+            Assert.That( _passwordList.ActiveEditor, Is.SameAs( _passwordList.Editors[ 0 ] ) );
         }
 
         [ Test ]

@@ -1,27 +1,27 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
+﻿using System.Windows;
+using Chwthewke.PasswordManager.App.ViewModel;
 
 namespace Chwthewke.PasswordManager.App.View
 {
     /// <summary>
     /// Interaction logic for PasswordEditor.xaml
     /// </summary>
-    public partial class PasswordEditor : UserControl
+    public partial class PasswordEditor
     {
         public PasswordEditor( )
         {
             InitializeComponent( );
+        }
+
+        public PasswordEditorViewModel ViewModel
+        {
+            get { return DataContext as PasswordEditorViewModel;}
+            set { DataContext = value; }
+        }
+
+        private void PasswordBox_PasswordChanged( object sender, RoutedEventArgs e )
+        {
+            ViewModel.UpdateMasterPassword( _masterPassword.SecurePassword );
         }
     }
 }

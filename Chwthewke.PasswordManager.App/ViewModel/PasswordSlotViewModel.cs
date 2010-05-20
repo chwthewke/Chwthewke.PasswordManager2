@@ -18,6 +18,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _generator; }
         }
 
+        public string Name
+        {
+            get
+            {
+                // TODO l10n
+                return Generator == PasswordGenerators.AlphaNumeric ?
+                    "Alphanumeric" : "Complex (Recommended)";
+            }
+        }
+
         public bool IsSelected
         {
             get { return _isSelected; }

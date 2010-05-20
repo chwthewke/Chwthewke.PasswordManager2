@@ -61,29 +61,11 @@ namespace Chwthewke.PasswordManager.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to h must be in [0;360[.
+        ///   Looks up a localized string similar to Alphanumeric.
         /// </summary>
-        internal static string Hsl_ToColor_h_range {
+        internal static string PasswordGenerator_74728a10_33d4_4245_b7c9_5d72fc424c41 {
             get {
-                return ResourceManager.GetString("Hsl_ToColor_h_range", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to l must be in [0;1].
-        /// </summary>
-        internal static string Hsl_ToColor_l_range {
-            get {
-                return ResourceManager.GetString("Hsl_ToColor_l_range", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to s must be in [0;1].
-        /// </summary>
-        internal static string Hsl_ToColor_s_range {
-            get {
-                return ResourceManager.GetString("Hsl_ToColor_s_range", resourceCulture);
+                return ResourceManager.GetString("PasswordGenerator_74728a10_33d4_4245_b7c9_5d72fc424c41", resourceCulture);
             }
         }
     }

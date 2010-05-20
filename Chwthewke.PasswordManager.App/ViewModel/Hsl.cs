@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Windows.Media;
-using Chwthewke.PasswordManager.App.Properties;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -9,11 +8,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public static Color ToRgb( double h, double s, double l )
         {
             if ( h < 0 || h >= 360 )
-                throw new ArgumentOutOfRangeException( "h", h, Resources.Hsl_ToColor_h_range );
+                throw new ArgumentOutOfRangeException( "h", h, @"h must be in [0;360[" );
             if ( s < 0 || s > 1 )
-                throw new ArgumentOutOfRangeException( "s", s, Resources.Hsl_ToColor_s_range );
+                throw new ArgumentOutOfRangeException( "s", s, @"s must be in [0;1]" );
             if ( l < 0 || l > 1 )
-                throw new ArgumentOutOfRangeException( "l", l, Resources.Hsl_ToColor_l_range );
+                throw new ArgumentOutOfRangeException( "l", l, @"l must be in [0;1]" );
 
             double q = l < 0.5 ? l * ( 1 + s ) : ( l + s - l * s );
             double p = 2 * l - q;

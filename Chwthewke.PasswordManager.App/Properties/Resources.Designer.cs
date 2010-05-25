@@ -63,9 +63,18 @@ namespace Chwthewke.PasswordManager.App.Properties {
         /// <summary>
         ///   Looks up a localized string similar to Alphanumeric.
         /// </summary>
-        internal static string PasswordGenerator_74728a10_33d4_4245_b7c9_5d72fc424c41 {
+        internal static string PasswordGenerator74728a1033d44245b7c95d72fc424c41 {
             get {
-                return ResourceManager.GetString("PasswordGenerator_74728a10_33d4_4245_b7c9_5d72fc424c41", resourceCulture);
+                return ResourceManager.GetString("PasswordGenerator74728a1033d44245b7c95d72fc424c41", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Complex.
+        /// </summary>
+        internal static string PasswordGeneratorccf1451c4b3045a499b0d54ec3c3a7ee {
+            get {
+                return ResourceManager.GetString("PasswordGeneratorccf1451c4b3045a499b0d54ec3c3a7ee", resourceCulture);
             }
         }
     }

@@ -34,9 +34,9 @@ namespace Chwthewke.PasswordManager.Engine
         private static readonly IHashFactory _sha512Factory = new Sha512Factory( );
 
         private static readonly PasswordGenerator _alphaNumeric =
-            Sha512Generator( Guid.Parse( "74728A10-33D4-4245-B7C9-5D72FC424C41" ), Alphabets.Symbols62, 12 );
+            Sha512Generator( Guid.Parse( "{74728a10-33d4-4245-b7c9-5d72fc424c41}" ), Alphabets.Symbols62, 12 );
 
         private static readonly PasswordGenerator _full =
-            Sha512Generator( Guid.Parse( "CCF1451C-4B30-45A4-99B0-D54EC3C3A7EE" ), Alphabets.Symbols92, 10 );
+            Sha512Generator( Guid.Parse( "{ccf1451c-4b30-45a4-99b0-d54ec3c3a7ee}" ), Alphabets.Symbols92, 10 );
     }
 }

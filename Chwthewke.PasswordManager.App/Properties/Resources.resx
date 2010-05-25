@@ -117,7 +117,10 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="PasswordGenerator_74728a10_33d4_4245_b7c9_5d72fc424c41" xml:space="preserve">
+  <data name="PasswordGenerator74728a1033d44245b7c95d72fc424c41" xml:space="preserve">
     <value>Alphanumeric</value>
+  </data>
+  <data name="PasswordGeneratorccf1451c4b3045a499b0d54ec3c3a7ee" xml:space="preserve">
+    <value>Complex</value>
   </data>
 </root>

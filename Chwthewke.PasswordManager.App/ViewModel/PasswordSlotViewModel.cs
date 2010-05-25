@@ -1,11 +1,13 @@
 ﻿using System;
 using Chwthewke.MvvmUtils;
+using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordSlotViewModel : ObservableObject
     {
+
         public PasswordSlotViewModel( IPasswordGenerator generator )
         {
             if ( generator == null )
@@ -22,9 +24,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             get
             {
-                // TODO l10n
-                return Generator == PasswordGenerators.AlphaNumeric ?
-                    "Alphanumeric" : "Complex (Recommended)";
+                return Resources.ResourceManager.GetString( PasswordGeneratorKeyPrefix + _generator.Id.ToString( "N" ) );
             }
         }
 
@@ -56,5 +56,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private bool _isSelected;
 
         private readonly IPasswordGenerator _generator;
+
+        private const string PasswordGeneratorKeyPrefix = "PasswordGenerator";
     }
 }

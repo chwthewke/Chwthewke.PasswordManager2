@@ -13,6 +13,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
+        // TODO temp
+        public object Tag { get; set; }
+
         public PasswordEditorViewModel( IPasswordEditorController controller,
                                         IClipboardService clipboardService,
                                         IEnumerable<PasswordSlotViewModel> passwordSlots )
@@ -82,7 +85,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 _canSelectPasswordSlot = value;
                 RaisePropertyChanged( ( ) => CanSelectPasswordSlot );
                 foreach ( PasswordSlotViewModel slot in Slots )
-                    slot.IsSelected &= _canSelectPasswordSlot;
+                    slot.IsSelected &= _controller.IsPasswordLoaded || _canSelectPasswordSlot;
             }
         }
 
@@ -252,8 +255,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private bool DeriveCanSelectPassword( )
         {
-            return _controller.IsPasswordLoaded ||
-                   !_controller.Generators.All( g => string.IsNullOrEmpty( _controller.GeneratedPassword( g ) ) );
+            return !_controller.Generators.All( g => string.IsNullOrEmpty( _controller.GeneratedPassword( g ) ) );
         }
 
         private string DeriveTitle( )

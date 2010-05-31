@@ -25,9 +25,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
                 passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;
 
-            // TODO test CanExecute changes
-            // save, copy: on any update (k, mp, n)
-            // delete: on save, load
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );

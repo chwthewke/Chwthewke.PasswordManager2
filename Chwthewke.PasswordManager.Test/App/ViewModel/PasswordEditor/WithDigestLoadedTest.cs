@@ -29,6 +29,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LoadPasswordAllowsDeleteCommand( )
         {
             // Setup
+            bool deleteChanged = false;
+            ViewModel.DeleteCommand.CanExecuteChanged += ( s, e ) => deleteChanged = true;
             Container.AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
 
             // Exercise
@@ -36,6 +38,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.LoadCommand.Execute( null );
             // Verify
             Assert.That( ViewModel.DeleteCommand.CanExecute( null ), Is.True );
+            Assert.That( deleteChanged );
         }
 
         [ Test ]
@@ -103,7 +106,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.Slots.Any( slot => slot.IsSelected ) );
         }
 
-        [ Test ]
+        [Test]
         public void DeletePasswordWhenCommandAvailable( )
         {
             // Setup
@@ -116,7 +119,23 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( PasswordStore.FindPasswordInfo( "abde" ), Is.Null );
         }
 
-        [ Test ]
+        [Test]
+        public void DeletePasswordChangesCanExecuteDelete( )
+        {
+            // Setup
+            Container.AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
+            ViewModel.Key = "abde";
+            ViewModel.LoadCommand.Execute( null );
+            bool deleteChanged = false;
+            ViewModel.DeleteCommand.CanExecuteChanged += ( s, e ) => deleteChanged = true;
+            // Exercise
+            ViewModel.DeleteCommand.Execute( null );
+            // Verify
+            Assert.That( PasswordStore.FindPasswordInfo( "abde" ), Is.Null );
+            Assert.That( deleteChanged );
+        }
+
+        [Test]
         public void DeletePasswordRaisesStoreModified( )
         {
             // Setup

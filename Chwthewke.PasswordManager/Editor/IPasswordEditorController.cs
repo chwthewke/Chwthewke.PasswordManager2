@@ -24,10 +24,6 @@ namespace Chwthewke.PasswordManager.Editor
 
         void LoadPassword( );
 
-        // TODO Unload is probably pointless
-        [ Obsolete ]
-        void UnloadPassword( );
-
         void SavePassword( );
         void DeletePassword( );
     }

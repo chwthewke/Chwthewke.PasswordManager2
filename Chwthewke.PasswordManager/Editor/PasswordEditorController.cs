@@ -110,11 +110,6 @@ namespace Chwthewke.PasswordManager.Editor
             IsPasswordLoaded = true;
         }
 
-        public void UnloadPassword( )
-        {
-            throw new NotImplementedException( );
-        }
-
         public void SavePassword( )
         {
             if ( SelectedGenerator == null )

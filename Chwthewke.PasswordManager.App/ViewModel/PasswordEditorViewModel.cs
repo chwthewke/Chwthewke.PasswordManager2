@@ -13,9 +13,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
-        // TODO temp
-        public object Tag { get; set; }
-
         public PasswordEditorViewModel( IPasswordEditorController controller,
                                         IClipboardService clipboardService,
                                         IEnumerable<PasswordSlotViewModel> passwordSlots )
@@ -28,6 +25,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
                 passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;
 
+            // TODO test CanExecute changes
+            // save, copy: on any update (k, mp, n)
+            // delete: on save, load
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
@@ -206,6 +206,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             _controller.DeletePassword( );
             Update( );
+            _deleteCommand.RaiseCanExecuteChanged( );
             RaiseStoreModified( );
         }
 
@@ -227,6 +228,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 return;
             _controller.LoadPassword( );
             Update( );
+            _deleteCommand.RaiseCanExecuteChanged( );
         }
 
         private void Update( )
@@ -241,6 +243,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 slot.Content = _controller.GeneratedPassword( slot.Generator );
                 slot.IsSelected = _controller.SelectedGenerator == slot.Generator;
             }
+
+            _saveCommand.RaiseCanExecuteChanged( );
+            _copyCommand.RaiseCanExecuteChanged( );
         }
 
         private bool DeriveKeyReadonly( )

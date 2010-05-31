@@ -54,5 +54,36 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Verify
             Assert.That( storeModifiedRaised, Is.True );
         }
+
+        [ Test ]
+        public void KeyChangeRaisesCanExecuteChangedForSaveCopy( )
+        {
+            // Setup
+            bool saveChanged = false;
+            bool copyChanged = false;
+            bool deleteChanged = false;
+            ViewModel.SaveCommand.CanExecuteChanged += ( s, e ) => saveChanged = true;
+            ViewModel.CopyCommand.CanExecuteChanged += ( s, e ) => copyChanged = true;
+            // Exercise
+            ViewModel.Key = "abc";
+            // Verify
+            Assert.That( saveChanged );
+            Assert.That( copyChanged );
+        }
+
+        [ Test ]
+        public void MasterPasswordChangeRaisesCanExecuteChangedForSaveCopy( )
+        {
+            // Setup
+            bool saveChanged = false;
+            bool copyChanged = false;
+            ViewModel.SaveCommand.CanExecuteChanged += ( s, e ) => saveChanged = true;
+            ViewModel.CopyCommand.CanExecuteChanged += ( s, e ) => copyChanged = true;
+            // Exercise
+            ViewModel.UpdateMasterPassword( "abc".ToSecureString( ) );
+            // Verify
+            Assert.That( saveChanged );
+            Assert.That( copyChanged );
+        }
     }
 }

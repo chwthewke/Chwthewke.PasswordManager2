@@ -39,6 +39,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.Title, Is.EqualTo( "abc*" ) );
         }
 
+
         [ Test ]
         public void PasswordsAreNotGeneratedWithoutAKey( )
         {

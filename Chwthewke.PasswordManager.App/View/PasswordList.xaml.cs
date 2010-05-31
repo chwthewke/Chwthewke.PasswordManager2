@@ -74,11 +74,13 @@ namespace Chwthewke.PasswordManager.App.View
 
         private void AddEditor( PasswordEditorViewModel editorViewModel )
         {
-            _editorTabs.Items.Add( new TabItem
-                                       {
-                                           Header = new PasswordEditorHeader { ViewModel = editorViewModel },
-                                           Content = new PasswordEditor { ViewModel = editorViewModel }
-                                       } );
+            TabItem newItem = new TabItem
+                                  {
+                                      Header = new PasswordEditorHeader { ViewModel = editorViewModel },
+                                      Content = new PasswordEditor { ViewModel = editorViewModel }
+                                  };
+            _editorTabs.Items.Add( newItem );
+            _editorTabs.SelectedItem = newItem;
         }
 
         private void RemoveEditor( PasswordEditorViewModel editorViewModel )

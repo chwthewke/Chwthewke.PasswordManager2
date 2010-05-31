@@ -31,6 +31,15 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _controller.LoadPassword( );
         }
 
+        [Test]
+        public void ChangeMasterPasswordDoesNotMakeEditorDirty( )
+        {
+            // Setup
+            // Exercise
+            _controller.MasterPassword = "123456".ToSecureString( );
+            // Verify
+            Assert.That( _controller.IsDirty, Is.False );
+        }
 
         [ Test ]
         public void ChangeNoteMakesEditorDirty( )
@@ -40,16 +49,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _controller.Note = string.Empty;
             // Verify
             Assert.That( _controller.Note, Is.EqualTo( string.Empty ) );
-            Assert.That( _controller.IsDirty );
-        }
-
-        [ Test ]
-        public void ChangeMasterPasswordMakesEditorDirty( )
-        {
-            // Setup
-            // Exercise
-            _controller.MasterPassword = "123456".ToSecureString( );
-            // Verify
             Assert.That( _controller.IsDirty );
         }
 

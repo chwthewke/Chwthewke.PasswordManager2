@@ -18,8 +18,8 @@ namespace Chwthewke.PasswordManager.Editor
             _newGuidFactory = newGuidFactory;
             _digester = digester;
             _key = string.Empty;
-            Note = string.Empty;
-            MasterPassword = new SecureString( );
+            _note = string.Empty;
+            _masterPassword = new SecureString( );
             Generators = generators;
         }
 
@@ -147,15 +147,14 @@ namespace Chwthewke.PasswordManager.Editor
         {
             if ( !IsPasswordLoaded )
             {
-                IsDirty = !( string.IsNullOrEmpty( Key ) && string.IsNullOrEmpty( Note ) );
+                IsDirty = !( string.IsNullOrEmpty( Key ) && string.IsNullOrEmpty( Note ) && MasterPassword.Length == 0 );
             }
             else
             {
                 PasswordDigest digest = GetDigest( );
                 IsDirty = Note != digest.Note
                           || SelectedGenerator == null
-                          || SelectedGenerator.Id != digest.PasswordGeneratorId
-                          || ExpectedMasterPasswordId != _passwordStore.IdentifyMasterPassword( MasterPassword );
+                          || SelectedGenerator.Id != digest.PasswordGeneratorId;
             }
         }
 

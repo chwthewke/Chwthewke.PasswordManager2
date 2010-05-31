@@ -60,6 +60,17 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.IsDirty, Is.True );
         }
 
+        [Test]
+        public void ChangeMasterPasswordMakesEditorDirty( )
+        {
+            // Setup
+            // Exercise
+            _controller.MasterPassword = "123456".ToSecureString( );
+            // Verify
+            Assert.That( _controller.IsDirty );
+        }
+
+
         [ Test ]
         public void PasswordsAreNotGeneratedWithoutAKey( )
         {

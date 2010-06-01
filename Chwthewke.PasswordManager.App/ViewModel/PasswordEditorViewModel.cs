@@ -147,6 +147,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Update( );
         }
 
+        public void UpdateSaved( )
+        {
+            Update( );
+            _deleteCommand.RaiseCanExecuteChanged( );
+        }
+
+
         private void RaiseStoreModified( )
         {
             EventHandler storeModified = StoreModified;
@@ -189,6 +196,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 return;
             _controller.SavePassword( );
             RaiseStoreModified( );
+
+            UpdateSaved( );
+            RaiseStoreModified( );
         }
 
         private bool CanExecuteDelete( )
@@ -202,8 +212,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 return;
 
             _controller.DeletePassword( );
-            Update( );
-            _deleteCommand.RaiseCanExecuteChanged( );
+
+            UpdateSaved( );
             RaiseStoreModified( );
         }
 

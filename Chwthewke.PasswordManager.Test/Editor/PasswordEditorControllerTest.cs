@@ -60,7 +60,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.IsDirty, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void ChangeMasterPasswordMakesEditorDirty( )
         {
             // Setup
@@ -205,6 +205,26 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _controller.SavePassword( );
             // Verify
             _storeMock.Verify( s => s.AddOrUpdate( It.IsAny<PasswordDigest>( ) ), Times.Never( ) );
+        }
+
+        [ Test ]
+        public void SavePasswordMakesNotDirtyAndPasswordLoaded( )
+        {
+            // Setup
+            string key = "abcd";
+            SecureString masterPassword = "1234".ToSecureString( );
+            string note = "some note";
+            IPasswordGenerator generator = PasswordGenerators.Full;
+
+            _controller.Key = key;
+            _controller.MasterPassword = masterPassword;
+            _controller.Note = note;
+            _controller.SelectedGenerator = generator;
+            // Exercise
+            _controller.SavePassword( );
+            // Verify
+            Assert.That( _controller.IsDirty, Is.False );
+            Assert.That( _controller.IsPasswordLoaded, Is.True );
         }
 
         [ Test ]

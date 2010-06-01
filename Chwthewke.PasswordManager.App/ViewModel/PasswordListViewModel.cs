@@ -105,7 +105,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         }
 
         private ObservableCollection<StoredPasswordViewModel> _items;
-        private PasswordEditorViewModel _activeEditor;
 
         private readonly ObservableCollection<PasswordEditorViewModel> _editors =
             new ObservableCollection<PasswordEditorViewModel>( );

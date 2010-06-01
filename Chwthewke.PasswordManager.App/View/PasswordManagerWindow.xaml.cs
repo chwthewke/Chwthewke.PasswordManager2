@@ -1,7 +1,7 @@
 ﻿using System.Windows;
 using Chwthewke.PasswordManager.App.ViewModel;
 
-namespace Chwthewke.PasswordManager.App
+namespace Chwthewke.PasswordManager.App.View
 {
     /// <summary>
     /// Interaction logic for PasswordManagerWindow.xaml

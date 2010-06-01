@@ -61,7 +61,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
             bool saveChanged = false;
             bool copyChanged = false;
-            bool deleteChanged = false;
             ViewModel.SaveCommand.CanExecuteChanged += ( s, e ) => saveChanged = true;
             ViewModel.CopyCommand.CanExecuteChanged += ( s, e ) => copyChanged = true;
             // Exercise

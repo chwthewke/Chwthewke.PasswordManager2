@@ -120,6 +120,9 @@ namespace Chwthewke.PasswordManager.Editor
 
             Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
             _passwordStore.AddOrUpdate( _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id, Note ) );
+
+            IsDirty = false;
+            IsPasswordLoaded = true;
         }
 
         public void DeletePassword( )

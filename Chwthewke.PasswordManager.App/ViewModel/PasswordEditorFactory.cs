@@ -7,9 +7,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     internal class PasswordEditorFactory : IPasswordEditorFactory
     {
         public PasswordEditorFactory( IClipboardService clipboardService,
-                                      IPasswordEditorControllerFactory controllerFactory )
+                                      IPasswordEditorControllerFactory controllerFactory,
+                                      IGuidToColorConverter guidToColorConverter )
         {
             _clipboardService = clipboardService;
+            _guidToColorConverter = guidToColorConverter;
             _controllerFactory = controllerFactory;
         }
 
@@ -17,10 +19,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             IPasswordEditorController controller = _controllerFactory.CreatePasswordEditorController( );
             return new PasswordEditorViewModel( controller, _clipboardService,
-                                                controller.Generators.Select( g => new PasswordSlotViewModel( g ) ) );
+                                                controller.Generators.Select( g => new PasswordSlotViewModel( g ) ),
+                                                _guidToColorConverter );
         }
 
         private readonly IPasswordEditorControllerFactory _controllerFactory;
         private readonly IClipboardService _clipboardService;
+        private readonly IGuidToColorConverter _guidToColorConverter;
     }
 }

@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.Linq;
 using System.Security;
 using System.Windows.Input;
+using System.Windows.Media;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
@@ -15,11 +16,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     {
         public PasswordEditorViewModel( IPasswordEditorController controller,
                                         IClipboardService clipboardService,
-                                        IEnumerable<PasswordSlotViewModel> passwordSlots )
+                                        IEnumerable<PasswordSlotViewModel> passwordSlots,
+                                        IGuidToColorConverter guidToColor )
         {
             _controller = controller;
 
             _clipboardService = clipboardService;
+            _guidToColor = guidToColor;
             _slots = new ObservableCollection<PasswordSlotViewModel>( passwordSlots );
 
             foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
@@ -110,6 +113,31 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
+        public Color RequiredGuidColor
+        {
+            get { return _requiredGuidColor; }
+            set
+            {
+                if ( _requiredGuidColor == value )
+                    return;
+                _requiredGuidColor = value;
+                RaisePropertyChanged( ( ) => RequiredGuidColor );
+            }
+        }
+
+
+        public Color ActualGuidColor
+        {
+            get { return _actualGuidColor; }
+            set
+            {
+                if ( _actualGuidColor == value )
+                    return;
+                _actualGuidColor = value;
+                RaisePropertyChanged( ( ) => ActualGuidColor );
+            }
+        }
+
 
         public ObservableCollection<PasswordSlotViewModel> Slots
         {
@@ -144,10 +172,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public void UpdateMasterPassword( SecureString masterPassword )
         {
             _controller.MasterPassword = masterPassword;
+            ActualGuidColor = ConvertGuid( _controller.MasterPasswordId );
             Update( );
         }
 
-        public void UpdateSaved( )
+        private Color ConvertGuid( Guid? masterPasswordId )
+        {
+            return masterPasswordId.HasValue ? _guidToColor.Convert( masterPasswordId.Value ) : Colors.Transparent;
+        }
+
+        private void UpdateSaved( )
         {
             Update( );
             _deleteCommand.RaiseCanExecuteChanged( );
@@ -251,6 +285,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 slot.IsSelected = _controller.SelectedGenerator == slot.Generator;
             }
 
+            RequiredGuidColor = ConvertGuid( _controller.ExpectedMasterPasswordId );
+
             _saveCommand.RaiseCanExecuteChanged( );
             _copyCommand.RaiseCanExecuteChanged( );
         }
@@ -279,13 +315,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
 
         private readonly IPasswordEditorController _controller;
-
         private readonly IClipboardService _clipboardService;
+        private readonly IGuidToColorConverter _guidToColor;
 
         private string _title = NewTitle;
         private bool _canSelectPasswordSlot;
         private bool _isLoadEnabled;
         private bool _isKeyReadonly;
+
+        private Color _requiredGuidColor = Colors.Transparent;
+        private Color _actualGuidColor = Colors.Transparent;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
 

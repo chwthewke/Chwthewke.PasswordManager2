@@ -14,7 +14,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
                                         SecureString masterPassword )
         {
             IPasswordEditorController controller =
-                container.Resolve<IPasswordEditorControllerFactory>( ).CreatePasswordEditorController( );
+                container.Resolve<IPasswordEditorControllerFactory>( )
+                    .CreatePasswordEditorController( );
             controller.Key = key;
             controller.Note = note;
             controller.SelectedGenerator = generator;

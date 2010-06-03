@@ -119,7 +119,10 @@ namespace Chwthewke.PasswordManager.Editor
                 return;
 
             Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
-            _passwordStore.AddOrUpdate( _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id, Note ) );
+            
+            PasswordDigest digest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id, Note );
+            _passwordStore.AddOrUpdate( digest );
+            ExpectedMasterPasswordId = digest.MasterPasswordId;
 
             IsDirty = false;
             IsPasswordLoaded = true;
@@ -130,6 +133,8 @@ namespace Chwthewke.PasswordManager.Editor
             if ( !IsPasswordLoaded )
                 return;
             _passwordStore.Remove( Key );
+
+            ExpectedMasterPasswordId = null;
             IsDirty = true;
             IsPasswordLoaded = false;
         }

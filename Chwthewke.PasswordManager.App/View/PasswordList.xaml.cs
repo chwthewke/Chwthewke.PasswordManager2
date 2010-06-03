@@ -13,7 +13,7 @@ namespace Chwthewke.PasswordManager.App.View
         public PasswordList( )
         {
             InitializeComponent( );
-            _tabsController = new TabControlController( _editorTabs );
+            _tabsController = new TabControlController( new TabControlWrapper( _editorTabs ) );
         }
 
         public PasswordListViewModel ViewModel
@@ -25,8 +25,8 @@ namespace Chwthewke.PasswordManager.App.View
         protected override void OnPropertyChanged( DependencyPropertyChangedEventArgs e )
         {
             base.OnPropertyChanged( e );
-            if ( e.Property == DataContextProperty )
-                _tabsController.Model = e.NewValue as PasswordListViewModel;
+            if ( e.Property == DataContextProperty && e.NewValue is PasswordListViewModel )
+                _tabsController.Editors = ( ( PasswordListViewModel ) e.NewValue ).Editors;
         }
 
         private void PasswordItemDoubleClicked( object sender, MouseButtonEventArgs e )

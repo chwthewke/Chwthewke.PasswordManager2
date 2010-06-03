@@ -278,6 +278,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _controller.SavePassword( );
             // Verify
             _storeMock.Verify( store => store.AddOrUpdate( expectedDigest ) );
+            Assert.That( _controller.ExpectedMasterPasswordId, Is.Not.Null );
         }
 
         [ Test ]

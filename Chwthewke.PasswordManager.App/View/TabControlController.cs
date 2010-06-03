@@ -1,4 +1,5 @@
 using System;
+using System.Collections.ObjectModel;
 using System.Collections.Specialized;
 using System.Linq;
 using System.Windows.Controls;
@@ -8,22 +9,22 @@ namespace Chwthewke.PasswordManager.App.View
 {
     public class TabControlController
     {
-        // TODO depend on an interface rather than TabControl
-        public TabControlController( TabControl tabControl )
+        // TODO unit test me
+        public TabControlController( ITabbed tabbed )
         {
-            _tabControl = tabControl;
+            _tabbed = tabbed;
         }
 
-        public PasswordListViewModel Model
+        public ObservableCollection<PasswordEditorViewModel> Editors
         {
-            get { return _model; }
+            get { return _editors; }
             set
             {
-                if ( _model != null )
-                    _model.Editors.CollectionChanged -= OnEditorsChanged;
-                _model = value;
-                if ( _model != null )
-                    _model.Editors.CollectionChanged += OnEditorsChanged;
+                if ( _editors != null )
+                    _editors.CollectionChanged -= OnEditorsChanged;
+                _editors = value;
+                if ( _editors != null )
+                    _editors.CollectionChanged += OnEditorsChanged;
             }
         }
 
@@ -43,7 +44,7 @@ namespace Chwthewke.PasswordManager.App.View
                 case NotifyCollectionChangedAction.Move:
                 case NotifyCollectionChangedAction.Reset:
                     ClearEditors( );
-                    foreach ( PasswordEditorViewModel editorViewModel in Model.Editors )
+                    foreach ( PasswordEditorViewModel editorViewModel in Editors )
                     {
                         AddEditor( editorViewModel );
                     }
@@ -55,36 +56,49 @@ namespace Chwthewke.PasswordManager.App.View
 
         private void AddEditor( PasswordEditorViewModel editorViewModel )
         {
-            TabItem newItem = new TabItem
-                                  {
-                                      Header = new PasswordEditorHeader { ViewModel = editorViewModel },
-                                      Content = new PasswordEditor { ViewModel = editorViewModel }
-                                  };
-            _tabControl.Items.Add( newItem );
-            _tabControl.SelectedItem = newItem;
+            TabItem newItem = CreateTabItem( editorViewModel );
+            _tabbed.AddItem( newItem );
+            _tabbed.SelectedItem = newItem;
         }
+
 
         private void RemoveEditor( PasswordEditorViewModel editorViewModel )
         {
-            TabItem matching = _tabControl.Items
-                .OfType<TabItem>( )
-                .FirstOrDefault( item => item.Content is PasswordEditor
-                                         && ( ( PasswordEditor ) item.Content ).ViewModel == editorViewModel );
-            if ( matching != null )
+            TabItem tabItem = FindTabItem( editorViewModel );
+
+            if ( tabItem != null )
             {
-                _tabControl.Items.Remove( matching );
-                if ( !_tabControl.Items.IsEmpty && _tabControl.SelectedItem == null )
-                    _tabControl.SelectedItem = _tabControl.Items[ 0 ];
+                _tabbed.RemoveItem( tabItem );
+                if ( !_tabbed.SelectedIndex.HasValue && _tabbed.ItemCount > 0 )
+                    _tabbed.SelectedIndex = 0;
             }
         }
 
+
         private void ClearEditors( )
         {
-            _tabControl.Items.Clear( );
+            _tabbed.Clear( );
+        }
+
+        private static TabItem CreateTabItem( PasswordEditorViewModel editorViewModel )
+        {
+            return new TabItem
+            {
+                Header = new PasswordEditorHeader { ViewModel = editorViewModel },
+                Content = new PasswordEditor { ViewModel = editorViewModel }
+            };
+        }
+        private TabItem FindTabItem( PasswordEditorViewModel editorViewModel )
+        {
+            Func<TabItem, bool> hasMatchingEditor =
+                item => item.Content is PasswordEditor
+                        && ( ( PasswordEditor ) item.Content ).ViewModel == editorViewModel;
+
+            return _tabbed.Items.FirstOrDefault( hasMatchingEditor );
         }
 
 
-        private PasswordListViewModel _model;
-        private readonly TabControl _tabControl;
+        private readonly ITabbed _tabbed;
+        private ObservableCollection<PasswordEditorViewModel> _editors;
     }
 }

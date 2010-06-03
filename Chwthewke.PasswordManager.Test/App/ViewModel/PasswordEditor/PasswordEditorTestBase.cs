@@ -1,5 +1,6 @@
 using System.Linq;
 using Autofac;
+using Chwthewke.PasswordManager.App.Modules;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Editor;
@@ -18,6 +19,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         protected IPasswordEditorController Controller;
         protected Mock<IClipboardService> ClipboardServiceMock;
         protected IContainer Container;
+        protected IGuidToColorConverter GuidToColorConverter;
 
         [ SetUp ]
         public void SetUpPasswordEditorViewModel( )
@@ -25,6 +27,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ContainerBuilder builder = new ContainerBuilder( );
             builder.RegisterModule( new PasswordManagerModule( ) );
             builder.RegisterModule( new UninitializedPasswordStorageModule( ) );
+            builder.RegisterModule( new ApplicationServices( ) );
             builder.Register( c => c.Resolve<IPasswordEditorControllerFactory>( ).CreatePasswordEditorController( ) )
                 .As<IPasswordEditorController>( );
 
@@ -34,8 +37,10 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 
             ClipboardServiceMock = new Mock<IClipboardService>( );
 
+            GuidToColorConverter = Container.Resolve<IGuidToColorConverter>( );
             ViewModel = new PasswordEditorViewModel( Controller, ClipboardServiceMock.Object,
-                                                     PasswordGenerators.All.Select( g => new PasswordSlotViewModel( g ) ) );
+                                                     PasswordGenerators.All.Select( g => new PasswordSlotViewModel( g ) ),
+                                                     GuidToColorConverter );
         }
 
         protected IPasswordStore PasswordStore

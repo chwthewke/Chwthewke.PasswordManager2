@@ -5,9 +5,9 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    internal class SettingsPasswordsDatabase : IPasswordPersistenceService
+    internal class SettingsPasswordDatabase : IPersistenceService
     {
-        public SettingsPasswordsDatabase( Settings settings,
+        public SettingsPasswordDatabase( Settings settings,
                                           IPasswordStore passwordStore,
                                           IPasswordStoreSerializer serializer )
         {

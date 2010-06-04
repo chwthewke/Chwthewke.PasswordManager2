@@ -3,7 +3,6 @@ using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.View;
 using Chwthewke.PasswordManager.App.ViewModel;
-using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Modules
 {
@@ -11,11 +10,9 @@ namespace Chwthewke.PasswordManager.App.Modules
     {
         protected override void Load( ContainerBuilder builder )
         {
-            builder
-                .Register( c => new SettingsPasswordsDatabase( Settings.Default,
-                                                               c.Resolve<IPasswordStore>( ),
-                                                               c.Resolve<IPasswordStoreSerializer>( ) ) )
-                .As<IPasswordPersistenceService>( );
+            builder.RegisterInstance( Settings.Default ).As<Settings>( );
+
+            builder.RegisterType<PersistenceService>( ).As<IPersistenceService>( );
 
             builder.RegisterType<PasswordManagerApp>( );
 

@@ -1,6 +1,6 @@
 ﻿namespace Chwthewke.PasswordManager.App.Services
 {
-    public interface IPasswordPersistenceService
+    public interface IPersistenceService
     {
         void Start( );
         void Save( );

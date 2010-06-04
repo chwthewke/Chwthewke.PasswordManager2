@@ -20,7 +20,7 @@ namespace Chwthewke.PasswordManager.App
         }
 
         public PasswordManagerApp( PasswordManagerWindow passwordManagerWindow,
-                                   Func<IPasswordPersistenceService> persistenceServiceProvider )
+                                   Func<IPersistenceService> persistenceServiceProvider )
         {
             MainWindow = passwordManagerWindow;
             _passwordList = passwordManagerWindow.ViewModel.PasswordList;
@@ -41,7 +41,7 @@ namespace Chwthewke.PasswordManager.App
             Exit += ( s, e ) => _persistenceService.Stop( );
         }
 
-        private readonly IPasswordPersistenceService _persistenceService;
+        private readonly IPersistenceService _persistenceService;
         private readonly PasswordListViewModel _passwordList;
     }
 }

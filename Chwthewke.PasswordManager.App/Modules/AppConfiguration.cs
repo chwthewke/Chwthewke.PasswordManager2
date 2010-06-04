@@ -1,6 +1,5 @@
 using Autofac;
 using Chwthewke.PasswordManager.Modules;
-using Chwthewke.PasswordManager.Test.Storage;
 
 namespace Chwthewke.PasswordManager.App.Modules
 {

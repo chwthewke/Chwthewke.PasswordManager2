@@ -34,5 +34,29 @@ namespace Chwthewke.PasswordManager.App.Properties {
                 this["PasswordDatabase"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool PasswordsAreExternal {
+            get {
+                return ((bool)(this["PasswordsAreExternal"]));
+            }
+            set {
+                this["PasswordsAreExternal"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string ExternalPasswordDatabase {
+            get {
+                return ((string)(this["ExternalPasswordDatabase"]));
+            }
+            set {
+                this["ExternalPasswordDatabase"] = value;
+            }
+        }
     }
 }

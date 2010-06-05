@@ -5,7 +5,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    internal class SettingsPasswordDatabase : IPersistenceService
+    public class SettingsPasswordDatabase : IPersistenceService
     {
         public SettingsPasswordDatabase( Settings settings,
                                           IPasswordStore passwordStore,

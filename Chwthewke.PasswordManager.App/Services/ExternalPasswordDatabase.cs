@@ -1,12 +1,11 @@
 using System;
 using System.IO;
 using System.Text;
-using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    internal class ExternalPasswordDatabase : IPersistenceService
+    public class ExternalPasswordDatabase : IPersistenceService
     {
         public ExternalPasswordDatabase( FileInfo passwordsFile, IPasswordStore passwordStore, IPasswordStoreSerializer serializer )
         {

@@ -5,7 +5,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    internal class PersistenceService : IPersistenceService
+    public class PersistenceService : IPersistenceService
     {
         public PersistenceService( Settings settings,
                                    IPasswordStore passwordStore,

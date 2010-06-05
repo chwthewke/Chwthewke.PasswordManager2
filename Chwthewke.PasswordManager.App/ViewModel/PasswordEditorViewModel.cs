@@ -181,13 +181,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             return masterPasswordId.HasValue ? _guidToColor.Convert( masterPasswordId.Value ) : Colors.Transparent;
         }
 
-        private void UpdateSaved( )
-        {
-            Update( );
-            _deleteCommand.RaiseCanExecuteChanged( );
-        }
-
-
         private void RaiseStoreModified( )
         {
             EventHandler storeModified = StoreModified;
@@ -269,6 +262,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 return;
             _controller.LoadPassword( );
             Update( );
+            _deleteCommand.RaiseCanExecuteChanged( );
+        }
+
+        private void UpdateSaved( )
+        {
+            Update( );
+
+            ActualGuidColor = ConvertGuid( _controller.MasterPasswordId );
             _deleteCommand.RaiseCanExecuteChanged( );
         }
 

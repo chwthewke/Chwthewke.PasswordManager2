@@ -4,3 +4,4 @@ glob:_ReSharper.*
 glob:*/bin
 glob:*/obj
 glob:doc/~$*
+glob:*.orig

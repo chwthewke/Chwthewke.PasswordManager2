@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -14,9 +13,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public PasswordManagerViewModel( PasswordListViewModel passwordList,
                                          IFileSelectionService fileSelectionService,
                                          IPersistenceService persistenceService,
-                                         Settings settings )
+                                         Settings settings, IPasswordImporter passwordImporter )
         {
             _passwordList = passwordList;
+            _passwordImporter = passwordImporter;
             _fileSelectionService = fileSelectionService;
             _persistenceService = persistenceService;
             _settings = settings;
@@ -24,6 +24,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _selectInternalStorageCommand = new RelayCommand( ExecuteSelectInternalStorage );
             _selectExternalStorageCommand = new RelayCommand( ExecuteSelectExternalStorage );
             _quitCommand = new RelayCommand( ExecuteQuit );
+            _importPasswordsCommand = new RelayCommand( ExecuteImportPasswords );
 
             UpdateStorageType( );
         }
@@ -46,6 +47,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public ICommand QuitCommand
         {
             get { return _quitCommand; }
+        }
+
+        public ICommand ImportPasswordsCommand
+        {
+            get { return _importPasswordsCommand; }
         }
 
         public bool InternalStorageSelected
@@ -106,8 +112,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void ExecuteImportPasswords( )
         {
-            IEnumerable<FileInfo> importedFiles =
-                _fileSelectionService.SelectExternalPasswordFileToImport( _initialDirectory );
+            foreach ( FileInfo importedFile in _fileSelectionService.SelectExternalPasswordFileToImport( _initialDirectory ) )
+            {
+                _passwordImporter.ImportPasswords( importedFile );
+            }
+
+            _passwordList.UpdateList( );
         }
 
         private static void ExecuteQuit( )
@@ -118,10 +128,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _quitCommand;
         private readonly ICommand _selectInternalStorageCommand;
         private readonly ICommand _selectExternalStorageCommand;
+        private readonly ICommand _importPasswordsCommand;
 
         private readonly PasswordListViewModel _passwordList;
         private readonly IFileSelectionService _fileSelectionService;
         private readonly IPersistenceService _persistenceService;
+        private readonly IPasswordImporter _passwordImporter;
         private readonly Settings _settings;
 
         private bool _externalStorageSelected;

@@ -12,8 +12,6 @@ namespace Chwthewke.PasswordManager.App.Modules
         {
             builder.RegisterInstance( Settings.Default ).As<Settings>( );
 
-            builder.RegisterType<PersistenceService>( ).As<IPersistenceService>( );
-
             builder.RegisterType<PasswordManagerApp>( );
 
             builder.Register( c => new PasswordManagerWindow( c.Resolve<PasswordManagerViewModel>( ) ) );

@@ -1,10 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
+using Chwthewke.PasswordManager.App.Services;
 using Microsoft.Win32;
 using System.Linq;
 
-namespace Chwthewke.PasswordManager.App.Services
+namespace Chwthewke.PasswordManager.App.View
 {
     public class DialogFileSelectionService : IFileSelectionService
     {
@@ -27,9 +27,9 @@ namespace Chwthewke.PasswordManager.App.Services
 
         public IEnumerable<FileInfo> SelectExternalPasswordFileToImport( DirectoryInfo initialDirectory )
         {
-            OpenFileDialog dialog = new OpenFileDialog( )
+            OpenFileDialog dialog = new OpenFileDialog
                                         {
-                                            Filter = "XML files|*.xml;All files|*.*",
+                                            Filter = "XML files|*.xml|All files|*.*",
                                             FilterIndex = 1,
                                             Title = "Import password database file...",
                                             InitialDirectory = initialDirectory.FullName,

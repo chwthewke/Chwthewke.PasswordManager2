@@ -39,6 +39,16 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.Title, Is.EqualTo( "abc*" ) );
         }
 
+        [ Test ]
+        public void LongKeyIsTruncatedInTitle( )
+        {
+            // Setup
+            
+            // Exercise
+            ViewModel.Key = "abcdefghij0123456789abcdefghij";
+            // Verify
+            Assert.That( ViewModel.Title, Is.EqualTo( "abcdefghij0123456789abcd...*" ) );
+        }
 
         [ Test ]
         public void PasswordsAreNotGeneratedWithoutAKey( )

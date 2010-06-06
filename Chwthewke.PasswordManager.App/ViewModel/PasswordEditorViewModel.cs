@@ -309,7 +309,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private string DeriveTitle( )
         {
-            string title = string.IsNullOrWhiteSpace( Key ) ? NewTitle : Key;
+            string title;
+            if ( string.IsNullOrWhiteSpace( Key ) )
+                title = NewTitle;
+            else if ( Key.Length > 25 )
+                title = Key.Substring( 0, 24 ) + "...";
+            else
+                title = Key;
 
             return _controller.IsDirty ? title + "*" : title;
         }

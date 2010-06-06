@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Windows;
 using System.Windows.Input;
@@ -83,8 +84,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void ExecuteSelectExternalStorage( )
         {
             FileInfo externalFile =
-                _fileSelectionService.SelectFile(
-                    new DirectoryInfo( Environment.GetFolderPath( Environment.SpecialFolder.Personal ) ) );
+                _fileSelectionService.SelectExternalPasswordFile( _initialDirectory );
 
             if ( externalFile == null )
                 return;
@@ -104,6 +104,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             InternalStorageSelected = !_settings.PasswordsAreExternal;
         }
 
+        private void ExecuteImportPasswords( )
+        {
+            IEnumerable<FileInfo> importedFiles =
+                _fileSelectionService.SelectExternalPasswordFileToImport( _initialDirectory );
+        }
+
         private static void ExecuteQuit( )
         {
             Application.Current.Shutdown( );
@@ -120,5 +126,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private bool _externalStorageSelected;
         private bool _internalStorageSelected;
+
+        private readonly DirectoryInfo _initialDirectory =
+            new DirectoryInfo( Environment.GetFolderPath( Environment.SpecialFolder.Personal ) );
     }
 }

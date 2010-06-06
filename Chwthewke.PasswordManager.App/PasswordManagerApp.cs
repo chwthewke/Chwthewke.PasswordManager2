@@ -38,7 +38,7 @@ namespace Chwthewke.PasswordManager.App
             _persistenceService.Start( );
             _passwordList.UpdateList( );
             _passwordList.SaveRequested += ( s, e ) => _persistenceService.Save( );
-            Exit += ( s, e ) => _persistenceService.Stop( );
+            Exit += ( s, e ) => _persistenceService.Save( );
         }
 
         private readonly IPersistenceService _persistenceService;

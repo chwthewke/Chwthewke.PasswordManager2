@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Linq.Expressions;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
@@ -81,12 +82,15 @@ namespace Chwthewke.PasswordManager.Test.Migration
         public void SaveCallsSerializer( )
         {
             // Setup
+            IEnumerable<PasswordDigest> passwordDigests = Enumerable.Empty<PasswordDigest>( );
+            _passwordStoreMock.SetupGet( x => x.Passwords ).Returns( passwordDigests );
+
             try
             {
                 // Exercise
                 _importer.Save( "__tmp__" );
                 // Verify
-                _serializerMock.Verify( s => s.Save( _passwordStoreMock.Object, It.IsAny<TextWriter>( ) ) );
+                _serializerMock.Verify( s => s.Save( It.Is<IEnumerable<PasswordDigest>>( ps => ps == passwordDigests ), It.IsAny<TextWriter>( ) ) );
             }
             finally
             {

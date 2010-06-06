@@ -53,15 +53,14 @@ namespace Chwthewke.PasswordManager.Migration
 
         public void Save( string fileName )
         {
-            using ( FileStream outputStream = File.OpenWrite( fileName ) )
-            using ( TextWriter writer = new StreamWriter( outputStream ) )
-                _serializer.Save( _passwordRepository, writer );
+            using ( TextWriter writer = new StreamWriter( File.OpenWrite( fileName ) ) )
+                _serializer.Save( _passwordRepository.Passwords, writer );
         }
 
         public override string ToString( )
         {
             TextWriter w = new StringWriter( );
-            _serializer.Save( _passwordRepository, w );
+            _serializer.Save( _passwordRepository.Passwords, w );
             return w.ToString( );
         }
     }

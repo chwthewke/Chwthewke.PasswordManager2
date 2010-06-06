@@ -18,20 +18,16 @@ namespace Chwthewke.PasswordManager.App.Services
 
         public void Start( )
         {
-            CurrentPersistenceService.Start( );
+            foreach ( PasswordDigest passwordDigest in CurrentPasswordStore.Load( ) )
+                _passwordRepository.AddOrUpdate( passwordDigest );
         }
 
         public void Save( )
         {
-            CurrentPersistenceService.Save( );
+            CurrentPasswordStore.Save( _passwordRepository.Passwords );
         }
 
-        public void Stop( )
-        {
-            CurrentPersistenceService.Stop( );
-        }
-
-        private IPersistenceService CurrentPersistenceService
+        private IPasswordStore CurrentPasswordStore
         {
             get
             {
@@ -40,9 +36,7 @@ namespace Chwthewke.PasswordManager.App.Services
                     try
                     {
                         FileInfo passwordsFile = new FileInfo( _settings.ExternalPasswordDatabase );
-                        return new ExternalPasswordDatabase( passwordsFile,
-                                                             _passwordRepository,
-                                                             _passwordSerializer );
+                        return new ExternalPasswordStore( _passwordSerializer, passwordsFile );
                     }
                     catch ( Exception e )
                     {
@@ -50,9 +44,7 @@ namespace Chwthewke.PasswordManager.App.Services
                     }
                 }
 
-                return new SettingsPasswordDatabase( _settings,
-                                                     _passwordRepository,
-                                                     _passwordSerializer );
+                return new InternalPasswordStore( _passwordSerializer, _settings );
             }
         }
 

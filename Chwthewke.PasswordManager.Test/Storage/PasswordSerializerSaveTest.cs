@@ -3,21 +3,20 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml.Linq;
-using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
-    public class PasswordStoreSerializerSaveTest
+    public class PasswordSerializerSaveTest
     {
         [ SetUp ]
         public void SetUpSerializer( )
         {
             _serializer = new PasswordSerializer( );
             _writer = new StringWriter( );
-            _passwordRepository = new PasswordRepository( PasswordGenerators.All, new Sha512Factory( ) );
+            _passwords = new List<PasswordDigest>( );
         }
 
         [ TearDown ]
@@ -32,7 +31,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XDocument xDocument = XDocument.Parse( SerializedXml );
             Assert.That( xDocument.Declaration, Is.Null );
@@ -43,7 +42,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XElement xElement = ReadSerializedXml( );
             Assert.That( xElement.IsEmpty );
@@ -54,12 +53,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializeMultiplePasswords( )
         {
             // Setup
-            _passwordRepository.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
-                                                            default( Guid ), default( DateTime ), "No note" ) );
-            _passwordRepository.AddOrUpdate( new PasswordDigest( "otherKey", new byte[ ] { 0x55, 0xef }, default( Guid ),
-                                                            default( Guid ), default( DateTime ), "Still no note" ) );
+            _passwords.Add( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
+                                                default( Guid ), default( DateTime ), "No note" ) );
+            _passwords.Add( new PasswordDigest( "otherKey", new byte[ ] { 0x55, 0xef }, default( Guid ),
+                                                default( Guid ), default( DateTime ), "Still no note" ) );
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             Assert.That( rootElement.Elements( ).Count( ), Is.EqualTo( 2 ) );
@@ -70,10 +69,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializePasswordKeyToElement( )
         {
             // Setup
-            _passwordRepository.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
-                                                            default( Guid ), default( DateTime ), "No note" ) );
+            _passwords.Add( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
+                                                default( Guid ), default( DateTime ), "No note" ) );
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             XElement passwordElement = rootElement.Elements( PasswordSerializer.PasswordElement ).First( );
@@ -87,11 +86,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializePasswordHashToElement( )
         {
             // Setup
-            _passwordRepository.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
-                                                            default( Guid ), default( DateTime ), "No note" ) );
+            _passwords.Add( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
+                                                default( Guid ), default( DateTime ), "No note" ) );
 
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             XElement passwordElement = rootElement.Elements( PasswordSerializer.PasswordElement ).First( );
@@ -104,11 +103,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializeMasterPasswordGuidToElement( )
         {
             // Setup
-            _passwordRepository.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
-                                                            new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
-                                                            default( Guid ), default( DateTime ), "No note" ) );
+            _passwords.Add( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
+                                                new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
+                                                default( Guid ), default( DateTime ), "No note" ) );
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             XElement passwordElement = rootElement.Elements( PasswordSerializer.PasswordElement ).First( );
@@ -122,11 +121,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializePasswordSettingsGuidToElement( )
         {
             // Setup
-            _passwordRepository.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
-                                                            new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
-                                                            default( DateTime ), "No note" ) );
+            _passwords.Add( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda }, default( Guid ),
+                                                new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
+                                                default( DateTime ), "No note" ) );
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             XElement passwordElement = rootElement.Elements( PasswordSerializer.PasswordElement ).First( );
@@ -141,12 +140,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializePasswordTimestampToElement( )
         {
             // Setup
-            _passwordRepository.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
-                                                            default( Guid ), default( Guid ),
-                                                            new DateTime( 634022874410500302 ),
-                                                            "No note" ) );
+            _passwords.Add( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
+                                                default( Guid ), default( Guid ),
+                                                new DateTime( 634022874410500302 ),
+                                                "No note" ) );
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             XElement passwordElement = rootElement.Elements( PasswordSerializer.PasswordElement ).First( );
@@ -159,12 +158,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializePasswordNoteToElement( )
         {
             // Setup
-            _passwordRepository.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
-                                                            default( Guid ), default( Guid ),
-                                                            new DateTime( 634022874410500302 ),
-                                                            "No note" ) );
+            _passwords.Add( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
+                                                default( Guid ), default( Guid ),
+                                                new DateTime( 634022874410500302 ),
+                                                "No note" ) );
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             XElement passwordElement = rootElement.Elements( PasswordSerializer.PasswordElement ).First( );
@@ -177,12 +176,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SerializeNullPasswordNoteToEmptyElement( )
         {
             // Setup
-            _passwordRepository.AddOrUpdate( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
-                                                            default( Guid ), default( Guid ),
-                                                            new DateTime( 634022874410500302 ),
-                                                            null ) );
+            _passwords.Add( new PasswordDigest( "key", new byte[ ] { 0x55, 0xda },
+                                                default( Guid ), default( Guid ),
+                                                new DateTime( 634022874410500302 ),
+                                                null ) );
             // Exercise
-            _serializer.Save( _passwordRepository, _writer );
+            _serializer.Save( _passwords, _writer );
             // Verify
             XElement rootElement = ReadSerializedXml( );
             XElement passwordElement = rootElement.Elements( PasswordSerializer.PasswordElement ).First( );
@@ -202,7 +201,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         private IPasswordSerializer _serializer;
-        private IPasswordRepository _passwordRepository;
         private StringWriter _writer;
+
+        private IList<PasswordDigest> _passwords;
     }
 }

@@ -16,7 +16,7 @@ namespace Chwthewke.PasswordManager.App.Services
             _passwordSerializer = passwordSerializer;
         }
 
-        public void Start( )
+        public void Init( )
         {
             foreach ( PasswordDigest passwordDigest in CurrentPasswordStore.Load( ) )
                 _passwordRepository.AddOrUpdate( passwordDigest );

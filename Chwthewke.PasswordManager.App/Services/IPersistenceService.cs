@@ -2,7 +2,7 @@
 {
     public interface IPersistenceService
     {
-        void Start( );
+        void Init( );
         void Save( );
     }
 }

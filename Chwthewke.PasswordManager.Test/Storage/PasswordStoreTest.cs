@@ -7,12 +7,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
     [ TestFixture ]
     public class PasswordStoreTest
     {
-        private IPasswordStore _passwordStorage;
+        private IPasswordRepository _passwordStorage;
 
         [ SetUp ]
         public void SetUpPasswordStore( )
         {
-            _passwordStorage = new PasswordStore( PasswordGenerators.All, new Sha512Factory( ) );
+            _passwordStorage = new PasswordRepository( PasswordGenerators.All, new Sha512Factory( ) );
         }
 
         [ Test ]

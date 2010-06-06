@@ -35,7 +35,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.SaveCommand.Execute( null );
             // Verify
-            Assert.That( PasswordStore.FindPasswordInfo( "abc" ), Is.Not.Null );
+            Assert.That( PasswordRepository.FindPasswordInfo( "abc" ), Is.Not.Null );
         }
 
         [ Test ]

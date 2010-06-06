@@ -8,11 +8,11 @@ namespace Chwthewke.PasswordManager.App.Services
     public class SettingsPasswordDatabase : IPersistenceService
     {
         public SettingsPasswordDatabase( Settings settings,
-                                          IPasswordStore passwordStore,
-                                          IPasswordStoreSerializer serializer )
+                                          IPasswordRepository passwordRepository,
+                                          IPasswordSerializer serializer )
         {
             _settings = settings;
-            _passwordStore = passwordStore;
+            _passwordRepository = passwordRepository;
             _serializer = serializer;
         }
 
@@ -20,7 +20,7 @@ namespace Chwthewke.PasswordManager.App.Services
         {
             try
             {
-                _serializer.Load( _passwordStore, new StringReader( _settings.PasswordDatabase ) );
+                _serializer.Load( _passwordRepository, new StringReader( _settings.PasswordDatabase ) );
             }
             catch ( Exception e )
             {
@@ -31,7 +31,7 @@ namespace Chwthewke.PasswordManager.App.Services
         public void Save( )
         {
             TextWriter writer = new StringWriter( );
-            _serializer.Save( _passwordStore, writer );
+            _serializer.Save( _passwordRepository, writer );
             _settings.PasswordDatabase = writer.ToString( );
         }
 
@@ -42,7 +42,7 @@ namespace Chwthewke.PasswordManager.App.Services
         }
 
         private readonly Settings _settings;
-        private readonly IPasswordStore _passwordStore;
-        private readonly IPasswordStoreSerializer _serializer;
+        private readonly IPasswordRepository _passwordRepository;
+        private readonly IPasswordSerializer _serializer;
     }
 }

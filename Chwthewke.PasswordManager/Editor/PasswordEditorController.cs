@@ -9,12 +9,12 @@ namespace Chwthewke.PasswordManager.Editor
 {
     internal class PasswordEditorController : IPasswordEditorController
     {
-        public PasswordEditorController( IPasswordStore passwordStore,
+        public PasswordEditorController( IPasswordRepository passwordRepository,
                                          IPasswordDigester digester,
                                          Func<Guid> newGuidFactory,
                                          IEnumerable<IPasswordGenerator> generators )
         {
-            _passwordStore = passwordStore;
+            _passwordRepository = passwordRepository;
             _newGuidFactory = newGuidFactory;
             _digester = digester;
             _key = string.Empty;
@@ -59,7 +59,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         public Guid? MasterPasswordId
         {
-            get { return _passwordStore.IdentifyMasterPassword( MasterPassword ); }
+            get { return _passwordRepository.IdentifyMasterPassword( MasterPassword ); }
         }
 
         public Guid? ExpectedMasterPasswordId { get; private set; }
@@ -121,7 +121,7 @@ namespace Chwthewke.PasswordManager.Editor
             Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
             
             PasswordDigest digest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id, Note );
-            _passwordStore.AddOrUpdate( digest );
+            _passwordRepository.AddOrUpdate( digest );
             ExpectedMasterPasswordId = digest.MasterPasswordId;
 
             IsDirty = false;
@@ -132,7 +132,7 @@ namespace Chwthewke.PasswordManager.Editor
         {
             if ( !IsPasswordLoaded )
                 return;
-            _passwordStore.Remove( Key );
+            _passwordRepository.Remove( Key );
 
             ExpectedMasterPasswordId = null;
             IsDirty = true;
@@ -148,7 +148,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         private PasswordDigest GetDigest( )
         {
-            return _passwordStore.FindPasswordInfo( Key );
+            return _passwordRepository.FindPasswordInfo( Key );
         }
 
         private void UpdateDirtiness( )
@@ -166,7 +166,7 @@ namespace Chwthewke.PasswordManager.Editor
             }
         }
 
-        private readonly IPasswordStore _passwordStore;
+        private readonly IPasswordRepository _passwordRepository;
         private readonly IPasswordDigester _digester;
         private readonly Func<Guid> _newGuidFactory;
 

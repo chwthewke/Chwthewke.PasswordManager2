@@ -116,7 +116,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.DeleteCommand.Execute( null );
             // Verify
-            Assert.That( PasswordStore.FindPasswordInfo( "abde" ), Is.Null );
+            Assert.That( PasswordRepository.FindPasswordInfo( "abde" ), Is.Null );
         }
 
         [Test]
@@ -131,7 +131,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.DeleteCommand.Execute( null );
             // Verify
-            Assert.That( PasswordStore.FindPasswordInfo( "abde" ), Is.Null );
+            Assert.That( PasswordRepository.FindPasswordInfo( "abde" ), Is.Null );
             Assert.That( deleteChanged );
         }
 

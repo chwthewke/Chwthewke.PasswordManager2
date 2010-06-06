@@ -7,9 +7,9 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class ExternalPasswordDatabase : IPersistenceService
     {
-        public ExternalPasswordDatabase( FileInfo passwordsFile, IPasswordStore passwordStore, IPasswordStoreSerializer serializer )
+        public ExternalPasswordDatabase( FileInfo passwordsFile, IPasswordRepository passwordRepository, IPasswordSerializer serializer )
         {
-            _passwordStore = passwordStore;
+            _passwordRepository = passwordRepository;
             _serializer = serializer;
             _passwordsFile = passwordsFile;
         }
@@ -21,7 +21,7 @@ namespace Chwthewke.PasswordManager.App.Services
                 using ( FileStream stream = _passwordsFile.Open( FileMode.OpenOrCreate, FileAccess.Read ) )
                 using ( TextReader reader = new StreamReader( stream, new UTF8Encoding( false ) ) )
                 {
-                    _serializer.Load( _passwordStore, reader );
+                    _serializer.Load( _passwordRepository, reader );
                 }
             }
             catch ( Exception e )
@@ -35,7 +35,7 @@ namespace Chwthewke.PasswordManager.App.Services
             using ( FileStream stream = _passwordsFile.Open( FileMode.Create, FileAccess.Write ) )
             using ( TextWriter writer = new StreamWriter( stream, new UTF8Encoding( false ) ) )
             {
-                _serializer.Save( _passwordStore, writer );
+                _serializer.Save( _passwordRepository, writer );
             }
         }
 
@@ -44,8 +44,8 @@ namespace Chwthewke.PasswordManager.App.Services
             Save( );
         }
 
-        private readonly IPasswordStore _passwordStore;
-        private readonly IPasswordStoreSerializer _serializer;
+        private readonly IPasswordRepository _passwordRepository;
+        private readonly IPasswordSerializer _serializer;
         private readonly FileInfo _passwordsFile;
     }
 }

@@ -8,12 +8,12 @@ namespace Chwthewke.PasswordManager.App.Services
     public class PersistenceService : IPersistenceService
     {
         public PersistenceService( Settings settings,
-                                   IPasswordStore passwordStore,
-                                   IPasswordStoreSerializer passwordStoreSerializer )
+                                   IPasswordRepository passwordRepository,
+                                   IPasswordSerializer passwordSerializer )
         {
             _settings = settings;
-            _passwordStore = passwordStore;
-            _passwordStoreSerializer = passwordStoreSerializer;
+            _passwordRepository = passwordRepository;
+            _passwordSerializer = passwordSerializer;
         }
 
         public void Start( )
@@ -41,8 +41,8 @@ namespace Chwthewke.PasswordManager.App.Services
                     {
                         FileInfo passwordsFile = new FileInfo( _settings.ExternalPasswordDatabase );
                         return new ExternalPasswordDatabase( passwordsFile,
-                                                             _passwordStore,
-                                                             _passwordStoreSerializer );
+                                                             _passwordRepository,
+                                                             _passwordSerializer );
                     }
                     catch ( Exception e )
                     {
@@ -51,13 +51,13 @@ namespace Chwthewke.PasswordManager.App.Services
                 }
 
                 return new SettingsPasswordDatabase( _settings,
-                                                     _passwordStore,
-                                                     _passwordStoreSerializer );
+                                                     _passwordRepository,
+                                                     _passwordSerializer );
             }
         }
 
         private readonly Settings _settings;
-        private readonly IPasswordStore _passwordStore;
-        private readonly IPasswordStoreSerializer _passwordStoreSerializer;
+        private readonly IPasswordRepository _passwordRepository;
+        private readonly IPasswordSerializer _passwordSerializer;
     }
 }

@@ -7,18 +7,18 @@ namespace Chwthewke.PasswordManager.Editor
 {
     internal class PasswordEditorControllerFactory : IPasswordEditorControllerFactory
     {
-        public PasswordEditorControllerFactory( IPasswordStore passwordStore,
+        public PasswordEditorControllerFactory( IPasswordRepository passwordRepository,
                                                 IPasswordDigester passwordDigester,
                                                 Func<Guid> newGuidFactory,
                                                 IEnumerable<IPasswordGenerator> generators )
         {
-            _passwordStore = passwordStore;
+            _passwordRepository = passwordRepository;
             _passwordDigester = passwordDigester;
             _newGuidFactory = newGuidFactory;
             _generators = generators;
         }
 
-        private readonly IPasswordStore _passwordStore;
+        private readonly IPasswordRepository _passwordRepository;
         private readonly IPasswordDigester _passwordDigester;
         private readonly Func<Guid> _newGuidFactory;
         private readonly IEnumerable<IPasswordGenerator> _generators;
@@ -26,7 +26,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         public IPasswordEditorController CreatePasswordEditorController( )
         {
-            return new PasswordEditorController( _passwordStore, _passwordDigester, _newGuidFactory, _generators );
+            return new PasswordEditorController( _passwordRepository, _passwordDigester, _newGuidFactory, _generators );
         }
     }
 }

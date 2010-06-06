@@ -10,7 +10,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
     [ TestFixture ]
     public class PasswordStoreMasterPasswordFinderTest
     {
-        private IPasswordStore _store;
+        private IPasswordRepository _repository;
         private Guid _masterPasswordId;
         private IPasswordDigester _digester;
 
@@ -18,7 +18,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SetUpStore( )
         {
             IHashFactory hashFactory = new Sha512Factory( );
-            _store = new PasswordStore( PasswordGenerators.All, hashFactory );
+            _repository = new PasswordRepository( PasswordGenerators.All, hashFactory );
             _digester = new PasswordDigester( hashFactory, new TimeProvider( ) );
 
             _masterPasswordId = Guid.Parse( "DAAB4016-AF5C-4C79-900E-B01E8D771C12" );
@@ -35,7 +35,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                   _masterPasswordId,
                                   PasswordGenerators.Full.Id,
                                   string.Empty );
-            _store.AddOrUpdate( matchingDigest );
+            _repository.AddOrUpdate( matchingDigest );
 
             PasswordDigest notMatchingDigest =
                 _digester.Digest( "key2",
@@ -43,9 +43,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                   Guid.NewGuid( ),
                                   PasswordGenerators.Full.Id,
                                   string.Empty );
-            _store.AddOrUpdate( notMatchingDigest );
+            _repository.AddOrUpdate( notMatchingDigest );
             // Exercise
-            Guid? guid = _store.IdentifyMasterPassword( masterPassword );
+            Guid? guid = _repository.IdentifyMasterPassword( masterPassword );
             // Verify
             Assert.That( guid.HasValue, Is.True );
             Assert.That( guid, Is.EqualTo( _masterPasswordId ) );
@@ -61,9 +61,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                   Guid.NewGuid( ),
                                   PasswordGenerators.Full.Id,
                                   string.Empty );
-            _store.AddOrUpdate( notMatchingDigest );
+            _repository.AddOrUpdate( notMatchingDigest );
             // Exercise
-            Guid? guid = _store.IdentifyMasterPassword( "toto".ToSecureString( ) );
+            Guid? guid = _repository.IdentifyMasterPassword( "toto".ToSecureString( ) );
             // Verify
             Assert.That( guid.HasValue, Is.False );
         }

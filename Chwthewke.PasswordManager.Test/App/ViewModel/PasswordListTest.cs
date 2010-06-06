@@ -23,7 +23,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             containerBuilder.RegisterModule( new ApplicationServices( ) );
             _container = containerBuilder.Build( );
 
-            _passwordList = new PasswordListViewModel( _container.Resolve<IPasswordStore>( ),
+            _passwordList = new PasswordListViewModel( _container.Resolve<IPasswordRepository>( ),
                                                        _container.Resolve<IPasswordEditorFactory>( ),
                                                        _container.Resolve<IGuidToColorConverter>( ) );
         }
@@ -36,7 +36,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             _container.AddPassword( "abde", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             _container.AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "1234".ToSecureString( ) );
             // Exercise
-            _passwordList = new PasswordListViewModel( _container.Resolve<IPasswordStore>( ),
+            _passwordList = new PasswordListViewModel( _container.Resolve<IPasswordRepository>( ),
                                                        _container.Resolve<IPasswordEditorFactory>( ),
                                                        _container.Resolve<IGuidToColorConverter>( ) );
             // Verify
@@ -82,7 +82,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             editor.Slots[ 0 ].IsSelected = true;
             editor.SaveCommand.Execute( null );
             // Verify
-            var store = _container.Resolve<IPasswordStore>( );
+            var store = _container.Resolve<IPasswordRepository>( );
             Assert.That( store.Passwords.Count( ), Is.EqualTo( 1 ) );
             Assert.That( _passwordList.Items.Select( it => it.Name ).ToArray( ), Is.EqualTo( new[ ] { "abcd" } ) );
         }
@@ -111,7 +111,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             editor.Slots[ 0 ].IsSelected = true;
             editor.SaveCommand.Execute( null );
             // Verify
-            var store = _container.Resolve<IPasswordStore>( );
+            var store = _container.Resolve<IPasswordRepository>( );
             Assert.That( store.Passwords.Count( ), Is.EqualTo( 1 ) );
             Assert.That( _passwordList.Items.Select( it => it.Name ), Is.Empty );
         }

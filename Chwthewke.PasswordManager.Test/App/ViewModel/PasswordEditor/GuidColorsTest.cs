@@ -56,7 +56,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             Container.AddPassword( "abc", string.Empty, PasswordGenerators.AlphaNumeric, "12345".ToSecureString( ) );
-            Guid masterPasswordGuid = PasswordStore.FindPasswordInfo( "abc" ).MasterPasswordId;
+            Guid masterPasswordGuid = PasswordRepository.FindPasswordInfo( "abc" ).MasterPasswordId;
             // Exercise
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
@@ -69,7 +69,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
 
             Container.AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            Guid expectedMasterPasswordId = PasswordStore.FindPasswordInfo( "abde" ).MasterPasswordId;
+            Guid expectedMasterPasswordId = PasswordRepository.FindPasswordInfo( "abde" ).MasterPasswordId;
 
             // Exercise
             ViewModel.Key = "abde";

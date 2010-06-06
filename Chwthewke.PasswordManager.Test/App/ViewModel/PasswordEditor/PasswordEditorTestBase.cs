@@ -43,9 +43,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                                                      GuidToColorConverter );
         }
 
-        protected IPasswordStore PasswordStore
+        protected IPasswordRepository PasswordRepository
         {
-            get { return Container.Resolve<IPasswordStore>( ); }
+            get { return Container.Resolve<IPasswordRepository>( ); }
         }
     }
 }

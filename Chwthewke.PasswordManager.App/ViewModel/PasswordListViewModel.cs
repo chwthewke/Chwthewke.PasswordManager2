@@ -9,11 +9,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordListViewModel : ObservableObject
     {
-        public PasswordListViewModel( IPasswordStore store,
+        public PasswordListViewModel( IPasswordRepository repository,
                                       IPasswordEditorFactory editorFactory,
                                       IGuidToColorConverter guidConverter )
         {
-            _store = store;
+            _repository = repository;
             _editorFactory = editorFactory;
             _guidConverter = guidConverter;
             _openEditorCommand = new RelayCommand( ( ) => OpenNewEditorInternal( null ) );
@@ -78,7 +78,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public void UpdateList( )
         {
             Items = new ObservableCollection<StoredPasswordViewModel>(
-                from password in _store.Passwords
+                from password in _repository.Passwords
                 orderby password.Key
                 select new StoredPasswordViewModel
                            {
@@ -110,7 +110,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             new ObservableCollection<PasswordEditorViewModel>( );
 
         private readonly ICommand _openEditorCommand;
-        private readonly IPasswordStore _store;
+        private readonly IPasswordRepository _repository;
         private readonly IPasswordEditorFactory _editorFactory;
         private readonly IGuidToColorConverter _guidConverter;
     }

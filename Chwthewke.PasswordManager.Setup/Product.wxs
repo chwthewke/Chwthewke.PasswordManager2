@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="98bc6e1a-ee42-41f5-94da-637372f6d2a7" Name="Chwthewke.PasswordManager.Setup" Language="1033" Version="1.0.0.0" Manufacturer="Chwthewke.PasswordManager.Setup" UpgradeCode="be4e5317-911b-4fc0-bf24-50af8b9cb187">
+		<Package InstallerVersion="200" Compressed="yes" />
+
+		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
+
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLLOCATION" Name="Chwthewke.PasswordManager.Setup">
+					<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
+					<!-- <Component Id="ProductComponent" Guid="cb14befd-f95b-4129-9ef1-94671aadc2f5"> -->
+						<!-- TODO: Insert files, registry keys, and other resources here. -->
+					<!-- </Component> -->
+				</Directory>
+			</Directory>
+		</Directory>
+
+		<Feature Id="ProductFeature" Title="Chwthewke.PasswordManager.Setup" Level="1">
+			<!-- TODO: Remove the comments around this ComponentRef element and the Component above in order to add resources to this installer. -->
+			<!-- <ComponentRef Id="ProductComponent" /> -->
+			
+			<!-- Note: The following ComponentGroupRef is required to pull in generated authoring from project references. -->
+			<ComponentGroupRef Id="Product.Generated" />
+		</Feature>
+	</Product>
+</Wix>

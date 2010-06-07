@@ -55,7 +55,14 @@ namespace Chwthewke.PasswordManager.Storage
 
         public IEnumerable<PasswordDigest> Load( TextReader textReader )
         {
-            return ReadFromXml( XElement.Load( textReader ) );
+            try
+            {
+                return ReadFromXml( XElement.Load( textReader ) );
+            }
+            catch ( XmlException )
+            {
+                return Enumerable.Empty<PasswordDigest>( );
+            }
         }
 
         private static IEnumerable<PasswordDigest> ReadFromXml( XElement xml )

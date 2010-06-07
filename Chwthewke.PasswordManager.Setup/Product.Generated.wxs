@@ -1,6 +1,9 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Fragment>
-    <ComponentGroup Id="Product.Generated" />
+    <ComponentGroup Id="Product.Generated">
+      <ComponentGroupRef Id="Chwthewke.PasswordManager.App.Binaries" />
+      <ComponentGroupRef Id="Chwthewke.PasswordManager.Binaries" />
+    </ComponentGroup>
   </Fragment>
 </Wix>

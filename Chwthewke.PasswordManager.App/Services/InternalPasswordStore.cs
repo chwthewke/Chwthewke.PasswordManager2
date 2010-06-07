@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.Storage;
 

@@ -1,34 +1,84 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-	<Product Id="B1B1D97A-BEF5-4DF5-BA57-1FCB6EE514D3" 
-           Name="Chwthewke.PasswordManager 2.0" 
-           Language="1033" Version="2.0.0.0" 
-           Manufacturer="www.chwthewke.net" 
+  <!--TODO I'd like to do ComponentGroups for the Dlls. Do I need <Fragment> ?-->
+  <!--TODO Icon in Control Panel/Programs list-->
+  <Product Id="B1B1D97A-BEF5-4DF5-BA57-1FCB6EE514D3"
+           Name="Chwthewke.PasswordManager 2.0"
+           Language="1033"
+           Version="2.0.100.140"
+           Manufacturer="www.chwthewke.net"
            UpgradeCode="EF0EBEC7-6938-4328-9EC6-B3512D43F43E">
-		<Package Id="*"
-      InstallerVersion="200" Compressed="yes" />
+    <Package Id="*"
+             Description="Chwthewke.PasswordManager 2.0"
+             InstallerVersion="200"
+             Compressed="yes" />
 
-    <!--
-		<Media Id="1" Cabinet="media1.cab" EmbedCab="yes" />
-    -->
-    
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="ProgramFilesFolder">
-				<Directory Id="INSTALLLOCATION" Name="Chwthewke.PasswordManager.Setup">
-					<!-- TODO: Remove the comments around this Component element and the ComponentRef below in order to add resources to this installer. -->
-					<!-- <Component Id="ProductComponent" Guid="cb14befd-f95b-4129-9ef1-94671aadc2f5"> -->
-						<!-- TODO: Insert files, registry keys, and other resources here. -->
-					<!-- </Component> -->
-				</Directory>
-			</Directory>
-		</Directory>
+    <Media Id="1"
+           Cabinet="media1.cab"
+           EmbedCab="yes" />
 
-		<Feature Id="ProductFeature" Title="Chwthewke.PasswordManager.Setup" Level="1">
-			<!-- TODO: Remove the comments around this ComponentRef element and the Component above in order to add resources to this installer. -->
-			<!-- <ComponentRef Id="ProductComponent" /> -->
-			
-			<!-- Note: The following ComponentGroupRef is required to pull in generated authoring from project references. -->
-			<ComponentGroupRef Id="Product.Generated" />
-		</Feature>
-	</Product>
+    <Directory Id="TARGETDIR"
+               Name="SourceDir">
+      <Directory Id="ProgramFilesFolder">
+        <Directory Id="ManufacturerProgramFilesFolder"
+                   Name="www.chwthewke.net">
+          <Directory Id="INSTALLLOCATION"
+                     Name="Chwthewke.PasswordManager">
+            <Component Id="MvvmUtilsDlls"
+                       Guid="4DB90926-4455-40B5-86A2-14640A837FE5">
+              <File Id="MvmUtilsDll"
+                    Name="Chwthewke.MvvmUtils.dll"
+                    Source="$(var.SolutionDir)\lib\mvvm\Chwthewke.MvvmUtils.dll"
+                    KeyPath="yes"/>
+            </Component>
+            <Component Id="AutofacDlls"
+                       Guid="2F3B6B26-EE5A-4143-94A5-5D597E0AB82D">
+              <File Id="AutofacDll"
+                    Name="Autofac.dll"
+                    Source="$(var.SolutionDir)\lib\autofac\Autofac.dll"/>
+            </Component>
+            <Component Id="StartMenuShortcut"
+                       Guid="BB6ED33F-5ED3-4D84-AD21-9412E2BCC00D">
+              <Shortcut Id="StartMenuChwthewkePasswordManager2"
+                        Directory="ApplicationProgramsFolder"
+                        Name="Chwthewke.PasswordManager 2"
+                        WorkingDirectory="INSTALLLOCATION"
+                        Icon="IcoChwthewke.PasswordManager.App.exe"
+                        IconIndex="0"
+                        Target="[INSTALLLOCATION]$(var.Chwthewke.PasswordManager.App.TargetFileName)"/>
+              <RemoveFolder Id="CleanupApplicationProgramsFolder"
+                            Directory="ApplicationProgramsFolder"
+                            On="uninstall"/>
+              <!--TODO perhaps the CleanupProgramFilesFolder <RemoveFolder> is not in the right Component-->
+              <RemoveFolder Id="CleanupProgramFilesFolder"
+                            On="uninstall"/>
+              <RegistryValue Root="HKCU"
+                             Key="Software\www.chwthewke.net\Chwthewke.PasswordManager2"
+                             Name="installed"
+                             Type="integer"
+                             Value="1"
+                             KeyPath="yes"/>
+            </Component>
+          </Directory>
+        </Directory>
+      </Directory>
+      <Directory Id="ProgramMenuFolder">
+        <Directory Id="ApplicationProgramsFolder"
+                   Name="www.chwthewke.net">
+        </Directory>
+      </Directory>
+    </Directory>
+
+    <Icon Id="IcoChwthewke.PasswordManager.App.exe"
+          SourceFile="$(var.Chwthewke.PasswordManager.App.TargetPath)" />
+
+    <Feature Id="ProductFeature"
+             Title="Chwthewke.PasswordManager program"
+             Level="1">
+      <ComponentGroupRef Id="Product.Generated" />
+      <ComponentRef Id="StartMenuShortcut"/>
+      <ComponentRef Id="MvvmUtilsDlls"/>
+      <ComponentRef Id="AutofacDlls"/>
+    </Feature>
+  </Product>
 </Wix>

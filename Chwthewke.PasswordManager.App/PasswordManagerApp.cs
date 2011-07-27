@@ -14,9 +14,9 @@ namespace Chwthewke.PasswordManager.App
         public static void Main( string[ ] args )
         {
             IContainer container = AppConfiguration.ConfigureContainer( );
-            PasswordManagerApp passwordManagerApp = container.Resolve<PasswordManagerApp>( );
+            SingleInstanceManager instanceManager = container.Resolve<SingleInstanceManager>( );
 
-            passwordManagerApp.Start( );
+            instanceManager.Run( args );
         }
 
         public PasswordManagerApp( PasswordManagerWindow passwordManagerWindow,
@@ -27,10 +27,22 @@ namespace Chwthewke.PasswordManager.App
             _persistenceService = persistenceServiceProvider( );
         }
 
-        private void Start( )
+        public void Activate( )
+        {
+            MainWindow.Activate( );
+        }
+
+        protected override void OnStartup( StartupEventArgs e )
+        {
+            base.OnStartup( e );
+
+            MainWindow.Show( );
+        }
+
+        public void Start( )
         {
             SetupPersistence( );
-            Run( MainWindow );
+            Run( );
         }
 
         private void SetupPersistence( )

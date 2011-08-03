@@ -11,6 +11,9 @@ namespace Chwthewke.PasswordManager.App.Modules
         {
             builder.RegisterInstance( GuidToColorConverter ).As<IGuidToColorConverter>( );
 
+
+            builder.RegisterType<PasswordStoreProvider>( ).As<IPasswordStoreProvider>( );
+
             builder.RegisterType<PersistenceService>( ).As<IPersistenceService>( );
             builder.RegisterType<ClipboardService>( ).As<IClipboardService>( );
             builder.RegisterType<DialogFileSelectionService>( ).As<IFileSelectionService>( );

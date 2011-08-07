@@ -15,19 +15,43 @@ namespace Chwthewke.PasswordManager.App.Services
 
         public IEnumerable<PasswordDigest> Load( )
         {
-            return _serializer.Load( new StringReader( _settings.PasswordDatabase ) );
+            using ( TextReader reader = OpenReader( ) )
+                return _serializer.Load( reader );
+        }
+
+        public TextReader OpenReader( )
+        {
+            return new StringReader( _settings.PasswordDatabase );
         }
 
         public void Save( IEnumerable<PasswordDigest> passwords )
         {
-            TextWriter writer = new StringWriter( );
-            _serializer.Save( passwords, writer );
-            _settings.PasswordDatabase = writer.ToString( );
+            using ( TextWriter writer = OpenWriter( ) )
+                _serializer.Save( passwords, writer );
+        }
 
-            _settings.Save( );
+        public TextWriter OpenWriter( )
+        {
+            return new SettingsPasswordDatabaseWriter( _settings );
         }
 
         private readonly Settings _settings;
         private readonly IPasswordSerializer _serializer;
+    }
+
+    internal class SettingsPasswordDatabaseWriter : StringWriter
+    {
+        public SettingsPasswordDatabaseWriter( Settings settings )
+        {
+            _settings = settings;
+        }
+
+        public override void Flush( )
+        {
+            _settings.PasswordDatabase = ToString( );
+            _settings.Save( );
+        }
+
+        private readonly Settings _settings;
     }
 }

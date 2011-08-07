@@ -5,6 +5,7 @@ using System.Windows.Input;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
+using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {

@@ -1,7 +1,6 @@
 using System.Collections.Generic;
-using Chwthewke.PasswordManager.Storage;
 
-namespace Chwthewke.PasswordManager.App.Services
+namespace Chwthewke.PasswordManager.Storage
 {
     public interface IPasswordStore {
         IEnumerable<PasswordDigest> Load( );

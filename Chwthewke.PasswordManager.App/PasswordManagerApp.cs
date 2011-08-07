@@ -5,6 +5,7 @@ using Chwthewke.PasswordManager.App.Modules;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.View;
 using Chwthewke.PasswordManager.App.ViewModel;
+using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App
 {

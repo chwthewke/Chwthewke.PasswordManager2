@@ -1,14 +1,11 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
-using System.Text;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    class PasswordStoreProvider : IPasswordStoreProvider
+    class PasswordStoreProvider
     {
         public PasswordStoreProvider( Settings settings, IPasswordSerializer passwordSerializer )
         {

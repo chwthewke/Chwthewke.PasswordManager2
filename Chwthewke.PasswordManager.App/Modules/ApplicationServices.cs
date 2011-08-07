@@ -1,7 +1,10 @@
+using System;
 using Autofac;
+using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.View;
 using Chwthewke.PasswordManager.App.ViewModel;
+using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Modules
 {
@@ -11,10 +14,8 @@ namespace Chwthewke.PasswordManager.App.Modules
         {
             builder.RegisterInstance( GuidToColorConverter ).As<IGuidToColorConverter>( );
 
+            builder.Register<Func<IPasswordStore>>( c => c.Resolve<PasswordStoreProvider>().GetPasswordStore );
 
-            builder.RegisterType<PasswordStoreProvider>( ).As<IPasswordStoreProvider>( );
-
-            builder.RegisterType<PersistenceService>( ).As<IPersistenceService>( );
             builder.RegisterType<ClipboardService>( ).As<IClipboardService>( );
             builder.RegisterType<DialogFileSelectionService>( ).As<IFileSelectionService>( );
 

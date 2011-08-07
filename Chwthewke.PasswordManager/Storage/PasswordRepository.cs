@@ -7,6 +7,8 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Storage
 {
+    // TODO extract master password guessing out, merge IPasswordRepository, IPersistenceService, part of IPasswordStore into this.
+
     internal class PasswordRepository : IPasswordRepository
     {
         public PasswordRepository( IEnumerable<IPasswordGenerator> generators, IHashFactory hashFactory )

@@ -1,4 +1,4 @@
-﻿namespace Chwthewke.PasswordManager.App.Services
+﻿namespace Chwthewke.PasswordManager.Storage
 {
     public interface IPersistenceService
     {

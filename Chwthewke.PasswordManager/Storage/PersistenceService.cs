@@ -1,10 +1,10 @@
-using Chwthewke.PasswordManager.Storage;
+using System;
 
-namespace Chwthewke.PasswordManager.App.Services
+namespace Chwthewke.PasswordManager.Storage
 {
     internal class PersistenceService : IPersistenceService
     {
-        public PersistenceService( IPasswordStoreProvider passwordStoreProvider,
+        public PersistenceService( Func<IPasswordStore> passwordStoreProvider,
                                    IPasswordRepository passwordRepository )
         {
             _passwordStoreProvider = passwordStoreProvider;
@@ -13,7 +13,7 @@ namespace Chwthewke.PasswordManager.App.Services
 
         public void Init( )
         {
-            foreach ( PasswordDigest passwordDigest in _passwordStoreProvider.GetPasswordStore(  ).Load( ) )
+            foreach ( PasswordDigest passwordDigest in _passwordStoreProvider(  ).Load( ) )
                 _passwordRepository.AddOrUpdate( passwordDigest );
         }
 
@@ -21,10 +21,10 @@ namespace Chwthewke.PasswordManager.App.Services
         {
             // TODO implement load-merge function
             // add Lock( ) API to IPasswordStore ?
-            _passwordStoreProvider.GetPasswordStore( ).Save( _passwordRepository.Passwords );
+            _passwordStoreProvider( ).Save( _passwordRepository.Passwords );
         }
 
-        private readonly IPasswordStoreProvider _passwordStoreProvider;
+        private readonly Func<IPasswordStore> _passwordStoreProvider;
         private readonly IPasswordRepository _passwordRepository;
     }
 }

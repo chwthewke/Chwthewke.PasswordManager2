@@ -19,9 +19,10 @@ namespace Chwthewke.PasswordManager.Test.Migration
         private Mock<IPasswordRepository> _passwordStoreMock;
         private Mock<IPasswordDigester> _passwordDigesterMock;
         private Mock<IPasswordSerializer> _serializerMock;
+        private Mock<IMasterPasswordMatcher> _masterPasswordMatcherMock;
         private LegacyItemImporter _importer;
 
-        [ SetUp ]
+        [SetUp]
         public void SetUpImporter( )
         {
             _passwordStoreMock = new Mock<IPasswordRepository>( );
@@ -30,15 +31,19 @@ namespace Chwthewke.PasswordManager.Test.Migration
 
             _serializerMock = new Mock<IPasswordSerializer>( );
 
-            _importer = new LegacyItemImporter( _passwordStoreMock.Object, _passwordDigesterMock.Object,
+            _masterPasswordMatcherMock = new Mock<IMasterPasswordMatcher>( );
+
+            _importer = new LegacyItemImporter( _passwordStoreMock.Object,
+                                                _masterPasswordMatcherMock.Object,
+                                                _passwordDigesterMock.Object,
                                                 _serializerMock.Object );
         }
 
-        [ Test ]
+        [Test]
         public void ImportDigestsItems( )
         {
             // Setup
-            IEnumerable<LegacyItem> legacyItems = new[ ]
+            IEnumerable<LegacyItem> legacyItems = new[]
                                                       {
                                                           new LegacyItem( "aKey", false ),
                                                           new LegacyItem( "anotherKey", true ),
@@ -52,7 +57,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
             _passwordDigesterMock.Verify( DoDigest( "anotherKey", masterPassword, PasswordGenerators.AlphaNumeric ) );
         }
 
-        [ Test ]
+        [Test]
         public void ImportAddsDigestsToStore( )
         {
             // Setup
@@ -65,7 +70,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
             _passwordDigesterMock.Setup( DoDigest( "anotherKey", masterPassword, PasswordGenerators.AlphaNumeric ) )
                 .Returns( passwordDigest2 );
 
-            IEnumerable<LegacyItem> legacyItems = new[ ]
+            IEnumerable<LegacyItem> legacyItems = new[]
                                                       {
                                                           new LegacyItem( "aKey", false ),
                                                           new LegacyItem( "anotherKey", true ),
@@ -78,7 +83,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
             _passwordStoreMock.Verify( s => s.AddOrUpdate( passwordDigest2 ) );
         }
 
-        [ Test ]
+        [Test]
         public void SaveCallsSerializer( )
         {
             // Setup
@@ -90,7 +95,9 @@ namespace Chwthewke.PasswordManager.Test.Migration
                 // Exercise
                 _importer.Save( "__tmp__" );
                 // Verify
-                _serializerMock.Verify( s => s.Save( It.Is<IEnumerable<PasswordDigest>>( ps => ps == passwordDigests ), It.IsAny<TextWriter>( ) ) );
+                _serializerMock.Verify(
+                    s =>
+                    s.Save( It.Is<IEnumerable<PasswordDigest>>( ps => ps == passwordDigests ), It.IsAny<TextWriter>( ) ) );
             }
             finally
             {

@@ -16,10 +16,13 @@ namespace Chwthewke.PasswordManager.Test.Editor
         [ SetUp ]
         public void SetUpController( )
         {
+            // TODO probably not very inspired to mock a repository.
             _storeMock = new Mock<IPasswordRepository>( );
+            _passwordMatcherMock = new Mock<IMasterPasswordMatcher>( );
+
             _digester = new PasswordDigester( new Sha512Factory( ), new NullTimeProvider( ) );
             _controller = new PasswordEditorController( _storeMock.Object, _digester, ( ) => _guid,
-                                                        PasswordGenerators.All );
+                                                        PasswordGenerators.All, _passwordMatcherMock.Object );
 
             _digest = new PasswordDigestBuilder( )
                 .WithKey( "abde" )
@@ -135,6 +138,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         private readonly Guid _guid = new Guid( "{782F77BB-7482-4307-A246-E9A0BF2F5B86}" );
         private IPasswordDigester _digester;
         private PasswordDigest _digest;
+        private Mock<IMasterPasswordMatcher> _passwordMatcherMock;
 
 
         private class NullTimeProvider : ITimeProvider

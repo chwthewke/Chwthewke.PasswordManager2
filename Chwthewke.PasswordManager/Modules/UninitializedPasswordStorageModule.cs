@@ -8,6 +8,8 @@ namespace Chwthewke.PasswordManager.Modules
         protected override void Load( ContainerBuilder builder )
         {
             // Storage
+            builder.RegisterType<MasterPasswordMatcher>( ).As<IMasterPasswordMatcher>( ).SingleInstance( );
+
             builder.RegisterType<PasswordRepository>( ).As<IPasswordRepository>( ).SingleInstance( );
             builder.RegisterType<PasswordSerializer>( ).As<IPasswordSerializer>( );
 

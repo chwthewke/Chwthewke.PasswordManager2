@@ -12,10 +12,12 @@ namespace Chwthewke.PasswordManager.Editor
         public PasswordEditorController( IPasswordRepository passwordRepository,
                                          IPasswordDigester digester,
                                          Func<Guid> newGuidFactory,
-                                         IEnumerable<IPasswordGenerator> generators )
+                                         IEnumerable<IPasswordGenerator> generators,
+                                         IMasterPasswordMatcher masterPasswordMatcher )
         {
             _passwordRepository = passwordRepository;
             _newGuidFactory = newGuidFactory;
+            _masterPasswordMatcher = masterPasswordMatcher;
             _digester = digester;
             _key = string.Empty;
             _note = string.Empty;
@@ -59,7 +61,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         public Guid? MasterPasswordId
         {
-            get { return _passwordRepository.IdentifyMasterPassword( MasterPassword ); }
+            get { return _masterPasswordMatcher.IdentifyMasterPassword( MasterPassword ); }
         }
 
         public Guid? ExpectedMasterPasswordId { get; private set; }
@@ -119,7 +121,7 @@ namespace Chwthewke.PasswordManager.Editor
                 return;
 
             Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
-            
+
             PasswordDigest digest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id, Note );
             _passwordRepository.AddOrUpdate( digest );
             ExpectedMasterPasswordId = digest.MasterPasswordId;
@@ -167,6 +169,7 @@ namespace Chwthewke.PasswordManager.Editor
         }
 
         private readonly IPasswordRepository _passwordRepository;
+        private readonly IMasterPasswordMatcher _masterPasswordMatcher;
         private readonly IPasswordDigester _digester;
         private readonly Func<Guid> _newGuidFactory;
 

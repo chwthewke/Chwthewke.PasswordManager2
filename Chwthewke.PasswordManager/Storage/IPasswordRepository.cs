@@ -13,7 +13,5 @@ namespace Chwthewke.PasswordManager.Storage
         IEnumerable<PasswordDigest> Passwords { get; }
 
         PasswordDigest FindPasswordInfo( string key );
-
-        Guid? IdentifyMasterPassword( SecureString masterPassword );
     }
 }

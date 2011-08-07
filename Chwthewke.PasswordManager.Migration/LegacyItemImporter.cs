@@ -11,10 +11,12 @@ namespace Chwthewke.PasswordManager.Migration
     public class LegacyItemImporter : ILegacyItemImporter
     {
         public LegacyItemImporter( IPasswordRepository passwordRepository,
+                        IMasterPasswordMatcher masterPasswordMatcher,
                                    IPasswordDigester passwordDigester,
                                    IPasswordSerializer serializer )
         {
             _passwordRepository = passwordRepository;
+            _masterPasswordMatcher = masterPasswordMatcher;
             _serializer = serializer;
             _passwordDigester = passwordDigester;
         }
@@ -42,12 +44,13 @@ namespace Chwthewke.PasswordManager.Migration
 
         public void Import( IEnumerable<LegacyItem> items, SecureString masterPassword )
         {
-            Guid masterPasswordId = _passwordRepository.IdentifyMasterPassword( masterPassword ) ?? Guid.NewGuid( );
+            Guid masterPasswordId = _masterPasswordMatcher.IdentifyMasterPassword( masterPassword ) ?? Guid.NewGuid( );
             foreach ( LegacyItem legacyItem in items )
                 Import( legacyItem, masterPassword, masterPasswordId );
         }
 
         private readonly IPasswordRepository _passwordRepository;
+        private readonly IMasterPasswordMatcher _masterPasswordMatcher;
         private readonly IPasswordDigester _passwordDigester;
         private readonly IPasswordSerializer _serializer;
 

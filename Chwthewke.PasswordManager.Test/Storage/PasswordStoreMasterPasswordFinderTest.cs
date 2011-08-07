@@ -10,6 +10,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
     [ TestFixture ]
     public class PasswordStoreMasterPasswordFinderTest
     {
+        private IMasterPasswordMatcher _masterPasswordMatcher;
+
         private IPasswordRepository _repository;
         private Guid _masterPasswordId;
         private IPasswordDigester _digester;
@@ -18,7 +20,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SetUpStore( )
         {
             IHashFactory hashFactory = new Sha512Factory( );
-            _repository = new PasswordRepository( PasswordGenerators.All, hashFactory );
+            _repository = new PasswordRepository(  );
+            _masterPasswordMatcher = new MasterPasswordMatcher( PasswordGenerators.All, hashFactory, _repository );
             _digester = new PasswordDigester( hashFactory, new TimeProvider( ) );
 
             _masterPasswordId = Guid.Parse( "DAAB4016-AF5C-4C79-900E-B01E8D771C12" );
@@ -45,7 +48,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                   string.Empty );
             _repository.AddOrUpdate( notMatchingDigest );
             // Exercise
-            Guid? guid = _repository.IdentifyMasterPassword( masterPassword );
+            Guid? guid = _masterPasswordMatcher.IdentifyMasterPassword( masterPassword );
             // Verify
             Assert.That( guid.HasValue, Is.True );
             Assert.That( guid, Is.EqualTo( _masterPasswordId ) );
@@ -63,7 +66,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                   string.Empty );
             _repository.AddOrUpdate( notMatchingDigest );
             // Exercise
-            Guid? guid = _repository.IdentifyMasterPassword( "toto".ToSecureString( ) );
+            Guid? guid = _masterPasswordMatcher.IdentifyMasterPassword( "toto".ToSecureString( ) );
             // Verify
             Assert.That( guid.HasValue, Is.False );
         }

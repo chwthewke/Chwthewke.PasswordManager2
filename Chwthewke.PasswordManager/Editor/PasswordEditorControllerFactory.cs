@@ -5,20 +5,25 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Editor
 {
+
+    // TODO replace with factory delegate
     internal class PasswordEditorControllerFactory : IPasswordEditorControllerFactory
     {
         public PasswordEditorControllerFactory( IPasswordRepository passwordRepository,
+                                                IMasterPasswordMatcher masterPasswordMatcher,
                                                 IPasswordDigester passwordDigester,
                                                 Func<Guid> newGuidFactory,
                                                 IEnumerable<IPasswordGenerator> generators )
         {
             _passwordRepository = passwordRepository;
+            _masterPasswordMatcher = masterPasswordMatcher;
             _passwordDigester = passwordDigester;
             _newGuidFactory = newGuidFactory;
             _generators = generators;
         }
 
         private readonly IPasswordRepository _passwordRepository;
+        private readonly IMasterPasswordMatcher _masterPasswordMatcher;
         private readonly IPasswordDigester _passwordDigester;
         private readonly Func<Guid> _newGuidFactory;
         private readonly IEnumerable<IPasswordGenerator> _generators;
@@ -26,7 +31,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         public IPasswordEditorController CreatePasswordEditorController( )
         {
-            return new PasswordEditorController( _passwordRepository, _passwordDigester, _newGuidFactory, _generators );
+            return new PasswordEditorController( _passwordRepository, _passwordDigester, _newGuidFactory, _generators, _masterPasswordMatcher );
         }
     }
 }

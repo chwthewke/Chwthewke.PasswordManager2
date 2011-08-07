@@ -17,10 +17,12 @@ namespace Chwthewke.PasswordManager.Test.Editor
         [ SetUp ]
         public void SetUpController( )
         {
+            // TODO probably not very inspired to mock a repository.
             _storeMock = new Mock<IPasswordRepository>( );
+            _passwordMatcherMock = new Mock<IMasterPasswordMatcher>( );
             _digester = new PasswordDigester( new Sha512Factory( ), new NullTimeProvider( ) );
             _controller = new PasswordEditorController( _storeMock.Object, _digester, ( ) => _guid,
-                                                        PasswordGenerators.All );
+                                                        PasswordGenerators.All, _passwordMatcherMock.Object );
         }
 
         [ Test ]
@@ -163,7 +165,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             Guid guid = new Guid( "AEBE0ECF-D80D-48AE-B9BE-1EF4B2D72605" );
             SecureString masterPassword = "12456".ToSecureString( );
-            _storeMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) )
+            _passwordMatcherMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) )
                 .Returns( guid );
             // Exercise
             _controller.MasterPassword = masterPassword;
@@ -176,7 +178,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             SecureString masterPassword = "12456".ToSecureString( );
-            _storeMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) )
+            _passwordMatcherMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) )
                 .Returns( ( Guid? ) null );
             // Exercise
             _controller.MasterPassword = masterPassword;
@@ -242,7 +244,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _controller.SelectedGenerator = generator;
 
             Guid guid = new Guid( "729486C6-05F9-46C3-AEF0-C745CB20DB8D" );
-            _storeMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) ).Returns( guid );
+            _passwordMatcherMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) ).Returns( guid );
 
             PasswordDigest expectedDigest = _digester.Digest( key,
                                                               generator.MakePassword( key, masterPassword ),
@@ -269,7 +271,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _controller.SelectedGenerator = generator;
 
             _guid = new Guid( "729486C6-05F9-46C3-AEF0-C745CB20DB8D" );
-            _storeMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) ).Returns( ( Guid? ) null );
+            _passwordMatcherMock.Setup( s => s.IdentifyMasterPassword( masterPassword ) ).Returns( ( Guid? ) null );
 
             PasswordDigest expectedDigest = _digester.Digest( key,
                                                               generator.MakePassword( key, masterPassword ),
@@ -373,6 +375,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         private Mock<IPasswordRepository> _storeMock;
         private Guid _guid;
         private IPasswordDigester _digester;
+        private Mock<IMasterPasswordMatcher> _passwordMatcherMock;
 
 
         private class NullTimeProvider : ITimeProvider

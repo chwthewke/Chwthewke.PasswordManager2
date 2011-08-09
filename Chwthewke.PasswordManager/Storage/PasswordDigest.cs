@@ -7,7 +7,7 @@ namespace Chwthewke.PasswordManager.Storage
     {
         public string Key { get; private set; }
 
-        public byte[ ] Hash { get; private set; }
+        public byte[] Hash { get; private set; }
 
         public Guid MasterPasswordId { get; private set; }
 
@@ -15,13 +15,27 @@ namespace Chwthewke.PasswordManager.Storage
 
         public DateTime CreationTime { get; private set; }
 
+        public DateTime ModificationTime { get; private set; }
+
         public string Note { get; private set; }
 
+        [Obsolete]
         public PasswordDigest( string key,
-                               byte[ ] hash,
+                               byte[] hash,
                                Guid masterPasswordId,
                                Guid passwordGeneratorId,
                                DateTime creationTime,
+                               string note ) :
+            this( key, hash, masterPasswordId, passwordGeneratorId, creationTime, new DateTime(), note )
+        {
+        }
+
+        public PasswordDigest( string key,
+                               byte[] hash,
+                               Guid masterPasswordId,
+                               Guid passwordGeneratorId,
+                               DateTime creationTime,
+                               DateTime modificationTime,
                                string note )
         {
             if ( key == null )
@@ -34,15 +48,17 @@ namespace Chwthewke.PasswordManager.Storage
             MasterPasswordId = masterPasswordId;
             PasswordGeneratorId = passwordGeneratorId;
             CreationTime = creationTime;
+            ModificationTime = modificationTime;
             Note = note;
         }
+
 
         public override bool Equals( object obj )
         {
             if ( ReferenceEquals( null, obj ) ) return false;
             if ( ReferenceEquals( this, obj ) ) return true;
             if ( obj.GetType( ) != typeof ( PasswordDigest ) ) return false;
-            return Equals( ( PasswordDigest ) obj );
+            return Equals( (PasswordDigest) obj );
         }
 
         public override int GetHashCode( )
@@ -50,10 +66,10 @@ namespace Chwthewke.PasswordManager.Storage
             unchecked
             {
                 int result = Key.GetHashCode( );
-                result = ( result * 397 ) ^ Hash.GetHashCode( );
-                result = ( result * 397 ) ^ MasterPasswordId.GetHashCode( );
-                result = ( result * 397 ) ^ CreationTime.GetHashCode( );
-                result = ( result * 397 ) ^ ( Note != null ? Note.GetHashCode( ) : 0 );
+                result = ( result*397 ) ^ Hash.GetHashCode( );
+                result = ( result*397 ) ^ MasterPasswordId.GetHashCode( );
+                result = ( result*397 ) ^ CreationTime.GetHashCode( );
+                result = ( result*397 ) ^ ( Note != null ? Note.GetHashCode( ) : 0 );
                 return result;
             }
         }

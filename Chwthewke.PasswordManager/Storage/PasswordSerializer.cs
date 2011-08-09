@@ -18,12 +18,6 @@ namespace Chwthewke.PasswordManager.Storage
         public const string TimestampElement = "timestamp";
         public const string NoteElement = "note";
 
-        [ Obsolete ]
-        public void Save( IPasswordRepository passwordRepository, TextWriter writer )
-        {
-            IEnumerable<PasswordDigest> passwordDigests = passwordRepository.Passwords;
-            Save( passwordDigests, writer );
-        }
 
         public void Save( IEnumerable<PasswordDigest> passwordDigests, TextWriter writer )
         {

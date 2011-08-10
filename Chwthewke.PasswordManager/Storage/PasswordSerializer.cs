@@ -9,7 +9,10 @@ namespace Chwthewke.PasswordManager.Storage
 {
     internal class PasswordSerializer : IPasswordSerializer
     {
+        public const int Version = 1;
+
         public const string PasswordStoreElement = "password-store";
+        public const string VersionAttribute = "version";
         public const string PasswordElement = "password";
         public const string KeyElement = "key";
         public const string HashElement = "hash";
@@ -17,11 +20,32 @@ namespace Chwthewke.PasswordManager.Storage
         public const string PasswordSettingsIdElement = "password-settings";
         public const string TimestampElement = "timestamp";
         public const string NoteElement = "note";
+        public const string ModifiedElement = "modified";
 
+        public void Save( IEnumerable<PasswordDigest> passwordDigests, IPasswordStore store )
+        {
+            Save( passwordDigests, store.OpenWriter );
+        }
+
+        public IEnumerable<PasswordDigest> Load( IPasswordStore store )
+        {
+            return Load( store.OpenReader );
+        }
 
         public void Save( IEnumerable<PasswordDigest> passwordDigests, TextWriter writer )
         {
-            XElement root = new XElement( PasswordStoreElement, passwordDigests.Select( ToXml ) );
+            Save( passwordDigests, () => writer );
+        }
+
+        public IEnumerable<PasswordDigest> Load( TextReader textReader )
+        {
+            return Load( ( ) => textReader );
+        }
+
+        private void Save( IEnumerable<PasswordDigest> passwordDigests, Func<TextWriter> openWriter )
+        {
+            XElement root = new XElement( PasswordStoreElement, new XAttribute( VersionAttribute, Version ), passwordDigests.Select( ToXml ) );
+
             XmlWriterSettings xmlWriterSettings = new XmlWriterSettings
                                                       {
                                                           OmitXmlDeclaration = true,
@@ -29,8 +53,10 @@ namespace Chwthewke.PasswordManager.Storage
                                                           Indent = true,
                                                           IndentChars = "  ",
                                                       };
-            using ( XmlWriter xw = XmlWriter.Create( writer, xmlWriterSettings ) )
-                if ( xw != null ) root.Save( xw );
+            
+            using ( TextWriter textWriter = openWriter( ) )
+            using ( XmlWriter xmlWriter = XmlWriter.Create( textWriter, xmlWriterSettings ) )
+                root.Save( xmlWriter );
         }
 
         private static XElement ToXml( PasswordDigest password )
@@ -47,11 +73,12 @@ namespace Chwthewke.PasswordManager.Storage
             return xElement;
         }
 
-        public IEnumerable<PasswordDigest> Load( TextReader textReader )
+
+        private  IEnumerable<PasswordDigest> Load( Func<TextReader> openReader )
         {
             try
             {
-                return ReadFromXml( XElement.Load( textReader ) );
+                return ReadPasswords( openReader );
             }
             catch ( XmlException )
             {
@@ -59,23 +86,74 @@ namespace Chwthewke.PasswordManager.Storage
             }
         }
 
-        private static IEnumerable<PasswordDigest> ReadFromXml( XElement xml )
+        private IEnumerable<PasswordDigest> ReadPasswords( Func<TextReader> openReader )
         {
-            return from passwordElement in xml.Elements( PasswordElement )
-                   let key = passwordElement.Element( KeyElement )
-                   let hash = passwordElement.Element( HashElement )
-                   let masterPasswordId = passwordElement.Element( MasterPasswordIdElement )
-                   let passwordSettingsId = passwordElement.Element( PasswordSettingsIdElement )
-                   let timestamp = passwordElement.Element( TimestampElement )
-                   let note = passwordElement.Element( NoteElement )
-                   where key != null && hash != null && masterPasswordId != null && passwordSettingsId != null &&
-                         timestamp != null
-                   select new PasswordDigest( key.Value,
-                                              Convert.FromBase64String( hash.Value ),
-                                              Guid.Parse( masterPasswordId.Value ),
-                                              Guid.Parse( passwordSettingsId.Value ),
-                                              new DateTime( long.Parse( timestamp.Value ) ),
-                                              note == null ? null : note.Value );
+            using ( TextReader textReader = openReader( ) )
+            {
+                XElement root = XElement.Load( textReader );
+                int version = ExtractVersion( root );
+
+
+                foreach ( XElement passwordElement in root.Elements( PasswordElement ) )
+                {
+                    if ( !VerifyRequirements( version, passwordElement,
+                                              new Requirement {ElementName = KeyElement, StartingVersion = 0},
+                                              new Requirement {ElementName = HashElement, StartingVersion = 0},
+                                              new Requirement {ElementName = MasterPasswordIdElement, StartingVersion = 0},
+                                              new Requirement {ElementName = PasswordSettingsIdElement, StartingVersion = 0},
+                                              new Requirement {ElementName = TimestampElement, StartingVersion = 0},
+                                              new Requirement {ElementName = ModifiedElement, StartingVersion = 1} ) )
+
+                        continue;
+
+                    string key = ExtractFromElement( passwordElement, KeyElement, x => x );
+                    byte[] hash = ExtractFromElement( passwordElement, HashElement, Convert.FromBase64String );
+                    Guid masterPasswordId = ExtractFromElement( passwordElement, MasterPasswordIdElement, Guid.Parse );
+                    Guid passwordSettingsId = ExtractFromElement( passwordElement, PasswordSettingsIdElement, Guid.Parse );
+                    DateTime creationDate = ExtractFromElement( passwordElement, TimestampElement, ExtractDateTime );
+                    DateTime modificationDate = ExtractFromElement( passwordElement, ModifiedElement, ExtractDateTime );
+                    string note = ExtractFromElement( passwordElement, NoteElement, x => x );
+
+                    yield return new PasswordDigest( key, hash, masterPasswordId, passwordSettingsId, creationDate, modificationDate, note );
+                }
+            }
+        }
+
+        private DateTime ExtractDateTime( string x )
+        {
+            return x == null ? new DateTime( ) : new DateTime( long.Parse( x ) );
+        }
+
+        private bool VerifyRequirements( int version, XElement passwordElement, params Requirement[] requirements )
+        {
+            return requirements.All( r => r.Check( passwordElement, version ) );
+        }
+
+        private static int ExtractVersion( XElement root )
+        {
+            XAttribute versionText = root.Attribute( VersionAttribute );
+            int version = versionText == null ? 0 : int.Parse( versionText.Value );
+            return version;
+        }
+
+        private T ExtractFromElement<T>( XElement parent, string childName, Func<string, T> extractor )
+        {
+            XElement childElement = parent.Element( childName );
+            return extractor( childElement == null ? null : childElement.Value );
         }
     }
+
+    internal class Requirement
+    {
+        public int StartingVersion { get; set; }
+        public string ElementName { get; set; }
+
+        public bool Check( XElement target, int version )
+        {
+            if ( StartingVersion > version )
+                return true;
+            return target.Element( ElementName ) != null;
+        }
+    }
+
 }

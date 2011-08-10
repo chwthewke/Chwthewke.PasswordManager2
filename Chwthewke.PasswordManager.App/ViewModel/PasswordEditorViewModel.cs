@@ -116,7 +116,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public Color RequiredGuidColor
         {
             get { return _requiredGuidColor; }
-            set
+            private set
             {
                 if ( _requiredGuidColor == value )
                     return;
@@ -129,7 +129,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public Color ActualGuidColor
         {
             get { return _actualGuidColor; }
-            set
+            private set
             {
                 if ( _actualGuidColor == value )
                     return;

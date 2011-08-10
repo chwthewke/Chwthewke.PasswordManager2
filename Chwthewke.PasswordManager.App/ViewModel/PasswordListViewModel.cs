@@ -64,6 +64,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void StoreModified( object sender, EventArgs e )
         {
+            // TODO reverse order of these operations ?
             UpdateList( );
             RaiseSaveRequested( );
         }

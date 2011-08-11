@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using Autofac;
 using Chwthewke.PasswordManager.Modules;
 
@@ -8,12 +9,25 @@ namespace Chwthewke.PasswordManager.App.Modules
         public static IContainer ConfigureContainer( )
         {
             ContainerBuilder builder = new ContainerBuilder( );
-            builder.RegisterModule( new PasswordManagerModule( ) );
-            builder.RegisterModule( new PasswordStorageModule( ) );
-            builder.RegisterModule( new ApplicationServices( ) );
-            builder.RegisterModule( new ApplicationModule( ) );
+
+            foreach(Module module in ApplicationModules)
+                builder.RegisterModule( module );
 
             return builder.Build( );
+        }
+
+        public static IList<Module> ApplicationModules
+        {
+            get
+            {
+                return new List<Module>
+                           {
+                               new PasswordManagerModule( ),
+                               new PasswordStorageModule( ),
+                               new ApplicationServices( ),
+                               new ApplicationModule( ),
+                           };
+            }
         }
     }
 }

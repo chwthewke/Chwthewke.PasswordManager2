@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
@@ -6,10 +7,10 @@ namespace Chwthewke.PasswordManager.Storage
     class PasswordDatabase : IPasswordDatabase
     {
 
-        public PasswordDatabase( IPasswordSerializer passwordSerializer, IPasswordStore source )
+        public PasswordDatabase( IPasswordSerializer passwordSerializer, Func<IPasswordStore> sourceProvider )
         {
             _passwordSerializer = passwordSerializer;
-            Source = source;
+            Source = sourceProvider();
             Init( );
         }
 

@@ -9,7 +9,7 @@ namespace Chwthewke.PasswordManager.App.Modules
         {
             ContainerBuilder builder = new ContainerBuilder( );
             builder.RegisterModule( new PasswordManagerModule( ) );
-            builder.RegisterModule( new UninitializedPasswordStorageModule( ) );
+            builder.RegisterModule( new PasswordStorageModule( ) );
             builder.RegisterModule( new ApplicationServices( ) );
             builder.RegisterModule( new ApplicationModule( ) );
 

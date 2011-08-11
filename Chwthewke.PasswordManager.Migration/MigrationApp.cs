@@ -12,7 +12,7 @@ namespace Chwthewke.PasswordManager.Migration
         {
             ContainerBuilder builder = new ContainerBuilder( );
             builder.RegisterModule( new PasswordManagerModule( ) );
-            builder.RegisterModule( new UninitializedPasswordStorageModule( ) );
+            builder.RegisterModule( new PasswordStorageModule( ) );
             builder.RegisterModule( new MigrationModule( ) );
 
             MigrationApp app = builder.Build( ).Resolve<MigrationApp>( );

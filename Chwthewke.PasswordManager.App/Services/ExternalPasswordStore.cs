@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
@@ -7,12 +8,16 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class ExternalPasswordStore : IPasswordStore
     {
-        public ExternalPasswordStore( IPasswordSerializer serializer, FileInfo passwordsFile )
+        [Obsolete]
+        public ExternalPasswordStore( IPasswordSerializer serializer, FileInfo passwordsFile ): this(passwordsFile)
         {
             _serializer = serializer;
-            _passwordsFile = passwordsFile;
         }
 
+        public ExternalPasswordStore( FileInfo passwordsFile )
+        {
+            _passwordsFile = passwordsFile;
+        }
 
 
         public IEnumerable<PasswordDigest> Load( )

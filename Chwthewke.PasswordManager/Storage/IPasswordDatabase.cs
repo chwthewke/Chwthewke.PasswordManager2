@@ -2,7 +2,7 @@ using System.Collections.Generic;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    internal interface IPasswordDatabase
+    public interface IPasswordDatabase
     {
         IPasswordStore Source { get; set; }
         IList<PasswordDigest> Passwords { get; }

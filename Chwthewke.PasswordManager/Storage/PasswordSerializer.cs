@@ -78,7 +78,7 @@ namespace Chwthewke.PasswordManager.Storage
         {
             try
             {
-                return ReadPasswords( openReader );
+                return ReadPasswords( openReader ).ToList( );
             }
             catch ( XmlException )
             {

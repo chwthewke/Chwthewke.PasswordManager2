@@ -19,7 +19,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         {
             ContainerBuilder containerBuilder = new ContainerBuilder( );
             containerBuilder.RegisterModule( new PasswordManagerModule( ) );
-            containerBuilder.RegisterModule( new UninitializedPasswordStorageModule( ) );
+            containerBuilder.RegisterModule( new PasswordStorageModule( ) );
             containerBuilder.RegisterModule( new ApplicationServices( ) );
             _container = containerBuilder.Build( );
 

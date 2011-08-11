@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.IO;
 using Chwthewke.PasswordManager.App.Properties;
@@ -7,11 +8,17 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class InternalPasswordStore : IPasswordStore
     {
-        public InternalPasswordStore( IPasswordSerializer serializer, Settings settings )
+        [Obsolete]
+        public InternalPasswordStore( IPasswordSerializer serializer, Settings settings ) : this( settings )
         {
-            _settings = settings;
             _serializer = serializer;
         }
+
+        public InternalPasswordStore( Settings settings )
+        {
+            _settings = settings;
+        }
+
 
         public IEnumerable<PasswordDigest> Load( )
         {

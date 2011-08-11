@@ -14,12 +14,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public PasswordManagerViewModel( PasswordListViewModel passwordList,
                                          IFileSelectionService fileSelectionService,
                                          IPersistenceService persistenceService,
-                                         Settings settings, IPasswordImporter passwordImporter )
+                                         IPasswordDatabase passwordDatabase,
+                                         Settings settings,
+                                         IPasswordImporter passwordImporter )
         {
             _passwordList = passwordList;
             _passwordImporter = passwordImporter;
             _fileSelectionService = fileSelectionService;
             _persistenceService = persistenceService;
+            _passwordDatabase = passwordDatabase;
             _settings = settings;
 
             _selectInternalStorageCommand = new RelayCommand( ExecuteSelectInternalStorage );
@@ -81,11 +84,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void ExecuteSelectInternalStorage( )
         {
-            _settings.PasswordsAreExternal = false;
-            _settings.ExternalPasswordDatabase = string.Empty;
-            _persistenceService.Save( );
+            SetInternalStorage( );
 
             UpdateStorageType( );
+        }
+
+        private void SetInternalStorage( )
+        {
+            _settings.PasswordsAreExternal = false;
+            _settings.ExternalPasswordDatabase = string.Empty;
+            _settings.Save( );
         }
 
         private void ExecuteSelectExternalStorage( )
@@ -96,16 +104,34 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( externalFile == null )
                 return;
 
-            _settings.PasswordsAreExternal = true;
-            _settings.ExternalPasswordDatabase = externalFile.FullName;
-            _settings.PasswordDatabase = string.Empty;
-            _persistenceService.Save( );
-            _settings.Save( );
+            SetExternalStorage( externalFile );
 
             UpdateStorageType( );
         }
 
+        private void SetExternalStorage( FileInfo externalFile )
+        {
+            _settings.PasswordsAreExternal = true;
+            _settings.ExternalPasswordDatabase = externalFile.FullName;
+            _settings.PasswordDatabase = string.Empty;
+            _settings.Save( );
+        }
+
         private void UpdateStorageType( )
+        {
+            UpdateStorageTypeUi( );
+            ActivateStorageType( );
+        }
+
+        private void ActivateStorageType( )
+        {
+            if ( _settings.PasswordsAreExternal )
+                _passwordDatabase.Source = new ExternalPasswordStore( new FileInfo( _settings.ExternalPasswordDatabase ) );
+            else 
+                _passwordDatabase.Source = new InternalPasswordStore( _settings );
+        }
+
+        private void UpdateStorageTypeUi( )
         {
             ExternalStorageSelected = _settings.PasswordsAreExternal;
             InternalStorageSelected = !_settings.PasswordsAreExternal;
@@ -113,7 +139,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void ExecuteImportPasswords( )
         {
-            foreach ( FileInfo importedFile in _fileSelectionService.SelectExternalPasswordFileToImport( _initialDirectory ) )
+            foreach (
+                FileInfo importedFile in _fileSelectionService.SelectExternalPasswordFileToImport( _initialDirectory ) )
             {
                 _passwordImporter.ImportPasswords( importedFile );
             }
@@ -133,7 +160,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private readonly PasswordListViewModel _passwordList;
         private readonly IFileSelectionService _fileSelectionService;
-        private readonly IPersistenceService _persistenceService;
+
+        [Obsolete] private readonly IPersistenceService _persistenceService;
+        private readonly IPasswordDatabase _passwordDatabase;
+
         private readonly IPasswordImporter _passwordImporter;
         private readonly Settings _settings;
 

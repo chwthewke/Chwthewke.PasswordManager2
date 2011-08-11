@@ -33,7 +33,7 @@ namespace Chwthewke.PasswordManager.Storage
         public void AddOrUpdate( PasswordDigest password )
         {
             MergeFromSource( );
-            // TODO conflicting modification check possible
+            // Note conflicting modification check possible
             Add( password );
             Save( );
         }
@@ -41,7 +41,7 @@ namespace Chwthewke.PasswordManager.Storage
         public void Remove( string key )
         {
             MergeFromSource( );
-            // TODO conflicting modification check possible
+            // Note conflicting modification check possible
             if (_passwords.Remove( key ))
                 Save( );
         }

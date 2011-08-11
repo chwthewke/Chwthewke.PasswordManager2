@@ -52,7 +52,6 @@ namespace Chwthewke.PasswordManager.Storage
             Note = note;
         }
 
-
         public override bool Equals( object obj )
         {
             if ( ReferenceEquals( null, obj ) ) return false;

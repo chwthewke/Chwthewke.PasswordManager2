@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.Storage;
+using Chwthewke.PasswordManager.Test.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
@@ -39,8 +40,15 @@ namespace Chwthewke.PasswordManager.App.Services
 
         public TextWriter OpenWriter( )
         {
-            return new SettingsPasswordDatabaseWriter( _settings );
+            return new FlushingStringWriter( SaveDatabase );
         }
+
+        private void SaveDatabase( string s )
+        {
+            _settings.PasswordDatabase = s;
+            _settings.Save( );
+        }
+
 
         private readonly Settings _settings;
         private readonly IPasswordSerializer _serializer;

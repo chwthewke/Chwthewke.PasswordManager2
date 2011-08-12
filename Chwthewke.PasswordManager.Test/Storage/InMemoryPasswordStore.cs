@@ -10,6 +10,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
     {
         public string Content { get; set; }
 
+        public InMemoryPasswordStore( )
+        {
+            Content = string.Empty;
+        }
+
         private void SetContent( string value )
         {
             Content = value;

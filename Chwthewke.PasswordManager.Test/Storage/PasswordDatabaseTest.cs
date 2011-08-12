@@ -33,19 +33,23 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         [Test]
-        [Ignore]
         public void InitLoadsPasswordsFromSource( )
         {
             // Set up
             IList<PasswordDigest> passwordDigests =
                 new List<PasswordDigest>
                     {
-                        new PasswordDigestBuilder {}
+                        new PasswordDigestBuilder { Key = "abc" },
                     };
             Serializer.Save( passwordDigests, InMemoryPasswordStore );
 
             // Exercise
+
+            IPasswordDatabase database = 
+                new PasswordDatabase( Serializer, ( ) => InMemoryPasswordStore );
+
             // Verify
+            Assert.That( database.Passwords, Is.EquivalentTo( passwordDigests ) );
         }
     }
 }

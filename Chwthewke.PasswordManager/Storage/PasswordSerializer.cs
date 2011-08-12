@@ -67,7 +67,8 @@ namespace Chwthewke.PasswordManager.Storage
                                          new XElement( MasterPasswordIdElement, password.MasterPasswordId.ToString( ) ),
                                          new XElement( PasswordSettingsIdElement,
                                                        password.PasswordGeneratorId.ToString( ) ),
-                                         new XElement( TimestampElement, password.CreationTime.Ticks ) );
+                                         new XElement( TimestampElement, password.CreationTime.Ticks ),
+                                         new XElement( ModifiedElement, password.ModificationTime.Ticks ));
             if ( password.Note != null )
                 xElement.Add( new XElement( NoteElement, password.Note ) );
             return xElement;

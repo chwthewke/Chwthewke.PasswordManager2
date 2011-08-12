@@ -5,46 +5,60 @@ namespace Chwthewke.PasswordManager.Test.Storage
 {
     public class PasswordDigestBuilder
     {
-        private string _key = "key";
-        private byte[ ] _hash = new byte[ ] { };
-        private Guid _masterPasswordId = default( Guid );
-        private Guid _passwordGeneratorId = default( Guid );
-        private DateTime _creationTime;
-        private string _note = string.Empty;
+        public string Key { get; set; }
+
+        public byte[] Hash { get; set; }
+
+        public Guid MasterPasswordId { get; set; }
+
+        public Guid PasswordGeneratorId { get; set; }
+
+        public DateTime CreationTime { get; set; }
+
+        public DateTime ModificationTime { get; set; }
+
+        public string Note { get; set; }
+
+        public PasswordDigestBuilder( )
+        {
+            Key = "key";
+            Hash = new byte[] {};
+            Note = string.Empty;
+        }
 
         public PasswordDigestBuilder WithKey( string key )
         {
-            _key = key;
+            Key = key;
             return this;
         }
 
-        public PasswordDigestBuilder WithHash( byte[ ] hash )
+        public PasswordDigestBuilder WithHash( byte[] hash )
         {
-            _hash = hash;
+            Hash = hash;
             return this;
         }
 
         public PasswordDigestBuilder WithMasterPasswordId( Guid masterPasswordId )
         {
-            _masterPasswordId = masterPasswordId;
+            MasterPasswordId = masterPasswordId;
             return this;
         }
 
         public PasswordDigestBuilder WithGeneratorId( Guid generatorId )
         {
-            _passwordGeneratorId = generatorId;
+            PasswordGeneratorId = generatorId;
             return this;
         }
 
         public PasswordDigestBuilder WithCreationTime( DateTime creationTime )
         {
-            _creationTime = creationTime;
+            CreationTime = creationTime;
             return this;
         }
 
         public PasswordDigestBuilder WithNote( string note )
         {
-            _note = note;
+            Note = note;
             return this;
         }
 
@@ -55,7 +69,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         private PasswordDigest Build( )
         {
-            return new PasswordDigest( _key, _hash, _masterPasswordId, _passwordGeneratorId, _creationTime, _note );
+            return new PasswordDigest( Key, Hash, MasterPasswordId, PasswordGeneratorId, CreationTime, ModificationTime,
+                                       Note );
         }
     }
 }

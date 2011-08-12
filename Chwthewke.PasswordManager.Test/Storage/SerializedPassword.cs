@@ -4,6 +4,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
+    // TODO factor with PasswordDigestBuilder
     public class SerializedPassword
     {
         public SerializedPassword( string key )
@@ -17,13 +18,15 @@ namespace Chwthewke.PasswordManager.Test.Storage
             get { return _key; }
         }
 
-        public byte[ ] Hash { get; set; }
+        public byte[] Hash { get; set; }
 
         public Guid MasterPasswordId { get; set; }
 
         public Guid PasswordSettingsId { get; set; }
 
         public DateTime CreationTime { get; set; }
+
+        public DateTime ModificationTime { get; set; }
 
         public string Note { get; set; }
 
@@ -38,7 +41,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                          new XElement( PasswordSerializer.PasswordSettingsIdElement,
                                                        builder.PasswordSettingsId.ToString( ) ),
                                          new XElement( PasswordSerializer.TimestampElement,
-                                                       builder.CreationTime.Ticks ) );
+                                                       builder.CreationTime.Ticks ),
+                                         new XElement( PasswordSerializer.ModifiedElement,
+                                                       builder.ModificationTime.Ticks ) );
             if ( builder.Note != null )
                 xElement.Add( new XElement( PasswordSerializer.NoteElement, builder.Note ) );
 

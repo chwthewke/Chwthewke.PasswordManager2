@@ -1,7 +1,7 @@
 using System;
 using System.IO;
 
-namespace Chwthewke.PasswordManager.Test.Storage
+namespace Chwthewke.PasswordManager.App.Services
 {
     public class FlushingStringWriter : StringWriter
     {

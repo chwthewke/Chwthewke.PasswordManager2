@@ -17,12 +17,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SetUpSerializer( )
         {
             _serializer = new PasswordSerializer( );
-        }
-
-        [ TearDown ]
-        public void TearDownMemoryStream( )
-        {
-            _inputReader.Dispose( );
+            _passwordStore = new InMemoryPasswordStore( );
         }
 
         [ Test ]
@@ -31,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             SaveXml( new XElement( PasswordSerializer.PasswordStoreElement ) );
             // Exercise
-            IEnumerable<PasswordDigest> passwords = _serializer.Load( _inputReader );
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
             // Verify
             Assert.That( passwords, Is.Empty );
         }
@@ -45,7 +40,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                    ( XElement ) new SerializedPassword( "aKey" ),
                                    ( XElement ) new SerializedPassword( "anotherKey" ) ) );
             // Exercise
-            IEnumerable<PasswordDigest> passwords = _serializer.Load( _inputReader );
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
             // Verify
             Assert.That( passwords.Count( ), Is.EqualTo( 2 ) );
         }
@@ -58,7 +53,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    ( XElement ) new SerializedPassword( "aKey" ) ) );
             // Exercise
-            IEnumerable<PasswordDigest> passwords = _serializer.Load( _inputReader );
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
             // Verify
             PasswordDigest passwordDigest = passwords.First( );
             Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
@@ -71,7 +66,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    ( XElement ) new SerializedPassword( "aKey" ) { Hash = new byte[ ] { 0x44, 0x66 } } ) );
             // Exercise
-            IEnumerable<PasswordDigest> passwords = _serializer.Load( _inputReader );
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
             // Verify
             PasswordDigest passwordDigest = passwords.First( );
             Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
@@ -87,7 +82,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                    ( XElement )
                                    new SerializedPassword( "aKey" ) { MasterPasswordId = guid } ) );
             // Exercise
-            IEnumerable<PasswordDigest> passwords = _serializer.Load( _inputReader );
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
             // Verify
             PasswordDigest passwordDigest = passwords.First( );
             Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
@@ -103,14 +98,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                    ( XElement )
                                    new SerializedPassword( "aKey" ) { PasswordSettingsId = guid } ) );
             // Exercise
-            IEnumerable<PasswordDigest> passwords = _serializer.Load( _inputReader );
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
             // Verify
             PasswordDigest passwordDigest = passwords.First( );
             Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
             Assert.That( passwordDigest.PasswordGeneratorId, Is.EqualTo( guid ) );
         }
 
-        [ Test ]
+        [Test]
         public void LoadReadsCreationDateFromElement( )
         {
             // Setup
@@ -119,11 +114,27 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                    ( XElement )
                                    new SerializedPassword( "aKey" ) { CreationTime = creationTime } ) );
             // Exercise
-            IEnumerable<PasswordDigest> passwords = _serializer.Load( _inputReader );
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
             // Verify
             PasswordDigest passwordDigest = passwords.First( );
             Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
             Assert.That( passwordDigest.CreationTime, Is.EqualTo( creationTime ) );
+        }
+
+        [Test]
+        public void LoadReadsModificationDateFromElement( )
+        {
+            // Setup
+            DateTime modificationTime = new DateTime( 634122874455500442 );
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
+                                   ( XElement )
+                                   new SerializedPassword( "aKey" ) { ModificationTime = modificationTime } ) );
+            // Exercise
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
+            // Verify
+            PasswordDigest passwordDigest = passwords.First( );
+            Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
+            Assert.That( passwordDigest.ModificationTime, Is.EqualTo( modificationTime ) );
         }
 
 
@@ -135,7 +146,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    ( XElement ) new SerializedPassword( "aKey" ) { Note = note } ) );
             // Exercise
-            IEnumerable<PasswordDigest> passwords = _serializer.Load( _inputReader );
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
             // Verify
             PasswordDigest passwordDigest = passwords.First( );
             Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
@@ -149,7 +160,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    ( XElement ) new SerializedPassword( "aKey" ) ) );
             // Exercise
-            IEnumerable<PasswordDigest> passwords = _serializer.Load( _inputReader );
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
             // Verify
             PasswordDigest passwordDigest = passwords.First( );
             Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
@@ -164,17 +175,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                           Encoding = new UTF8Encoding( false ),
                                                           OmitXmlDeclaration = true
                                                       };
-            using ( TextWriter stringWriter = new StringWriter( ) )
-            {
-                using ( XmlWriter xmlWriter = XmlWriter.Create( stringWriter, xmlWriterSettings ) )
-                    if ( xmlWriter != null ) xElement.Save( xmlWriter );
-                _input = stringWriter.ToString( );
-                _inputReader = new StringReader( _input );
-            }
+            TextWriter stringWriter = new StringWriter( );
+            using ( XmlWriter xmlWriter = XmlWriter.Create( stringWriter, xmlWriterSettings ) )
+                xElement.Save( xmlWriter );
+            _passwordStore.Content = stringWriter.ToString( );
         }
 
         private IPasswordSerializer _serializer;
-        private StringReader _inputReader;
-        private string _input;
+
+        private InMemoryPasswordStore _passwordStore;
     }
 }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Test.Storage

@@ -10,11 +10,20 @@ namespace Chwthewke.PasswordManager.Storage
         public PasswordDatabase( IPasswordSerializer passwordSerializer, Func<IPasswordStore> sourceProvider )
         {
             _passwordSerializer = passwordSerializer;
-            Source = sourceProvider();
+            _source = sourceProvider();
             Init( );
         }
 
-        public IPasswordStore Source { get; set; }
+        public IPasswordStore Source
+        {
+            get { return _source; }
+            set
+            {
+                MergeFromSource( );
+                _source = value;
+                Save( );
+            }
+        }
 
         public IList<PasswordDigest> Passwords
         {
@@ -72,6 +81,7 @@ namespace Chwthewke.PasswordManager.Storage
             _passwordSerializer.Save( _passwords.Values, Source );
         }
 
+        private IPasswordStore _source;
 
         private readonly IDictionary<string, PasswordDigest> _passwords = new Dictionary<string, PasswordDigest>( );
         private readonly IPasswordSerializer _passwordSerializer;

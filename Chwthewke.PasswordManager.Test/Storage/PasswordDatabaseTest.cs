@@ -1,13 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
 using Autofac;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.App;
-using Chwthewke.PasswordManager.Test.Util;
-using Moq;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Storage
@@ -125,20 +120,58 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         [Test]
-        public void RemoveRemotelyUpdatedPasswordDeletesIt( ) // SHOULD IT ?
+        public void RemoveRemotelyUpdatedPasswordDoesNotDeleteIt( ) // SHOULD IT ?
         {
             // Set up
-            Database.AddOrUpdate( new PasswordDigestBuilder { Key = "def", Hash = new byte[] { 0x01 } } );
+            Database.AddOrUpdate( new PasswordDigestBuilder { Key = "def", Hash = new byte[] { 0x01 }, ModificationTime = new DateTime( 1 ) } );
 
-            PasswordDigest updatedPassword = new PasswordDigestBuilder { Key = "def", Hash = new byte[] { 0x03 } };
+            PasswordDigest updatedPassword = new PasswordDigestBuilder
+                                                 { Key = "def", Hash = new byte[] { 0x03 }, ModificationTime = new DateTime( 4 ) };
             Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryPasswordStore );
 
             // Exercise
             Database.Remove( "def" );
             // Verify
 
-            Assert.That( Database.Passwords, Is.Empty );
-            Assert.That( Serializer.Load( InMemoryPasswordStore ), Is.Empty );
+            Assert.That( Database.Passwords, Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
+            Assert.That( Serializer.Load( InMemoryPasswordStore ), Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
         }
+
+        [Test]
+        public void ReloadMergesRecentModificationsFromSource( )
+        {
+            // Set up
+            PasswordDigest originalPassword = new PasswordDigestBuilder { Key = "abc", ModificationTime = new DateTime( 1 ) };
+            Database.AddOrUpdate( originalPassword );
+
+            PasswordDigest updatedPassword = new PasswordDigestBuilder { Key = "abc", ModificationTime = new DateTime( 3 ) };
+
+            Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryPasswordStore );
+
+            // Exercise
+            Database.Reload( );
+
+            // Verify
+            Assert.That( Database.Passwords, Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
+        }
+
+        [Test]
+        public void ReloadRejectsObsoleteModificationsFromSource( )
+        {
+            // Set up
+            PasswordDigest originalPassword = new PasswordDigestBuilder { Key = "abc", ModificationTime = new DateTime( 3 ) };
+            Database.AddOrUpdate( originalPassword );
+
+            PasswordDigest updatedPassword = new PasswordDigestBuilder { Key = "abc", ModificationTime = new DateTime( 1 ) };
+
+            Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryPasswordStore );
+
+            // Exercise
+            Database.Reload( );
+
+            // Verify
+            Assert.That( Database.Passwords, Is.EquivalentTo( new List<PasswordDigest> { originalPassword } ) );
+        }
+
     }
 }

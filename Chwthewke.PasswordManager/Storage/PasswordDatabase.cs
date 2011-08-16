@@ -5,9 +5,8 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    class PasswordDatabase : IPasswordDatabase
+    internal class PasswordDatabase : IPasswordDatabase
     {
-
         public PasswordDatabase( IPasswordSerializer passwordSerializer )
         {
             _passwordSerializer = passwordSerializer;
@@ -30,7 +29,7 @@ namespace Chwthewke.PasswordManager.Storage
             get { return _passwords.Values.ToList( ); }
         }
 
-        public PasswordDigest FindByKey(string key)
+        public PasswordDigest FindByKey( string key )
         {
             return _passwords.ContainsKey( key ) ? _passwords[ key ] : null;
         }
@@ -43,22 +42,29 @@ namespace Chwthewke.PasswordManager.Storage
         public void AddOrUpdate( PasswordDigest password )
         {
             MergeFromSource( );
-            // Note conflicting modification check possible
+
             Add( password );
             Save( );
         }
 
         public void Remove( string key )
         {
+            if ( !_passwords.ContainsKey( key ) )
+                return;
+
+            DateTime localModification = _passwords[ key ].ModificationTime;
+
             MergeFromSource( );
-            // Note conflicting modification check possible
-            if (_passwords.Remove( key ))
-                Save( );
+
+            if ( _passwords.ContainsKey( key ) && _passwords[ key ].ModificationTime.CompareTo( localModification ) <= 0 )
+                _passwords.Remove( key );
+
+            Save( );
         }
 
         private void MergeFromSource( )
         {
-            foreach( PasswordDigest password in _passwordSerializer.Load( Source ) )
+            foreach ( PasswordDigest password in _passwordSerializer.Load( Source ) )
             {
                 PasswordDigest local = FindByKey( password.Key );
                 if ( local == null || local.ModificationTime.CompareTo( password.ModificationTime ) < 0 )
@@ -104,6 +110,4 @@ namespace Chwthewke.PasswordManager.Storage
             return TextWriter.Null;
         }
     }
-
-
 }

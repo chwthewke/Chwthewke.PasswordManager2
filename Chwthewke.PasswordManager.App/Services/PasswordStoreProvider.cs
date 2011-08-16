@@ -6,7 +6,7 @@ using Chwthewke.PasswordManager.Storage;
 namespace Chwthewke.PasswordManager.App.Services
 {
     [Obsolete]
-    class PasswordStoreProvider
+    internal class PasswordStoreProvider
     {
         public PasswordStoreProvider( Settings settings, IPasswordSerializer passwordSerializer )
         {

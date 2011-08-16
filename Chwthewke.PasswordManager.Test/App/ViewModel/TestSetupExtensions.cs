@@ -1,3 +1,4 @@
+using System;
 using System.Security;
 using Autofac;
 using Chwthewke.PasswordManager.Editor;
@@ -7,6 +8,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
     public static class TestSetupExtensions
     {
+        [Obsolete]
         public static void AddPassword( this IContainer container,
                                         string key,
                                         string note,

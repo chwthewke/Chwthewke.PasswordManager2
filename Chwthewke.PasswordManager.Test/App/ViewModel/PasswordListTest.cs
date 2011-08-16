@@ -1,9 +1,8 @@
+using System;
 using System.Linq;
-using System.Security;
 using Autofac;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Editor;
-using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
@@ -19,59 +18,29 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 
         public IPasswordDatabase PasswordDatabase { get; set; }
 
-        public IPasswordEditorControllerFactory ControllerFactory { get; set; }
+        public Func<IPasswordEditorController> ControllerFactory { get; set; }
 
 
         [SetUp]
         public void SetUpContainer( )
         {
-            IContainer container = AppSetUp.TestContainer( );
-            container.InjectProperties( this );
+            AppSetUp.TestContainer( b => b.RegisterType<InMemoryPasswordStore>( ).As<IPasswordStore>( ) ).InjectProperties( this );
 
-            PasswordDatabase.Source = new InMemoryPasswordStore( );
-
-/*
-            ContainerBuilder containerBuilder = new ContainerBuilder( );
-            containerBuilder.RegisterModule( new PasswordManagerModule( ) );
-            containerBuilder.RegisterModule( new PasswordStorageModule( ) );
-            containerBuilder.RegisterModule( new ApplicationServices( ) );
-            _container = containerBuilder.Build( );
-*/
-
-/*
-            PasswordList = new PasswordListViewModel( Resolve<IPasswordRepository>( ),
-                                                      Resolve<IPasswordEditorFactory>( ),
-                                                      Resolve<IGuidToColorConverter>( ) );
-*/
+            //PasswordDatabase.Source = new InMemoryPasswordStore( );
         }
 
         [Test]
         public void ListHasPasswords( )
         {
             // Setup
-            AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
-            AddPassword( "abde", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
-            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "1234".ToSecureString( ) );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abde" } );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abcd" } );
             // Exercise
             PasswordList.UpdateList( );
             // Verify
             Assert.That( PasswordList.Items.Select( x => x.Name ).ToArray( ),
-                         Is.EqualTo( new[] {"abc", "abcd", "abde"} ) );
-        }
-
-        private void AddPassword( string key,
-                                  string note,
-                                  IPasswordGenerator generator,
-                                  SecureString masterPassword )
-        {
-            IPasswordEditorController controller =
-                ControllerFactory.CreatePasswordEditorController( );
-            controller.Key = key;
-            controller.Note = note;
-            controller.SelectedGenerator = generator;
-            controller.MasterPassword = masterPassword;
-
-            controller.SavePassword( );
+                         Is.EqualTo( new[] { "abc", "abcd", "abde" } ) );
         }
 
         [Test]
@@ -90,7 +59,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         public void LoadPasswordIntoNewEditor( )
         {
             // Setup
-            AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
             PasswordList.UpdateList( );
             // Exercise
             PasswordList.OpenNewEditor( PasswordList.Items[ 0 ] );
@@ -113,7 +82,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             editor.SaveCommand.Execute( null );
             // Verify
             Assert.That( PasswordDatabase.Passwords.Count( ), Is.EqualTo( 1 ) );
-            Assert.That( PasswordList.Items.Select( it => it.Name ).ToArray( ), Is.EqualTo( new[] {"abcd"} ) );
+            Assert.That( PasswordList.Items.Select( it => it.Name ).ToArray( ), Is.EqualTo( new[] { "abcd" } ) );
         }
 
         [Test]

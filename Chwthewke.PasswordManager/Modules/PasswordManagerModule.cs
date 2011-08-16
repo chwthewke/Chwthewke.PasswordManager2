@@ -11,8 +11,7 @@ namespace Chwthewke.PasswordManager.Modules
         protected override void Load( ContainerBuilder builder )
         {
             // Controller
-            builder.RegisterType<PasswordEditorControllerFactory>( ).As<IPasswordEditorControllerFactory>( ).
-                SingleInstance( );
+            builder.RegisterType<PasswordEditorController>( ).As<IPasswordEditorController>( );
 
             // Engine
             builder.RegisterType<PasswordDigester>( ).As<IPasswordDigester>( ).SingleInstance( );

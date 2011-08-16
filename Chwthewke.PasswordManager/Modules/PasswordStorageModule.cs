@@ -12,6 +12,8 @@ namespace Chwthewke.PasswordManager.Modules
 
             builder.RegisterType<PasswordDatabase>( ).As<IPasswordDatabase>( ).SingleInstance( );
             builder.RegisterType<PasswordSerializer>( ).As<IPasswordSerializer>( ).SingleInstance( );
+            // default init
+            builder.RegisterType<NullPasswordStore>(  ).As<IPasswordStore>(  ).SingleInstance( );
 
             builder.RegisterType<PasswordRepository>( ).As<IPasswordRepository>( ).SingleInstance( );
             builder.RegisterType<PersistenceService>( ).As<IPersistenceService>( );

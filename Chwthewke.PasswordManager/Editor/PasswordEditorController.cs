@@ -9,8 +9,7 @@ namespace Chwthewke.PasswordManager.Editor
 {
     internal class PasswordEditorController : IPasswordEditorController
     {
-        public PasswordEditorController( IPasswordRepository passwordRepository,
-                                         IPasswordDatabase passwordDatabase,
+        public PasswordEditorController( IPasswordDatabase passwordDatabase,
                                          IPasswordDigester digester,
                                          Func<Guid> newGuidFactory,
                                          IEnumerable<IPasswordGenerator> generators,
@@ -25,6 +24,12 @@ namespace Chwthewke.PasswordManager.Editor
             _masterPassword = new SecureString( );
             Generators = generators;
         }
+
+        public delegate PasswordEditorController Factory( IPasswordDatabase passwordDatabase,
+                                                          IPasswordDigester digester,
+                                                          Func<Guid> newGuidFactory,
+                                                          IEnumerable<IPasswordGenerator> generators,
+                                                          IMasterPasswordMatcher masterPasswordMatcher );
 
         public string Key
         {

@@ -7,9 +7,11 @@ namespace Chwthewke.PasswordManager.Storage
 {
     internal class PasswordDatabase : IPasswordDatabase
     {
-        public PasswordDatabase( IPasswordSerializer passwordSerializer )
+        public PasswordDatabase( IPasswordSerializer passwordSerializer, IPasswordStore passwordStore )
         {
             _passwordSerializer = passwordSerializer;
+            _source = passwordStore;
+            MergeFromSource( );
         }
 
         public IPasswordStore Source

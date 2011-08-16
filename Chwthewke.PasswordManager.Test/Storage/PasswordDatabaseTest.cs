@@ -7,7 +7,8 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
-    internal class PasswordDatabaseTest
+    [TestFixture]
+    public class PasswordDatabaseTest
     {
 // ReSharper disable UnusedAutoPropertyAccessor.Global
         public IPasswordStore InMemoryPasswordStore { get; set; }
@@ -15,6 +16,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public IPasswordDatabase Database { get; set; }
 
         public IPasswordSerializer Serializer { get; set; }
+
+        public Func<IPasswordDatabase> DatabaseFactory { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         [SetUp]
@@ -48,8 +51,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
             // Exercise
 
-            IPasswordDatabase database =
-                new PasswordDatabase( Serializer ) { Source = newInMemoryPasswordStore };
+            IPasswordDatabase database = DatabaseFactory.Invoke( );
+            database.Source = newInMemoryPasswordStore;
 
             // Verify
             Assert.That( database.Passwords, Is.EquivalentTo( passwordDigests ) );

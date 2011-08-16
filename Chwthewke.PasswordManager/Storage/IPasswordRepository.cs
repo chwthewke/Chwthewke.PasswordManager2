@@ -4,6 +4,7 @@ using System.Security;
 
 namespace Chwthewke.PasswordManager.Storage
 {
+    [Obsolete]
     public interface IPasswordRepository
     {
         void AddOrUpdate( PasswordDigest passwordDigest );

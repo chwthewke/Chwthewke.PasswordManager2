@@ -35,6 +35,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
                         } );
 
             container.InjectProperties( this );
+
+            Database.Source = InMemoryPasswordStore;
         }
 
         [Test]
@@ -46,12 +48,13 @@ namespace Chwthewke.PasswordManager.Test.Storage
                     {
                         new PasswordDigestBuilder { Key = "abc" },
                     };
-            Serializer.Save( passwordDigests, InMemoryPasswordStore );
+            IPasswordStore newInMemoryPasswordStore = new InMemoryPasswordStore( );
+            Serializer.Save( passwordDigests, newInMemoryPasswordStore );
 
             // Exercise
 
             IPasswordDatabase database =
-                new PasswordDatabase( Serializer, ( ) => InMemoryPasswordStore );
+                new PasswordDatabase( Serializer ) { Source = newInMemoryPasswordStore };
 
             // Verify
             Assert.That( database.Passwords, Is.EquivalentTo( passwordDigests ) );

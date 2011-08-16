@@ -10,12 +10,13 @@ namespace Chwthewke.PasswordManager.Editor
     internal class PasswordEditorController : IPasswordEditorController
     {
         public PasswordEditorController( IPasswordRepository passwordRepository,
+                                         IPasswordDatabase passwordDatabase,
                                          IPasswordDigester digester,
                                          Func<Guid> newGuidFactory,
                                          IEnumerable<IPasswordGenerator> generators,
                                          IMasterPasswordMatcher masterPasswordMatcher )
         {
-            _passwordRepository = passwordRepository;
+            _passwordDatabase = passwordDatabase;
             _newGuidFactory = newGuidFactory;
             _masterPasswordMatcher = masterPasswordMatcher;
             _digester = digester;
@@ -123,7 +124,7 @@ namespace Chwthewke.PasswordManager.Editor
             Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
 
             PasswordDigest digest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id, Note );
-            _passwordRepository.AddOrUpdate( digest );
+            _passwordDatabase.AddOrUpdate( digest );
             ExpectedMasterPasswordId = digest.MasterPasswordId;
 
             IsDirty = false;
@@ -134,7 +135,7 @@ namespace Chwthewke.PasswordManager.Editor
         {
             if ( !IsPasswordLoaded )
                 return;
-            _passwordRepository.Remove( Key );
+            _passwordDatabase.Remove( Key );
 
             ExpectedMasterPasswordId = null;
             IsDirty = true;
@@ -150,7 +151,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         private PasswordDigest GetDigest( )
         {
-            return _passwordRepository.FindPasswordInfo( Key );
+            return _passwordDatabase.FindByKey( Key );
         }
 
         private void UpdateDirtiness( )
@@ -168,7 +169,7 @@ namespace Chwthewke.PasswordManager.Editor
             }
         }
 
-        private readonly IPasswordRepository _passwordRepository;
+        private readonly IPasswordDatabase _passwordDatabase;
         private readonly IMasterPasswordMatcher _masterPasswordMatcher;
         private readonly IPasswordDigester _digester;
         private readonly Func<Guid> _newGuidFactory;

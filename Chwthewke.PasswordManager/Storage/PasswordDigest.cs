@@ -19,17 +19,6 @@ namespace Chwthewke.PasswordManager.Storage
 
         public string Note { get; private set; }
 
-        [Obsolete]
-        public PasswordDigest( string key,
-                               byte[] hash,
-                               Guid masterPasswordId,
-                               Guid passwordGeneratorId,
-                               DateTime creationTime,
-                               string note ) :
-            this( key, hash, masterPasswordId, passwordGeneratorId, creationTime, new DateTime(), note )
-        {
-        }
-
         public PasswordDigest( string key,
                                byte[] hash,
                                Guid masterPasswordId,

@@ -10,8 +10,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordListViewModel : ObservableObject
     {
-        public PasswordListViewModel( IPasswordRepository repository,
-                                      IPasswordDatabase passwordDatabase,
+        public PasswordListViewModel( IPasswordDatabase passwordDatabase,
                                       Func<PasswordEditorViewModel> editorFactory,
                                       IGuidToColorConverter guidConverter )
         {
@@ -48,8 +47,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 OpenNewEditorInternal( password.Name );
         }
 
-        public event EventHandler SaveRequested;
-
         private void OpenNewEditorInternal( string passwordKey )
         {
             PasswordEditorViewModel editor = _editorFactory.Invoke( );
@@ -66,17 +63,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void StoreModified( object sender, EventArgs e )
         {
-            // TODO reverse order of these operations ?
             UpdateList( );
-            RaiseSaveRequested( );
         }
 
-        private void RaiseSaveRequested( )
-        {
-            EventHandler saveRequested = SaveRequested;
-            if ( saveRequested != null )
-                saveRequested( this, EventArgs.Empty );
-        }
 
         public void UpdateList( )
         {

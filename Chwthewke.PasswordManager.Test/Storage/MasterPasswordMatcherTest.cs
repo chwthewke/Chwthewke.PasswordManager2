@@ -10,7 +10,7 @@ using Autofac;
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [TestFixture]
-    public class PasswordStoreMasterPasswordFinderTest
+    public class MasterPasswordMatcherTest
     {
         private readonly Guid _masterPasswordId = Guid.Parse( "DAAB4016-AF5C-4C79-900E-B01E8D771C12" );
 

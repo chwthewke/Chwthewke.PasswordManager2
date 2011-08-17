@@ -6,26 +6,26 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class PasswordImporter : IPasswordImporter
     {
-        public PasswordImporter( IPasswordSerializer passwordSerializer, IPasswordRepository passwordRepository )
+        public PasswordImporter( IPasswordSerializer passwordSerializer, IPasswordDatabase passwordDatabase )
         {
             _passwordSerializer = passwordSerializer;
-            _passwordRepository = passwordRepository;
+            _passwordDatabase = passwordDatabase;
         }
 
         // TODO possibly return a "report" to be presented to the user
         public void ImportPasswords( FileInfo externalPasswordFile )
         {
-            IPasswordStore passwordStore = new ExternalPasswordStore( _passwordSerializer, externalPasswordFile );
-            IEnumerable<PasswordDigest> passwords = passwordStore.Load( );
+            IEnumerable<PasswordDigest> passwords = _passwordSerializer.Load( new ExternalPasswordStore( externalPasswordFile ) );
+
 
             foreach ( PasswordDigest passwordDigest in passwords )
             {
-                if ( _passwordRepository.FindPasswordInfo( passwordDigest.Key ) == null )
-                    _passwordRepository.AddOrUpdate( passwordDigest );
+                if ( _passwordDatabase.FindByKey( passwordDigest.Key ) == null )
+                    _passwordDatabase.AddOrUpdate( passwordDigest );
             }
         }
 
         private readonly IPasswordSerializer _passwordSerializer;
-        private readonly IPasswordRepository _passwordRepository;
+        private readonly IPasswordDatabase _passwordDatabase;
     }
 }

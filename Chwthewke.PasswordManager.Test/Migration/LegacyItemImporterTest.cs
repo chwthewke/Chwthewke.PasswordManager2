@@ -14,9 +14,10 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Migration
 {
+    [TestFixture]
     public class LegacyItemImporterTest
     {
-        private Mock<IPasswordRepository> _passwordStoreMock;
+        private Mock<IPasswordDatabase> _passwordStoreMock;
         private Mock<IPasswordDigester> _passwordDigesterMock;
         private Mock<IPasswordSerializer> _serializerMock;
         private Mock<IMasterPasswordMatcher> _masterPasswordMatcherMock;
@@ -25,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
         [SetUp]
         public void SetUpImporter( )
         {
-            _passwordStoreMock = new Mock<IPasswordRepository>( );
+            _passwordStoreMock = new Mock<IPasswordDatabase>( );
 
             _passwordDigesterMock = new Mock<IPasswordDigester>( );
 
@@ -87,7 +88,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
         public void SaveCallsSerializer( )
         {
             // Setup
-            IEnumerable<PasswordDigest> passwordDigests = Enumerable.Empty<PasswordDigest>( );
+            IList<PasswordDigest> passwordDigests = new List<PasswordDigest>();
             _passwordStoreMock.SetupGet( x => x.Passwords ).Returns( passwordDigests );
 
             try

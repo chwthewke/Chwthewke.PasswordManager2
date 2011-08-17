@@ -13,7 +13,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     {
         public PasswordManagerViewModel( PasswordListViewModel passwordList,
                                          IFileSelectionService fileSelectionService,
-                                         IPersistenceService persistenceService,
                                          IPasswordDatabase passwordDatabase,
                                          Settings settings,
                                          IPasswordImporter passwordImporter )
@@ -21,7 +20,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _passwordList = passwordList;
             _passwordImporter = passwordImporter;
             _fileSelectionService = fileSelectionService;
-            _persistenceService = persistenceService;
             _passwordDatabase = passwordDatabase;
             _settings = settings;
 
@@ -162,7 +160,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly PasswordListViewModel _passwordList;
         private readonly IFileSelectionService _fileSelectionService;
 
-        [Obsolete] private readonly IPersistenceService _persistenceService;
         private readonly IPasswordDatabase _passwordDatabase;
 
         private readonly IPasswordImporter _passwordImporter;

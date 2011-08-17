@@ -222,6 +222,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( !CanExecuteSave( ) )
                 return;
             _controller.SavePassword( );
+            // TODO event StoreModified once only ?
+
             RaiseStoreModified( );
 
             UpdateSaved( );

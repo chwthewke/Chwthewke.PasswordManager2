@@ -10,12 +10,12 @@ namespace Chwthewke.PasswordManager.Migration
 {
     public class LegacyItemImporter : ILegacyItemImporter
     {
-        public LegacyItemImporter( IPasswordRepository passwordRepository,
+        public LegacyItemImporter( IPasswordDatabase passwordDatabase,
                         IMasterPasswordMatcher masterPasswordMatcher,
                                    IPasswordDigester passwordDigester,
                                    IPasswordSerializer serializer )
         {
-            _passwordRepository = passwordRepository;
+            _passwordDatabase = passwordDatabase;
             _masterPasswordMatcher = masterPasswordMatcher;
             _serializer = serializer;
             _passwordDigester = passwordDigester;
@@ -23,12 +23,12 @@ namespace Chwthewke.PasswordManager.Migration
 
         public int NumPasswords
         {
-            get { return _passwordRepository.Passwords.Count( ); }
+            get { return _passwordDatabase.Passwords.Count( ); }
         }
 
         public IEnumerable<string> PasswordKeys
         {
-            get { return _passwordRepository.Passwords.Select( p => p.Key ); }
+            get { return _passwordDatabase.Passwords.Select( p => p.Key ); }
         }
 
         private void Import( LegacyItem legacyItem, SecureString masterPassword, Guid masterPasswordId )
@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Migration
             string password = generator.MakePassword( legacyItem.Key, masterPassword );
             PasswordDigest importedDigest = _passwordDigester.Digest( legacyItem.Key, password, masterPasswordId,
                                                                       generator.Id, "Imported from v1" );
-            _passwordRepository.AddOrUpdate( importedDigest );
+            _passwordDatabase.AddOrUpdate( importedDigest );
         }
 
         public void Import( IEnumerable<LegacyItem> items, SecureString masterPassword )
@@ -49,7 +49,7 @@ namespace Chwthewke.PasswordManager.Migration
                 Import( legacyItem, masterPassword, masterPasswordId );
         }
 
-        private readonly IPasswordRepository _passwordRepository;
+        private readonly IPasswordDatabase _passwordDatabase;
         private readonly IMasterPasswordMatcher _masterPasswordMatcher;
         private readonly IPasswordDigester _passwordDigester;
         private readonly IPasswordSerializer _serializer;
@@ -57,13 +57,13 @@ namespace Chwthewke.PasswordManager.Migration
         public void Save( string fileName )
         {
             using ( TextWriter writer = new StreamWriter( File.OpenWrite( fileName ) ) )
-                _serializer.Save( _passwordRepository.Passwords, writer );
+                _serializer.Save( _passwordDatabase.Passwords, writer );
         }
 
         public override string ToString( )
         {
             TextWriter w = new StringWriter( );
-            _serializer.Save( _passwordRepository.Passwords, w );
+            _serializer.Save( _passwordDatabase.Passwords, w );
             return w.ToString( );
         }
     }

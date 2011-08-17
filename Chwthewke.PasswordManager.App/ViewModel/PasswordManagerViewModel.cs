@@ -124,9 +124,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void ActivateStorageType( )
         {
             if ( _settings.PasswordsAreExternal )
-                _passwordDatabase.Source = new ExternalPasswordStore( new FileInfo( _settings.ExternalPasswordDatabase ) );
+                _passwordDatabase.Source = new FilePasswordStore( new FileInfo( _settings.ExternalPasswordDatabase ) );
             else 
-                _passwordDatabase.Source = new InternalPasswordStore( _settings );
+                _passwordDatabase.Source = new SettingsPasswordStore( _settings );
             _passwordList.UpdateList( );
         }
 

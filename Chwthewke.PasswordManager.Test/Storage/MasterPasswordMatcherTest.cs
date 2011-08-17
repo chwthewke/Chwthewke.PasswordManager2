@@ -39,6 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                  PasswordGenerators.Full.MakePassword( "key1", masterPassword ),
                                  _masterPasswordId,
                                  PasswordGenerators.Full.Id,
+                                 new DateTime(), 
                                  string.Empty );
             PasswordDatabase.AddOrUpdate( matchingDigest );
 
@@ -47,6 +48,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                  PasswordGenerators.Full.MakePassword( "key2", "tata".ToSecureString( ) ),
                                  Guid.NewGuid( ),
                                  PasswordGenerators.Full.Id,
+                                 new DateTime( ),
                                  string.Empty );
             PasswordDatabase.AddOrUpdate( notMatchingDigest );
             // Exercise
@@ -65,6 +67,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                  PasswordGenerators.Full.MakePassword( "key1", "tata".ToSecureString( ) ),
                                  Guid.NewGuid( ),
                                  PasswordGenerators.Full.Id,
+                                 new DateTime( ),
                                  string.Empty );
             PasswordDatabase.AddOrUpdate( notMatchingDigest );
             // Exercise

@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
+﻿using System.IO;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Storage;
 
@@ -15,21 +13,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Content = string.Empty;
         }
 
-        private void SetContent( string value )
-        {
-            Content = value;
-        }
-
-        public IEnumerable<PasswordDigest> Load( )
-        {
-            throw new NotImplementedException( );
-        }
-
-        public void Save( IEnumerable<PasswordDigest> passwords )
-        {
-            throw new NotImplementedException( );
-        }
-
         public TextReader OpenReader( )
         {
             return new StringReader( Content );
@@ -37,7 +20,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         public TextWriter OpenWriter( )
         {
-            return new FlushingStringWriter( SetContent );
+            return new FlushingStringWriter( v => Content = v );
         }
     }
 }

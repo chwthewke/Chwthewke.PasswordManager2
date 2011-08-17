@@ -32,16 +32,6 @@ namespace Chwthewke.PasswordManager.Storage
             return Load( store.OpenReader );
         }
 
-        public void Save( IEnumerable<PasswordDigest> passwordDigests, TextWriter writer )
-        {
-            Save( passwordDigests, () => writer );
-        }
-
-        public IEnumerable<PasswordDigest> Load( TextReader textReader )
-        {
-            return Load( ( ) => textReader );
-        }
-
         private void Save( IEnumerable<PasswordDigest> passwordDigests, Func<TextWriter> openWriter )
         {
             XElement root = new XElement( PasswordStoreElement, new XAttribute( VersionAttribute, Version ), passwordDigests.Select( ToXml ) );

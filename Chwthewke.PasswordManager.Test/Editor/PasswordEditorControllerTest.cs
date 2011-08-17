@@ -266,11 +266,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             PasswordDigest expectedDigest = Digester.Digest( key,
                                                              generator.MakePassword( key, masterPassword ),
-                                                             guid, generator.Id, note );
+                                                             guid, generator.Id, null, note );
             // Exercise
             Controller.SavePassword( );
             // Verify
-            Assert.That( PasswordDatabase.Passwords, Is.EquivalentTo( new List<PasswordDigest> { expectedDigest } ) );
+            Assert.That( PasswordDatabase.Passwords, Is.EquivalentTo( new List<PasswordDigest> {expectedDigest} ) );
         }
 
 
@@ -293,11 +293,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             PasswordDigest expectedDigest = Digester.Digest( key,
                                                              generator.MakePassword( key, masterPassword ),
-                                                             _guid, generator.Id, note );
+                                                             _guid, generator.Id, null, note );
             // Exercise
             Controller.SavePassword( );
             // Verify
-            Assert.That( PasswordDatabase.Passwords, Is.EquivalentTo( new List<PasswordDigest> { expectedDigest } ) );
+            Assert.That( PasswordDatabase.Passwords, Is.EquivalentTo( new List<PasswordDigest> {expectedDigest} ) );
             Assert.That( Controller.ExpectedMasterPasswordId, Is.Not.Null );
         }
 
@@ -305,7 +305,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void KeyIsStoredIffStoreHasKey( )
         {
             // Setup
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abcd" } );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder {Key = "abcd"} );
             // Exercise
             // Verify
             Controller.Key = "abcd";
@@ -359,7 +359,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void DeleteHasNoEffectIfPasswordNotLoaded( )
         {
             // Setup
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder {Key = "abc"} );
             Controller.Key = "abcd";
             // Exercise
             Controller.DeletePassword( );

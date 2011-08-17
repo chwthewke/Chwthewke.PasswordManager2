@@ -38,7 +38,7 @@ namespace Chwthewke.PasswordManager.Migration
                                                : PasswordGenerators.Full;
             string password = generator.MakePassword( legacyItem.Key, masterPassword );
             PasswordDigest importedDigest = _passwordDigester.Digest( legacyItem.Key, password, masterPasswordId,
-                                                                      generator.Id, "Imported from v1" );
+                                                                      generator.Id, null, "Imported from v1" );
             _passwordDatabase.AddOrUpdate( importedDigest );
         }
 
@@ -56,15 +56,7 @@ namespace Chwthewke.PasswordManager.Migration
 
         public void Save( string fileName )
         {
-            using ( TextWriter writer = new StreamWriter( File.OpenWrite( fileName ) ) )
-                _serializer.Save( _passwordDatabase.Passwords, writer );
-        }
-
-        public override string ToString( )
-        {
-            TextWriter w = new StringWriter( );
-            _serializer.Save( _passwordDatabase.Passwords, w );
-            return w.ToString( );
+            _serializer.Save( _passwordDatabase.Passwords, new FilePasswordStore( new FileInfo( fileName ) ) );
         }
     }
 }

@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Linq.Expressions;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
@@ -88,7 +87,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
         public void SaveCallsSerializer( )
         {
             // Setup
-            IList<PasswordDigest> passwordDigests = new List<PasswordDigest>();
+            IList<PasswordDigest> passwordDigests = new List<PasswordDigest>( );
             _passwordStoreMock.SetupGet( x => x.Passwords ).Returns( passwordDigests );
 
             try
@@ -98,7 +97,8 @@ namespace Chwthewke.PasswordManager.Test.Migration
                 // Verify
                 _serializerMock.Verify(
                     s =>
-                    s.Save( It.Is<IEnumerable<PasswordDigest>>( ps => ps == passwordDigests ), It.IsAny<TextWriter>( ) ) );
+                    s.Save( It.Is<IEnumerable<PasswordDigest>>( ps => ps == passwordDigests ),
+                            It.IsAny<FilePasswordStore>( ) ) );
             }
             finally
             {
@@ -117,6 +117,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
                                   passwordGenerator.MakePassword( akey, masterPassword ),
                                   It.IsAny<Guid>( ),
                                   passwordGenerator.Id,
+                                  It.IsAny<DateTime?>( ),
                                   It.IsAny<string>( ) );
         }
     }

@@ -7,6 +7,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Editor
 {
+    // TODO dirty checks, other logic may be better implemented with reference to "original" content (PasswordDigest ?)
     internal class PasswordEditorController : IPasswordEditorController
     {
         public PasswordEditorController( IPasswordDatabase passwordDatabase,
@@ -87,6 +88,8 @@ namespace Chwthewke.PasswordManager.Editor
             }
         }
 
+        private DateTime CreationTime { get; set; }
+
         public string GeneratedPassword( IPasswordGenerator generator )
         {
             if ( string.IsNullOrWhiteSpace( Key ) )
@@ -110,7 +113,9 @@ namespace Chwthewke.PasswordManager.Editor
             SelectedGenerator = GeneratorById( digest.PasswordGeneratorId );
             IsDirty = false;
             IsPasswordLoaded = true;
+            CreationTime = digest.CreationTime;
         }
+
 
         public void SavePassword( )
         {
@@ -122,7 +127,8 @@ namespace Chwthewke.PasswordManager.Editor
 
             Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
 
-            PasswordDigest digest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id, Note );
+            PasswordDigest digest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id,
+                                                      CreationTime, Note );
             _passwordDatabase.AddOrUpdate( digest );
             ExpectedMasterPasswordId = digest.MasterPasswordId;
 

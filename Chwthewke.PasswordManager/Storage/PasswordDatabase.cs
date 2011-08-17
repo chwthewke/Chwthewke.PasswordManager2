@@ -92,16 +92,6 @@ namespace Chwthewke.PasswordManager.Storage
 
     internal class NullPasswordStore : IPasswordStore
     {
-        public IEnumerable<PasswordDigest> Load( )
-        {
-            throw new NotImplementedException( );
-        }
-
-        public void Save( IEnumerable<PasswordDigest> passwords )
-        {
-            throw new NotImplementedException( );
-        }
-
         public TextReader OpenReader( )
         {
             return TextReader.Null;

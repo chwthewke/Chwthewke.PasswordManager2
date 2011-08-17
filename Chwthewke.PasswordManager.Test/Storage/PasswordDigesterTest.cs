@@ -6,10 +6,10 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
-    [ TestFixture ]
+    [TestFixture]
     public class PasswordDigesterTest
     {
-        [ SetUp ]
+        [SetUp]
         public void SetUpPasswordDigester( )
         {
             _timeProviderStub = new TimeProviderStub( );
@@ -17,35 +17,63 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _digester = new PasswordDigester( _hashFactory, _timeProviderStub );
         }
 
-        [ Test ]
+        [Test]
         public void DigestHashesPasswordWithSalt( )
         {
             // Setup
             const string generatedPassword = "aPassword";
-            byte[ ] expectedHash = _hashFactory.GetHash( )
+            byte[] expectedHash = _hashFactory.GetHash( )
                 .Append( PasswordDigester.DigestSalt, Encoding.UTF8 )
                 .Append( generatedPassword, Encoding.UTF8 )
                 .GetValue( );
             // Exercise
-            PasswordDigest digest = _digester.Digest( "aKey", generatedPassword, default( Guid ), default( Guid ), "" );
+            PasswordDigest digest = _digester.Digest( "aKey", generatedPassword, default( Guid ), default( Guid ), null,
+                                                      "" );
             // Verify
             Assert.That( digest.Hash, Is.EqualTo( expectedHash ) );
         }
 
-        [ Test ]
-        public void DigesterSetsCurrentTimeOnDigest( )
+        [Test]
+        public void DigesterSetsCreationTimeNowWithNullCreationTime( )
         {
             // Setup
-            DateTime creationTime = new DateTime( 123456789123456L );
-            _timeProviderStub.TimeProviderImpl = ( ) => creationTime;
+            DateTime now = new DateTime( 123456789123456L );
+            _timeProviderStub.TimeProviderImpl = ( ) => now;
             // Exercise
-            PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ), "" );
+            PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ),
+                                                      null, "" );
             // Verify
-            Assert.That( digest.CreationTime, Is.EqualTo( creationTime ) );
+            Assert.That( digest.CreationTime, Is.EqualTo( now ) );
+        }
+
+        [Test]
+        public void DigesterUsesGivenCreationTimeOnDigest( )
+        {
+            // Setup
+            DateTime now = new DateTime( 123456789123456L );
+            _timeProviderStub.TimeProviderImpl = ( ) => now;
+            // Exercise
+            PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ),
+                                                      new DateTime( 123456787654321L ), "" );
+            // Verify
+            Assert.That( digest.CreationTime, Is.EqualTo( new DateTime( 123456787654321L ) ) );
+        }
+
+        [Test]
+        public void DigesterSetsModificationTimeNow( )
+        {
+            // Setup
+            DateTime now = new DateTime( 123456789123456L );
+            _timeProviderStub.TimeProviderImpl = ( ) => now;
+            // Exercise
+            PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ),
+                                                      new DateTime( 123456787654321L ), "" );
+            // Verify
+            Assert.That( digest.ModificationTime, Is.EqualTo( now ) );
         }
 
 
-        [ Test ]
+        [Test]
         public void PasswordDigesterPassesOtherAttributes( )
         {
             // Setup
@@ -55,7 +83,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             const string note = "A nonsensical Note";
             // Exercise
             PasswordDigest digest = _digester.Digest( key, "generatedPassword", masterPasswordId, passwordGeneratorId,
-                                                      note );
+                                                      null, note );
             // Verify
             Assert.That( digest.Key, Is.EqualTo( key ) );
             Assert.That( digest.MasterPasswordId, Is.EqualTo( masterPasswordId ) );

@@ -15,7 +15,7 @@ namespace Chwthewke.PasswordManager.App.Services
         // TODO possibly return a "report" to be presented to the user
         public void ImportPasswords( FileInfo externalPasswordFile )
         {
-            IEnumerable<PasswordDigest> passwords = _passwordSerializer.Load( new ExternalPasswordStore( externalPasswordFile ) );
+            IEnumerable<PasswordDigest> passwords = _passwordSerializer.Load( new FilePasswordStore( externalPasswordFile ) );
 
 
             foreach ( PasswordDigest passwordDigest in passwords )

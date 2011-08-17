@@ -9,6 +9,7 @@ using System.Windows.Media;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
+using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -16,14 +17,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     {
         public PasswordEditorViewModel( IPasswordEditorController controller,
                                         IClipboardService clipboardService,
-                                        IEnumerable<PasswordSlotViewModel> passwordSlots,
                                         IGuidToColorConverter guidToColor )
         {
             _controller = controller;
 
             _clipboardService = clipboardService;
             _guidToColor = guidToColor;
-            _slots = new ObservableCollection<PasswordSlotViewModel>( passwordSlots );
+            _slots = new ObservableCollection<PasswordSlotViewModel>( controller.Generators.Select( g => new PasswordSlotViewModel( g ) ) );
 
             foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
                 passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;

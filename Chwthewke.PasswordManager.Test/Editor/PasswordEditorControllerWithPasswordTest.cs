@@ -12,42 +12,40 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {
-    [ TestFixture ]
-    [Ignore( "Failures..." )]
+    [TestFixture]
     public class PasswordEditorControllerWithPasswordTest
     {
-
+        // ReSharper disable UnusedAutoPropertyAccessor.Global
+        public IPasswordDatabase PasswordDatabase { get; set; }
+        
         public IPasswordEditorController Controller { get; set; }
-        public IPasswordDigester Digester { get; set; }
-        public IPasswordDatabase Database { get; set; }
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
         private Mock<IMasterPasswordMatcher> _passwordMatcherMock;
 
-        [ SetUp ]
+        [SetUp]
         public void SetUpController( )
         {
-            // TODO probably not very inspired to mock a repository.
-
             _passwordMatcherMock = new Mock<IMasterPasswordMatcher>( );
 
             AppSetUp.TestContainer(
                 b =>
-                {
-                    b.RegisterType<NullTimeProvider>( ).As<ITimeProvider>( );
-                    b.RegisterInstance( _passwordMatcherMock.Object ).As<IMasterPasswordMatcher>( );
-                    b.RegisterInstance( ( Func<Guid> ) ( ( ) => _guid ) ).As<Func<Guid>>( );
-                } ).InjectProperties( this );
+                    {
+                        b.RegisterType<NullTimeProvider>( ).As<ITimeProvider>( );
+                        b.RegisterInstance( _passwordMatcherMock.Object ).As<IMasterPasswordMatcher>( );
+                        b.RegisterInstance( (Func<Guid>) ( ( ) => _guid ) ).As<Func<Guid>>( );
+                    } ).InjectProperties( this );
 
 
-            _digest = new PasswordDigestBuilder( )
-                .WithKey( "abde" )
-                .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id )
-                .WithNote( "a short note." );
+            _digest = new PasswordDigestBuilder { Key = "abde", PasswordGeneratorId = PasswordGenerators.AlphaNumeric.Id, Note = "a short note." };
 
-            Database.AddOrUpdate( _digest );
+            PasswordDatabase.AddOrUpdate( _digest );
 
             Controller.Key = _digest.Key;
             Controller.LoadPassword( );
+
+            //
+            Assert.That( PasswordDatabase.FindByKey( "abde" ).Hash, Is.EqualTo( new byte[0] ) );
         }
 
         [Test]
@@ -60,7 +58,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsDirty, Is.False );
         }
 
-        [ Test ]
+        [Test]
         public void ChangeNoteMakesEditorDirty( )
         {
             // Setup
@@ -71,7 +69,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsDirty );
         }
 
-        [ Test ]
+        [Test]
         public void ChangeSelectedGeneratorMakesEditorDirty( )
         {
             // Setup
@@ -82,7 +80,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsDirty );
         }
 
-        [ Test ]
+        [Test]
         public void SaveWithDifferentNoteAndGeneratorUpdatesStore( )
         {
             // Setup
@@ -95,35 +93,36 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Exercise
             Controller.SavePassword( );
             // Verify
-            _storeMock.Verify( store => store.AddOrUpdate( It.Is<PasswordDigest>(
-                d => d.Note == note && d.PasswordGeneratorId == generator.Id
-                                                               ) ) );
+
+            PasswordDigest digest = PasswordDatabase.FindByKey( "abde" );
+            Assert.That( digest.Hash, Is.Not.EqualTo( new byte[0] ) );
+            Assert.That( digest.Note, Is.EqualTo( note ) );
+            Assert.That( digest.PasswordGeneratorId, Is.EqualTo( generator.Id ) );
         }
 
 
-        [ Test ]
+        [Test]
         public void SaveWhenNotDirtyHasNoEffect( )
         {
             // Setup
             // Exercise
             Controller.SavePassword( );
             // Verify
-            _storeMock.Verify( store => store.AddOrUpdate( It.IsAny<PasswordDigest>( ) ), Times.Never( ) );
+            Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.SameAs( _digest ) );
         }
 
 
-        [ Test ]
+        [Test]
         public void DeleteRemovesPasswordFromStore( )
         {
             // Setup
-            string key = Controller.Key;
             // Exercise
             Controller.DeletePassword( );
             // Verify
-            _storeMock.Verify( store => store.Remove( key ) );
+            Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.Null );
         }
 
-        [ Test ]
+        [Test]
         public void DeleteKeepsFieldsUntouched( )
         {
             // Setup
@@ -134,7 +133,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Exercise
             Controller.DeletePassword( );
             // Verify
-            _storeMock.Setup( s => s.FindPasswordInfo( key ) ).Returns( ( PasswordDigest ) null );
 
             Assert.That( Controller.Key, Is.EqualTo( key ) );
             Assert.That( Controller.Note, Is.EqualTo( note ) );
@@ -149,7 +147,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
 
-        private Mock<IPasswordRepository> _storeMock;
         private readonly Guid _guid = new Guid( "{782F77BB-7482-4307-A246-E9A0BF2F5B86}" );
         private PasswordDigest _digest;
 

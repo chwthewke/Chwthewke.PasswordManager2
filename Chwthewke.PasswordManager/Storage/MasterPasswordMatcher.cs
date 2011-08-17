@@ -9,17 +9,17 @@ namespace Chwthewke.PasswordManager.Storage
 {
     class MasterPasswordMatcher : IMasterPasswordMatcher
     {
-        public MasterPasswordMatcher( IEnumerable<IPasswordGenerator> generators, IHashFactory hashFactory, IPasswordRepository repository )
+        public MasterPasswordMatcher( IEnumerable<IPasswordGenerator> generators, IHashFactory hashFactory, IPasswordDatabase passwordDatabase )
         {
             _generators = generators;
             _hashFactory = hashFactory;
-            _repository = repository;
+            _passwordDatabase = passwordDatabase;
         }
 
         public Guid? IdentifyMasterPassword( SecureString masterPassword )
         {
             IEnumerable<PasswordDigest> candidates =
-                _repository.Passwords.GroupBy( pw => pw.MasterPasswordId ).Select( g => g.First( ) );
+                _passwordDatabase.Passwords.GroupBy( pw => pw.MasterPasswordId ).Select( g => g.First( ) );
 
             PasswordDigest matchingDigest =
                 candidates.FirstOrDefault( dig => MatchMasterPassword( dig, masterPassword ) );
@@ -43,7 +43,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         private readonly IEnumerable<IPasswordGenerator> _generators;
         private readonly IHashFactory _hashFactory;
-        private readonly IPasswordRepository _repository;
+        private readonly IPasswordDatabase _passwordDatabase;
 
 
     }

@@ -3,6 +3,7 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
+using Chwthewke.PasswordManager.App.View;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
@@ -11,7 +12,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     {
         public PasswordListViewModel( IPasswordRepository repository,
                                       IPasswordDatabase passwordDatabase,
-                                      IPasswordEditorFactory editorFactory,
+                                      Func<PasswordEditorViewModel> editorFactory,
                                       IGuidToColorConverter guidConverter )
         {
             _passwordDatabase = passwordDatabase;
@@ -51,7 +52,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void OpenNewEditorInternal( string passwordKey )
         {
-            PasswordEditorViewModel editor = _editorFactory.CreatePasswordEditor( );
+            PasswordEditorViewModel editor = _editorFactory.Invoke( );
             if ( passwordKey != null )
             {
                 editor.Key = passwordKey;
@@ -113,7 +114,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private readonly ICommand _openEditorCommand;
         private readonly IPasswordDatabase _passwordDatabase;
-        private readonly IPasswordEditorFactory _editorFactory;
+        private readonly Func<PasswordEditorViewModel> _editorFactory;
         private readonly IGuidToColorConverter _guidConverter;
     }
 }

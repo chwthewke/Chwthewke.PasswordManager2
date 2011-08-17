@@ -6,7 +6,6 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [TestFixture]
-    [Ignore( "Failures..." )]
     public class CopySaveTest : PasswordEditorTestBase
     {
         [Test]
@@ -36,7 +35,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.SaveCommand.Execute( null );
             // Verify
-            Assert.That( PasswordRepository.FindPasswordInfo( "abc" ), Is.Not.Null );
+            Assert.That( PasswordDatabase.FindByKey( "abc" ), Is.Not.Null );
         }
 
         [Test]

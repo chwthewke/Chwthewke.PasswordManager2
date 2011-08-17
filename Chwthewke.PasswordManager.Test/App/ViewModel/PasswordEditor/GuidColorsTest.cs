@@ -7,7 +7,6 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
-    [Ignore( "Failures..." )]
     public class GuidColorsTest : PasswordEditorTestBase
     {
         [ Test ]
@@ -44,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void NoActualGuidColorWithUnknownMasterPasswordAfter( )
         {
             // Setup
-            Container.AddPassword( "abc", string.Empty, PasswordGenerators.AlphaNumeric, "12345".ToSecureString( ) );
+            AddPassword( "abc", string.Empty, PasswordGenerators.AlphaNumeric, "12345".ToSecureString( ) );
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Exercise
             ViewModel.UpdateMasterPassword( "123456".ToSecureString( ) );
@@ -56,8 +55,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ActualGuidColorIsSetWithKnownMasterPassword( )
         {
             // Setup
-            Container.AddPassword( "abc", string.Empty, PasswordGenerators.AlphaNumeric, "12345".ToSecureString( ) );
-            Guid masterPasswordGuid = PasswordRepository.FindPasswordInfo( "abc" ).MasterPasswordId;
+            AddPassword( "abc", string.Empty, PasswordGenerators.AlphaNumeric, "12345".ToSecureString( ) );
+            Guid masterPasswordGuid = PasswordDatabase.FindByKey( "abc" ).MasterPasswordId;
             // Exercise
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
@@ -69,8 +68,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
 
-            Container.AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            Guid expectedMasterPasswordId = PasswordRepository.FindPasswordInfo( "abde" ).MasterPasswordId;
+            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
+            Guid expectedMasterPasswordId = PasswordDatabase.FindByKey( "abde" ).MasterPasswordId;
 
             // Exercise
             ViewModel.Key = "abde";
@@ -101,7 +100,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void GuidColorsAreUnsetAfterDeletingPassword( )
         {
             // Setup
-            Container.AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             ViewModel.Key = "abc";
             ViewModel.LoadCommand.Execute( null );
             ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
@@ -116,8 +115,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ActualGuidColorIsKeptAfterDeletingPasswordIfStillPresent( )
         {
             // Setup
-            Container.AddPassword( "abd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
-            Container.AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             ViewModel.Key = "abc";
             ViewModel.LoadCommand.Execute( null );
             ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );

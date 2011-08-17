@@ -5,6 +5,7 @@ using Chwthewke.PasswordManager.Editor;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
+    [Obsolete]
     internal class PasswordEditorFactory : IPasswordEditorFactory
     {
         public PasswordEditorFactory( IClipboardService clipboardService,
@@ -20,7 +21,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             IPasswordEditorController controller = _controllerFactory.Invoke( );
             return new PasswordEditorViewModel( controller, _clipboardService,
-                                                controller.Generators.Select( g => new PasswordSlotViewModel( g ) ),
                                                 _guidToColorConverter );
         }
 

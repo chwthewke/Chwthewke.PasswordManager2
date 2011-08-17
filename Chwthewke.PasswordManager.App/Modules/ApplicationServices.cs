@@ -21,8 +21,6 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<ClipboardService>( ).As<IClipboardService>( );
             builder.RegisterType<DialogFileSelectionService>( ).As<IFileSelectionService>( );
 
-            builder.RegisterType<PasswordEditorFactory>( ).As<IPasswordEditorFactory>( );
-
             builder.RegisterType<PasswordImporter>( ).As<IPasswordImporter>( );
         }
 

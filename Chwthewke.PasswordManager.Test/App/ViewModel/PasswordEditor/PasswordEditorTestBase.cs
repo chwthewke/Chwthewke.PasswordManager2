@@ -1,4 +1,6 @@
+using System;
 using System.Linq;
+using System.Security;
 using Autofac;
 using Chwthewke.PasswordManager.App.Modules;
 using Chwthewke.PasswordManager.App.Services;
@@ -15,35 +17,35 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     public abstract class PasswordEditorTestBase
     {
-        protected PasswordEditorViewModel ViewModel;
-        protected IPasswordEditorController Controller;
         protected Mock<IClipboardService> ClipboardServiceMock;
-        protected IContainer Container;
-        protected IGuidToColorConverter GuidToColorConverter;
 
-        [ SetUp ]
+// ReSharper disable UnusedAutoPropertyAccessor.Global
+        public PasswordEditorViewModel ViewModel { get; set; }
+        public IPasswordEditorController Controller { get; set; }
+        public IGuidToColorConverter GuidToColorConverter { get; set; }
+        public IPasswordDatabase PasswordDatabase { get; set; }
+        public Func<IPasswordEditorController> ControllerFactory { get; set; }
+// ReSharper restore UnusedAutoPropertyAccessor.Global
+
+
+        [SetUp]
         public void SetUpPasswordEditorViewModel( )
         {
-            ContainerBuilder builder = new ContainerBuilder( );
-            builder.RegisterModule( new PasswordManagerModule( ) );
-            builder.RegisterModule( new PasswordStorageModule( ) );
-            builder.RegisterModule( new ApplicationServices( ) );
-
-            Container = builder.Build( );
-
-            Controller = Container.Resolve<IPasswordEditorController>( );
-
             ClipboardServiceMock = new Mock<IClipboardService>( );
 
-            GuidToColorConverter = Container.Resolve<IGuidToColorConverter>( );
-            ViewModel = new PasswordEditorViewModel( Controller, ClipboardServiceMock.Object,
-                                                     PasswordGenerators.All.Select( g => new PasswordSlotViewModel( g ) ),
-                                                     GuidToColorConverter );
+            AppSetUp.TestContainer( b => b.RegisterInstance( ClipboardServiceMock.Object ).As<IClipboardService>( ) )
+                .InjectProperties( this );
         }
 
-        protected IPasswordRepository PasswordRepository
+        protected void AddPassword( string key, string note, IPasswordGenerator generator, SecureString masterPassword )
         {
-            get { return Container.Resolve<IPasswordRepository>( ); }
+            IPasswordEditorController controller = ControllerFactory.Invoke( );
+            controller.Key = key;
+            controller.Note = note;
+            controller.SelectedGenerator = generator;
+            controller.MasterPassword = masterPassword;
+
+            controller.SavePassword( );
         }
     }
 }

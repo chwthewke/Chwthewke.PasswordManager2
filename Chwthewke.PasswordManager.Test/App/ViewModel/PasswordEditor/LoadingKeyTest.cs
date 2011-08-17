@@ -12,7 +12,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
 
-            Container.AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             // Exercise
             ViewModel.Key = "abcd";
             // Verify
@@ -23,7 +23,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LoadDoesNotEnableUntilStoredKeyFullyTyped( )
         {
             // Setup
-            Container.AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             // Exercise
             ViewModel.Key = "abc";
             // Verify
@@ -34,7 +34,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LoadDoesNotEnableAfterStoredKeyTyped( )
         {
             // Setup
-            Container.AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abcd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             // Exercise
             ViewModel.Key = "abcd";
             ViewModel.Key = "abcde";

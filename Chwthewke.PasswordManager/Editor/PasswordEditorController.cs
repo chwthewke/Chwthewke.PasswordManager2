@@ -25,12 +25,6 @@ namespace Chwthewke.PasswordManager.Editor
             Generators = generators;
         }
 
-        public delegate PasswordEditorController Factory( IPasswordDatabase passwordDatabase,
-                                                          IPasswordDigester digester,
-                                                          Func<Guid> newGuidFactory,
-                                                          IEnumerable<IPasswordGenerator> generators,
-                                                          IMasterPasswordMatcher masterPasswordMatcher );
-
         public string Key
         {
             get { return _key; }

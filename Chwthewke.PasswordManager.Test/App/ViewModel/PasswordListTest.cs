@@ -1,8 +1,6 @@
-using System;
 using System.Linq;
 using Autofac;
 using Chwthewke.PasswordManager.App.ViewModel;
-using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
@@ -11,22 +9,19 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
     [TestFixture]
-    [Ignore( "Change dependency in PasswordEditorController." )]
     public class PasswordListTest
     {
+// ReSharper disable UnusedAutoPropertyAccessor.Global
         public PasswordListViewModel PasswordList { get; set; }
 
         public IPasswordDatabase PasswordDatabase { get; set; }
-
-        public Func<IPasswordEditorController> ControllerFactory { get; set; }
+// ReSharper restore UnusedAutoPropertyAccessor.Global
 
 
         [SetUp]
         public void SetUpContainer( )
         {
-            AppSetUp.TestContainer( b => b.RegisterType<InMemoryPasswordStore>( ).As<IPasswordStore>( ) ).InjectProperties( this );
-
-            //PasswordDatabase.Source = new InMemoryPasswordStore( );
+            AppSetUp.TestContainer( ).InjectProperties( this );
         }
 
         [Test]

@@ -14,7 +14,8 @@ namespace Chwthewke.PasswordManager.Editor
                                          IPasswordDigester digester,
                                          Func<Guid> newGuidFactory,
                                          IEnumerable<IPasswordGenerator> generators,
-                                         IMasterPasswordMatcher masterPasswordMatcher )
+                                         IMasterPasswordMatcher masterPasswordMatcher,
+                                         string password )
         {
             _passwordDatabase = passwordDatabase;
             _newGuidFactory = newGuidFactory;
@@ -24,7 +25,11 @@ namespace Chwthewke.PasswordManager.Editor
             _note = string.Empty;
             _masterPassword = new SecureString( );
             Generators = generators;
+
+            if ( password != null )
+                InitializeWith( password );
         }
+
 
         public string Key
         {
@@ -143,6 +148,13 @@ namespace Chwthewke.PasswordManager.Editor
         }
 
         // PRIVATE
+
+        private void InitializeWith( string password )
+        {
+            // TODO be atomic
+            Key = password;
+            LoadPassword( );
+        }
 
         private IPasswordGenerator GeneratorById( Guid passwordGeneratorId )
         {

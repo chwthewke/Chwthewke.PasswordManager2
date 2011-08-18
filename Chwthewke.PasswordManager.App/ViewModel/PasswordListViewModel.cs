@@ -3,7 +3,6 @@ using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
-using Chwthewke.PasswordManager.App.View;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
@@ -11,13 +10,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     public class PasswordListViewModel : ObservableObject
     {
         public PasswordListViewModel( IPasswordDatabase passwordDatabase,
-                                      Func<PasswordEditorViewModel> editorFactory,
+                                      PasswordEditorViewModelFactory editorFactory,
                                       IGuidToColorConverter guidConverter )
         {
             _passwordDatabase = passwordDatabase;
             _editorFactory = editorFactory;
             _guidConverter = guidConverter;
-            _openEditorCommand = new RelayCommand( ( ) => OpenNewEditorInternal( null ) );
+            _openEditorCommand = new RelayCommand( ( ) => OpenNewEditorInternal( string.Empty ) );
             UpdateList( );
         }
 
@@ -49,12 +48,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void OpenNewEditorInternal( string passwordKey )
         {
-            PasswordEditorViewModel editor = _editorFactory.Invoke( );
-            if ( passwordKey != null )
-            {
-                editor.Key = passwordKey;
-                editor.LoadPasswordForKey( );
-            }
+            PasswordEditorViewModel editor = _editorFactory.PasswordEditorFor( passwordKey );
             editor.CloseRequested += EditorRequestedClose;
             editor.StoreModified += StoreModified;
 
@@ -103,7 +97,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private readonly ICommand _openEditorCommand;
         private readonly IPasswordDatabase _passwordDatabase;
-        private readonly Func<PasswordEditorViewModel> _editorFactory;
+        private readonly PasswordEditorViewModelFactory _editorFactory;
         private readonly IGuidToColorConverter _guidConverter;
     }
 }

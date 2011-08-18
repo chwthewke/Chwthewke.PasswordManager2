@@ -18,8 +18,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
         // ReSharper disable UnusedAutoPropertyAccessor.Global
         public IPasswordDatabase PasswordDatabase { get; set; }
         
-        public IPasswordEditorController Controller { get; set; }
+        public PasswordEditorControllerFactory ControllerFactory { get; set; }
         // ReSharper restore UnusedAutoPropertyAccessor.Global
+
+        private IPasswordEditorController _controller;
 
         private Mock<IMasterPasswordMatcher> _passwordMatcherMock;
 
@@ -41,8 +43,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             PasswordDatabase.AddOrUpdate( _digest );
 
-            Controller.Key = _digest.Key;
-            Controller.LoadPassword( );
+            _controller = ControllerFactory.PasswordEditorControllerFor( _digest.Key );
 
             //
             Assert.That( PasswordDatabase.FindByKey( "abde" ).Hash, Is.EqualTo( new byte[0] ) );
@@ -53,9 +54,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            Controller.MasterPassword = "123456".ToSecureString( );
+            _controller.MasterPassword = "123456".ToSecureString( );
             // Verify
-            Assert.That( Controller.IsDirty, Is.False );
+            Assert.That( _controller.IsDirty, Is.False );
         }
 
         [Test]
@@ -63,10 +64,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            Controller.Note = string.Empty;
+            _controller.Note = string.Empty;
             // Verify
-            Assert.That( Controller.Note, Is.EqualTo( string.Empty ) );
-            Assert.That( Controller.IsDirty );
+            Assert.That( _controller.Note, Is.EqualTo( string.Empty ) );
+            Assert.That( _controller.IsDirty );
         }
 
         [Test]
@@ -74,10 +75,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            Controller.SelectedGenerator = PasswordGenerators.Full;
+            _controller.SelectedGenerator = PasswordGenerators.Full;
             // Verify
-            Assert.That( Controller.SelectedGenerator, Is.EqualTo( PasswordGenerators.Full ) );
-            Assert.That( Controller.IsDirty );
+            Assert.That( _controller.SelectedGenerator, Is.EqualTo( PasswordGenerators.Full ) );
+            Assert.That( _controller.IsDirty );
         }
 
         [Test]
@@ -86,12 +87,12 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             const string note = "a somewhat longer note.";
             IPasswordGenerator generator = PasswordGenerators.Full;
-            Controller.Note = note;
-            Controller.SelectedGenerator = generator;
+            _controller.Note = note;
+            _controller.SelectedGenerator = generator;
 
-            Controller.MasterPassword = "123456".ToSecureString( );
+            _controller.MasterPassword = "123456".ToSecureString( );
             // Exercise
-            Controller.SavePassword( );
+            _controller.SavePassword( );
             // Verify
 
             PasswordDigest digest = PasswordDatabase.FindByKey( "abde" );
@@ -106,7 +107,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            Controller.SavePassword( );
+            _controller.SavePassword( );
             // Verify
             Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.SameAs( _digest ) );
         }
@@ -117,7 +118,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            Controller.DeletePassword( );
+            _controller.DeletePassword( );
             // Verify
             Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.Null );
         }
@@ -126,23 +127,23 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void DeleteKeepsFieldsUntouched( )
         {
             // Setup
-            string key = Controller.Key;
-            string note = Controller.Note;
-            SecureString masterPassword = Controller.MasterPassword;
-            IPasswordGenerator selectedGenerator = Controller.SelectedGenerator;
+            string key = _controller.Key;
+            string note = _controller.Note;
+            SecureString masterPassword = _controller.MasterPassword;
+            IPasswordGenerator selectedGenerator = _controller.SelectedGenerator;
             // Exercise
-            Controller.DeletePassword( );
+            _controller.DeletePassword( );
             // Verify
 
-            Assert.That( Controller.Key, Is.EqualTo( key ) );
-            Assert.That( Controller.Note, Is.EqualTo( note ) );
-            Assert.That( Controller.MasterPassword, Is.EqualTo( masterPassword ) );
-            Assert.That( Controller.SelectedGenerator, Is.EqualTo( selectedGenerator ) );
+            Assert.That( _controller.Key, Is.EqualTo( key ) );
+            Assert.That( _controller.Note, Is.EqualTo( note ) );
+            Assert.That( _controller.MasterPassword, Is.EqualTo( masterPassword ) );
+            Assert.That( _controller.SelectedGenerator, Is.EqualTo( selectedGenerator ) );
 
-            Assert.That( Controller.IsDirty, Is.True );
-            Assert.That( Controller.IsPasswordLoaded, Is.False );
+            Assert.That( _controller.IsDirty, Is.True );
+            Assert.That( _controller.IsPasswordLoaded, Is.False );
 
-            Assert.That( Controller.ExpectedMasterPasswordId, Is.Null );
+            Assert.That( _controller.ExpectedMasterPasswordId, Is.Null );
         }
 
 

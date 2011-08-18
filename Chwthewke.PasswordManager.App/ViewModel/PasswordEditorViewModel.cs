@@ -13,6 +13,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
+        public delegate PasswordEditorViewModel Factory( string password );
+
         public PasswordEditorViewModel( IPasswordEditorController controller,
                                         IClipboardService clipboardService,
                                         IGuidToColorConverter guidToColor )
@@ -21,7 +23,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             _clipboardService = clipboardService;
             _guidToColor = guidToColor;
-            _slots = new ObservableCollection<PasswordSlotViewModel>( controller.Generators.Select( g => new PasswordSlotViewModel( g ) ) );
+            _slots =
+                new ObservableCollection<PasswordSlotViewModel>(
+                    _controller.Generators.Select( g => new PasswordSlotViewModel( g ) ) );
 
             foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
                 passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;
@@ -243,7 +247,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             _controller.LoadPassword( );
             Update( );
-            _deleteCommand.RaiseCanExecuteChanged( );
         }
 
         private void UpdateSaved( )
@@ -251,7 +254,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Update( );
 
             ActualGuidColor = ConvertGuid( _controller.MasterPasswordId );
-            _deleteCommand.RaiseCanExecuteChanged( );
         }
 
         private void Update( )
@@ -270,6 +272,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             _saveCommand.RaiseCanExecuteChanged( );
             _copyCommand.RaiseCanExecuteChanged( );
+            _deleteCommand.RaiseCanExecuteChanged( );
         }
 
         private bool DeriveKeyReadonly( )

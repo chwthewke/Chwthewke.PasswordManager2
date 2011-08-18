@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Security;
 using Autofac;
@@ -20,11 +21,12 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         protected Mock<IClipboardService> ClipboardServiceMock;
 
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-        public PasswordEditorViewModel ViewModel { get; set; }
-        public IPasswordEditorController Controller { get; set; }
+        public PasswordEditorViewModelFactory ViewModelFactory { get; set; }
+        protected PasswordEditorViewModel ViewModel;
         public IGuidToColorConverter GuidToColorConverter { get; set; }
         public IPasswordDatabase PasswordDatabase { get; set; }
-        public Func<IPasswordEditorController> ControllerFactory { get; set; }
+        public PasswordEditorControllerFactory ControllerFactory { get; set; }
+        public IEnumerable<IPasswordGenerator> Generators { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 
 
@@ -35,11 +37,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 
             AppSetUp.TestContainer( b => b.RegisterInstance( ClipboardServiceMock.Object ).As<IClipboardService>( ) )
                 .InjectProperties( this );
+
+            ViewModel = ViewModelFactory.PasswordEditorFor( string.Empty );
         }
 
         protected void AddPassword( string key, string note, IPasswordGenerator generator, SecureString masterPassword )
         {
-            IPasswordEditorController controller = ControllerFactory.Invoke( );
+            IPasswordEditorController controller = ControllerFactory.PasswordEditorControllerFor( string.Empty );
             controller.Key = key;
             controller.Note = note;
             controller.SelectedGenerator = generator;

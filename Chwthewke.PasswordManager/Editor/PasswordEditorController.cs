@@ -67,11 +67,6 @@ namespace Chwthewke.PasswordManager.Editor
 
         public Guid? ExpectedMasterPasswordId { get; private set; }
 
-        public bool IsKeyStored
-        {
-            get { return GetDigest( ) != null; }
-        }
-
         public bool IsPasswordLoaded { get; private set; }
 
         public bool IsDirty { get; private set; }

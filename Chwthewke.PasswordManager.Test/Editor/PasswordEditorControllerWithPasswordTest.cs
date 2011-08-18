@@ -141,7 +141,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             Assert.That( Controller.IsDirty, Is.True );
             Assert.That( Controller.IsPasswordLoaded, Is.False );
-            Assert.That( Controller.IsKeyStored, Is.False );
 
             Assert.That( Controller.ExpectedMasterPasswordId, Is.Null );
         }

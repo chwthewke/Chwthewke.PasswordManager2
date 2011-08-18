@@ -301,18 +301,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.ExpectedMasterPasswordId, Is.Not.Null );
         }
 
-        [Test]
-        public void KeyIsStoredIffStoreHasKey( )
-        {
-            // Setup
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder {Key = "abcd"} );
-            // Exercise
-            // Verify
-            Controller.Key = "abcd";
-            Assert.That( Controller.IsKeyStored, Is.True );
-            Controller.Key = "abde";
-            Assert.That( Controller.IsKeyStored, Is.False );
-        }
 
         [Test]
         public void LoadPasswordSetsRelevantFields( )

@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Linq;
@@ -9,7 +8,6 @@ using System.Windows.Media;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
-using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -31,7 +29,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
-            _loadCommand = new RelayCommand( ExecuteLoad );
             _closeCommand = new RelayCommand( RaiseCloseRequested );
         }
 
@@ -89,17 +86,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
-        public bool IsLoadEnabled
-        {
-            get { return _isLoadEnabled; }
-            private set
-            {
-                if ( _isLoadEnabled == value )
-                    return;
-                _isLoadEnabled = value;
-                RaisePropertyChanged( ( ) => IsLoadEnabled );
-            }
-        }
 
         public bool IsKeyReadonly
         {
@@ -157,11 +143,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public ICommand CopyCommand
         {
             get { return _copyCommand; }
-        }
-
-        public ICommand LoadCommand
-        {
-            get { return _loadCommand; }
         }
 
         public ICommand CloseCommand
@@ -258,10 +239,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _clipboardService.CopyToClipboard( _controller.GeneratedPassword( _controller.SelectedGenerator ) );
         }
 
-        private void ExecuteLoad( )
+        public void LoadPasswordForKey( )
         {
-            if ( !IsLoadEnabled )
-                return;
             _controller.LoadPassword( );
             Update( );
             _deleteCommand.RaiseCanExecuteChanged( );
@@ -279,7 +258,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             Title = DeriveTitle( );
             CanSelectPasswordSlot = DeriveCanSelectPassword( );
-            IsLoadEnabled = DeriveLoadEnabled( );
             IsKeyReadonly = DeriveKeyReadonly( );
 
             foreach ( var slot in Slots )
@@ -297,11 +275,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private bool DeriveKeyReadonly( )
         {
             return _controller.IsPasswordLoaded;
-        }
-
-        private bool DeriveLoadEnabled( )
-        {
-            return _controller.IsKeyStored && !_controller.IsPasswordLoaded;
         }
 
         private bool DeriveCanSelectPassword( )
@@ -329,7 +302,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private string _title = NewTitle;
         private bool _canSelectPasswordSlot;
-        private bool _isLoadEnabled;
         private bool _isKeyReadonly;
 
         private Color _requiredGuidColor = Colors.Transparent;
@@ -340,7 +312,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly IUpdatableCommand _saveCommand;
         private readonly IUpdatableCommand _deleteCommand;
         private readonly IUpdatableCommand _copyCommand;
-        private readonly IUpdatableCommand _loadCommand;
         private readonly ICommand _closeCommand;
 
         public const string NewTitle = "(new)";

@@ -53,7 +53,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( passwordKey != null )
             {
                 editor.Key = passwordKey;
-                editor.LoadCommand.Execute( null );
+                editor.LoadPasswordForKey( );
             }
             editor.CloseRequested += EditorRequestedClose;
             editor.StoreModified += StoreModified;

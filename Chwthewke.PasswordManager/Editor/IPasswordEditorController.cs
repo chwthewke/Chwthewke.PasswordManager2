@@ -21,8 +21,6 @@ namespace Chwthewke.PasswordManager.Editor
         IPasswordGenerator SelectedGenerator { get; set; }
         string GeneratedPassword( IPasswordGenerator generator );
 
-        void LoadPassword( );
-
         void SavePassword( );
         void DeletePassword( );
     }

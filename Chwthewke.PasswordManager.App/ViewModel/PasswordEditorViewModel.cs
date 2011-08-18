@@ -34,6 +34,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
             _closeCommand = new RelayCommand( RaiseCloseRequested );
+
+            Update( );
         }
 
         public event EventHandler StoreModified;
@@ -243,12 +245,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _clipboardService.CopyToClipboard( _controller.GeneratedPassword( _controller.SelectedGenerator ) );
         }
 
-        public void LoadPasswordForKey( )
-        {
-            _controller.LoadPassword( );
-            Update( );
-        }
-
         private void UpdateSaved( )
         {
             Update( );
@@ -318,5 +314,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _closeCommand;
 
         public const string NewTitle = "(new)";
+
+        public void LoadPasswordForKey( )
+        {
+            throw new NotImplementedException( );
+        }
     }
 }

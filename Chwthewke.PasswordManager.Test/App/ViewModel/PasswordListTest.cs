@@ -51,7 +51,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         }
 
         [Test]
-        [Ignore( "Fix me" )]
         public void LoadPasswordIntoNewEditor( )
         {
             // Setup

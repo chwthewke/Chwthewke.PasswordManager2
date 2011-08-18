@@ -72,8 +72,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Guid expectedMasterPasswordId = PasswordDatabase.FindByKey( "abde" ).MasterPasswordId;
 
             // Exercise
-            ViewModel.Key = "abde";
-            ViewModel.LoadPasswordForKey( );
+            ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
 
             // Verify
             Assert.That( ViewModel.RequiredGuidColor,
@@ -101,8 +100,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
-            ViewModel.Key = "abc";
-            ViewModel.LoadPasswordForKey( );
+
+            ViewModel = ViewModelFactory.PasswordEditorFor( "abc" );
+            
             ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
             // Exercise
             ViewModel.DeleteCommand.Execute( null );
@@ -117,8 +117,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
             AddPassword( "abd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
             AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
-            ViewModel.Key = "abc";
-            ViewModel.LoadPasswordForKey( );
+
+            ViewModel = ViewModelFactory.PasswordEditorFor( "abc" );
+            
             ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
             // Exercise
             ViewModel.DeleteCommand.Execute( null );

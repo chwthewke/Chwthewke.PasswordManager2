@@ -88,6 +88,8 @@ namespace Chwthewke.PasswordManager.Editor
             }
         }
 
+        private PasswordDigest Baseline { get; set; }
+
         private DateTime CreationTime { get; set; }
 
         public string GeneratedPassword( IPasswordGenerator generator )
@@ -97,23 +99,6 @@ namespace Chwthewke.PasswordManager.Editor
             if ( MasterPassword.Length == 0 )
                 return string.Empty;
             return generator.MakePassword( Key, MasterPassword );
-        }
-
-        public void LoadPassword( )
-        {
-            if ( IsPasswordLoaded )
-                return;
-
-            PasswordDigest digest = GetDigest( );
-            if ( digest == null )
-                return;
-
-            Note = digest.Note;
-            ExpectedMasterPasswordId = digest.MasterPasswordId;
-            SelectedGenerator = GeneratorById( digest.PasswordGeneratorId );
-            IsDirty = false;
-            IsPasswordLoaded = true;
-            CreationTime = digest.CreationTime;
         }
 
 
@@ -149,11 +134,24 @@ namespace Chwthewke.PasswordManager.Editor
 
         // PRIVATE
 
-        private void InitializeWith( string password )
+        private void InitializeWith( string passwordKey )
         {
             // TODO be atomic
-            Key = password;
-            LoadPassword( );
+
+
+            
+            Baseline = _passwordDatabase.FindByKey( passwordKey );
+            if ( Baseline == null )
+                return;
+
+
+            Key = Baseline.Key;
+            Note = Baseline.Note;
+            ExpectedMasterPasswordId = Baseline.MasterPasswordId;
+            SelectedGenerator = GeneratorById( Baseline.PasswordGeneratorId );
+            IsDirty = false;
+            IsPasswordLoaded = true;
+            CreationTime = Baseline.CreationTime;
         }
 
         private IPasswordGenerator GeneratorById( Guid passwordGeneratorId )
@@ -186,7 +184,7 @@ namespace Chwthewke.PasswordManager.Editor
         private readonly IPasswordDigester _digester;
         private readonly Func<Guid> _newGuidFactory;
 
-        private string _key;
+        private string _key = string.Empty;
         private string _note;
         private IPasswordGenerator _selectedGenerator;
         private SecureString _masterPassword;

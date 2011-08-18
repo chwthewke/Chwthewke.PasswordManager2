@@ -317,9 +317,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
                 .WithNote( "yadda yadda" )
                 .WithMasterPasswordId( guid );
             PasswordDatabase.AddOrUpdate( digest );
+
             // Exercise
-            _controller.Key = digest.Key;
-            _controller.LoadPassword( );
+
+            _controller = ControllerFactory.PasswordEditorControllerFor( digest.Key );
             // Verify
             Assert.That( _controller.Key, Is.EqualTo( "abde" ) );
             Assert.That( _controller.SelectedGenerator, Is.EqualTo( PasswordGenerators.AlphaNumeric ) );
@@ -339,8 +340,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
                 .WithGeneratorId( PasswordGenerators.Full.Id );
             PasswordDatabase.AddOrUpdate( digest );
 
-            _controller.Key = digest.Key;
-            _controller.LoadPassword( );
+            _controller = ControllerFactory.PasswordEditorControllerFor( digest.Key );
             // Exercise
             _controller.Key = "abcd";
             // Verify

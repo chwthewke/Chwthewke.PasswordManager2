@@ -15,7 +15,7 @@ namespace Chwthewke.PasswordManager.Editor
         Guid? ExpectedMasterPasswordId { get; }
 
         bool IsPasswordLoaded { get; }
-        bool IsDirty { get; }
+        bool IsSaveable { get; }
 
         IEnumerable<IPasswordGenerator> Generators { get; }
         IPasswordGenerator SelectedGenerator { get; set; }

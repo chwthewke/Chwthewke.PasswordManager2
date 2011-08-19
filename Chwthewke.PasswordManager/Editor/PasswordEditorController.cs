@@ -7,7 +7,6 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Editor
 {
-    // TODO dirty checks, other logic may be better implemented with reference to "original" content (PasswordDigest ?)
     internal class PasswordEditorController : IPasswordEditorController
     {
         public PasswordEditorController( IPasswordDatabase passwordDatabase,
@@ -41,28 +40,19 @@ namespace Chwthewke.PasswordManager.Editor
                 if ( IsPasswordLoaded )
                     return;
                 _key = value;
-                UpdateDirtiness( );
             }
         }
 
         public string Note
         {
             get { return _note; }
-            set
-            {
-                _note = value;
-                UpdateDirtiness( );
-            }
+            set { _note = value; }
         }
 
         public SecureString MasterPassword
         {
             get { return _masterPassword; }
-            set
-            {
-                _masterPassword = value;
-                UpdateDirtiness( );
-            }
+            set { _masterPassword = value; }
         }
 
         public Guid? MasterPasswordId
@@ -70,27 +60,42 @@ namespace Chwthewke.PasswordManager.Editor
             get { return _masterPasswordMatcher.IdentifyMasterPassword( MasterPassword ); }
         }
 
+        public bool IsSaveable
+        {
+            get
+            {
+                if ( String.IsNullOrWhiteSpace( _key ) || MasterPassword.Length == 0 || SelectedGenerator == null )
+                    return false;
 
+                if ( Baseline == null )
+                    return true;
 
-        public bool IsDirty { get; private set; }
+                return !BaselineComparer.Equals( Baseline, MakeDigest( ) );
+            }
+        }
 
         public IEnumerable<IPasswordGenerator> Generators { get; private set; }
 
         public IPasswordGenerator SelectedGenerator
         {
             get { return _selectedGenerator; }
-            set
-            {
-                _selectedGenerator = value;
-                UpdateDirtiness( );
-            }
+            set { _selectedGenerator = value; }
         }
 
-        public Guid? ExpectedMasterPasswordId { get { return Baseline == null ? (Guid?)null : Baseline.MasterPasswordId; } }
+        public Guid? ExpectedMasterPasswordId
+        {
+            get { return Baseline == null ? (Guid?) null : Baseline.MasterPasswordId; }
+        }
 
-        public bool IsPasswordLoaded { get { return Baseline != null; } }
+        public bool IsPasswordLoaded
+        {
+            get { return Baseline != null; }
+        }
 
-        private DateTime? CreationTime { get { return Baseline == null ? (DateTime?)null : Baseline.CreationTime; } }
+        private DateTime? CreationTime
+        {
+            get { return Baseline == null ? (DateTime?) null : Baseline.CreationTime; }
+        }
 
         private PasswordDigest Baseline { get; set; }
 
@@ -107,20 +112,13 @@ namespace Chwthewke.PasswordManager.Editor
 
         public void SavePassword( )
         {
-            if ( SelectedGenerator == null )
-                return;
-            string password = GeneratedPassword( SelectedGenerator );
-            if ( string.IsNullOrEmpty( password ) )
+            if ( !IsSaveable )
                 return;
 
-            Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
-
-            Baseline = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id,
-                                                      CreationTime, Note );
+            Baseline = MakeDigest( );
             _passwordDatabase.AddOrUpdate( Baseline );
-
-            IsDirty = false;
         }
+
 
         public void DeletePassword( )
         {
@@ -129,8 +127,6 @@ namespace Chwthewke.PasswordManager.Editor
             _passwordDatabase.Remove( Key );
 
             Baseline = null;
-
-            IsDirty = true;
         }
 
         // PRIVATE
@@ -145,32 +141,22 @@ namespace Chwthewke.PasswordManager.Editor
             _key = Baseline.Key;
             _note = Baseline.Note;
             SelectedGenerator = GeneratorById( Baseline.PasswordGeneratorId );
-            IsDirty = false;
+        }
+
+        private PasswordDigest MakeDigest( )
+        {
+            string password = GeneratedPassword( SelectedGenerator );
+
+            Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
+
+            PasswordDigest newDigest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id,
+                                                         CreationTime, Note );
+            return newDigest;
         }
 
         private IPasswordGenerator GeneratorById( Guid passwordGeneratorId )
         {
             return Generators.FirstOrDefault( g => g.Id == passwordGeneratorId );
-        }
-
-        private PasswordDigest GetDigest( )
-        {
-            return _passwordDatabase.FindByKey( Key );
-        }
-
-        private void UpdateDirtiness( )
-        {
-            if ( !IsPasswordLoaded )
-            {
-                IsDirty = !( string.IsNullOrEmpty( Key ) && string.IsNullOrEmpty( Note ) && MasterPassword.Length == 0 );
-            }
-            else
-            {
-                PasswordDigest digest = GetDigest( );
-                IsDirty = Note != digest.Note
-                          || SelectedGenerator == null
-                          || SelectedGenerator.Id != digest.PasswordGeneratorId;
-            }
         }
 
         private readonly IPasswordDatabase _passwordDatabase;
@@ -182,5 +168,34 @@ namespace Chwthewke.PasswordManager.Editor
         private string _note;
         private IPasswordGenerator _selectedGenerator;
         private SecureString _masterPassword;
+
+        private static readonly IEqualityComparer<PasswordDigest> BaselineComparer =
+            new BaselineDigestComparator( );
+
+        private class BaselineDigestComparator : IEqualityComparer<PasswordDigest>
+        {
+            public bool Equals( PasswordDigest x, PasswordDigest y )
+            {
+                if ( x == null )
+                    return y == null;
+                if ( y == null )
+                    return false;
+
+                if ( y.Note != x.Note )
+                    return false;
+                if ( y.MasterPasswordId != x.MasterPasswordId )
+                    return false;
+                if ( y.PasswordGeneratorId != x.PasswordGeneratorId )
+                    return false;
+                if ( !Equals( y.Hash, x.Hash ) )
+                    return false;
+                return true;
+            }
+
+            public int GetHashCode( PasswordDigest obj )
+            {
+                throw new NotImplementedException( );
+            }
+        }
     }
 }

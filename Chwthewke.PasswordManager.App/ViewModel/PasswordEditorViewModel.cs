@@ -291,7 +291,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             else
                 title = Key;
 
-            return _controller.IsDirty ? title + "*" : title;
+            return _controller.IsSaveable ? title + "*" : title;
         }
 
 

@@ -70,9 +70,7 @@ namespace Chwthewke.PasswordManager.Editor
             get { return _masterPasswordMatcher.IdentifyMasterPassword( MasterPassword ); }
         }
 
-        public Guid? ExpectedMasterPasswordId { get; private set; }
 
-        public bool IsPasswordLoaded { get; private set; }
 
         public bool IsDirty { get; private set; }
 
@@ -88,9 +86,14 @@ namespace Chwthewke.PasswordManager.Editor
             }
         }
 
+        public Guid? ExpectedMasterPasswordId { get { return Baseline == null ? (Guid?)null : Baseline.MasterPasswordId; } }
+
+        public bool IsPasswordLoaded { get { return Baseline != null; } }
+
+        private DateTime? CreationTime { get { return Baseline == null ? (DateTime?)null : Baseline.CreationTime; } }
+
         private PasswordDigest Baseline { get; set; }
 
-        private DateTime CreationTime { get; set; }
 
         public string GeneratedPassword( IPasswordGenerator generator )
         {
@@ -112,13 +115,11 @@ namespace Chwthewke.PasswordManager.Editor
 
             Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
 
-            PasswordDigest digest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id,
+            Baseline = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id,
                                                       CreationTime, Note );
-            _passwordDatabase.AddOrUpdate( digest );
-            ExpectedMasterPasswordId = digest.MasterPasswordId;
+            _passwordDatabase.AddOrUpdate( Baseline );
 
             IsDirty = false;
-            IsPasswordLoaded = true;
         }
 
         public void DeletePassword( )
@@ -127,31 +128,24 @@ namespace Chwthewke.PasswordManager.Editor
                 return;
             _passwordDatabase.Remove( Key );
 
-            ExpectedMasterPasswordId = null;
+            Baseline = null;
+
             IsDirty = true;
-            IsPasswordLoaded = false;
         }
 
         // PRIVATE
 
         private void InitializeWith( string passwordKey )
         {
-            // TODO be atomic
-
-
-            
             Baseline = _passwordDatabase.FindByKey( passwordKey );
             if ( Baseline == null )
                 return;
 
 
-            Key = Baseline.Key;
-            Note = Baseline.Note;
-            ExpectedMasterPasswordId = Baseline.MasterPasswordId;
+            _key = Baseline.Key;
+            _note = Baseline.Note;
             SelectedGenerator = GeneratorById( Baseline.PasswordGeneratorId );
             IsDirty = false;
-            IsPasswordLoaded = true;
-            CreationTime = Baseline.CreationTime;
         }
 
         private IPasswordGenerator GeneratorById( Guid passwordGeneratorId )

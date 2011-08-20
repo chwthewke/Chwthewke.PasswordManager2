@@ -38,7 +38,7 @@ namespace Chwthewke.PasswordManager.App.View
             bool? result = dialog.ShowDialog( );
             if ( result.Value )
                 return dialog.FileNames.Select( fn => new FileInfo( fn ) );
-            return null;
+            return Enumerable.Empty<FileInfo>( );
         }
     }
 }

@@ -61,18 +61,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         }
 
         [ Test ]
-        public void LoadPasswordKeepsPasswordSlotSelectionPossible( )
-        {
-            // Setup
-            AddPassword( "abde", string.Empty, PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
-            // Exercise
-            ViewModel.UpdateMasterPassword( "1234".ToSecureString( ) );
-            // Verify
-            Assert.That( ViewModel.CanSelectPasswordSlot, Is.True );
-        }
-
-        [ Test ]
         public void LoadPasswordPreventsPasswordSlotSelectionFromClear( )
         {
             // Setup
@@ -141,7 +129,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Verify
             Assert.That( ViewModel.Key, Is.EqualTo( "abde" ) );
             Assert.That( ViewModel.Note, Is.EqualTo( "yadda yadda" ) );
-            Assert.That( ViewModel.CanSelectPasswordSlot, Is.True );
             Assert.That( ViewModel.Slots.First( slot => slot.IsSelected ).Generator,
                          Is.EqualTo( PasswordGenerators.AlphaNumeric ) );
             Assert.That( ViewModel.IsKeyReadonly, Is.False );

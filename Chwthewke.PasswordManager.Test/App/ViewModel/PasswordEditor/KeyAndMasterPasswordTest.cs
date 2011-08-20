@@ -59,7 +59,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
             Assert.That( ViewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
-            Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
         }
 
         [ Test ]
@@ -71,7 +70,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
             Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
-            Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
         }
 
         [ Test ]
@@ -86,7 +84,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That(
                 ViewModel.Slots.Select( s => s.Content == s.Generator.MakePassword( "abc", masterPassword ) ).ToList( ),
                 Has.All.True );
-            Assert.That( ViewModel.CanSelectPasswordSlot, Is.True );
         }
 
         [ Test ]
@@ -103,7 +100,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                     .Select( s => s.Content == s.Generator.MakePassword( "abcd", "12345".ToSecureString( ) ) )
                     .ToList( ),
                 Has.All.True );
-            Assert.That( ViewModel.CanSelectPasswordSlot, Is.True );
         }
 
         [ Test ]
@@ -116,7 +112,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.Key = string.Empty;
             // Verify
             Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
-            Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
         }
 
         [ Test ]
@@ -129,7 +124,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.UpdateMasterPassword( string.Empty.ToSecureString( ) );
             // Verify
             Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
-            Assert.That( ViewModel.CanSelectPasswordSlot, Is.False );
         }
     }
 }

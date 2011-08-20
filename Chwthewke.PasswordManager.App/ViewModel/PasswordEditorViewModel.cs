@@ -13,8 +13,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
-        public delegate PasswordEditorViewModel Factory( string password );
-
         public PasswordEditorViewModel( IPasswordEditorController controller,
                                         IClipboardService clipboardService,
                                         IGuidToColorConverter guidToColor )
@@ -77,21 +75,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 Update( );
             }
         }
-
-        public bool CanSelectPasswordSlot
-        {
-            get { return _canSelectPasswordSlot; }
-            private set
-            {
-                if ( _canSelectPasswordSlot == value )
-                    return;
-                _canSelectPasswordSlot = value;
-                RaisePropertyChanged( ( ) => CanSelectPasswordSlot );
-                foreach ( PasswordSlotViewModel slot in Slots )
-                    slot.IsSelected &= _controller.IsPasswordLoaded || _canSelectPasswordSlot;
-            }
-        }
-
 
         public bool IsKeyReadonly
         {
@@ -194,14 +177,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _copyCommand.RaiseCanExecuteChanged( );
         }
 
-        private bool HasPassword
-        {
-            get { return CanSelectPasswordSlot && _controller.SelectedGenerator != null; }
-        }
-
         private bool CanExecuteSave( )
         {
-            return HasPassword;
+            return _controller.IsSaveable;
         }
 
         private void ExecuteSave( )
@@ -209,9 +187,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( !CanExecuteSave( ) )
                 return;
             _controller.SavePassword( );
-            // TODO event StoreModified once only ?
-
-            RaiseStoreModified( );
 
             UpdateSaved( );
             RaiseStoreModified( );
@@ -235,14 +210,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private bool CanExecuteCopy( )
         {
-            return HasPassword;
+            return !String.IsNullOrEmpty( _controller.SelectedPassword );
         }
 
         private void ExecuteCopy( )
         {
             if ( !CanExecuteCopy( ) )
                 return;
-            _clipboardService.CopyToClipboard( _controller.GeneratedPassword( _controller.SelectedGenerator ) );
+            _clipboardService.CopyToClipboard( _controller.SelectedPassword );
         }
 
         private void UpdateSaved( )
@@ -255,11 +230,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void Update( )
         {
             Title = DeriveTitle( );
-            CanSelectPasswordSlot = DeriveCanSelectPassword( );
             IsKeyReadonly = DeriveKeyReadonly( );
 
             foreach ( var slot in Slots )
             {
+                // move controller reference into slots ?
                 slot.Content = _controller.GeneratedPassword( slot.Generator );
                 slot.IsSelected = _controller.SelectedGenerator == slot.Generator;
             }
@@ -274,11 +249,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private bool DeriveKeyReadonly( )
         {
             return _controller.IsPasswordLoaded;
-        }
-
-        private bool DeriveCanSelectPassword( )
-        {
-            return !_controller.Generators.All( g => string.IsNullOrEmpty( _controller.GeneratedPassword( g ) ) );
         }
 
         private string DeriveTitle( )
@@ -300,7 +270,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly IGuidToColorConverter _guidToColor;
 
         private string _title = NewTitle;
-        private bool _canSelectPasswordSlot;
         private bool _isKeyReadonly;
 
         private Color _requiredGuidColor = Colors.Transparent;
@@ -315,9 +284,5 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public const string NewTitle = "(new)";
 
-        public void LoadPasswordForKey( )
-        {
-            throw new NotImplementedException( );
-        }
     }
 }

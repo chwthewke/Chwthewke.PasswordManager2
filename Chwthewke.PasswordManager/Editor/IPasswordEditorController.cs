@@ -19,6 +19,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         IEnumerable<IPasswordGenerator> Generators { get; }
         IPasswordGenerator SelectedGenerator { get; set; }
+        string SelectedPassword { get; }
         string GeneratedPassword( IPasswordGenerator generator );
 
         void SavePassword( );

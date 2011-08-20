@@ -54,6 +54,16 @@ namespace Chwthewke.PasswordManager.Editor
 
         public IPasswordGenerator SelectedGenerator { get; set; }
 
+        public string SelectedPassword
+        {
+            get
+            {
+                if ( SelectedGenerator == null )
+                    return string.Empty;
+                return GeneratedPassword( SelectedGenerator );
+            }
+        }
+
         public bool IsSaveable
         {
             get

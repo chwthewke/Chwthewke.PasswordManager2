@@ -26,26 +26,5 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( saveCommandCanExecuteChanged, Is.True );
         }
 
-        [ Test ]
-        public void InvalidatingKeyDeselectsPassword( )
-        {
-            // Setup
-            ViewModel.Key = "abcd";
-            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
-            ViewModel.Slots[ 0 ].IsSelected = true;
-
-            bool copyCommandCanExecuteChanged = false;
-            ViewModel.CopyCommand.CanExecuteChanged += ( s, e ) => { copyCommandCanExecuteChanged = true; };
-            bool saveCommandCanExecuteChanged = false;
-            ViewModel.SaveCommand.CanExecuteChanged += ( s, e ) => { saveCommandCanExecuteChanged = true; };
-            // Exercise
-            ViewModel.Key = string.Empty;
-            // Verify
-            Assert.That( ViewModel.Slots[ 0 ].IsSelected, Is.False );
-            Assert.That( ViewModel.CopyCommand.CanExecute( null ), Is.False );
-            Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.False );
-            Assert.That( copyCommandCanExecuteChanged, Is.True );
-            Assert.That( saveCommandCanExecuteChanged, Is.True );
-        }
     }
 }

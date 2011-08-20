@@ -2,7 +2,7 @@ using System;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    internal interface ITimeProvider
+    public interface ITimeProvider
     {
         DateTime Now { get; }
     }

@@ -21,8 +21,8 @@ namespace Chwthewke.PasswordManager.Editor
             _masterPasswordMatcher = masterPasswordMatcher;
             _digester = digester;
             _key = string.Empty;
-            _note = string.Empty;
-            _masterPassword = new SecureString( );
+            Note = string.Empty;
+            MasterPassword = new SecureString( );
             Generators = generators;
 
             if ( password != null )
@@ -43,22 +43,16 @@ namespace Chwthewke.PasswordManager.Editor
             }
         }
 
-        public string Note
-        {
-            get { return _note; }
-            set { _note = value; }
-        }
+        public string Note { get; set; }
 
-        public SecureString MasterPassword
-        {
-            get { return _masterPassword; }
-            set { _masterPassword = value; }
-        }
+        public SecureString MasterPassword { get; set; }
 
         public Guid? MasterPasswordId
         {
             get { return _masterPasswordMatcher.IdentifyMasterPassword( MasterPassword ); }
         }
+
+        public IPasswordGenerator SelectedGenerator { get; set; }
 
         public bool IsSaveable
         {
@@ -75,12 +69,6 @@ namespace Chwthewke.PasswordManager.Editor
         }
 
         public IEnumerable<IPasswordGenerator> Generators { get; private set; }
-
-        public IPasswordGenerator SelectedGenerator
-        {
-            get { return _selectedGenerator; }
-            set { _selectedGenerator = value; }
-        }
 
         public Guid? ExpectedMasterPasswordId
         {
@@ -139,7 +127,7 @@ namespace Chwthewke.PasswordManager.Editor
 
 
             _key = Baseline.Key;
-            _note = Baseline.Note;
+            Note = Baseline.Note;
             SelectedGenerator = GeneratorById( Baseline.PasswordGeneratorId );
         }
 
@@ -147,7 +135,7 @@ namespace Chwthewke.PasswordManager.Editor
         {
             string password = GeneratedPassword( SelectedGenerator );
 
-            Guid masterPasswordId = MasterPasswordId ?? _newGuidFactory( );
+            Guid masterPasswordId = MasterPasswordId.HasValue ? MasterPasswordId.Value : _newGuidFactory( );
 
             PasswordDigest newDigest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id,
                                                          CreationTime, Note );
@@ -165,9 +153,6 @@ namespace Chwthewke.PasswordManager.Editor
         private readonly Func<Guid> _newGuidFactory;
 
         private string _key = string.Empty;
-        private string _note;
-        private IPasswordGenerator _selectedGenerator;
-        private SecureString _masterPassword;
 
         private static readonly IEqualityComparer<PasswordDigest> BaselineComparer =
             new BaselineDigestComparator( );
@@ -176,9 +161,10 @@ namespace Chwthewke.PasswordManager.Editor
         {
             public bool Equals( PasswordDigest x, PasswordDigest y )
             {
-                if ( x == null )
-                    return y == null;
-                if ( y == null )
+                if ( ReferenceEquals( x, y ) )
+                    return true;
+
+                if ( ReferenceEquals( x, null ) || ReferenceEquals( y, null ) )
                     return false;
 
                 if ( y.Note != x.Note )
@@ -187,14 +173,19 @@ namespace Chwthewke.PasswordManager.Editor
                     return false;
                 if ( y.PasswordGeneratorId != x.PasswordGeneratorId )
                     return false;
-                if ( !Equals( y.Hash, x.Hash ) )
+                if ( !y.Hash.SequenceEqual( x.Hash ) )
                     return false;
                 return true;
             }
 
             public int GetHashCode( PasswordDigest obj )
             {
-                throw new NotImplementedException( );
+                if ( obj == null )
+                    return 0;
+                int result = ( obj.Note == null ? 0 : obj.Note.GetHashCode( ) );
+                result = 397 * result ^ ( obj.MasterPasswordId.GetHashCode( ) );
+                result = 397 * result ^ ( obj.PasswordGeneratorId.GetHashCode( ) );
+                return result;
             }
         }
     }

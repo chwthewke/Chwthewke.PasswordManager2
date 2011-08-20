@@ -95,6 +95,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         private TimeProviderStub _timeProviderStub;
         private Sha512Factory _hashFactory;
 
+        [Obsolete]
         private class TimeProviderStub : ITimeProvider
         {
             public TimeProviderStub( )

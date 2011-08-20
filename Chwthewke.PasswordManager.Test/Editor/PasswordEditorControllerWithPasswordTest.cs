@@ -1,53 +1,23 @@
 using System;
 using System.Security;
-using Autofac;
-using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
-using Chwthewke.PasswordManager.Test.App;
 using Chwthewke.PasswordManager.Test.Engine;
-using Chwthewke.PasswordManager.Test.Storage;
-using Moq;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {
     [TestFixture]
-    [Ignore( "Failures" )]
-    public class PasswordEditorControllerWithPasswordTest
+    public class PasswordEditorControllerWithPasswordTest : PasswordEditorControllerTestBase
     {
-        // ReSharper disable UnusedAutoPropertyAccessor.Global
-        public IPasswordDatabase PasswordDatabase { get; set; }
-        
-        public PasswordEditorControllerFactory ControllerFactory { get; set; }
-        // ReSharper restore UnusedAutoPropertyAccessor.Global
-
-        private IPasswordEditorController _controller;
-
-        private Mock<IMasterPasswordMatcher> _passwordMatcherMock;
 
         [SetUp]
         public void SetUpController( )
         {
-            _passwordMatcherMock = new Mock<IMasterPasswordMatcher>( );
+            StorePasswordAndGetMasterPasswordId( "abde", PasswordGenerators.AlphaNumeric, "1234".ToSecureString( ) );
 
-            AppSetUp.TestContainer(
-                b =>
-                    {
-                        b.RegisterType<NullTimeProvider>( ).As<ITimeProvider>( );
-                        b.RegisterInstance( _passwordMatcherMock.Object ).As<IMasterPasswordMatcher>( );
-                        b.RegisterInstance( (Func<Guid>) ( ( ) => _guid ) ).As<Func<Guid>>( );
-                    } ).InjectProperties( this );
+            _controller = ControllerFactory.PasswordEditorControllerFor( "abde" );
 
-
-            _digest = new PasswordDigestBuilder { Key = "abde", PasswordGeneratorId = PasswordGenerators.AlphaNumeric.Id, Note = "a short note." };
-
-            PasswordDatabase.AddOrUpdate( _digest );
-
-            _controller = ControllerFactory.PasswordEditorControllerFor( _digest.Key );
-
-            //
-            Assert.That( PasswordDatabase.FindByKey( "abde" ).Hash, Is.EqualTo( new byte[0] ) );
         }
 
         [Test]
@@ -61,13 +31,29 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
         [Test]
+        public void UpdateMasterPasswordChangesItInDatabase( )
+        {
+            // Set up
+            Guid previousMasterPasswordId = _controller.ExpectedMasterPasswordId.GetValueOrDefault( );
+            _controller.MasterPassword = "123456".ToSecureString( );
+            // Exercise
+            _controller.SavePassword( );
+            // Verify
+            Guid newMasterPasswordId = PasswordDatabase.FindByKey( _controller.Key ).MasterPasswordId;
+            Assert.That( newMasterPasswordId, Is.Not.EqualTo( previousMasterPasswordId ) );
+            Assert.That( _controller.ExpectedMasterPasswordId, Is.EqualTo( newMasterPasswordId ) );
+            Assert.That( _controller.MasterPasswordId, Is.EqualTo( newMasterPasswordId ) );
+        }
+
+        [Test]
         public void ChangeNoteMakesEditorDirty( )
         {
             // Setup
+            _controller.MasterPassword = "1234".ToSecureString( );
             // Exercise
-            _controller.Note = string.Empty;
+            _controller.Note = "Now a note.";
             // Verify
-            Assert.That( _controller.Note, Is.EqualTo( string.Empty ) );
+            Assert.That( _controller.Note, Is.EqualTo( "Now a note." ) );
             Assert.That( _controller.IsSaveable, Is.True );
         }
 
@@ -75,12 +61,25 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void ChangeSelectedGeneratorMakesEditorDirty( )
         {
             // Setup
+            _controller.MasterPassword = "1234".ToSecureString( );
             // Exercise
             _controller.SelectedGenerator = PasswordGenerators.Full;
             // Verify
             Assert.That( _controller.SelectedGenerator, Is.EqualTo( PasswordGenerators.Full ) );
             Assert.That( _controller.IsSaveable, Is.True );
         }
+
+        [Test]
+        public void ChangesWithoutAMasterPasswordDoNotDirtyEditor( )
+        {
+            // Set up
+            
+            // Exercise
+            _controller.Note = "yadda";
+            _controller.SelectedGenerator = PasswordGenerators.Full;
+            // Verify
+            Assert.That( _controller.IsSaveable, Is.False );
+        } 
 
         [Test]
         public void SaveWithDifferentNoteAndGeneratorUpdatesStore( )
@@ -107,12 +106,29 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void SaveWhenNotDirtyHasNoEffect( )
         {
             // Setup
+            PasswordDigest digest = PasswordDatabase.FindByKey( "abde" );
             // Exercise
             _controller.SavePassword( );
             // Verify
-            Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.SameAs( _digest ) );
+            Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.SameAs( digest ) );
         }
 
+        [Test]
+        public void UpdatePasswordUpdatesModificationTimeButNotCreationTime( )
+        {
+            // Set up
+            var now = new DateTime( 2011, 8, 16 );
+            _timeProviderMock.Setup( p => p.Now ).Returns( now );
+            // Exercise
+            _controller.MasterPassword = "1234".ToSecureString( );
+            _controller.Note = "updated note";
+            _controller.SavePassword( );
+            // Verify
+            PasswordDigest newPasswordDigest = PasswordDatabase.FindByKey( _controller.Key );
+            Assert.That( newPasswordDigest.ModificationTime, Is.EqualTo( now ) );
+            Assert.That( newPasswordDigest.CreationTime, Is.EqualTo( _now ) );
+            Assert.That( newPasswordDigest.ModificationTime, Is.Not.EqualTo( _now ) );
+        }
 
         [Test]
         public void DeleteRemovesPasswordFromStore( )
@@ -141,23 +157,12 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _controller.MasterPassword, Is.EqualTo( masterPassword ) );
             Assert.That( _controller.SelectedGenerator, Is.EqualTo( selectedGenerator ) );
 
-            Assert.That( _controller.IsSaveable, Is.True );
+            Assert.That( _controller.IsSaveable, Is.False );
             Assert.That( _controller.IsPasswordLoaded, Is.False );
 
             Assert.That( _controller.ExpectedMasterPasswordId, Is.Null );
         }
 
 
-        private readonly Guid _guid = new Guid( "{782F77BB-7482-4307-A246-E9A0BF2F5B86}" );
-        private PasswordDigest _digest;
-
-
-        private class NullTimeProvider : ITimeProvider
-        {
-            public DateTime Now
-            {
-                get { return new DateTime( 0 ); }
-            }
-        }
     }
 }

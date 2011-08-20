@@ -16,7 +16,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         [SetUp]
         public void SetUpController( )
         {
-            _controller = ControllerFactory.PasswordEditorControllerFor( string.Empty );
+            Controller = ControllerFactory.PasswordEditorControllerFor( string.Empty );
         }
 
         [Test]
@@ -25,15 +25,15 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             // Exercise
             // Verify
-            Assert.That( _controller.Key, Is.EqualTo( string.Empty ) );
-            Assert.That( _controller.IsSaveable, Is.False );
-            Assert.That( _controller.Note, Is.EqualTo( string.Empty ) );
-            Assert.That( _controller.IsPasswordLoaded, Is.False );
-            Assert.That( _controller.MasterPassword.Length, Is.EqualTo( 0 ) );
-            Assert.That( _controller.MasterPasswordId, Is.Null );
-            Assert.That( _controller.ExpectedMasterPasswordId, Is.Null );
-            Assert.That( _controller.SelectedGenerator, Is.Null );
-            Assert.That( _controller.Generators, Is.EquivalentTo( PasswordGenerators.All ) );
+            Assert.That( Controller.Key, Is.EqualTo( string.Empty ) );
+            Assert.That( Controller.IsSaveable, Is.False );
+            Assert.That( Controller.Note, Is.EqualTo( string.Empty ) );
+            Assert.That( Controller.IsPasswordLoaded, Is.False );
+            Assert.That( Controller.MasterPassword.Length, Is.EqualTo( 0 ) );
+            Assert.That( Controller.MasterPasswordId, Is.Null );
+            Assert.That( Controller.ExpectedMasterPasswordId, Is.Null );
+            Assert.That( Controller.SelectedGenerator, Is.Null );
+            Assert.That( Controller.Generators, Is.EquivalentTo( PasswordGenerators.All ) );
         }
 
         [Test]
@@ -41,9 +41,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            _controller.Key = "abcd";
+            Controller.Key = "abcd";
             // Verify
-            Assert.That( _controller.IsSaveable, Is.False );
+            Assert.That( Controller.IsSaveable, Is.False );
         }
 
         [Test]
@@ -51,9 +51,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            _controller.Note = "abcd";
+            Controller.Note = "abcd";
             // Verify
-            Assert.That( _controller.IsSaveable, Is.False );
+            Assert.That( Controller.IsSaveable, Is.False );
         }
 
         [Test]
@@ -61,9 +61,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            _controller.MasterPassword = "123456".ToSecureString( );
+            Controller.MasterPassword = "123456".ToSecureString( );
             // Verify
-            Assert.That( _controller.IsSaveable, Is.False );
+            Assert.That( Controller.IsSaveable, Is.False );
         }
 
         [Test]
@@ -71,11 +71,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             // Exercise
-            _controller.Key = "abc";
-            _controller.MasterPassword = "123456".ToSecureString( );
-            _controller.SelectedGenerator = PasswordGenerators.AlphaNumeric;
+            Controller.Key = "abc";
+            Controller.MasterPassword = "123456".ToSecureString( );
+            Controller.SelectedGenerator = PasswordGenerators.AlphaNumeric;
             // Verify
-            Assert.That( _controller.IsSaveable, Is.True );
+            Assert.That( Controller.IsSaveable, Is.True );
         }
 
 
@@ -85,9 +85,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
 
             // Exercise
-            _controller.MasterPassword = "12345".ToSecureString( );
+            Controller.MasterPassword = "12345".ToSecureString( );
             // Verify
-            Assert.That( _controller.Generators.All( g => _controller.GeneratedPassword( g ) == string.Empty ), Is.True );
+            Assert.That( Controller.Generators.All( g => Controller.GeneratedPassword( g ) == string.Empty ), Is.True );
         }
 
         [Test]
@@ -96,10 +96,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
 
             // Exercise
-            _controller.Key = "  \t";
-            _controller.MasterPassword = "12345".ToSecureString( );
+            Controller.Key = "  \t";
+            Controller.MasterPassword = "12345".ToSecureString( );
             // Verify
-            Assert.That( _controller.Generators.All( g => _controller.GeneratedPassword( g ) == string.Empty ), Is.True );
+            Assert.That( Controller.Generators.All( g => Controller.GeneratedPassword( g ) == string.Empty ), Is.True );
         }
 
         [Test]
@@ -108,9 +108,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
 
             // Exercise
-            _controller.Key = "abcd";
+            Controller.Key = "abcd";
             // Verify
-            Assert.That( _controller.Generators.All( g => _controller.GeneratedPassword( g ) == string.Empty ), Is.True );
+            Assert.That( Controller.Generators.All( g => Controller.GeneratedPassword( g ) == string.Empty ), Is.True );
         }
 
         [Test]
@@ -120,15 +120,15 @@ namespace Chwthewke.PasswordManager.Test.Editor
             string key = "abcd";
             SecureString masterPassword = "12345".ToSecureString( );
             // Exercise
-            _controller.Key = key;
-            _controller.MasterPassword = masterPassword;
+            Controller.Key = key;
+            Controller.MasterPassword = masterPassword;
             // Verify
             Assert.That(
-                _controller.Generators.All(
-                    g => _controller.GeneratedPassword( g ) == g.MakePassword( key, masterPassword ) ),
+                Controller.Generators.All(
+                    g => Controller.GeneratedPassword( g ) == g.MakePassword( key, masterPassword ) ),
                 Is.True );
             Assert.That(
-                _controller.Generators.All( g => _controller.GeneratedPassword( g ) != string.Empty ),
+                Controller.Generators.All( g => Controller.GeneratedPassword( g ) != string.Empty ),
                 Is.True );
         }
 
@@ -139,13 +139,13 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             string key = "abcd";
             SecureString masterPassword = "12345".ToSecureString( );
-            _controller.Key = key;
-            _controller.MasterPassword = masterPassword;
+            Controller.Key = key;
+            Controller.MasterPassword = masterPassword;
             // Exercise
-            _controller.Key = string.Empty;
+            Controller.Key = string.Empty;
             // Verify
             Assert.That(
-                _controller.Generators.All( g => _controller.GeneratedPassword( g ) == string.Empty ),
+                Controller.Generators.All( g => Controller.GeneratedPassword( g ) == string.Empty ),
                 Is.True );
         }
 
@@ -155,13 +155,13 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             string key = "abcd";
             SecureString masterPassword = "12345".ToSecureString( );
-            _controller.Key = key;
-            _controller.MasterPassword = masterPassword;
+            Controller.Key = key;
+            Controller.MasterPassword = masterPassword;
             // Exercise
-            _controller.MasterPassword = string.Empty.ToSecureString( );
+            Controller.MasterPassword = string.Empty.ToSecureString( );
             // Verify
             Assert.That(
-                _controller.Generators.All( g => _controller.GeneratedPassword( g ) == string.Empty ),
+                Controller.Generators.All( g => Controller.GeneratedPassword( g ) == string.Empty ),
                 Is.True );
         }
 
@@ -173,10 +173,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
             SecureString masterPassword = "12456".ToSecureString( );
             Guid guid = StorePasswordAndGetMasterPasswordId( "abc", PasswordGenerators.AlphaNumeric, masterPassword );
             // Exercise
-            _controller.MasterPassword = masterPassword;
+            Controller.MasterPassword = masterPassword;
             // Verify
             Assert.That( guid, Is.Not.EqualTo( default( Guid ) ) );
-            Assert.That( _controller.MasterPasswordId, Is.EqualTo( guid ) );
+            Assert.That( Controller.MasterPasswordId, Is.EqualTo( guid ) );
         }
 
         [Test]
@@ -185,18 +185,18 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Setup
             SecureString masterPassword = "12456".ToSecureString( );
             // Exercise
-            _controller.MasterPassword = masterPassword;
+            Controller.MasterPassword = masterPassword;
             // Verify
-            Assert.That( _controller.MasterPasswordId, Is.Null );
+            Assert.That( Controller.MasterPasswordId, Is.Null );
         }
 
         [Test]
         public void SaveWithoutGeneratedPassword( )
         {
             // Setup
-            _controller.Key = "abcd";
+            Controller.Key = "abcd";
             // Exercise
-            _controller.SavePassword( );
+            Controller.SavePassword( );
             // Verify
             Assert.That( PasswordDatabase.Passwords, Is.Empty );
         }
@@ -206,10 +206,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void SaveWithoutSelectedPassword( )
         {
             // Setup
-            _controller.Key = "abcd";
-            _controller.MasterPassword = "1234".ToSecureString( );
+            Controller.Key = "abcd";
+            Controller.MasterPassword = "1234".ToSecureString( );
             // Exercise
-            _controller.SavePassword( );
+            Controller.SavePassword( );
             // Verify
             Assert.That( PasswordDatabase.Passwords, Is.Empty );
         }
@@ -219,15 +219,15 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
 
-            _controller.Key = "abcd";
-            _controller.MasterPassword = "1234".ToSecureString( );
-            _controller.Note = "some note";
-            _controller.SelectedGenerator = PasswordGenerators.Full;
+            Controller.Key = "abcd";
+            Controller.MasterPassword = "1234".ToSecureString( );
+            Controller.Note = "some note";
+            Controller.SelectedGenerator = PasswordGenerators.Full;
             // Exercise
-            _controller.SavePassword( );
+            Controller.SavePassword( );
             // Verify
-            Assert.That( _controller.IsSaveable, Is.False );
-            Assert.That( _controller.IsPasswordLoaded, Is.True );
+            Assert.That( Controller.IsSaveable, Is.False );
+            Assert.That( Controller.IsPasswordLoaded, Is.True );
         }
 
         [Test]
@@ -237,17 +237,17 @@ namespace Chwthewke.PasswordManager.Test.Editor
             SecureString masterPassword = "1234".ToSecureString( );
             Guid guid = StorePasswordAndGetMasterPasswordId( "abc", PasswordGenerators.AlphaNumeric, masterPassword );
 
-            _controller.Key = "abcd";
-            _controller.MasterPassword = masterPassword;
-            _controller.Note = "some note";
-            _controller.SelectedGenerator = PasswordGenerators.Full;
+            Controller.Key = "abcd";
+            Controller.MasterPassword = masterPassword;
+            Controller.Note = "some note";
+            Controller.SelectedGenerator = PasswordGenerators.Full;
 
 
             PasswordDigest expectedDigest = Digester.Digest( "abcd",
                                                              PasswordGenerators.Full.MakePassword( "abcd", masterPassword ),
                                                              guid, PasswordGenerators.Full.Id, null, "some note" );
             // Exercise
-            _controller.SavePassword( );
+            Controller.SavePassword( );
             // Verify
             Assert.That( PasswordDatabase.FindByKey( "abcd" ), Is.EqualTo( expectedDigest ) );
         }
@@ -258,16 +258,16 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
 
-            _controller.Key = "abcd";
-            _controller.MasterPassword = "1234".ToSecureString( );
-            _controller.Note = "some note";
-            _controller.SelectedGenerator = PasswordGenerators.AlphaNumeric;
+            Controller.Key = "abcd";
+            Controller.MasterPassword = "1234".ToSecureString( );
+            Controller.Note = "some note";
+            Controller.SelectedGenerator = PasswordGenerators.AlphaNumeric;
 
             // Exercise
-            _controller.SavePassword( );
+            Controller.SavePassword( );
             // Verify
             PasswordDigest digest = PasswordDatabase.FindByKey( "abcd" );
-            Assert.That( _controller.ExpectedMasterPasswordId, Is.EqualTo( digest.MasterPasswordId ) );
+            Assert.That( Controller.ExpectedMasterPasswordId, Is.EqualTo( digest.MasterPasswordId ) );
         }
 
         [Test]
@@ -284,15 +284,15 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             // Exercise
 
-            _controller = ControllerFactory.PasswordEditorControllerFor( digest.Key );
+            Controller = ControllerFactory.PasswordEditorControllerFor( digest.Key );
             // Verify
-            Assert.That( _controller.Key, Is.EqualTo( "abde" ) );
-            Assert.That( _controller.SelectedGenerator, Is.EqualTo( PasswordGenerators.AlphaNumeric ) );
-            Assert.That( _controller.Note, Is.EqualTo( "yadda yadda" ) );
-            Assert.That( _controller.IsSaveable, Is.False );
-            Assert.That( _controller.ExpectedMasterPasswordId, Is.EqualTo( guid ) );
+            Assert.That( Controller.Key, Is.EqualTo( "abde" ) );
+            Assert.That( Controller.SelectedGenerator, Is.EqualTo( PasswordGenerators.AlphaNumeric ) );
+            Assert.That( Controller.Note, Is.EqualTo( "yadda yadda" ) );
+            Assert.That( Controller.IsSaveable, Is.False );
+            Assert.That( Controller.ExpectedMasterPasswordId, Is.EqualTo( guid ) );
 
-            Assert.That( _controller.IsPasswordLoaded, Is.True );
+            Assert.That( Controller.IsPasswordLoaded, Is.True );
         }
 
         [Test]
@@ -304,11 +304,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
                 .WithGeneratorId( PasswordGenerators.Full.Id );
             PasswordDatabase.AddOrUpdate( digest );
 
-            _controller = ControllerFactory.PasswordEditorControllerFor( digest.Key );
+            Controller = ControllerFactory.PasswordEditorControllerFor( digest.Key );
             // Exercise
-            _controller.Key = "abcd";
+            Controller.Key = "abcd";
             // Verify
-            Assert.That( _controller.Key, Is.EqualTo( "abde" ) );
+            Assert.That( Controller.Key, Is.EqualTo( "abde" ) );
         }
 
         [Test]
@@ -316,9 +316,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Setup
             PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
-            _controller.Key = "abcd";
+            Controller.Key = "abcd";
             // Exercise
-            _controller.DeletePassword( );
+            Controller.DeletePassword( );
             // Verify
             Assert.That( PasswordDatabase.Passwords, Has.Count.EqualTo( 1 ) );
         }
@@ -327,15 +327,15 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void NewPasswordIsSavedWithNowForCreationAndModification( )
         {
             // Set up
-            _controller.Key = "abc";
-            _controller.MasterPassword = "123".ToSecureString( );
-            _controller.SelectedGenerator = PasswordGenerators.Full;
+            Controller.Key = "abc";
+            Controller.MasterPassword = "123".ToSecureString( );
+            Controller.SelectedGenerator = PasswordGenerators.Full;
             // Exercise
-            _controller.SavePassword( );
+            Controller.SavePassword( );
             // Verify
             PasswordDigest digest = PasswordDatabase.FindByKey( "abc" );
-            Assert.That( digest.CreationTime, Is.EqualTo( _now ) );
-            Assert.That( digest.ModificationTime, Is.EqualTo( _now ) );
+            Assert.That( digest.CreationTime, Is.EqualTo( Now ) );
+            Assert.That( digest.ModificationTime, Is.EqualTo( Now ) );
         }
 
     }

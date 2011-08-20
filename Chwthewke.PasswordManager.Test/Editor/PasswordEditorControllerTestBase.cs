@@ -22,25 +22,26 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public IPasswordDigester Digester { get; set; }
 
         public PasswordEditorControllerFactory ControllerFactory { get; set; }
-// ReSharper restore UnusedAutoPropertyAccessor.Global
 
-        protected IPasswordEditorController _controller;
+        // ReSharper restore UnusedAutoPropertyAccessor.Global
 
-        protected Mock<ITimeProvider> _timeProviderMock;
+        protected IPasswordEditorController Controller;
 
-        protected readonly DateTime _now = new DateTime( 2011, 8, 15 );
+        protected Mock<ITimeProvider> TimeProviderMock;
+
+        protected readonly DateTime Now = new DateTime( 2011, 8, 15 );
 
 
-        [SetUp]
+        [ SetUp ]
         public void SetUpDependencies( )
         {
-            _timeProviderMock = new Mock<ITimeProvider>( );
-            _timeProviderMock.Setup( p => p.Now ).Returns( _now );
+            TimeProviderMock = new Mock<ITimeProvider>( );
+            TimeProviderMock.Setup( p => p.Now ).Returns( Now );
 
             AppSetUp.TestContainer(
                 b =>
                     {
-                        b.RegisterInstance( _timeProviderMock.Object ).As<ITimeProvider>( );
+                        b.RegisterInstance( TimeProviderMock.Object ).As<ITimeProvider>( );
                         b.RegisterType<InMemoryPasswordStore>( ).As<IPasswordStore>( ).SingleInstance( );
                     } )
                 .InjectProperties( this );
@@ -55,6 +56,5 @@ namespace Chwthewke.PasswordManager.Test.Editor
             controller.SavePassword( );
             return PasswordDatabase.FindByKey( key ).MasterPasswordId;
         }
-
     }
 }

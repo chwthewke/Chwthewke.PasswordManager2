@@ -7,92 +7,90 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {
-    [TestFixture]
+    [ TestFixture ]
     public class PasswordEditorControllerWithPasswordTest : PasswordEditorControllerTestBase
     {
-
-        [SetUp]
+        [ SetUp ]
         public void SetUpController( )
         {
             StorePasswordAndGetMasterPasswordId( "abde", PasswordGenerators.AlphaNumeric, "1234".ToSecureString( ) );
 
-            _controller = ControllerFactory.PasswordEditorControllerFor( "abde" );
-
+            Controller = ControllerFactory.PasswordEditorControllerFor( "abde" );
         }
 
-        [Test]
+        [ Test ]
         public void ChangeMasterPasswordMakesEditorDirty( )
         {
             // Setup
             // Exercise
-            _controller.MasterPassword = "123456".ToSecureString( );
+            Controller.MasterPassword = "123456".ToSecureString( );
             // Verify
-            Assert.That( _controller.IsSaveable, Is.True );
+            Assert.That( Controller.IsSaveable, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void UpdateMasterPasswordChangesItInDatabase( )
         {
             // Set up
-            Guid previousMasterPasswordId = _controller.ExpectedMasterPasswordId.GetValueOrDefault( );
-            _controller.MasterPassword = "123456".ToSecureString( );
+            Guid previousMasterPasswordId = Controller.ExpectedMasterPasswordId.GetValueOrDefault( );
+            Controller.MasterPassword = "123456".ToSecureString( );
             // Exercise
-            _controller.SavePassword( );
+            Controller.SavePassword( );
             // Verify
-            Guid newMasterPasswordId = PasswordDatabase.FindByKey( _controller.Key ).MasterPasswordId;
+            Guid newMasterPasswordId = PasswordDatabase.FindByKey( Controller.Key ).MasterPasswordId;
             Assert.That( newMasterPasswordId, Is.Not.EqualTo( previousMasterPasswordId ) );
-            Assert.That( _controller.ExpectedMasterPasswordId, Is.EqualTo( newMasterPasswordId ) );
-            Assert.That( _controller.MasterPasswordId, Is.EqualTo( newMasterPasswordId ) );
+            Assert.That( Controller.ExpectedMasterPasswordId, Is.EqualTo( newMasterPasswordId ) );
+            Assert.That( Controller.MasterPasswordId, Is.EqualTo( newMasterPasswordId ) );
         }
 
-        [Test]
+        [ Test ]
         public void ChangeNoteMakesEditorDirty( )
         {
             // Setup
-            _controller.MasterPassword = "1234".ToSecureString( );
+            Controller.MasterPassword = "1234".ToSecureString( );
             // Exercise
-            _controller.Note = "Now a note.";
+            Controller.Note = "Now a note.";
             // Verify
-            Assert.That( _controller.Note, Is.EqualTo( "Now a note." ) );
-            Assert.That( _controller.IsSaveable, Is.True );
+            Assert.That( Controller.Note, Is.EqualTo( "Now a note." ) );
+            Assert.That( Controller.IsSaveable, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void ChangeSelectedGeneratorMakesEditorDirty( )
         {
             // Setup
-            _controller.MasterPassword = "1234".ToSecureString( );
+            Controller.MasterPassword = "1234".ToSecureString( );
             // Exercise
-            _controller.SelectedGenerator = PasswordGenerators.Full;
+            Controller.SelectedGenerator = PasswordGenerators.Full;
             // Verify
-            Assert.That( _controller.SelectedGenerator, Is.EqualTo( PasswordGenerators.Full ) );
-            Assert.That( _controller.IsSaveable, Is.True );
+            Assert.That( Controller.SelectedGenerator, Is.EqualTo( PasswordGenerators.Full ) );
+            Assert.That( Controller.IsSaveable, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void ChangesWithoutAMasterPasswordDoNotDirtyEditor( )
         {
             // Set up
-            
-            // Exercise
-            _controller.Note = "yadda";
-            _controller.SelectedGenerator = PasswordGenerators.Full;
-            // Verify
-            Assert.That( _controller.IsSaveable, Is.False );
-        } 
 
-        [Test]
+            // Exercise
+            Controller.Note = "yadda";
+            Controller.SelectedGenerator = PasswordGenerators.Full;
+            // Verify
+            Assert.That( Controller.IsSaveable, Is.False );
+        }
+
+        [ Test ]
         public void SaveWithDifferentNoteAndGeneratorUpdatesStore( )
         {
             // Setup
             const string note = "a somewhat longer note.";
             IPasswordGenerator generator = PasswordGenerators.Full;
-            _controller.Note = note;
-            _controller.SelectedGenerator = generator;
+            Controller.Note = note;
+            Controller.SelectedGenerator = generator;
 
-            _controller.MasterPassword = "123456".ToSecureString( );
+            Controller.MasterPassword = "123456".ToSecureString( );
             // Exercise
-            _controller.SavePassword( );
+            Controller.SavePassword( );
             // Verify
 
             PasswordDigest digest = PasswordDatabase.FindByKey( "abde" );
@@ -102,67 +100,92 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
 
-        [Test]
+        [ Test ]
         public void SaveWhenNotDirtyHasNoEffect( )
         {
             // Setup
             PasswordDigest digest = PasswordDatabase.FindByKey( "abde" );
             // Exercise
-            _controller.SavePassword( );
+            Controller.SavePassword( );
             // Verify
             Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.SameAs( digest ) );
         }
 
-        [Test]
+        [ Test ]
         public void UpdatePasswordUpdatesModificationTimeButNotCreationTime( )
         {
             // Set up
             var now = new DateTime( 2011, 8, 16 );
-            _timeProviderMock.Setup( p => p.Now ).Returns( now );
+            TimeProviderMock.Setup( p => p.Now ).Returns( now );
             // Exercise
-            _controller.MasterPassword = "1234".ToSecureString( );
-            _controller.Note = "updated note";
-            _controller.SavePassword( );
+            Controller.MasterPassword = "1234".ToSecureString( );
+            Controller.Note = "updated note";
+            Controller.SavePassword( );
             // Verify
-            PasswordDigest newPasswordDigest = PasswordDatabase.FindByKey( _controller.Key );
+            PasswordDigest newPasswordDigest = PasswordDatabase.FindByKey( Controller.Key );
             Assert.That( newPasswordDigest.ModificationTime, Is.EqualTo( now ) );
-            Assert.That( newPasswordDigest.CreationTime, Is.EqualTo( _now ) );
-            Assert.That( newPasswordDigest.ModificationTime, Is.Not.EqualTo( _now ) );
+            Assert.That( newPasswordDigest.CreationTime, Is.EqualTo( Now ) );
+            Assert.That( newPasswordDigest.ModificationTime, Is.Not.EqualTo( Now ) );
         }
 
-        [Test]
+        [ Test ]
+        public void ReloadChangedPasswordMakesDirty( )
+        {
+            // Set up
+            var now = new DateTime( 2011, 8, 16 );
+            TimeProviderMock.Setup( p => p.Now ).Returns( now );
+            StorePasswordAndGetMasterPasswordId( "abde", PasswordGenerators.Full, "4321".ToSecureString( ) );
+            Controller.MasterPassword = "1234".ToSecureString( );
+            // Exercise
+            Controller.ReloadBaseline( );
+            // Verify
+            Assert.That( Controller.IsSaveable, Is.True );
+        }
+
+        [ Test ]
+        public void ReloadChangedPasswordChangesExpectedMasterPassword( )
+        {
+            // Set up
+            var now = new DateTime( 2011, 8, 16 );
+            TimeProviderMock.Setup( p => p.Now ).Returns( now );
+            Guid guid = StorePasswordAndGetMasterPasswordId( "abde", PasswordGenerators.Full, "4321".ToSecureString( ) );
+            // Exercise
+            Controller.ReloadBaseline( );
+            // Verify
+            Assert.That( Controller.ExpectedMasterPasswordId, Is.EqualTo( guid ) );
+        }
+
+        [ Test ]
         public void DeleteRemovesPasswordFromStore( )
         {
             // Setup
             // Exercise
-            _controller.DeletePassword( );
+            Controller.DeletePassword( );
             // Verify
             Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.Null );
         }
 
-        [Test]
+        [ Test ]
         public void DeleteKeepsFieldsUntouched( )
         {
             // Setup
-            string key = _controller.Key;
-            string note = _controller.Note;
-            SecureString masterPassword = _controller.MasterPassword;
-            IPasswordGenerator selectedGenerator = _controller.SelectedGenerator;
+            string key = Controller.Key;
+            string note = Controller.Note;
+            SecureString masterPassword = Controller.MasterPassword;
+            IPasswordGenerator selectedGenerator = Controller.SelectedGenerator;
             // Exercise
-            _controller.DeletePassword( );
+            Controller.DeletePassword( );
             // Verify
 
-            Assert.That( _controller.Key, Is.EqualTo( key ) );
-            Assert.That( _controller.Note, Is.EqualTo( note ) );
-            Assert.That( _controller.MasterPassword, Is.EqualTo( masterPassword ) );
-            Assert.That( _controller.SelectedGenerator, Is.EqualTo( selectedGenerator ) );
+            Assert.That( Controller.Key, Is.EqualTo( key ) );
+            Assert.That( Controller.Note, Is.EqualTo( note ) );
+            Assert.That( Controller.MasterPassword, Is.EqualTo( masterPassword ) );
+            Assert.That( Controller.SelectedGenerator, Is.EqualTo( selectedGenerator ) );
 
-            Assert.That( _controller.IsSaveable, Is.False );
-            Assert.That( _controller.IsPasswordLoaded, Is.False );
+            Assert.That( Controller.IsSaveable, Is.False );
+            Assert.That( Controller.IsPasswordLoaded, Is.False );
 
-            Assert.That( _controller.ExpectedMasterPasswordId, Is.Null );
+            Assert.That( Controller.ExpectedMasterPasswordId, Is.Null );
         }
-
-
     }
 }

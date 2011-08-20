@@ -127,6 +127,12 @@ namespace Chwthewke.PasswordManager.Editor
             Baseline = null;
         }
 
+        public void ReloadBaseline( )
+        {
+            _passwordDatabase.Reload( );
+            Baseline = _passwordDatabase.FindByKey( Key );
+        }
+
         // PRIVATE
 
         private void InitializeWith( string passwordKey )

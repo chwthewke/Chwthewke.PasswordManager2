@@ -73,6 +73,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                                MasterPasswordColor = _guidConverter.Convert( password.MasterPasswordId )
                            }
                 );
+            
+            foreach ( PasswordEditorViewModel editor in Editors )
+                editor.UpdateFromStore( );
         }
 
 

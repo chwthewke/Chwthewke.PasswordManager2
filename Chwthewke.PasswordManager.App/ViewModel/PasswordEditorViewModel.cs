@@ -146,6 +146,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Update( );
         }
 
+        public void UpdateFromStore( )
+        {
+            _controller.ReloadBaseline( );
+            Update(  );
+        }
+
+
         private Color ConvertGuid( Guid? masterPasswordId )
         {
             return masterPasswordId.HasValue ? _guidToColor.Convert( masterPasswordId.Value ) : Colors.Transparent;

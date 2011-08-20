@@ -7,7 +7,6 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
-    [Ignore( "Failures" )]
     public class KeyAndMasterPasswordTest : PasswordEditorTestBase
     {
         [ Test ]
@@ -17,7 +16,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Key = "  \t";
             // Verify
-            Assert.That( ViewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle + "*" ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle ) );
         }
 
         [ Test ]
@@ -27,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Note = "yiddi yoddo";
             // Verify
-            Assert.That( ViewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle + "*" ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle ) );
         }
 
         [ Test ]
@@ -37,7 +36,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Key = "abc";
             // Verify
-            Assert.That( ViewModel.Title, Is.EqualTo( "abc*" ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( "abc" ) );
         }
 
         [ Test ]
@@ -48,7 +47,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Key = "abcdefghij0123456789abcdefghij";
             // Verify
-            Assert.That( ViewModel.Title, Is.EqualTo( "abcdefghij0123456789abcd...*" ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( "abcdefghij0123456789abcd..." ) );
         }
 
         [ Test ]

@@ -2,6 +2,7 @@ using System;
 using System.Text;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
+using Moq;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Storage
@@ -12,9 +13,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         [SetUp]
         public void SetUpPasswordDigester( )
         {
-            _timeProviderStub = new TimeProviderStub( );
+            _timeProviderMock = new Mock<ITimeProvider>( );
             _hashFactory = new Sha512Factory( );
-            _digester = new PasswordDigester( _hashFactory, _timeProviderStub );
+            _digester = new PasswordDigester( _hashFactory, _timeProviderMock.Object );
         }
 
         [Test]
@@ -38,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             DateTime now = new DateTime( 123456789123456L );
-            _timeProviderStub.TimeProviderImpl = ( ) => now;
+            _timeProviderMock.Setup( p => p.Now ).Returns( now );
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ),
                                                       null, "" );
@@ -51,7 +52,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             DateTime now = new DateTime( 123456789123456L );
-            _timeProviderStub.TimeProviderImpl = ( ) => now;
+            _timeProviderMock.Setup( p => p.Now ).Returns( now );
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ),
                                                       new DateTime( 123456787654321L ), "" );
@@ -64,7 +65,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             DateTime now = new DateTime( 123456789123456L );
-            _timeProviderStub.TimeProviderImpl = ( ) => now;
+            _timeProviderMock.Setup( p => p.Now ).Returns( now );
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ),
                                                       new DateTime( 123456787654321L ), "" );
@@ -92,23 +93,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         private IPasswordDigester _digester;
-        private TimeProviderStub _timeProviderStub;
+        private Mock<ITimeProvider> _timeProviderMock;
         private Sha512Factory _hashFactory;
-
-        [Obsolete]
-        private class TimeProviderStub : ITimeProvider
-        {
-            public TimeProviderStub( )
-            {
-                TimeProviderImpl = ( ) => new DateTime( );
-            }
-
-            internal Func<DateTime> TimeProviderImpl { private get; set; }
-
-            public DateTime Now
-            {
-                get { return TimeProviderImpl( ); }
-            }
-        }
     }
 }

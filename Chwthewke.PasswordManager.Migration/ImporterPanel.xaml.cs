@@ -3,11 +3,13 @@
 namespace Chwthewke.PasswordManager.Migration
 {
     /// <summary>
-    /// Interaction logic for ImporterPanel.xaml
+    ///   Interaction logic for ImporterPanel.xaml
     /// </summary>
     public partial class ImporterPanel
     {
-        public ImporterPanel( ) : this( null ) {}
+        public ImporterPanel( ) : this( null )
+        {
+        }
 
         public ImporterPanel( ImporterViewModel viewModel )
         {

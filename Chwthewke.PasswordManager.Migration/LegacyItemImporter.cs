@@ -11,7 +11,7 @@ namespace Chwthewke.PasswordManager.Migration
     public class LegacyItemImporter : ILegacyItemImporter
     {
         public LegacyItemImporter( IPasswordDatabase passwordDatabase,
-                        IMasterPasswordMatcher masterPasswordMatcher,
+                                   IMasterPasswordMatcher masterPasswordMatcher,
                                    IPasswordDigester passwordDigester,
                                    IPasswordSerializer serializer )
         {

@@ -1,23 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-
-namespace Chwthewke.PasswordManager.App.View
+﻿namespace Chwthewke.PasswordManager.App.View
 {
     /// <summary>
-    /// Interaction logic for PasswordSlot.xaml
+    ///   Interaction logic for PasswordSlot.xaml
     /// </summary>
-    public partial class PasswordSlot : UserControl
+    public partial class PasswordSlot
     {
         public PasswordSlot( )
         {

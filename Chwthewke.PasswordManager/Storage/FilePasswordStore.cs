@@ -22,6 +22,5 @@ namespace Chwthewke.PasswordManager.Storage
         }
 
         private readonly FileInfo _passwordsFile;
-
     }
 }

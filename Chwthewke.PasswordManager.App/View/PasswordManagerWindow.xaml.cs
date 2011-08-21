@@ -1,14 +1,15 @@
-﻿using System.Windows;
-using Chwthewke.PasswordManager.App.ViewModel;
+﻿using Chwthewke.PasswordManager.App.ViewModel;
 
 namespace Chwthewke.PasswordManager.App.View
 {
     /// <summary>
-    /// Interaction logic for PasswordManagerWindow.xaml
+    ///   Interaction logic for PasswordManagerWindow.xaml
     /// </summary>
     public partial class PasswordManagerWindow
     {
-        public PasswordManagerWindow( ) : this( null ) {}
+        public PasswordManagerWindow( ) : this( null )
+        {
+        }
 
         public PasswordManagerWindow( PasswordManagerViewModel viewModel )
         {
@@ -23,6 +24,6 @@ namespace Chwthewke.PasswordManager.App.View
             set { DataContext = value; }
         }
 
-        private void Button_Click( object sender, RoutedEventArgs e ) {}
+        //private void Button_Click( object sender, RoutedEventArgs e ) {}
     }
 }

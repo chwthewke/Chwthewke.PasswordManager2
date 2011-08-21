@@ -52,14 +52,14 @@ namespace Chwthewke.PasswordManager.Engine
 
         private unsafe void AppendBstr( IntPtr bstr, int charCount, Encoding encoding )
         {
-            char* charPtr = ( char* ) bstr;
+            char* charPtr = (char*) bstr;
             int byteCount = encoding.GetByteCount( charPtr, charCount );
-            byte[ ] bytes = new byte[byteCount];
+            byte[ ] bytes = new byte[ byteCount ];
             GCHandle handleToBytes = GCHandle.Alloc( bytes, GCHandleType.Pinned );
 
             try
             {
-                byte* bytePtr = ( byte* ) Marshal.UnsafeAddrOfPinnedArrayElement( bytes, 0 );
+                byte* bytePtr = (byte*) Marshal.UnsafeAddrOfPinnedArrayElement( bytes, 0 );
 
                 encoding.GetBytes( charPtr, charCount, bytePtr, byteCount );
                 _hashAlgorithm.TransformBlock( bytes, 0, byteCount, null, 0 );
@@ -75,7 +75,7 @@ namespace Chwthewke.PasswordManager.Engine
 
         public byte[ ] GetValue( )
         {
-            _hashAlgorithm.TransformFinalBlock( new byte[0], 0, 0 );
+            _hashAlgorithm.TransformFinalBlock( new byte[ 0 ], 0, 0 );
             return _hashAlgorithm.Hash;
         }
 

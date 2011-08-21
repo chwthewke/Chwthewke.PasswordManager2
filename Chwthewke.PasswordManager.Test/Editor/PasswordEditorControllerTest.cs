@@ -9,17 +9,16 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {
-    [TestFixture]
+    [ TestFixture ]
     public class PasswordEditorControllerTest : PasswordEditorControllerTestBase
     {
-
-        [SetUp]
+        [ SetUp ]
         public void SetUpController( )
         {
             Controller = ControllerFactory.PasswordEditorControllerFor( string.Empty );
         }
 
-        [Test]
+        [ Test ]
         public void InitialStateIsVoid( )
         {
             // Setup
@@ -36,7 +35,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.Generators, Is.EquivalentTo( PasswordGenerators.All ) );
         }
 
-        [Test]
+        [ Test ]
         public void KeyModificationOnlyDoesNotMakeDirty( )
         {
             // Setup
@@ -46,7 +45,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsSaveable, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void NoteModificationOnlyDoesNotMakeDirty( )
         {
             // Setup
@@ -56,7 +55,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsSaveable, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void ChangeMasterPasswordOnlyDoesNotMakeEditorDirty( )
         {
             // Setup
@@ -66,7 +65,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsSaveable, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void KeyAndMasterPasswordModificationPlusPasswordGeneratorSelectionMakeEditorDirty( )
         {
             // Setup
@@ -79,7 +78,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
 
-        [Test]
+        [ Test ]
         public void PasswordsAreNotGeneratedWithoutAKey( )
         {
             // Setup
@@ -90,7 +89,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.Generators.All( g => Controller.GeneratedPassword( g ) == string.Empty ), Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordsAreNotGeneratedWithoutASignificantKey( )
         {
             // Setup
@@ -102,7 +101,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.Generators.All( g => Controller.GeneratedPassword( g ) == string.Empty ), Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordsAreNotGeneratedWithoutAMasterPassword( )
         {
             // Setup
@@ -113,7 +112,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.Generators.All( g => Controller.GeneratedPassword( g ) == string.Empty ), Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordsAreGeneratedWithKeyAndMasterPassword( )
         {
             // Setup
@@ -133,7 +132,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
 
-        [Test]
+        [ Test ]
         public void PasswordsAreClearedAfterKeyClear( )
         {
             // Setup
@@ -149,7 +148,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
                 Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordsAreClearedAfterMasterPasswordClear( )
         {
             // Setup
@@ -165,7 +164,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
                 Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void MasterPasswordIdIsAsFoundInStore( )
         {
             // Setup
@@ -179,7 +178,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.MasterPasswordId, Is.EqualTo( guid ) );
         }
 
-        [Test]
+        [ Test ]
         public void MasterPasswordIdNullIfNotFoundInStore( )
         {
             // Setup
@@ -190,7 +189,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.MasterPasswordId, Is.Null );
         }
 
-        [Test]
+        [ Test ]
         public void SaveWithoutGeneratedPassword( )
         {
             // Setup
@@ -202,7 +201,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
 
-        [Test]
+        [ Test ]
         public void SaveWithoutSelectedPassword( )
         {
             // Setup
@@ -214,7 +213,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( PasswordDatabase.Passwords, Is.Empty );
         }
 
-        [Test]
+        [ Test ]
         public void SavePasswordMakesNotDirtyAndPasswordLoaded( )
         {
             // Setup
@@ -230,7 +229,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsPasswordLoaded, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void SavePasswordWithKnownMasterPassword( )
         {
             // Setup
@@ -253,7 +252,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
 
-        [Test]
+        [ Test ]
         public void SavePasswordWithUnknownMasterPasswordSetsExpectedMasterPasswordToNewGuid( )
         {
             // Setup
@@ -270,16 +269,18 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.ExpectedMasterPasswordId, Is.EqualTo( digest.MasterPasswordId ) );
         }
 
-        [Test]
+        [ Test ]
         public void LoadPasswordSetsRelevantFields( )
         {
             // Setup
             Guid guid = new Guid( "EE5402AD-39FD-426D-B600-52A892BEF0E0" );
-            PasswordDigest digest = new PasswordDigestBuilder( )
-                .WithKey( "abde" )
-                .WithGeneratorId( PasswordGenerators.AlphaNumeric.Id )
-                .WithNote( "yadda yadda" )
-                .WithMasterPasswordId( guid );
+            PasswordDigest digest = new PasswordDigestBuilder
+                                        {
+                                            Key = "abde",
+                                            PasswordGeneratorId = PasswordGenerators.AlphaNumeric.Id,
+                                            Note = "yadda yadda",
+                                            MasterPasswordId = guid
+                                        };
             PasswordDatabase.AddOrUpdate( digest );
 
             // Exercise
@@ -295,13 +296,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsPasswordLoaded, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void LoadPasswordMakesKeyUnmodifiable( )
         {
             // Setup
-            PasswordDigest digest = new PasswordDigestBuilder( )
-                .WithKey( "abde" )
-                .WithGeneratorId( PasswordGenerators.Full.Id );
+            PasswordDigest digest = new PasswordDigestBuilder { Key = "abde", PasswordGeneratorId = PasswordGenerators.Full.Id };
             PasswordDatabase.AddOrUpdate( digest );
 
             Controller = ControllerFactory.PasswordEditorControllerFor( digest.Key );
@@ -311,7 +310,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.Key, Is.EqualTo( "abde" ) );
         }
 
-        [Test]
+        [ Test ]
         public void DeleteHasNoEffectIfPasswordNotLoaded( )
         {
             // Setup
@@ -323,7 +322,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( PasswordDatabase.Passwords, Has.Count.EqualTo( 1 ) );
         }
 
-        [Test]
+        [ Test ]
         public void NewPasswordIsSavedWithNowForCreationAndModification( )
         {
             // Set up
@@ -337,6 +336,5 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( digest.CreationTime, Is.EqualTo( Now ) );
             Assert.That( digest.ModificationTime, Is.EqualTo( Now ) );
         }
-
     }
 }

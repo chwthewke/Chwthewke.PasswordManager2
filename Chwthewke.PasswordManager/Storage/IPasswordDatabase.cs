@@ -6,7 +6,7 @@ namespace Chwthewke.PasswordManager.Storage
     {
         IPasswordStore Source { get; set; }
         IList<PasswordDigest> Passwords { get; }
-        PasswordDigest FindByKey(string key);
+        PasswordDigest FindByKey( string key );
         void Reload( );
         void AddOrUpdate( PasswordDigest password );
         void Remove( string key );

@@ -1,4 +1,3 @@
-using System;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.Engine;
 using NUnit.Framework;

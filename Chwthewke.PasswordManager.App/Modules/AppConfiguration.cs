@@ -10,13 +10,13 @@ namespace Chwthewke.PasswordManager.App.Modules
         {
             ContainerBuilder builder = new ContainerBuilder( );
 
-            foreach(Module module in ApplicationModules)
+            foreach ( Module module in ApplicationModules )
                 builder.RegisterModule( module );
 
             return builder.Build( );
         }
 
-        public static IList<Module> ApplicationModules
+        public static IEnumerable<Module> ApplicationModules
         {
             get
             {

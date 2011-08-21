@@ -4,7 +4,7 @@ using Chwthewke.PasswordManager.App.ViewModel;
 namespace Chwthewke.PasswordManager.App.View
 {
     /// <summary>
-    /// Interaction logic for PasswordEditor.xaml
+    ///   Interaction logic for PasswordEditor.xaml
     /// </summary>
     public partial class PasswordEditor
     {

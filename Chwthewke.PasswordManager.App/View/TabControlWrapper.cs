@@ -6,7 +6,6 @@ namespace Chwthewke.PasswordManager.App.View
 {
     public class TabControlWrapper : ITabbed
     {
-
         public TabControlWrapper( TabControl tabControl )
         {
             _tabControl = tabControl;
@@ -39,7 +38,7 @@ namespace Chwthewke.PasswordManager.App.View
 
         int? ITabbed.SelectedIndex
         {
-            get { return _tabControl.SelectedIndex == -1 ? (int?)null : _tabControl.SelectedIndex; }
+            get { return _tabControl.SelectedIndex == -1 ? (int?) null : _tabControl.SelectedIndex; }
             set { _tabControl.SelectedIndex = value ?? -1; }
         }
 

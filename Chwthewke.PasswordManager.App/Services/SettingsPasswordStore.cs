@@ -6,7 +6,6 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class SettingsPasswordStore : IPasswordStore
     {
-        
         public SettingsPasswordStore( Settings settings )
         {
             _settings = settings;

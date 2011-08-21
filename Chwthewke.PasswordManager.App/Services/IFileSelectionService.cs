@@ -3,8 +3,8 @@ using System.IO;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    public interface IFileSelectionService {
-
+    public interface IFileSelectionService
+    {
         FileInfo SelectExternalPasswordFile( DirectoryInfo initialDirectory );
 
         IEnumerable<FileInfo> SelectExternalPasswordFileToImport( DirectoryInfo initialDirectory );

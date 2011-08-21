@@ -34,11 +34,11 @@ namespace Chwthewke.PasswordManager.App.View
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach ( object item in e.NewItems )
-                        AddEditor( ( PasswordEditorViewModel ) item );
+                        AddEditor( (PasswordEditorViewModel) item );
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach ( object item in e.OldItems )
-                        RemoveEditor( ( PasswordEditorViewModel ) item );
+                        RemoveEditor( (PasswordEditorViewModel) item );
                     break;
                 case NotifyCollectionChangedAction.Replace:
                 case NotifyCollectionChangedAction.Move:
@@ -83,16 +83,17 @@ namespace Chwthewke.PasswordManager.App.View
         private static TabItem CreateTabItem( PasswordEditorViewModel editorViewModel )
         {
             return new TabItem
-            {
-                Header = new PasswordEditorHeader { ViewModel = editorViewModel },
-                Content = new PasswordEditor { ViewModel = editorViewModel }
-            };
+                       {
+                           Header = new PasswordEditorHeader { ViewModel = editorViewModel },
+                           Content = new PasswordEditor { ViewModel = editorViewModel }
+                       };
         }
+
         private TabItem FindTabItem( PasswordEditorViewModel editorViewModel )
         {
             Func<TabItem, bool> hasMatchingEditor =
                 item => item.Content is PasswordEditor
-                        && ( ( PasswordEditor ) item.Content ).ViewModel == editorViewModel;
+                        && ( (PasswordEditor) item.Content ).ViewModel == editorViewModel;
 
             return _tabbed.Items.FirstOrDefault( hasMatchingEditor );
         }

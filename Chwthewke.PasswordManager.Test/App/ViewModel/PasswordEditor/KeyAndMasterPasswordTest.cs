@@ -43,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void LongKeyIsTruncatedInTitle( )
         {
             // Setup
-            
+
             // Exercise
             ViewModel.Key = "abcdefghij0123456789abcdefghij";
             // Verify

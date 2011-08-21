@@ -10,7 +10,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public SerializedPassword( string key )
         {
             _key = key;
-            Hash = new byte[0];
+            Hash = new byte[ 0 ];
         }
 
         public string Key
@@ -18,7 +18,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             get { return _key; }
         }
 
-        public byte[] Hash { get; set; }
+        public byte[ ] Hash { get; set; }
 
         public Guid MasterPasswordId { get; set; }
 

@@ -7,7 +7,9 @@ namespace Chwthewke.PasswordManager.Engine
 {
     internal class BigIntegerBaseConverter : BaseConverterBase
     {
-        public BigIntegerBaseConverter( int theBase ) : base( theBase ) {}
+        public BigIntegerBaseConverter( int theBase ) : base( theBase )
+        {
+        }
 
         protected override byte[ ] ConvertBytesToDigitsCore( byte[ ] bytes, int numDigits )
         {
@@ -19,7 +21,7 @@ namespace Chwthewke.PasswordManager.Engine
         private BigInteger CreatePositiveBigIntegerFromUsedBytes( int numDigits, byte[ ] bytes )
         {
             int bytesNeeded = BytesNeeded( numDigits );
-            byte[ ] usedBytes = new byte[bytesNeeded + 1];
+            byte[ ] usedBytes = new byte[ bytesNeeded + 1 ];
             Array.Copy( bytes, usedBytes, bytesNeeded );
 
             return new BigInteger( usedBytes );
@@ -31,7 +33,7 @@ namespace Chwthewke.PasswordManager.Engine
             {
                 BigInteger digit = value % Base;
                 value /= Base;
-                yield return ( byte ) digit;
+                yield return (byte) digit;
             }
         }
     }

@@ -25,6 +25,5 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( copyCommandCanExecuteChanged, Is.True );
             Assert.That( saveCommandCanExecuteChanged, Is.True );
         }
-
     }
 }

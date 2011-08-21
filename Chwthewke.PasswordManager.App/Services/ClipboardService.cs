@@ -11,7 +11,9 @@ namespace Chwthewke.PasswordManager.App.Services
             {
                 Clipboard.SetData( DataFormats.UnicodeText, value );
             }
-            catch ( COMException ) {}
+            catch ( COMException )
+            {
+            }
         }
     }
 }

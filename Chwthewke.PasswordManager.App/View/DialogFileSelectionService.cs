@@ -1,8 +1,8 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using Chwthewke.PasswordManager.App.Services;
 using Microsoft.Win32;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.App.View
 {

@@ -7,7 +7,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
     {
         public string Key { get; set; }
 
-        public byte[] Hash { get; set; }
+        public byte[ ] Hash { get; set; }
 
         public Guid MasterPasswordId { get; set; }
 
@@ -22,44 +22,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public PasswordDigestBuilder( )
         {
             Key = "key";
-            Hash = new byte[] {};
+            Hash = new byte[ ] { };
             Note = string.Empty;
-        }
-
-        public PasswordDigestBuilder WithKey( string key )
-        {
-            Key = key;
-            return this;
-        }
-
-        public PasswordDigestBuilder WithHash( byte[] hash )
-        {
-            Hash = hash;
-            return this;
-        }
-
-        public PasswordDigestBuilder WithMasterPasswordId( Guid masterPasswordId )
-        {
-            MasterPasswordId = masterPasswordId;
-            return this;
-        }
-
-        public PasswordDigestBuilder WithGeneratorId( Guid generatorId )
-        {
-            PasswordGeneratorId = generatorId;
-            return this;
-        }
-
-        public PasswordDigestBuilder WithCreationTime( DateTime creationTime )
-        {
-            CreationTime = creationTime;
-            return this;
-        }
-
-        public PasswordDigestBuilder WithNote( string note )
-        {
-            Note = note;
-            return this;
         }
 
         public static implicit operator PasswordDigest( PasswordDigestBuilder builder )

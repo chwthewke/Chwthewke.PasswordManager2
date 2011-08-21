@@ -7,7 +7,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordSlotViewModel : ObservableObject
     {
-
         public PasswordSlotViewModel( IPasswordGenerator generator )
         {
             if ( generator == null )
@@ -22,10 +21,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public string Name
         {
-            get
-            {
-                return Resources.ResourceManager.GetString( PasswordGeneratorKeyPrefix + _generator.Id.ToString( "N" ) );
-            }
+            get { return Resources.ResourceManager.GetString( PasswordGeneratorKeyPrefix + _generator.Id.ToString( "N" ) ); }
         }
 
         public bool IsSelected

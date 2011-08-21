@@ -41,7 +41,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 return 0x00;
             if ( d >= 1 )
                 return 0xFF;
-            return ( byte ) ( 256 * d );
+            return (byte) ( 256 * d );
         }
     }
 }

@@ -1,26 +1,22 @@
-﻿using System;
-using System.Collections.Generic;
-using System.IO;
-using System.Linq;
-using System.Text;
+﻿using System.IO;
+using Autofac;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Util;
 using Moq;
 using NUnit.Framework;
-using Autofac;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
-    [TestFixture]
+    [ TestFixture ]
     internal class PasswordManagerViewModelTest
     {
         private PasswordManagerViewModel _viewModel;
         private IPasswordDatabase _database;
         private readonly Mock<IFileSelectionService> _fileSelectionServiceMock = new Mock<IFileSelectionService>( );
 
-        [SetUp]
+        [ SetUp ]
         public void SetUpViewModel( )
         {
             IContainer container = AppSetUp.TestContainer(
@@ -30,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             _database = container.Resolve<IPasswordDatabase>( );
         }
 
-        [Test]
+        [ Test ]
         public void TestSetInternalStorage( )
         {
             // Set up
@@ -42,7 +38,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.InternalStorageSelected, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void TestSetExternalStorage( )
         {
             // Set up

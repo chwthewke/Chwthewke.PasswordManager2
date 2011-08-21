@@ -1,8 +1,8 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using Chwthewke.PasswordManager.Storage;
 using System.Linq;
+using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
@@ -50,6 +50,5 @@ namespace Chwthewke.PasswordManager.App.Services
 
         private readonly IPasswordSerializer _passwordSerializer;
         private readonly IPasswordDatabase _passwordDatabase;
-        private readonly IMasterPasswordMatcher _masterPasswordMatcher;
     }
 }

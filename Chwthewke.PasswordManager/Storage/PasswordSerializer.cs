@@ -43,7 +43,7 @@ namespace Chwthewke.PasswordManager.Storage
                                                           Indent = true,
                                                           IndentChars = "  ",
                                                       };
-            
+
             using ( TextWriter textWriter = openWriter( ) )
             using ( XmlWriter xmlWriter = XmlWriter.Create( textWriter, xmlWriterSettings ) )
                 root.Save( xmlWriter );
@@ -58,14 +58,14 @@ namespace Chwthewke.PasswordManager.Storage
                                          new XElement( PasswordSettingsIdElement,
                                                        password.PasswordGeneratorId.ToString( ) ),
                                          new XElement( TimestampElement, password.CreationTime.Ticks ),
-                                         new XElement( ModifiedElement, password.ModificationTime.Ticks ));
+                                         new XElement( ModifiedElement, password.ModificationTime.Ticks ) );
             if ( password.Note != null )
                 xElement.Add( new XElement( NoteElement, password.Note ) );
             return xElement;
         }
 
 
-        private  IEnumerable<PasswordDigest> Load( Func<TextReader> openReader )
+        private IEnumerable<PasswordDigest> Load( Func<TextReader> openReader )
         {
             try
             {
@@ -88,17 +88,17 @@ namespace Chwthewke.PasswordManager.Storage
                 foreach ( XElement passwordElement in root.Elements( PasswordElement ) )
                 {
                     if ( !VerifyRequirements( version, passwordElement,
-                                              new Requirement {ElementName = KeyElement, StartingVersion = 0},
-                                              new Requirement {ElementName = HashElement, StartingVersion = 0},
-                                              new Requirement {ElementName = MasterPasswordIdElement, StartingVersion = 0},
-                                              new Requirement {ElementName = PasswordSettingsIdElement, StartingVersion = 0},
-                                              new Requirement {ElementName = TimestampElement, StartingVersion = 0},
-                                              new Requirement {ElementName = ModifiedElement, StartingVersion = 1} ) )
+                                              new Requirement { ElementName = KeyElement, StartingVersion = 0 },
+                                              new Requirement { ElementName = HashElement, StartingVersion = 0 },
+                                              new Requirement { ElementName = MasterPasswordIdElement, StartingVersion = 0 },
+                                              new Requirement { ElementName = PasswordSettingsIdElement, StartingVersion = 0 },
+                                              new Requirement { ElementName = TimestampElement, StartingVersion = 0 },
+                                              new Requirement { ElementName = ModifiedElement, StartingVersion = 1 } ) )
 
                         continue;
 
                     string key = ExtractFromElement( passwordElement, KeyElement, x => x );
-                    byte[] hash = ExtractFromElement( passwordElement, HashElement, Convert.FromBase64String );
+                    byte[ ] hash = ExtractFromElement( passwordElement, HashElement, Convert.FromBase64String );
                     Guid masterPasswordId = ExtractFromElement( passwordElement, MasterPasswordIdElement, Guid.Parse );
                     Guid passwordSettingsId = ExtractFromElement( passwordElement, PasswordSettingsIdElement, Guid.Parse );
                     DateTime creationDate = ExtractFromElement( passwordElement, TimestampElement, ExtractDateTime );
@@ -115,7 +115,7 @@ namespace Chwthewke.PasswordManager.Storage
             return x == null ? new DateTime( ) : new DateTime( long.Parse( x ) );
         }
 
-        private bool VerifyRequirements( int version, XElement passwordElement, params Requirement[] requirements )
+        private bool VerifyRequirements( int version, XElement passwordElement, params Requirement[ ] requirements )
         {
             return requirements.All( r => r.Check( passwordElement, version ) );
         }
@@ -146,5 +146,4 @@ namespace Chwthewke.PasswordManager.Storage
             return target.Element( ElementName ) != null;
         }
     }
-
 }

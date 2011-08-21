@@ -12,7 +12,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         public void TestMismatchedLengthsFail( )
         {
             // Setup
-            Alphabet symbols50 = new Alphabet( new StringBuilder( ).Append( new char[50] ).ToString( ) );
+            Alphabet symbols50 = new Alphabet( new StringBuilder( ).Append( new char[ 50 ] ).ToString( ) );
             IBaseConverter baseConverter = new BigIntegerBaseConverter( 12 );
             // Exercise
             // Verify

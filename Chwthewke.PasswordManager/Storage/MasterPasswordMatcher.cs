@@ -7,7 +7,7 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    class MasterPasswordMatcher : IMasterPasswordMatcher
+    internal class MasterPasswordMatcher : IMasterPasswordMatcher
     {
         public MasterPasswordMatcher( IEnumerable<IPasswordGenerator> generators, IHashFactory hashFactory, IPasswordDatabase passwordDatabase )
         {
@@ -25,7 +25,7 @@ namespace Chwthewke.PasswordManager.Storage
                 candidates.FirstOrDefault( dig => MatchMasterPassword( dig, masterPassword ) );
 
 
-            return matchingDigest != null ? matchingDigest.MasterPasswordId : ( Guid? ) null;
+            return matchingDigest != null ? matchingDigest.MasterPasswordId : (Guid?) null;
         }
 
         private bool MatchMasterPassword( PasswordDigest dig, SecureString masterPassword )
@@ -44,7 +44,5 @@ namespace Chwthewke.PasswordManager.Storage
         private readonly IEnumerable<IPasswordGenerator> _generators;
         private readonly IHashFactory _hashFactory;
         private readonly IPasswordDatabase _passwordDatabase;
-
-
     }
 }

@@ -20,7 +20,7 @@ namespace Chwthewke.PasswordManager.Engine
 
         public int BytesNeeded( int numDigits )
         {
-            return ( int ) Math.Ceiling( numDigits * Math.Log( _base, 256 ) );
+            return (int) Math.Ceiling( numDigits * Math.Log( _base, 256 ) );
         }
 
         public byte[ ] ConvertBytesToDigits( byte[ ] bytes, int numDigits )

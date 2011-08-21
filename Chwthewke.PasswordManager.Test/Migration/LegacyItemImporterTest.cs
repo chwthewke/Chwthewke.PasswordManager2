@@ -13,7 +13,7 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Migration
 {
-    [TestFixture]
+    [ TestFixture ]
     public class LegacyItemImporterTest
     {
         private Mock<IPasswordDatabase> _passwordStoreMock;
@@ -22,7 +22,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
         private Mock<IMasterPasswordMatcher> _masterPasswordMatcherMock;
         private LegacyItemImporter _importer;
 
-        [SetUp]
+        [ SetUp ]
         public void SetUpImporter( )
         {
             _passwordStoreMock = new Mock<IPasswordDatabase>( );
@@ -39,11 +39,11 @@ namespace Chwthewke.PasswordManager.Test.Migration
                                                 _serializerMock.Object );
         }
 
-        [Test]
+        [ Test ]
         public void ImportDigestsItems( )
         {
             // Setup
-            IEnumerable<LegacyItem> legacyItems = new[]
+            IEnumerable<LegacyItem> legacyItems = new[ ]
                                                       {
                                                           new LegacyItem( "aKey", false ),
                                                           new LegacyItem( "anotherKey", true ),
@@ -57,20 +57,20 @@ namespace Chwthewke.PasswordManager.Test.Migration
             _passwordDigesterMock.Verify( DoDigest( "anotherKey", masterPassword, PasswordGenerators.AlphaNumeric ) );
         }
 
-        [Test]
+        [ Test ]
         public void ImportAddsDigestsToStore( )
         {
             // Setup
             SecureString masterPassword = "p@ssw".ToSecureString( );
 
-            PasswordDigest passwordDigest1 = new PasswordDigestBuilder( ).WithKey( "aKey" );
-            _passwordDigesterMock.Setup( DoDigest( "aKey", masterPassword, PasswordGenerators.Full ) )
-                .Returns( passwordDigest1 );
-            PasswordDigest passwordDigest2 = new PasswordDigestBuilder( ).WithKey( "anotherKey" );
+            PasswordDigest passwordDigest1 = new PasswordDigestBuilder { Key = "aKey " };
+            _passwordDigesterMock.Setup( DoDigest( "aKey", masterPassword, PasswordGenerators.Full ) ).Returns( passwordDigest1 );
+
+            PasswordDigest passwordDigest2 = new PasswordDigestBuilder { Key = "anotherKey" };
             _passwordDigesterMock.Setup( DoDigest( "anotherKey", masterPassword, PasswordGenerators.AlphaNumeric ) )
                 .Returns( passwordDigest2 );
 
-            IEnumerable<LegacyItem> legacyItems = new[]
+            IEnumerable<LegacyItem> legacyItems = new[ ]
                                                       {
                                                           new LegacyItem( "aKey", false ),
                                                           new LegacyItem( "anotherKey", true ),
@@ -83,7 +83,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
             _passwordStoreMock.Verify( s => s.AddOrUpdate( passwordDigest2 ) );
         }
 
-        [Test]
+        [ Test ]
         public void SaveCallsSerializer( )
         {
             // Setup

@@ -94,7 +94,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
 
             PasswordDigest digest = PasswordDatabase.FindByKey( "abde" );
-            Assert.That( digest.Hash, Is.Not.EqualTo( new byte[0] ) );
+            Assert.That( digest.Hash, Is.Not.EqualTo( new byte[ 0 ] ) );
             Assert.That( digest.Note, Is.EqualTo( note ) );
             Assert.That( digest.PasswordGeneratorId, Is.EqualTo( generator.Id ) );
         }

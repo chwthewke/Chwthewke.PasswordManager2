@@ -7,7 +7,7 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
-    [TestFixture]
+    [ TestFixture ]
     public class PasswordDatabaseTest
     {
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -20,7 +20,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public Func<IPasswordDatabase> DatabaseFactory { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 
-        [SetUp]
+        [ SetUp ]
         public void SetUpDatabaseWithMockStore( )
         {
             IContainer container =
@@ -37,7 +37,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Database.Source = InMemoryPasswordStore;
         }
 
-        [Test]
+        [ Test ]
         public void InitLoadsPasswordsFromSource( )
         {
             // Set up
@@ -58,7 +58,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( database.Passwords, Is.EquivalentTo( passwordDigests ) );
         }
 
-        [Test]
+        [ Test ]
         public void ReloadLoadsPasswordsFromSource( )
         {
             // Set up
@@ -77,7 +77,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( Database.Passwords, Is.EquivalentTo( passwordDigests ) );
         }
 
-        [Test]
+        [ Test ]
         public void SetSourceSavesOldSourceToNewSource( )
         {
             // Set up
@@ -96,7 +96,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( Database.Passwords, Is.EquivalentTo( passwordDigests ) );
         }
 
-        [Test]
+        [ Test ]
         public void AddPasswordSavesToSource( )
         {
             // Set up
@@ -107,7 +107,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( Serializer.Load( InMemoryPasswordStore ), Is.EquivalentTo( new List<PasswordDigest> { password } ) );
         }
 
-        [Test]
+        [ Test ]
         public void UpdatePasswordSavesToSource( )
         {
             // Set up
@@ -115,21 +115,21 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Serializer.Save( new List<PasswordDigest> { password }, InMemoryPasswordStore );
 
 
-            PasswordDigest updatedPassword = new PasswordDigestBuilder { Key = "def", Hash = new byte[] { 0xf3, 0xdd } };
+            PasswordDigest updatedPassword = new PasswordDigestBuilder { Key = "def", Hash = new byte[ ] { 0xf3, 0xdd } };
             // Exercise
             Database.AddOrUpdate( updatedPassword );
             // Verify
             Assert.That( Serializer.Load( InMemoryPasswordStore ), Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
         }
 
-        [Test]
+        [ Test ]
         public void RemoveRemotelyUpdatedPasswordDoesNotDeleteIt( ) // SHOULD IT ?
         {
             // Set up
-            Database.AddOrUpdate( new PasswordDigestBuilder { Key = "def", Hash = new byte[] { 0x01 }, ModificationTime = new DateTime( 1 ) } );
+            Database.AddOrUpdate( new PasswordDigestBuilder { Key = "def", Hash = new byte[ ] { 0x01 }, ModificationTime = new DateTime( 1 ) } );
 
             PasswordDigest updatedPassword = new PasswordDigestBuilder
-                                                 { Key = "def", Hash = new byte[] { 0x03 }, ModificationTime = new DateTime( 4 ) };
+                                                 { Key = "def", Hash = new byte[ ] { 0x03 }, ModificationTime = new DateTime( 4 ) };
             Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryPasswordStore );
 
             // Exercise
@@ -140,7 +140,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( Serializer.Load( InMemoryPasswordStore ), Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
         }
 
-        [Test]
+        [ Test ]
         public void ReloadMergesRecentModificationsFromSource( )
         {
             // Set up
@@ -158,7 +158,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( Database.Passwords, Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
         }
 
-        [Test]
+        [ Test ]
         public void ReloadRejectsObsoleteModificationsFromSource( )
         {
             // Set up
@@ -175,6 +175,5 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Verify
             Assert.That( Database.Passwords, Is.EquivalentTo( new List<PasswordDigest> { originalPassword } ) );
         }
-
     }
 }

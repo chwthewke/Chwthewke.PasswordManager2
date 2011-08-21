@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 
@@ -9,7 +7,8 @@ namespace Chwthewke.PasswordManager.Editor
 {
     public class PasswordEditorControllerFactory
     {
-        public PasswordEditorControllerFactory( IPasswordDatabase passwordDatabase, IPasswordDigester passwordDigester, Func<Guid> newGuidFactory, IEnumerable<IPasswordGenerator> generators, IMasterPasswordMatcher masterPasswordMatcher )
+        public PasswordEditorControllerFactory( IPasswordDatabase passwordDatabase, IPasswordDigester passwordDigester, Func<Guid> newGuidFactory,
+                                                IEnumerable<IPasswordGenerator> generators, IMasterPasswordMatcher masterPasswordMatcher )
         {
             _passwordDatabase = passwordDatabase;
             _passwordDigester = passwordDigester;

@@ -1,15 +1,15 @@
 using System;
 using System.Security;
+using Autofac;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.App;
 using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
-using Autofac;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
-    [TestFixture]
+    [ TestFixture ]
     public class MasterPasswordMatcherTest
     {
         private readonly Guid _masterPasswordId = Guid.Parse( "DAAB4016-AF5C-4C79-900E-B01E8D771C12" );
@@ -22,14 +22,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public IPasswordDatabase PasswordDatabase { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 
-        [SetUp]
+        [ SetUp ]
         public void SetUpStore( )
         {
             AppSetUp.TestContainer( )
                 .InjectProperties( this );
         }
 
-        [Test]
+        [ Test ]
         public void FindMasterPasswordInStoreWhenDigestMatches( )
         {
             // Setup
@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                  PasswordGenerators.Full.MakePassword( "key1", masterPassword ),
                                  _masterPasswordId,
                                  PasswordGenerators.Full.Id,
-                                 new DateTime(), 
+                                 new DateTime( ),
                                  string.Empty );
             PasswordDatabase.AddOrUpdate( matchingDigest );
 
@@ -58,7 +58,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( guid, Is.EqualTo( _masterPasswordId ) );
         }
 
-        [Test]
+        [ Test ]
         public void CannotFindMasterPasswordInStoreWhenNoDigestMatches( )
         {
             // Setup

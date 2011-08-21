@@ -7,7 +7,7 @@ namespace Chwthewke.PasswordManager.Storage
     {
         public string Key { get; private set; }
 
-        public byte[] Hash { get; private set; }
+        public byte[ ] Hash { get; private set; }
 
         public Guid MasterPasswordId { get; private set; }
 
@@ -20,7 +20,7 @@ namespace Chwthewke.PasswordManager.Storage
         public string Note { get; private set; }
 
         public PasswordDigest( string key,
-                               byte[] hash,
+                               byte[ ] hash,
                                Guid masterPasswordId,
                                Guid passwordGeneratorId,
                                DateTime creationTime,
@@ -54,12 +54,12 @@ namespace Chwthewke.PasswordManager.Storage
             unchecked
             {
                 int result = Key.GetHashCode( );
-                result = ( result*397 ) ^ Hash.GetHashCode( );
+                result = ( result * 397 ) ^ Hash.GetHashCode( );
                 result = ( result * 397 ) ^ MasterPasswordId.GetHashCode( );
                 result = ( result * 397 ) ^ PasswordGeneratorId.GetHashCode( );
                 result = ( result * 397 ) ^ CreationTime.GetHashCode( );
-                result = ( result*397 ) ^ ModificationTime.GetHashCode( );
-                result = ( result*397 ) ^ ( Note != null ? Note.GetHashCode( ) : 0 );
+                result = ( result * 397 ) ^ ModificationTime.GetHashCode( );
+                result = ( result * 397 ) ^ ( Note != null ? Note.GetHashCode( ) : 0 );
                 return result;
             }
         }
@@ -69,7 +69,7 @@ namespace Chwthewke.PasswordManager.Storage
             if ( ReferenceEquals( null, other ) ) return false;
             if ( ReferenceEquals( this, other ) ) return true;
             return Equals( other.Key, Key ) && other.Hash.SequenceEqual( Hash ) &&
-                   other.MasterPasswordId.Equals( MasterPasswordId ) && 
+                   other.MasterPasswordId.Equals( MasterPasswordId ) &&
                    other.PasswordGeneratorId.Equals( PasswordGeneratorId ) &&
                    other.CreationTime.Equals( CreationTime ) &&
                    other.ModificationTime.Equals( ModificationTime ) &&

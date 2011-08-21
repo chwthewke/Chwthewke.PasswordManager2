@@ -23,7 +23,7 @@ namespace Chwthewke.PasswordManager.Migration
             if ( ReferenceEquals( null, obj ) ) return false;
             if ( ReferenceEquals( this, obj ) ) return true;
             if ( obj.GetType( ) != typeof ( LegacyItem ) ) return false;
-            return Equals( ( LegacyItem ) obj );
+            return Equals( (LegacyItem) obj );
         }
 
         public override int GetHashCode( )

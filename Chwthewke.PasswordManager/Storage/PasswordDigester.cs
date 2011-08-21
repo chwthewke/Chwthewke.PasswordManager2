@@ -24,12 +24,12 @@ namespace Chwthewke.PasswordManager.Storage
                                       DateTime? creationTime,
                                       string note )
         {
-            byte[] hash = _hashFactory.GetHash( )
+            byte[ ] hash = _hashFactory.GetHash( )
                 .Append( DigestSalt, Encoding.UTF8 )
                 .Append( generatedPassword, Encoding.UTF8 )
                 .GetValue( );
-            return new PasswordDigest( key, hash, masterPasswordId, passwordGeneratorId, 
-                creationTime ?? _timeProvider.Now, _timeProvider.Now, note );
+            return new PasswordDigest( key, hash, masterPasswordId, passwordGeneratorId,
+                                       creationTime ?? _timeProvider.Now, _timeProvider.Now, note );
         }
 
 

@@ -8,7 +8,7 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
-    [TestFixture]
+    [ TestFixture ]
     public class PasswordListTest
     {
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -18,27 +18,27 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 
 
-        [SetUp]
+        [ SetUp ]
         public void SetUpContainer( )
         {
             AppSetUp.TestContainer( ).InjectProperties( this );
         }
 
-        [Test]
+        [ Test ]
         public void ListHasPasswords( )
         {
             // Setup
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder {Key = "abc"} );
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder {Key = "abde"} );
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder {Key = "abcd"} );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abde" } );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abcd" } );
             // Exercise
             PasswordList.UpdateList( );
             // Verify
             Assert.That( PasswordList.Items.Select( x => x.Name ).ToArray( ),
-                         Is.EqualTo( new[] {"abc", "abcd", "abde"} ) );
+                         Is.EqualTo( new[ ] { "abc", "abcd", "abde" } ) );
         }
 
-        [Test]
+        [ Test ]
         public void AddEmptyEditorToList( )
         {
             // Setup
@@ -50,11 +50,11 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void LoadPasswordIntoNewEditor( )
         {
             // Setup
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder {Key = "abc"} );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
             PasswordList.UpdateList( );
             // Exercise
             PasswordList.OpenNewEditor( PasswordList.Items[ 0 ] );
@@ -64,7 +64,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordListIsUpdatedByEditorChange( )
         {
             // Setup
@@ -77,10 +77,10 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             editor.SaveCommand.Execute( null );
             // Verify
             Assert.That( PasswordDatabase.Passwords.Count( ), Is.EqualTo( 1 ) );
-            Assert.That( PasswordList.Items.Select( it => it.Name ).ToArray( ), Is.EqualTo( new[] {"abcd"} ) );
+            Assert.That( PasswordList.Items.Select( it => it.Name ).ToArray( ), Is.EqualTo( new[ ] { "abcd" } ) );
         }
 
-        [Test]
+        [ Test ]
         public void EditorIsClosedByItsRequest( )
         {
             // Setup
@@ -91,7 +91,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors, Is.Empty );
         }
 
-        [Test]
+        [ Test ]
         public void PasswordListIsNoLongerUpdatedByClosedEditorChange( )
         {
             // Setup

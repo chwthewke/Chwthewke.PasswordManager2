@@ -73,7 +73,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.Slots.Any( slot => slot.IsSelected ) );
         }
 
-        [Test]
+        [ Test ]
         public void DeletePasswordWhenCommandAvailable( )
         {
             // Setup
@@ -85,7 +85,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.Null );
         }
 
-        [Test]
+        [ Test ]
         public void DeletePasswordChangesCanExecuteDelete( )
         {
             // Setup
@@ -101,7 +101,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( deleteChanged );
         }
 
-        [Test]
+        [ Test ]
         public void DeletePasswordRaisesStoreModified( )
         {
             // Setup

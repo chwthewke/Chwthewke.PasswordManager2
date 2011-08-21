@@ -6,7 +6,7 @@ using Chwthewke.PasswordManager.App.ViewModel;
 namespace Chwthewke.PasswordManager.App.View
 {
     /// <summary>
-    /// Interaction logic for PasswordList.xaml
+    ///   Interaction logic for PasswordList.xaml
     /// </summary>
     public partial class PasswordList
     {
@@ -26,7 +26,7 @@ namespace Chwthewke.PasswordManager.App.View
         {
             base.OnPropertyChanged( e );
             if ( e.Property == DataContextProperty && e.NewValue is PasswordListViewModel )
-                _tabsController.Editors = ( ( PasswordListViewModel ) e.NewValue ).Editors;
+                _tabsController.Editors = ( (PasswordListViewModel) e.NewValue ).Editors;
         }
 
         private void PasswordItemDoubleClicked( object sender, MouseButtonEventArgs e )

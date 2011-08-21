@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
         private static string AllSymbols( Alphabet alphabet )
         {
-            return alphabet.ToString( Enumerable.Range( 0, alphabet.Length - 1 ).Select( t => ( byte ) t ).ToArray( ) );
+            return alphabet.ToString( Enumerable.Range( 0, alphabet.Length - 1 ).Select( t => (byte) t ).ToArray( ) );
         }
     }
 }

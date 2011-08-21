@@ -149,7 +149,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public void UpdateFromStore( )
         {
             _controller.ReloadBaseline( );
-            Update(  );
+            Update( );
         }
 
 
@@ -290,6 +290,5 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _closeCommand;
 
         public const string NewTitle = "(new)";
-
     }
 }

@@ -5,10 +5,10 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
-    [TestFixture]
+    [ TestFixture ]
     public class CopySaveTest : PasswordEditorTestBase
     {
-        [Test]
+        [ Test ]
         public void CopyPasswordWhenCommandAvailable( )
         {
             // Setup
@@ -23,7 +23,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ClipboardServiceMock.Verify( cs => cs.CopyToClipboard( It.Is<string>( s => s == slot.Content ) ) );
         }
 
-        [Test]
+        [ Test ]
         public void SavePasswordWhenCommandAvailable( )
         {
             // Setup
@@ -38,7 +38,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( PasswordDatabase.FindByKey( "abc" ), Is.Not.Null );
         }
 
-        [Test]
+        [ Test ]
         public void SavePasswordRaisesStoreModified( )
         {
             // Setup
@@ -55,7 +55,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( storeModifiedRaised, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void KeyChangeRaisesCanExecuteChangedForSaveCopy( )
         {
             // Setup
@@ -70,7 +70,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( copyChanged );
         }
 
-        [Test]
+        [ Test ]
         public void MasterPasswordChangeRaisesCanExecuteChangedForSaveCopy( )
         {
             // Setup

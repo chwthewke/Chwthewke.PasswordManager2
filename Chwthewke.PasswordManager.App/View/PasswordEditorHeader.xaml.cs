@@ -3,7 +3,7 @@
 namespace Chwthewke.PasswordManager.App.View
 {
     /// <summary>
-    /// Interaction logic for PasswordEditorHeader.xaml
+    ///   Interaction logic for PasswordEditorHeader.xaml
     /// </summary>
     public partial class PasswordEditorHeader
     {

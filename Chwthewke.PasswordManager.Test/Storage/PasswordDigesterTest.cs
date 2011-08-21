@@ -7,10 +7,10 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
-    [TestFixture]
+    [ TestFixture ]
     public class PasswordDigesterTest
     {
-        [SetUp]
+        [ SetUp ]
         public void SetUpPasswordDigester( )
         {
             _timeProviderMock = new Mock<ITimeProvider>( );
@@ -18,12 +18,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _digester = new PasswordDigester( _hashFactory, _timeProviderMock.Object );
         }
 
-        [Test]
+        [ Test ]
         public void DigestHashesPasswordWithSalt( )
         {
             // Setup
             const string generatedPassword = "aPassword";
-            byte[] expectedHash = _hashFactory.GetHash( )
+            byte[ ] expectedHash = _hashFactory.GetHash( )
                 .Append( PasswordDigester.DigestSalt, Encoding.UTF8 )
                 .Append( generatedPassword, Encoding.UTF8 )
                 .GetValue( );
@@ -34,7 +34,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( digest.Hash, Is.EqualTo( expectedHash ) );
         }
 
-        [Test]
+        [ Test ]
         public void DigesterSetsCreationTimeNowWithNullCreationTime( )
         {
             // Setup
@@ -47,7 +47,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( digest.CreationTime, Is.EqualTo( now ) );
         }
 
-        [Test]
+        [ Test ]
         public void DigesterUsesGivenCreationTimeOnDigest( )
         {
             // Setup
@@ -60,7 +60,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( digest.CreationTime, Is.EqualTo( new DateTime( 123456787654321L ) ) );
         }
 
-        [Test]
+        [ Test ]
         public void DigesterSetsModificationTimeNow( )
         {
             // Setup
@@ -74,7 +74,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
 
-        [Test]
+        [ Test ]
         public void PasswordDigesterPassesOtherAttributes( )
         {
             // Setup

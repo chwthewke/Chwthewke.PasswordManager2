@@ -5,7 +5,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModelFactory
     {
-        public PasswordEditorViewModelFactory( IClipboardService clipboardService, IGuidToColorConverter guidToColor, PasswordEditorControllerFactory controllerFactory )
+        public PasswordEditorViewModelFactory( IClipboardService clipboardService, IGuidToColorConverter guidToColor,
+                                               PasswordEditorControllerFactory controllerFactory )
         {
             _clipboardService = clipboardService;
             _guidToColor = guidToColor;

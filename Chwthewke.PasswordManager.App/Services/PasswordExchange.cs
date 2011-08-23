@@ -6,9 +6,9 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    public class PasswordImporter : IPasswordImporter
+    public class PasswordExchange : IPasswordExchange
     {
-        public PasswordImporter( IPasswordSerializer passwordSerializer, IPasswordDatabase passwordDatabase )
+        public PasswordExchange( IPasswordSerializer passwordSerializer, IPasswordDatabase passwordDatabase )
         {
             _passwordSerializer = passwordSerializer;
             _passwordDatabase = passwordDatabase;
@@ -46,6 +46,11 @@ namespace Chwthewke.PasswordManager.App.Services
                     _passwordDatabase.AddOrUpdate( fixedCopy );
                 }
             }
+        }
+
+        public void ExportPasswords( FileInfo targetFile )
+        {
+            _passwordSerializer.Save( _passwordDatabase.Passwords, new FilePasswordStore( targetFile ) );
         }
 
         private readonly IPasswordSerializer _passwordSerializer;

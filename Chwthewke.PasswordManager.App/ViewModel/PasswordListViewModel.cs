@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
@@ -66,13 +67,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Items = new ObservableCollection<StoredPasswordViewModel>(
                 from password in _passwordDatabase.Passwords
                 orderby password.Key
-                select new StoredPasswordViewModel
-                           {
-                               Name = password.Key,
-                               MasterPasswordGuid = password.MasterPasswordId,
-                               MasterPasswordColor = _guidConverter.Convert( password.MasterPasswordId )
-                           }
-                );
+                select new StoredPasswordViewModel( password, _guidConverter.Convert( password.MasterPasswordId ) )
+            );
 
             foreach ( PasswordEditorViewModel editor in Editors )
                 editor.UpdateFromStore( );

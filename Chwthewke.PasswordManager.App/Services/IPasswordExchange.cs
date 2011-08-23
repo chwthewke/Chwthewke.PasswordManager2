@@ -2,8 +2,10 @@
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    public interface IPasswordImporter
+    public interface IPasswordExchange
     {
         void ImportPasswords( FileInfo externalPasswordFile );
+
+        void ExportPasswords( FileInfo targetFile );
     }
 }

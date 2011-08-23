@@ -14,7 +14,7 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<ClipboardService>( ).As<IClipboardService>( );
             builder.RegisterType<DialogFileSelectionService>( ).As<IFileSelectionService>( );
 
-            builder.RegisterType<PasswordImporter>( ).As<IPasswordImporter>( );
+            builder.RegisterType<PasswordExchange>( ).As<IPasswordExchange>( );
         }
 
         private static GuidToColorConverter GuidToColorConverter

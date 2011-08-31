@@ -19,7 +19,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private static readonly IDictionary<Guid, string> GeneratorNames =
             new Dictionary<Guid, string>( )
                 {
-                    { PasswordGenerators.AlphaNumeric.Id, "Alpha-numeric" },
+                    { PasswordGenerators.AlphaNumeric.Id, "Alphanumeric" },
                     { PasswordGenerators.Full.Id, "Complex"}
                 };
     }

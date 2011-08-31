@@ -9,61 +9,55 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     {
         public string Name
         {
-            get { return _name; }
+            get { return _password.Key; }
         }
 
         public string Note
         {
-            get { return _note; }
+            get { return _password.Note; }
         }
 
         public bool NoteVisible
         {
-            get { return !string.IsNullOrWhiteSpace( _note ); }
+            get { return !string.IsNullOrWhiteSpace( Note ); }
         }
 
         public Guid MasterPasswordGuid
         {
-            get { return _masterPasswordGuid; }
+            get { return _password.MasterPasswordId; }
         }
 
         public Color MasterPasswordColor
         {
-            get { return _masterPasswordColor; }
+            get { return _guidColorConverter.Convert( _password.MasterPasswordId ); }
         }
 
         public string CreationDate
         {
-            get { return _creationDate; }
+            get { return _fuzzyDateFormatter.Format( _password.CreationTime ); }
         }
 
         public string ModificationDate
         {
-            get { return _modificationDate; }
+            get { return _fuzzyDateFormatter.Format( _password.ModificationTime ); }
         }
 
         public string GeneratorName
         {
-            get { return _generatorName; }
+            get { return PasswordGeneratorNames.GeneratorName( _password.PasswordGeneratorId ); }
         }
 
-        public StoredPasswordViewModel(PasswordDigest password, Color masterPasswordColor)
+        public StoredPasswordViewModel( PasswordDigest password, IGuidToColorConverter guidColorConverter, IFuzzyDateFormatter fuzzyDateFormatter )
         {
-            _name = password.Key;
-            _note = password.Note;
-            _masterPasswordGuid = password.MasterPasswordId;
-            _masterPasswordColor = masterPasswordColor;
-            _creationDate = password.CreationTime.ToString( );
-            _modificationDate = password.ModificationTime.ToString( );
-            _generatorName = PasswordGeneratorNames.GeneratorName( password.PasswordGeneratorId );
+            _password = password;
+            _guidColorConverter = guidColorConverter;
+            _fuzzyDateFormatter = fuzzyDateFormatter;
         }
 
-        private readonly string _name;
-        private readonly string _note;
-        private readonly Guid _masterPasswordGuid;
-        private readonly Color _masterPasswordColor;
-        private readonly string _creationDate;
-        private readonly string _modificationDate;
-        private readonly string _generatorName;
+        public delegate StoredPasswordViewModel Factory( PasswordDigest password );
+
+        private readonly PasswordDigest _password;
+        private readonly IGuidToColorConverter _guidColorConverter;
+        private readonly IFuzzyDateFormatter _fuzzyDateFormatter;
     }
 }

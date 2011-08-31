@@ -19,6 +19,9 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<PasswordManagerViewModel>( );
             builder.RegisterType<PasswordListViewModel>( );
             builder.RegisterType<PasswordEditorViewModelFactory>( );
+            builder.RegisterType<StoredPasswordViewModel>( );
+
+            builder.RegisterType<FuzzyDateFormatter>( ).As<IFuzzyDateFormatter>( );
         }
     }
 }

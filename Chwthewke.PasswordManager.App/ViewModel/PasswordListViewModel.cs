@@ -12,11 +12,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     {
         public PasswordListViewModel( IPasswordDatabase passwordDatabase,
                                       PasswordEditorViewModelFactory editorFactory,
-                                      IGuidToColorConverter guidConverter )
+                                      IGuidToColorConverter guidConverter,
+                                      StoredPasswordViewModel.Factory storedPasswordViewModelFactory )
         {
             _passwordDatabase = passwordDatabase;
             _editorFactory = editorFactory;
             _guidConverter = guidConverter;
+            _storedPasswordViewModelFactory = storedPasswordViewModelFactory;
             _openEditorCommand = new RelayCommand( ( ) => OpenNewEditorInternal( string.Empty ) );
             UpdateList( );
         }
@@ -67,8 +69,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Items = new ObservableCollection<StoredPasswordViewModel>(
                 from password in _passwordDatabase.Passwords
                 orderby password.Key
-                select new StoredPasswordViewModel( password, _guidConverter.Convert( password.MasterPasswordId ) )
-            );
+                select _storedPasswordViewModelFactory.Invoke( password )
+                );
 
             foreach ( PasswordEditorViewModel editor in Editors )
                 editor.UpdateFromStore( );
@@ -98,5 +100,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly IPasswordDatabase _passwordDatabase;
         private readonly PasswordEditorViewModelFactory _editorFactory;
         private readonly IGuidToColorConverter _guidConverter;
+        private readonly StoredPasswordViewModel.Factory _storedPasswordViewModelFactory;
     }
 }

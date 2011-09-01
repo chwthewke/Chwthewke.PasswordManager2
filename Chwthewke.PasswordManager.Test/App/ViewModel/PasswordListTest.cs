@@ -34,7 +34,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Exercise
             PasswordList.UpdateList( );
             // Verify
-            Assert.That( PasswordList.Items.Select( x => x.Name ).ToArray( ),
+            Assert.That( PasswordList.VisibleItems.Select( x => x.Name ).ToArray( ),
                          Is.EqualTo( new[ ] { "abc", "abcd", "abde" } ) );
         }
 
@@ -57,7 +57,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
             PasswordList.UpdateList( );
             // Exercise
-            PasswordList.OpenNewEditor( PasswordList.Items[ 0 ] );
+            PasswordList.OpenNewEditor( PasswordList.VisibleItems[ 0 ] );
             // Verify
             Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
             Assert.That( PasswordList.Editors[ 0 ].Key, Is.EqualTo( "abc" ) );
@@ -77,7 +77,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             editor.SaveCommand.Execute( null );
             // Verify
             Assert.That( PasswordDatabase.Passwords.Count( ), Is.EqualTo( 1 ) );
-            Assert.That( PasswordList.Items.Select( it => it.Name ).ToArray( ), Is.EqualTo( new[ ] { "abcd" } ) );
+            Assert.That( PasswordList.VisibleItems.Select( it => it.Name ).ToArray( ), Is.EqualTo( new[ ] { "abcd" } ) );
         }
 
         [ Test ]
@@ -105,7 +105,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             editor.SaveCommand.Execute( null );
             // Verify
             Assert.That( PasswordDatabase.Passwords.Count( ), Is.EqualTo( 1 ) );
-            Assert.That( PasswordList.Items.Select( it => it.Name ), Is.Empty );
+            Assert.That( PasswordList.VisibleItems.Select( it => it.Name ), Is.Empty );
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
@@ -20,13 +21,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             UpdateList( );
         }
 
-        public ObservableCollection<StoredPasswordViewModel> Items
+        public ObservableCollection<StoredPasswordViewModel> VisibleItems
         {
-            get { return _items; }
+            get { return _visibleItems; }
             private set
             {
-                _items = value;
-                RaisePropertyChanged( ( ) => Items );
+                _visibleItems = value;
+                RaisePropertyChanged( ( ) => VisibleItems );
             }
         }
 
@@ -38,8 +39,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 if ( value == _filterString )
                     return;
                 _filterString = value;
-                RaisePropertyChanged( () => FilterString );
-                UpdateList( );
+                RaisePropertyChanged( ( ) => FilterString );
+                UpdateFilteredListView(  );
             }
         }
 
@@ -61,15 +62,21 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void UpdateList( )
         {
-            Items = new ObservableCollection<StoredPasswordViewModel>(
+            _items = new ObservableCollection<StoredPasswordViewModel>(
                 from password in _passwordDatabase.Passwords
-                where FilterPassword( password )
                 orderby password.Key
                 select _storedPasswordViewModelFactory.Invoke( password )
                 );
 
             foreach ( PasswordEditorViewModel editor in Editors )
                 editor.UpdateFromStore( );
+
+            UpdateFilteredListView( );
+        }
+
+        private void UpdateFilteredListView( )
+        {
+            VisibleItems = new ObservableCollection<StoredPasswordViewModel>( _items.Where( IsItemVisible ) );
         }
 
         private void OpenNewEditorInternal( string passwordKey )
@@ -101,13 +108,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Editors.Remove( editor );
         }
 
-        private bool FilterPassword( PasswordDigest digest )
+        private bool IsItemVisible( StoredPasswordViewModel item )
         {
             return string.IsNullOrWhiteSpace( _filterString ) ||
-                   digest.Key.Contains( _filterString );
+                   item.Name.Contains( _filterString );
         }
 
-        private ObservableCollection<StoredPasswordViewModel> _items;
+        private ObservableCollection<StoredPasswordViewModel> _visibleItems;
+        private IList<StoredPasswordViewModel> _items;
         private string _filterString;
 
         private readonly ObservableCollection<PasswordEditorViewModel> _editors =

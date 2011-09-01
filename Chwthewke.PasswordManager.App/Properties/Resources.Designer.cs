@@ -113,5 +113,23 @@ namespace Chwthewke.PasswordManager.App.Properties {
                 return ResourceManager.GetString("PasswordGeneratorDescriptionccf1451c4b3045a499b0d54ec3c3a7ee", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to This colored hollow border serves as a hint of the master password. When the master password is correctly entered, the border will be filled..
+        /// </summary>
+        internal static string PasswordHint {
+            get {
+                return ResourceManager.GetString("PasswordHint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to The master password is correct..
+        /// </summary>
+        internal static string PasswordHintFulfilled {
+            get {
+                return ResourceManager.GetString("PasswordHintFulfilled", resourceCulture);
+            }
+        }
     }
 }

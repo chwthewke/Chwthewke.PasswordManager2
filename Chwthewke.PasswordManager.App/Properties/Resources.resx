@@ -135,4 +135,10 @@
   <data name="PasswordGeneratorDescriptionccf1451c4b3045a499b0d54ec3c3a7ee" xml:space="preserve">
     <value>Generates an 8-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; " ' ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `</value>
   </data>
+  <data name="PasswordHint" xml:space="preserve">
+    <value>This colored hollow border serves as a hint of the master password. When the master password is correctly entered, the border will be filled.</value>
+  </data>
+  <data name="PasswordHintFulfilled" xml:space="preserve">
+    <value>The master password is correct.</value>
+  </data>
 </root>

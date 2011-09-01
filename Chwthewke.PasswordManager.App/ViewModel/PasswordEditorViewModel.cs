@@ -99,6 +99,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                     return;
                 _requiredGuidColor = value;
                 RaisePropertyChanged( ( ) => RequiredGuidColor );
+                MasterPasswordHint = DerivePasswordHint( );
             }
         }
 
@@ -112,6 +113,19 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                     return;
                 _actualGuidColor = value;
                 RaisePropertyChanged( ( ) => ActualGuidColor );
+                MasterPasswordHint = DerivePasswordHint( );
+            }
+        }
+
+        public string MasterPasswordHint
+        {
+            get { return _masterPasswordHint; }
+            set
+            {
+                if ( value == _masterPasswordHint )
+                    return;
+                _masterPasswordHint = value;
+                RaisePropertyChanged( ( ) => MasterPasswordHint );
             }
         }
 
@@ -123,7 +137,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 if ( _copyText == value )
                     return;
                 _copyText = value;
-                RaisePropertyChanged( () => CopyText );
+                RaisePropertyChanged( ( ) => CopyText );
             }
         }
 
@@ -249,6 +263,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             ActualGuidColor = ConvertGuid( _controller.MasterPasswordId );
         }
 
+        private string DerivePasswordHint( )
+        {
+            if ( _controller.ExpectedMasterPasswordId == null ) return string.Empty;
+
+            if ( _controller.MasterPasswordId == _controller.ExpectedMasterPasswordId )
+                return Resources.PasswordHintFulfilled;
+
+            return Resources.PasswordHint;
+        }
+
         private void Update( )
         {
             Title = DeriveTitle( );
@@ -292,12 +316,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             IPasswordGenerator selectedGenerator = _controller.SelectedGenerator;
             string qualifier = selectedGenerator == null
-                            ? Resources.ResourceManager.GetString( "CopyPasswordDefaultQualifier" )
-                            : Resources.ResourceManager.GetString( PasswordGeneratorTranslator.NameKey( selectedGenerator ) );
+                                   ? Resources.CopyPasswordDefaultQualifier
+                                   : Resources.ResourceManager.GetString( PasswordGeneratorTranslator.NameKey( selectedGenerator ) );
             return string.Format(
-                Resources.ResourceManager.GetString( "CopyPasswordTemplate" ),
+                Resources.CopyPasswordTemplate,
                 qualifier );
-
         }
 
 
@@ -310,6 +333,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private Color _requiredGuidColor = Colors.Transparent;
         private Color _actualGuidColor = Colors.Transparent;
+        private string _masterPasswordHint = string.Empty;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
 

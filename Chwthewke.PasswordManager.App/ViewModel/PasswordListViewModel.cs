@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.ObjectModel;
-using System.Globalization;
 using System.Linq;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
@@ -12,12 +11,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     {
         public PasswordListViewModel( IPasswordDatabase passwordDatabase,
                                       PasswordEditorViewModelFactory editorFactory,
-                                      IGuidToColorConverter guidConverter,
                                       StoredPasswordViewModel.Factory storedPasswordViewModelFactory )
         {
             _passwordDatabase = passwordDatabase;
             _editorFactory = editorFactory;
-            _guidConverter = guidConverter;
             _storedPasswordViewModelFactory = storedPasswordViewModelFactory;
             _openEditorCommand = new RelayCommand( ( ) => OpenNewEditorInternal( string.Empty ) );
             UpdateList( );
@@ -30,6 +27,19 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             {
                 _items = value;
                 RaisePropertyChanged( ( ) => Items );
+            }
+        }
+
+        public string FilterString
+        {
+            get { return _filterString; }
+            set
+            {
+                if ( value == _filterString )
+                    return;
+                _filterString = value;
+                RaisePropertyChanged( () => FilterString );
+                UpdateList( );
             }
         }
 
@@ -49,6 +59,19 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 OpenNewEditorInternal( password.Name );
         }
 
+        public void UpdateList( )
+        {
+            Items = new ObservableCollection<StoredPasswordViewModel>(
+                from password in _passwordDatabase.Passwords
+                where FilterPassword( password )
+                orderby password.Key
+                select _storedPasswordViewModelFactory.Invoke( password )
+                );
+
+            foreach ( PasswordEditorViewModel editor in Editors )
+                editor.UpdateFromStore( );
+        }
+
         private void OpenNewEditorInternal( string passwordKey )
         {
             PasswordEditorViewModel editor = _editorFactory.PasswordEditorFor( passwordKey );
@@ -61,19 +84,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void StoreModified( object sender, EventArgs e )
         {
             UpdateList( );
-        }
-
-
-        public void UpdateList( )
-        {
-            Items = new ObservableCollection<StoredPasswordViewModel>(
-                from password in _passwordDatabase.Passwords
-                orderby password.Key
-                select _storedPasswordViewModelFactory.Invoke( password )
-                );
-
-            foreach ( PasswordEditorViewModel editor in Editors )
-                editor.UpdateFromStore( );
         }
 
 
@@ -91,7 +101,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Editors.Remove( editor );
         }
 
+        private bool FilterPassword( PasswordDigest digest )
+        {
+            return string.IsNullOrWhiteSpace( _filterString ) ||
+                   digest.Key.Contains( _filterString );
+        }
+
         private ObservableCollection<StoredPasswordViewModel> _items;
+        private string _filterString;
 
         private readonly ObservableCollection<PasswordEditorViewModel> _editors =
             new ObservableCollection<PasswordEditorViewModel>( );
@@ -99,7 +116,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _openEditorCommand;
         private readonly IPasswordDatabase _passwordDatabase;
         private readonly PasswordEditorViewModelFactory _editorFactory;
-        private readonly IGuidToColorConverter _guidConverter;
         private readonly StoredPasswordViewModel.Factory _storedPasswordViewModelFactory;
     }
 }

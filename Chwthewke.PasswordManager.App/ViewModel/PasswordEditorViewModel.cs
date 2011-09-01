@@ -6,8 +6,10 @@ using System.Security;
 using System.Windows.Input;
 using System.Windows.Media;
 using Chwthewke.MvvmUtils;
+using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
+using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -113,6 +115,17 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
+        public string CopyText
+        {
+            get { return _copyText; }
+            set
+            {
+                if ( _copyText == value )
+                    return;
+                _copyText = value;
+                RaisePropertyChanged( () => CopyText );
+            }
+        }
 
         public ObservableCollection<PasswordSlotViewModel> Slots
         {
@@ -182,6 +195,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             _saveCommand.RaiseCanExecuteChanged( );
             _copyCommand.RaiseCanExecuteChanged( );
+
+            CopyText = DeriveCopyText( );
         }
 
         private bool CanExecuteSave( )
@@ -248,6 +263,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             RequiredGuidColor = ConvertGuid( _controller.ExpectedMasterPasswordId );
 
+            CopyText = DeriveCopyText( );
+
             _saveCommand.RaiseCanExecuteChanged( );
             _copyCommand.RaiseCanExecuteChanged( );
             _deleteCommand.RaiseCanExecuteChanged( );
@@ -271,6 +288,18 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             return _controller.IsSaveable ? title + "*" : title;
         }
 
+        private string DeriveCopyText( )
+        {
+            IPasswordGenerator selectedGenerator = _controller.SelectedGenerator;
+            string qualifier = selectedGenerator == null
+                            ? Resources.ResourceManager.GetString( "CopyPasswordDefaultQualifier" )
+                            : Resources.ResourceManager.GetString( PasswordGeneratorTranslator.NameKey( selectedGenerator ) );
+            return string.Format(
+                Resources.ResourceManager.GetString( "CopyPasswordTemplate" ),
+                qualifier );
+
+        }
+
 
         private readonly IPasswordEditorController _controller;
         private readonly IClipboardService _clipboardService;
@@ -283,6 +312,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private Color _actualGuidColor = Colors.Transparent;
 
         private readonly ObservableCollection<PasswordSlotViewModel> _slots;
+
+        private string _copyText;
 
         private readonly IUpdatableCommand _saveCommand;
         private readonly IUpdatableCommand _deleteCommand;

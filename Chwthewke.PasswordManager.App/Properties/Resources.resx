@@ -117,10 +117,22 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="CopyPasswordDefaultQualifier" xml:space="preserve">
+    <value>Selected</value>
+  </data>
+  <data name="CopyPasswordTemplate" xml:space="preserve">
+    <value>Copy {0} Password</value>
+  </data>
   <data name="PasswordGenerator74728a1033d44245b7c95d72fc424c41" xml:space="preserve">
     <value>Alphanumeric</value>
   </data>
   <data name="PasswordGeneratorccf1451c4b3045a499b0d54ec3c3a7ee" xml:space="preserve">
     <value>Complex</value>
+  </data>
+  <data name="PasswordGeneratorDescription74728a1033d44245b7c95d72fc424c41" xml:space="preserve">
+    <value>Generates a 10-character password, using lower- and upper-case letters and digits.</value>
+  </data>
+  <data name="PasswordGeneratorDescriptionccf1451c4b3045a499b0d54ec3c3a7ee" xml:space="preserve">
+    <value>Generates an 8-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; " ' ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `</value>
   </data>
 </root>

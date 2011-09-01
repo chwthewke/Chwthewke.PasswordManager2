@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Windows.Media;
 using Chwthewke.MvvmUtils;
+using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
@@ -44,7 +45,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public string GeneratorName
         {
-            get { return PasswordGeneratorNames.GeneratorName( _password.PasswordGeneratorId ); }
+            get
+            {
+                return Resources.ResourceManager.GetString(
+                    PasswordGeneratorTranslator.NameKey( _password.PasswordGeneratorId ) );
+            }
         }
 
         public StoredPasswordViewModel( PasswordDigest password, IGuidToColorConverter guidColorConverter, IFuzzyDateFormatter fuzzyDateFormatter )

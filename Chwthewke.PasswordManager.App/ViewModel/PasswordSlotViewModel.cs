@@ -19,9 +19,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _generator; }
         }
 
+        public string GeneratorDescription
+        {
+            get { return Resources.ResourceManager.GetString( PasswordGeneratorTranslator.DescriptionKey( Generator ) ); }
+        }
+
         public string Name
         {
-            get { return Resources.ResourceManager.GetString( PasswordGeneratorKeyPrefix + _generator.Id.ToString( "N" ) ); }
+            get { return Resources.ResourceManager.GetString( PasswordGeneratorTranslator.NameKey( Generator ) ); }
         }
 
         public bool IsSelected

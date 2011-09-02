@@ -5,7 +5,7 @@
   <Product Id="862CFB32-A8C3-4BDB-AEF6-6BCBD8E1396B"
            Name="Chwthewke.PasswordManager 2.1"
            Language="1033"
-           Version="2.1.188.43"
+           Version="2.1.189.44"
            Manufacturer="www.chwthewke.net"
            UpgradeCode="EF0EBEC7-6938-4328-9EC6-B3512D43F43E">
     <Package Id="*"
@@ -18,7 +18,7 @@
                       Property="PREVIOUSFOUND" 
                       Minimum="2.0.0" 
                       IncludeMinimum="yes"
-                      Maximum="2.1.188.43" 
+                      Maximum="2.1.189.44" 
                       IncludeMaximum="no"/>
     </Upgrade>
 

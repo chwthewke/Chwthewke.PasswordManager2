@@ -25,6 +25,7 @@ namespace Chwthewke.PasswordManager.App.View
                 _editors = value;
                 if ( _editors != null )
                     _editors.CollectionChanged += OnEditorsChanged;
+                ResetEditors( );
             }
         }
 
@@ -43,14 +44,19 @@ namespace Chwthewke.PasswordManager.App.View
                 case NotifyCollectionChangedAction.Replace:
                 case NotifyCollectionChangedAction.Move:
                 case NotifyCollectionChangedAction.Reset:
-                    ClearEditors( );
-                    foreach ( PasswordEditorViewModel editorViewModel in Editors )
-                    {
-                        AddEditor( editorViewModel );
-                    }
+                    ResetEditors( );
                     break;
                 default:
                     throw new ArgumentOutOfRangeException( );
+            }
+        }
+
+        private void ResetEditors( )
+        {
+            ClearEditors( );
+            foreach ( PasswordEditorViewModel editorViewModel in Editors )
+            {
+                AddEditor( editorViewModel );
             }
         }
 

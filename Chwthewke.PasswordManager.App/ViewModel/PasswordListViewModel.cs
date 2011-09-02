@@ -19,6 +19,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _storedPasswordViewModelFactory = storedPasswordViewModelFactory;
             _openEditorCommand = new RelayCommand( ( ) => OpenNewEditorInternal( string.Empty ) );
             UpdateList( );
+            EnforceAtLeastOneEditor( );
         }
 
         public ObservableCollection<StoredPasswordViewModel> VisibleItems
@@ -99,6 +100,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             PasswordEditorViewModel editor = sender as PasswordEditorViewModel;
             if ( editor != null )
                 CloseEditor( editor );
+            EnforceAtLeastOneEditor( );
         }
 
         private void CloseEditor( PasswordEditorViewModel editor )
@@ -112,6 +114,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             return string.IsNullOrWhiteSpace( _filterString ) ||
                    item.Name.Contains( _filterString );
+        }
+
+        private void EnforceAtLeastOneEditor( )
+        {
+            if ( _editors.Count == 0 )
+                OpenNewEditorInternal( string.Empty );
         }
 
         private ObservableCollection<StoredPasswordViewModel> _visibleItems;

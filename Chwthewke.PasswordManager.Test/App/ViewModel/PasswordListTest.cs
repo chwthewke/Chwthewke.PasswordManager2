@@ -39,15 +39,28 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         }
 
         [ Test ]
+        public void ListInitiallyHasEmptyEditor( )
+        {
+            // Set up
+            
+            // Exercise
+
+            // Verify
+            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
+            Assert.That( PasswordList.Editors[ 0 ].Key, Is.EqualTo( string.Empty ) );
+            Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.False );
+        } 
+
+        [ Test ]
         public void AddEmptyEditorToList( )
         {
             // Setup
             // Exercise
             PasswordList.OpenEditorCommand.Execute( null );
             // Verify
-            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
-            Assert.That( PasswordList.Editors[ 0 ].Key, Is.EqualTo( string.Empty ) );
-            Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.False );
+            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 2 ) );
+            Assert.That( PasswordList.Editors[ 1 ].Key, Is.EqualTo( string.Empty ) );
+            Assert.That( PasswordList.Editors[ 1 ].IsKeyReadonly, Is.False );
         }
 
         [ Test ]
@@ -59,9 +72,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Exercise
             PasswordList.OpenNewEditor( PasswordList.VisibleItems[ 0 ] );
             // Verify
-            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
-            Assert.That( PasswordList.Editors[ 0 ].Key, Is.EqualTo( "abc" ) );
-            Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.True );
+            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 2 ) );
+            Assert.That( PasswordList.Editors[ 1 ].Key, Is.EqualTo( "abc" ) );
+            Assert.That( PasswordList.Editors[ 1 ].IsKeyReadonly, Is.True );
         }
 
         [ Test ]
@@ -88,7 +101,20 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Exercise
             PasswordList.Editors[ 0 ].CloseCommand.Execute( null );
             // Verify
-            Assert.That( PasswordList.Editors, Is.Empty );
+            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
+        }
+
+        [ Test ]
+        public void CloseLastEditorReplacesWithNew( )
+        {
+            // Set up
+            PasswordList.Editors[ 0 ].Key = "abcd";
+            // Exercise
+            PasswordList.Editors[ 0 ].CloseCommand.Execute( null );
+            // Verify
+            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
+            Assert.That( PasswordList.Editors[ 0 ].Key, Is.EqualTo( string.Empty ) );
+            Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.False );
         }
 
         [ Test ]

@@ -101,8 +101,8 @@ namespace Chwthewke.PasswordManager.Storage
                     byte[ ] hash = ExtractFromElement( passwordElement, HashElement, Convert.FromBase64String );
                     Guid masterPasswordId = ExtractFromElement( passwordElement, MasterPasswordIdElement, Guid.Parse );
                     Guid passwordSettingsId = ExtractFromElement( passwordElement, PasswordSettingsIdElement, Guid.Parse );
-                    DateTime creationDate = ExtractFromElement( passwordElement, TimestampElement, ExtractDateTime );
-                    DateTime modificationDate = ExtractFromElement( passwordElement, ModifiedElement, ExtractDateTime );
+                    DateTime creationDate = ExtractFromElement( passwordElement, TimestampElement, ExtractCreationDate );
+                    DateTime modificationDate = ExtractFromElement( passwordElement, ModifiedElement, s => ExtractModificationDate( s, creationDate ) );
                     string note = ExtractFromElement( passwordElement, NoteElement, x => x );
 
                     yield return new PasswordDigest( key, hash, masterPasswordId, passwordSettingsId, creationDate, modificationDate, note );
@@ -110,7 +110,18 @@ namespace Chwthewke.PasswordManager.Storage
             }
         }
 
-        private DateTime ExtractDateTime( string x )
+        private DateTime ExtractCreationDate( string s )
+        {
+            return ExtractDateTime( s, DateTime.Now );
+        }
+
+        private DateTime ExtractModificationDate( string s, DateTime creationDate )
+        {
+            DateTime modificationDate = ExtractDateTime( s, creationDate );
+            return modificationDate.CompareTo( creationDate ) < 0 ? creationDate : modificationDate;
+        }
+
+        private DateTime ExtractDateTime( string x, DateTime defaultValue )
         {
             return x == null ? new DateTime( ) : new DateTime( long.Parse( x ) );
         }

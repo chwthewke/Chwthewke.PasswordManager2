@@ -42,6 +42,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public event EventHandler CloseRequested;
 
+        public bool IsPristine
+        {
+            get { return Key == string.Empty && Note == string.Empty && _controller.MasterPassword.Length == 0 ; }
+        }
+
         public string Key
         {
             get { return _controller.Key; }

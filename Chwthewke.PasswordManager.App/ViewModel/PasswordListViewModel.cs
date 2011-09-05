@@ -41,7 +41,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                     return;
                 _filterString = value;
                 RaisePropertyChanged( ( ) => FilterString );
-                UpdateFilteredListView(  );
+                UpdateFilteredListView( );
             }
         }
 
@@ -87,6 +87,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             editor.StoreModified += StoreModified;
 
             Editors.Add( editor );
+
+            if ( _forcedEditor != null && _forcedEditor.IsPristine )
+                CloseEditor( _forcedEditor );
         }
 
         private void StoreModified( object sender, EventArgs e )
@@ -98,17 +101,23 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void EditorRequestedClose( object sender, EventArgs e )
         {
             PasswordEditorViewModel editor = sender as PasswordEditorViewModel;
-            if ( editor != null )
-                CloseEditor( editor );
-            EnforceAtLeastOneEditor( );
+            CloseEditor( editor );
         }
 
         private void CloseEditor( PasswordEditorViewModel editor )
         {
-            editor.CloseRequested -= EditorRequestedClose;
-            editor.StoreModified -= StoreModified;
-            Editors.Remove( editor );
+            if ( editor != null )
+            {
+                editor.CloseRequested -= EditorRequestedClose;
+                editor.StoreModified -= StoreModified;
+                Editors.Remove( editor );
+                if ( editor == _forcedEditor )
+                    _forcedEditor = null;
+            }
+
+            EnforceAtLeastOneEditor( );
         }
+
 
         private bool IsItemVisible( StoredPasswordViewModel item )
         {
@@ -120,6 +129,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             if ( _editors.Count == 0 )
                 OpenNewEditorInternal( string.Empty );
+            _forcedEditor = _editors[ 0 ];
         }
 
         private ObservableCollection<StoredPasswordViewModel> _visibleItems;
@@ -133,5 +143,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly IPasswordDatabase _passwordDatabase;
         private readonly PasswordEditorViewModelFactory _editorFactory;
         private readonly StoredPasswordViewModel.Factory _storedPasswordViewModelFactory;
+        private PasswordEditorViewModel _forcedEditor;
     }
 }

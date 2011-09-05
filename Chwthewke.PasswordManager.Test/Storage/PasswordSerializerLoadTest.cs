@@ -167,6 +167,58 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( passwordDigest.Note, Is.Null );
         }
 
+        [ Test ]
+        public void LoadSetsDefaultModificationTimeInVersion0File( )
+        {
+            // Set up
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
+                                   new XAttribute( PasswordSerializer.VersionAttribute, "0" ),
+                                   (XElement) new SerializedPassword( "aKey" ) { CreationTime = new DateTime( 123456789123L ) } ) );
+
+            // Exercise
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
+            // Verify
+            PasswordDigest passwordDigest = passwords.First( );
+            Assert.That( passwordDigest.ModificationTime, Is.EqualTo( passwordDigest.CreationTime ) );
+        }
+
+        [ Test ]
+        public void LoadDropsPasswordWithoutModificationTimeInVersion1File( )
+        {
+            // Set up
+            XElement element = (XElement) new SerializedPassword( "aKey" ) { CreationTime = new DateTime( 123456789123L ) };
+            
+            element.Elements( PasswordSerializer.ModifiedElement ).Remove( );
+            
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
+                                   new XAttribute( PasswordSerializer.VersionAttribute, "1" ),
+                                   element ) );
+
+            // Exercise
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
+            // Verify
+            Assert.That( passwords, Is.Empty );
+        }
+
+        [Test]
+        public void LoadFixesInconsistentModificationTimeInVersion1File( )
+        {
+            // Set up
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
+                                   new XAttribute( PasswordSerializer.VersionAttribute, "1" ),
+                                   ( XElement ) new SerializedPassword( "aKey" )
+                                                    {
+                                                        CreationTime = new DateTime( 123456789123L ),
+                                                        ModificationTime = new DateTime( 111111111111L )
+                                                    } ) );
+
+            // Exercise
+            IEnumerable<PasswordDigest> passwords = _serializer.Load( _passwordStore );
+            // Verify
+            PasswordDigest passwordDigest = passwords.First( );
+            Assert.That( passwordDigest.ModificationTime, Is.EqualTo( passwordDigest.CreationTime ) );
+        }
+
 
         private void SaveXml( XElement xElement )
         {

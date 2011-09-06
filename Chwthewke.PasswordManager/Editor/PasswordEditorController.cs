@@ -158,7 +158,9 @@ namespace Chwthewke.PasswordManager.Editor
 
             _key = Baseline.Key;
             Note = Baseline.Note;
+            
             SelectedGenerator = GeneratorById( Baseline.PasswordGeneratorId );
+            _iterationsByGenerator[ SelectedGenerator ] = Baseline.Iteration;
         }
 
         private PasswordDigest MakeDigest( )

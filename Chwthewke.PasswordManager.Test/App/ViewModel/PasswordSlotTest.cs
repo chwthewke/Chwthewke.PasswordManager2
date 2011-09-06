@@ -1,17 +1,21 @@
 using Chwthewke.PasswordManager.App.ViewModel;
+using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using NUnit.Framework;
+using Autofac;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
     [ TestFixture ]
+    [ Ignore ]
     public class PasswordSlotTest
     {
         [ SetUp ]
         public void SetUp( )
         {
             IPasswordGenerator generator = PasswordGenerators.Full;
-            _viewModel = new PasswordSlotViewModel( generator );
+            _controller = AppSetUp.TestContainer( ).Resolve<IPasswordEditorController>( );
+            _viewModel = new PasswordSlotViewModel( _controller, generator );
         }
 
         [ Test ]
@@ -52,5 +56,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         }
 
         private PasswordSlotViewModel _viewModel;
+        private IPasswordEditorController _controller;
     }
 }

@@ -8,6 +8,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
+    [ Ignore ]
     public class PasswordSerializerSaveTest
     {
         [ SetUp ]

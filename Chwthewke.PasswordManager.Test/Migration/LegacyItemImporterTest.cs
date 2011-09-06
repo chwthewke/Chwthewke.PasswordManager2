@@ -118,6 +118,7 @@ namespace Chwthewke.PasswordManager.Test.Migration
                                   It.IsAny<Guid>( ),
                                   passwordGenerator.Id,
                                   It.IsAny<DateTime?>( ),
+                                  It.IsAny<int>( ),
                                   It.IsAny<string>( ) );
         }
     }

@@ -9,7 +9,7 @@ namespace Chwthewke.PasswordManager.Storage
 {
     internal class PasswordSerializer : IPasswordSerializer
     {
-        public const int Version = 1;
+        public const int Version = 2;
 
         public const string PasswordStoreElement = "password-store";
         public const string VersionAttribute = "version";
@@ -21,7 +21,8 @@ namespace Chwthewke.PasswordManager.Storage
         public const string TimestampElement = "timestamp";
         public const string NoteElement = "note";
         public const string ModifiedElement = "modified";
-
+        public const string IterationElement = "iteration";
+                            
         public void Save( IEnumerable<PasswordDigest> passwordDigests, IPasswordStore store )
         {
             Save( passwordDigests, store.OpenWriter );
@@ -93,7 +94,8 @@ namespace Chwthewke.PasswordManager.Storage
                                               new Requirement { ElementName = MasterPasswordIdElement, StartingVersion = 0 },
                                               new Requirement { ElementName = PasswordSettingsIdElement, StartingVersion = 0 },
                                               new Requirement { ElementName = TimestampElement, StartingVersion = 0 },
-                                              new Requirement { ElementName = ModifiedElement, StartingVersion = 1 } ) )
+                                              new Requirement { ElementName = ModifiedElement, StartingVersion = 1 },
+                                              new Requirement { ElementName = IterationElement, StartingVersion = 2 }) )
 
                         continue;
 
@@ -104,10 +106,16 @@ namespace Chwthewke.PasswordManager.Storage
                     DateTime creationDate = ExtractFromElement( passwordElement, TimestampElement, ExtractCreationDate );
                     DateTime modificationDate = ExtractFromElement( passwordElement, ModifiedElement, s => ExtractModificationDate( s, creationDate ) );
                     string note = ExtractFromElement( passwordElement, NoteElement, x => x );
+                    int iteration = ExtractFromElement( passwordElement, IterationElement, ExtractIteration );
 
-                    yield return new PasswordDigest( key, hash, masterPasswordId, passwordSettingsId, creationDate, modificationDate, note );
+                    yield return new PasswordDigest( key, hash, masterPasswordId, passwordSettingsId, creationDate, modificationDate, iteration, note );
                 }
             }
+        }
+
+        private int ExtractIteration( string s )
+        {
+            return string.IsNullOrEmpty( s ) ? 0 : int.Parse( s );
         }
 
         private DateTime ExtractCreationDate( string s )

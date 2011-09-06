@@ -9,6 +9,7 @@ namespace Chwthewke.PasswordManager.Storage
                                Guid masterPasswordId,
                                Guid passwordGeneratorId,
                                DateTime? creationTime,
+                               int iteration,
                                string note );
     }
 }

@@ -19,12 +19,15 @@ namespace Chwthewke.PasswordManager.Storage
 
         public string Note { get; private set; }
 
+        public int Iteration { get; private set; }
+
         public PasswordDigest( string key,
                                byte[ ] hash,
                                Guid masterPasswordId,
                                Guid passwordGeneratorId,
                                DateTime creationTime,
                                DateTime modificationTime,
+                               int iteration,
                                string note )
         {
             if ( key == null )
@@ -38,6 +41,7 @@ namespace Chwthewke.PasswordManager.Storage
             PasswordGeneratorId = passwordGeneratorId;
             CreationTime = creationTime;
             ModificationTime = modificationTime;
+            Iteration = iteration;
             Note = note;
         }
 

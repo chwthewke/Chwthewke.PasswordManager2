@@ -42,6 +42,7 @@ namespace Chwthewke.PasswordManager.App.Services
                                                                    passwordDigest.PasswordGeneratorId,
                                                                    passwordDigest.CreationTime,
                                                                    passwordDigest.ModificationTime,
+                                                                   passwordDigest.Iteration,
                                                                    passwordDigest.Note );
                     _passwordDatabase.AddOrUpdate( fixedCopy );
                 }

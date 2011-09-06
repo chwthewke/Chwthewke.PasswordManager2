@@ -25,5 +25,7 @@ namespace Chwthewke.PasswordManager.Editor
         void SavePassword( );
         void DeletePassword( );
         void ReloadBaseline( );
+        void IncreaseIteration( IPasswordGenerator generator );
+        void DecreaseIteration( IPasswordGenerator generator );
     }
 }

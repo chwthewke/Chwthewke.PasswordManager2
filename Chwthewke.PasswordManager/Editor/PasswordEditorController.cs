@@ -25,6 +25,8 @@ namespace Chwthewke.PasswordManager.Editor
             MasterPassword = new SecureString( );
             Generators = generators;
 
+            _iterationsByGenerator = Generators.ToDictionary( g => g, g => 0 );
+
             if ( password != null )
                 InitializeWith( password );
         }
@@ -90,6 +92,18 @@ namespace Chwthewke.PasswordManager.Editor
             get { return Baseline != null; }
         }
 
+        public void IncreaseIteration( IPasswordGenerator generator )
+        {
+            _iterationsByGenerator[ generator ]++;
+        }
+
+        public void DecreaseIteration( IPasswordGenerator generator )
+        {
+            if ( _iterationsByGenerator[ generator ] <= 0 )
+                return;
+            _iterationsByGenerator[ generator ]--;
+        }
+
         private DateTime? CreationTime
         {
             get { return Baseline == null ? (DateTime?) null : Baseline.CreationTime; }
@@ -104,7 +118,7 @@ namespace Chwthewke.PasswordManager.Editor
                 return string.Empty;
             if ( MasterPassword.Length == 0 )
                 return string.Empty;
-            return generator.MakePassword( Key, MasterPassword );
+            return generator.MakePasswords( Key, MasterPassword ).ElementAt( _iterationsByGenerator[ generator ] );
         }
 
 
@@ -154,7 +168,7 @@ namespace Chwthewke.PasswordManager.Editor
             Guid masterPasswordId = MasterPasswordId.HasValue ? MasterPasswordId.Value : _newGuidFactory( );
 
             PasswordDigest newDigest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id,
-                                                         CreationTime, Note );
+                                                         CreationTime, _iterationsByGenerator[ SelectedGenerator ], Note );
             return newDigest;
         }
 
@@ -167,6 +181,8 @@ namespace Chwthewke.PasswordManager.Editor
         private readonly IMasterPasswordMatcher _masterPasswordMatcher;
         private readonly IPasswordDigester _digester;
         private readonly Func<Guid> _newGuidFactory;
+
+        private readonly IDictionary<IPasswordGenerator, int> _iterationsByGenerator;
 
         private string _key = string.Empty;
 

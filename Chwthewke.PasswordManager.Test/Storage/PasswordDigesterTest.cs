@@ -28,7 +28,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                 .Append( generatedPassword, Encoding.UTF8 )
                 .GetValue( );
             // Exercise
-            PasswordDigest digest = _digester.Digest( "aKey", generatedPassword, default( Guid ), default( Guid ), null,
+            PasswordDigest digest = _digester.Digest( "aKey", generatedPassword, default( Guid ), default( Guid ), null, 1,
                                                       "" );
             // Verify
             Assert.That( digest.Hash, Is.EqualTo( expectedHash ) );
@@ -42,7 +42,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _timeProviderMock.Setup( p => p.Now ).Returns( now );
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ),
-                                                      null, "" );
+                                                      null, 0, "" );
             // Verify
             Assert.That( digest.CreationTime, Is.EqualTo( now ) );
         }
@@ -55,7 +55,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _timeProviderMock.Setup( p => p.Now ).Returns( now );
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ),
-                                                      new DateTime( 123456787654321L ), "" );
+                                                      new DateTime( 123456787654321L ), 1, "" );
             // Verify
             Assert.That( digest.CreationTime, Is.EqualTo( new DateTime( 123456787654321L ) ) );
         }
@@ -68,7 +68,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _timeProviderMock.Setup( p => p.Now ).Returns( now );
             // Exercise
             PasswordDigest digest = _digester.Digest( "aKey", "generatedPassword", default( Guid ), default( Guid ),
-                                                      new DateTime( 123456787654321L ), "" );
+                                                      new DateTime( 123456787654321L ), 3, "" );
             // Verify
             Assert.That( digest.ModificationTime, Is.EqualTo( now ) );
         }
@@ -84,12 +84,13 @@ namespace Chwthewke.PasswordManager.Test.Storage
             const string note = "A nonsensical Note";
             // Exercise
             PasswordDigest digest = _digester.Digest( key, "generatedPassword", masterPasswordId, passwordGeneratorId,
-                                                      null, note );
+                                                      null, 4, note );
             // Verify
             Assert.That( digest.Key, Is.EqualTo( key ) );
             Assert.That( digest.MasterPasswordId, Is.EqualTo( masterPasswordId ) );
             Assert.That( digest.PasswordGeneratorId, Is.EqualTo( passwordGeneratorId ) );
             Assert.That( digest.Note, Is.EqualTo( note ) );
+            Assert.That( digest.Iteration, Is.EqualTo( 4 ) );
         }
 
         private IPasswordDigester _digester;

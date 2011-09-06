@@ -229,7 +229,30 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsPasswordLoaded, Is.True );
         }
 
-        [ Test ]
+        [Test]
+        public void SaveIteratedPassword( )
+        {
+            // Setup
+            SecureString masterPassword = "1234".ToSecureString( );
+            Guid guid = StorePasswordAndGetMasterPasswordId( "abc", PasswordGenerators.AlphaNumeric, masterPassword );
+
+            Controller.Key = "abcd";
+            Controller.MasterPassword = masterPassword;
+            Controller.Note = "some note";
+            Controller.SelectedGenerator = PasswordGenerators.Full;
+            Controller.IncreaseIteration( PasswordGenerators.Full );
+
+
+            PasswordDigest expectedDigest = Digester.Digest( "abcd",
+                                                             PasswordGenerators.Full.MakePasswords( "abcd", masterPassword ).ElementAt( 1 ),
+                                                             guid, PasswordGenerators.Full.Id, null, 1, "some note" );
+            // Exercise
+            Controller.SavePassword( );
+            // Verify
+            Assert.That( PasswordDatabase.FindByKey( "abcd" ), Is.EqualTo( expectedDigest ) );
+        }
+
+        [Test]
         public void SavePasswordWithKnownMasterPassword( )
         {
             // Setup
@@ -244,7 +267,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             PasswordDigest expectedDigest = Digester.Digest( "abcd",
                                                              PasswordGenerators.Full.MakePassword( "abcd", masterPassword ),
-                                                             guid, PasswordGenerators.Full.Id, null, "some note" );
+                                                             guid, PasswordGenerators.Full.Id, null, 0, "some note" );
             // Exercise
             Controller.SavePassword( );
             // Verify

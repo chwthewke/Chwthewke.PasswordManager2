@@ -25,7 +25,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _guidToColor = guidToColor;
             _slots =
                 new ObservableCollection<PasswordSlotViewModel>(
-                    _controller.Generators.Select( g => new PasswordSlotViewModel( g ) ) );
+                    _controller.Generators.Select( g => new PasswordSlotViewModel( _controller, g ) ) );
 
             foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
                 passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;
@@ -285,9 +285,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             foreach ( var slot in Slots )
             {
-                // move controller reference into slots ?
-                slot.Content = _controller.GeneratedPassword( slot.Generator );
-                slot.IsSelected = _controller.SelectedGenerator == slot.Generator;
+                slot.Update(  );
             }
 
             RequiredGuidColor = ConvertGuid( _controller.ExpectedMasterPasswordId );

@@ -17,6 +17,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         public DateTime ModificationTime { get; set; }
 
+        public int Iteration { get; set; }
+
         public string Note { get; set; }
 
         public PasswordDigestBuilder( )
@@ -34,7 +36,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         private PasswordDigest Build( )
         {
             return new PasswordDigest( Key, Hash, MasterPasswordId, PasswordGeneratorId, CreationTime, ModificationTime,
-                                       Note );
+                                       Iteration, Note );
         }
     }
 }

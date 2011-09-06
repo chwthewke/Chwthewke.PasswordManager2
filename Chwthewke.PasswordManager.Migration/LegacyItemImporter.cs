@@ -38,7 +38,7 @@ namespace Chwthewke.PasswordManager.Migration
                                                : PasswordGenerators.Full;
             string password = generator.MakePassword( legacyItem.Key, masterPassword );
             PasswordDigest importedDigest = _passwordDigester.Digest( legacyItem.Key, password, masterPasswordId,
-                                                                      generator.Id, null, "Imported from v1" );
+                                                                      generator.Id, null, 0, "Imported from v1" );
             _passwordDatabase.AddOrUpdate( importedDigest );
         }
 

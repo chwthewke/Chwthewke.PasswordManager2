@@ -22,6 +22,7 @@ namespace Chwthewke.PasswordManager.Storage
                                       Guid masterPasswordId,
                                       Guid passwordGeneratorId,
                                       DateTime? creationTime,
+                                      int iteration,
                                       string note )
         {
             byte[ ] hash = _hashFactory.GetHash( )
@@ -29,7 +30,7 @@ namespace Chwthewke.PasswordManager.Storage
                 .Append( generatedPassword, Encoding.UTF8 )
                 .GetValue( );
             return new PasswordDigest( key, hash, masterPasswordId, passwordGeneratorId,
-                                       creationTime ?? _timeProvider.Now, _timeProvider.Now, note );
+                                       creationTime ?? _timeProvider.Now, _timeProvider.Now, iteration, note );
         }
 
 

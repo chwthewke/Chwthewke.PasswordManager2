@@ -49,12 +49,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
             Assert.That( PasswordList.Editors[ 0 ].Key, Is.EqualTo( string.Empty ) );
             Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.False );
-        } 
+        }
 
-        [ Test ]
+        [Test]
         public void AddEmptyEditorToList( )
         {
             // Setup
+            PasswordList.Editors[ 0 ].Key = "ab";
             // Exercise
             PasswordList.OpenEditorCommand.Execute( null );
             // Verify
@@ -63,10 +64,24 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors[ 1 ].IsKeyReadonly, Is.False );
         }
 
-        [ Test ]
+        [Test]
+        public void AddEmptyEditorToListReusesInitialEditor( )
+        {
+            // Setup
+            // Exercise
+            PasswordList.OpenEditorCommand.Execute( null );
+            // Verify
+            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
+            Assert.That( PasswordList.Editors[ 0 ].Key, Is.EqualTo( string.Empty ) );
+            Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.False );
+        }
+
+        [Test]
         public void LoadPasswordIntoNewEditor( )
         {
             // Setup
+            PasswordList.Editors[ 0 ].Key = "ab";
+
             PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
             PasswordList.UpdateList( );
             // Exercise
@@ -75,6 +90,21 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors.Count, Is.EqualTo( 2 ) );
             Assert.That( PasswordList.Editors[ 1 ].Key, Is.EqualTo( "abc" ) );
             Assert.That( PasswordList.Editors[ 1 ].IsKeyReadonly, Is.True );
+        }
+
+        [Test]
+        public void LoadPasswordIntoNewEditorReusesPristineInitialEditor( )
+        {
+            // Setup
+
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
+            PasswordList.UpdateList( );
+            // Exercise
+            PasswordList.OpenNewEditor( PasswordList.VisibleItems[ 0 ] );
+            // Verify
+            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
+            Assert.That( PasswordList.Editors[ 0 ].Key, Is.EqualTo( "abc" ) );
+            Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.True );
         }
 
         [ Test ]

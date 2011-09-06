@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Security;
 
 namespace Chwthewke.PasswordManager.Engine
@@ -8,5 +9,7 @@ namespace Chwthewke.PasswordManager.Engine
         Guid Id { get; }
 
         string MakePassword( string key, SecureString masterPassword );
+
+        IEnumerable<string> MakePasswords( string key, SecureString masterPassword );
     }
 }

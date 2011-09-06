@@ -1,6 +1,8 @@
 using System;
+using System.Collections.Generic;
 using System.Security;
 using System.Text;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Engine
 {
@@ -39,7 +41,23 @@ namespace Chwthewke.PasswordManager.Engine
 
         public string MakePassword( string key, SecureString masterPassword )
         {
-            byte[ ] hash = HashTogetherWithSalt( key, masterPassword );
+            return MakePasswords( key, masterPassword ).First( );
+        }
+
+        public IEnumerable<string> MakePasswords( string key, SecureString masterPassword )
+        {
+            string previousPassword = key;
+            while ( true )
+            {
+                byte[ ] hash = HashTogetherWithSalt( previousPassword, masterPassword );
+                yield return previousPassword = PasswordOfHash( hash );
+            }
+// ReSharper disable FunctionNeverReturns
+        }
+// ReSharper restore FunctionNeverReturns
+
+        private string PasswordOfHash( byte[ ] hash )
+        {
             byte[ ] passwordBytes = _converter.ConvertBytesToDigits( hash, _length );
             return _alphabet.ToString( passwordBytes );
         }

@@ -8,7 +8,6 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
-    [ Ignore ]
     public class PasswordSerializerSaveTest
     {
         [ SetUp ]
@@ -44,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
             XAttribute versionAttribute = xElement.Attribute( PasswordSerializer.VersionAttribute );
             Assert.That( versionAttribute, Is.Not.Null );
-            Assert.That( versionAttribute.Value, Is.EqualTo( "1" ) );
+            Assert.That( versionAttribute.Value, Is.EqualTo( "2" ) );
         }
 
         [ Test ]

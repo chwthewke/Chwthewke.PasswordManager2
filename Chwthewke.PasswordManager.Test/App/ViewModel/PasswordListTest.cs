@@ -1,6 +1,7 @@
 using System.Linq;
 using Autofac;
 using Chwthewke.PasswordManager.App.ViewModel;
+using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
@@ -42,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         public void ListInitiallyHasEmptyEditor( )
         {
             // Set up
-            
+
             // Exercise
 
             // Verify
@@ -51,7 +52,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void AddEmptyEditorToList( )
         {
             // Setup
@@ -64,7 +65,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors[ 1 ].IsKeyReadonly, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void AddEmptyEditorToListReusesInitialEditor( )
         {
             // Setup
@@ -76,13 +77,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void LoadPasswordIntoNewEditor( )
         {
             // Setup
             PasswordList.Editors[ 0 ].Key = "ab";
 
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc", PasswordGeneratorId = PasswordGenerators.Full.Id } );
             PasswordList.UpdateList( );
             // Exercise
             PasswordList.OpenNewEditor( PasswordList.VisibleItems[ 0 ] );
@@ -92,12 +93,12 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( PasswordList.Editors[ 1 ].IsKeyReadonly, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void LoadPasswordIntoNewEditorReusesPristineInitialEditor( )
         {
             // Setup
 
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
+            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc", PasswordGeneratorId = PasswordGenerators.Full.Id } );
             PasswordList.UpdateList( );
             // Exercise
             PasswordList.OpenNewEditor( PasswordList.VisibleItems[ 0 ] );

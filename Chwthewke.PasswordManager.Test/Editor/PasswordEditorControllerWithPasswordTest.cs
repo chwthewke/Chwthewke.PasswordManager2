@@ -43,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.MasterPasswordId, Is.EqualTo( newMasterPasswordId ) );
         }
 
-        [ Test ]
+        [Test]
         public void ChangeNoteMakesEditorDirty( )
         {
             // Setup
@@ -55,7 +55,18 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsSaveable, Is.True );
         }
 
-        [ Test ]
+        [Test]
+        public void ChangeNoteMakesEditorDirtyEvenWithoutMasterPassword( )
+        {
+            // Setup
+            // Exercise
+            Controller.Note = "Now a note.";
+            // Verify
+            Assert.That( Controller.Note, Is.EqualTo( "Now a note." ) );
+            Assert.That( Controller.IsSaveable, Is.True );
+        }
+
+        [Test]
         public void ChangeSelectedGeneratorMakesEditorDirty( )
         {
             // Setup
@@ -79,7 +90,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( Controller.IsSaveable, Is.False );
         }
 
-        [ Test ]
+        [Test]
         public void SaveWithDifferentNoteAndGeneratorUpdatesStore( )
         {
             // Setup
@@ -97,6 +108,23 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( digest.Hash, Is.Not.EqualTo( new byte[ 0 ] ) );
             Assert.That( digest.Note, Is.EqualTo( note ) );
             Assert.That( digest.PasswordGeneratorId, Is.EqualTo( generator.Id ) );
+        }
+
+        [Test]
+        public void SaveWithDifferentNoteAndWithoutMasterPassworsUpdatesStore( )
+        {
+            // Setup
+            byte[ ] expectedHash = PasswordDatabase.FindByKey( "abde" ).Hash;
+
+            const string note = "a somewhat longer note.";
+            Controller.Note = note;
+            // Exercise
+            Controller.SavePassword( );
+            // Verify
+
+            PasswordDigest digest = PasswordDatabase.FindByKey( "abde" );
+            Assert.That( digest.Hash, Is.EqualTo( expectedHash ) );
+            Assert.That( digest.Note, Is.EqualTo( note ) );
         }
 
 

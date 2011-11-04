@@ -70,13 +70,8 @@ namespace Chwthewke.PasswordManager.Editor
         {
             get
             {
-                if ( String.IsNullOrWhiteSpace( _key ) || MasterPassword.Length == 0 || SelectedGenerator == null )
-                    return false;
-
-                if ( Baseline == null )
-                    return true;
-
-                return !BaselineComparer.Equals( Baseline, MakeDigest( ) );
+                PasswordDigest pendingDigest = TryMakeDigest( );
+                return pendingDigest != null && !BaselineComparer.Equals( Baseline, pendingDigest );
             }
         }
 
@@ -127,7 +122,7 @@ namespace Chwthewke.PasswordManager.Editor
             if ( !IsSaveable )
                 return;
 
-            Baseline = MakeDigest( );
+            Baseline = TryMakeDigest( );
             _passwordDatabase.AddOrUpdate( Baseline );
         }
 
@@ -158,20 +153,39 @@ namespace Chwthewke.PasswordManager.Editor
 
             _key = Baseline.Key;
             Note = Baseline.Note;
-            
+
             SelectedGenerator = GeneratorById( Baseline.PasswordGeneratorId );
             _iterationsByGenerator[ SelectedGenerator ] = Baseline.Iteration;
         }
 
-        private PasswordDigest MakeDigest( )
+
+        private PasswordDigest TryMakeDigest( )
         {
+            if ( String.IsNullOrWhiteSpace( _key ) || SelectedGenerator == null )
+                return null;
+
+            if ( MasterPassword.Length == 0 )
+            {
+                if ( Baseline == null )
+                    return null;
+                if ( Key != Baseline.Key )
+                    return null;
+                if ( SelectedGenerator.Id != Baseline.PasswordGeneratorId )
+                    return null;
+                if ( _iterationsByGenerator[ SelectedGenerator ] != Baseline.Iteration )
+                    return null;
+                return new PasswordDigest(
+                    Key, Baseline.Hash, Baseline.MasterPasswordId,
+                    Baseline.PasswordGeneratorId, Baseline.CreationTime,
+                    DateTime.Now, Baseline.Iteration, Note );
+            }
+
             string password = GeneratedPassword( SelectedGenerator );
 
             Guid masterPasswordId = MasterPasswordId.HasValue ? MasterPasswordId.Value : _newGuidFactory( );
 
-            PasswordDigest newDigest = _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id,
-                                                         CreationTime, _iterationsByGenerator[ SelectedGenerator ], Note );
-            return newDigest;
+            return _digester.Digest( Key, password, masterPasswordId, SelectedGenerator.Id,
+                                     CreationTime, _iterationsByGenerator[ SelectedGenerator ], Note );
         }
 
         private IPasswordGenerator GeneratorById( Guid passwordGeneratorId )

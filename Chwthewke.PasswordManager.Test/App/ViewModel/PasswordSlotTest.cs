@@ -7,14 +7,13 @@ using Autofac;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
     [ TestFixture ]
-    [ Ignore ]
     public class PasswordSlotTest
     {
         [ SetUp ]
         public void SetUp( )
         {
             IPasswordGenerator generator = PasswordGenerators.Full;
-            _controller = AppSetUp.TestContainer( ).Resolve<IPasswordEditorController>( );
+            _controller = AppSetUp.TestContainer( ).Resolve<PasswordEditorControllerFactory>( ).PasswordEditorControllerFor( "" );
             _viewModel = new PasswordSlotViewModel( _controller, generator );
         }
 

@@ -22,7 +22,7 @@ namespace Chwthewke.PasswordManager.Storage
         public const string NoteElement = "note";
         public const string ModifiedElement = "modified";
         public const string IterationElement = "iteration";
-                            
+
         public void Save( IEnumerable<PasswordDigest> passwordDigests, IPasswordStore store )
         {
             Save( passwordDigests, store.OpenWriter );
@@ -58,6 +58,7 @@ namespace Chwthewke.PasswordManager.Storage
                                          new XElement( MasterPasswordIdElement, password.MasterPasswordId.ToString( ) ),
                                          new XElement( PasswordSettingsIdElement,
                                                        password.PasswordGeneratorId.ToString( ) ),
+                                         new XElement( IterationElement, password.Iteration ),
                                          new XElement( TimestampElement, password.CreationTime.Ticks ),
                                          new XElement( ModifiedElement, password.ModificationTime.Ticks ) );
             if ( password.Note != null )
@@ -95,7 +96,7 @@ namespace Chwthewke.PasswordManager.Storage
                                               new Requirement { ElementName = PasswordSettingsIdElement, StartingVersion = 0 },
                                               new Requirement { ElementName = TimestampElement, StartingVersion = 0 },
                                               new Requirement { ElementName = ModifiedElement, StartingVersion = 1 },
-                                              new Requirement { ElementName = IterationElement, StartingVersion = 2 }) )
+                                              new Requirement { ElementName = IterationElement, StartingVersion = 2 } ) )
 
                         continue;
 
@@ -108,7 +109,8 @@ namespace Chwthewke.PasswordManager.Storage
                     string note = ExtractFromElement( passwordElement, NoteElement, x => x );
                     int iteration = ExtractFromElement( passwordElement, IterationElement, ExtractIteration );
 
-                    yield return new PasswordDigest( key, hash, masterPasswordId, passwordSettingsId, creationDate, modificationDate, iteration, note );
+                    yield return
+                        new PasswordDigest( key, hash, masterPasswordId, passwordSettingsId, creationDate, modificationDate, iteration, note );
                 }
             }
         }

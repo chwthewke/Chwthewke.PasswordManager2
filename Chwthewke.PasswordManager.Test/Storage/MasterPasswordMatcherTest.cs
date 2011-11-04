@@ -11,7 +11,6 @@ using System.Linq;
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
-    [ Ignore ]
     public class MasterPasswordMatcherTest
     {
         private readonly Guid _masterPasswordId = Guid.Parse( "DAAB4016-AF5C-4C79-900E-B01E8D771C12" );
@@ -31,8 +30,39 @@ namespace Chwthewke.PasswordManager.Test.Storage
                 .InjectProperties( this );
         }
 
-        [ Test ]
+        [Test]
         public void FindMasterPasswordInStoreWhenDigestMatches( )
+        {
+            // Setup
+            SecureString masterPassword = "toto".ToSecureString( );
+            PasswordDigest matchingDigest =
+                Digester.Digest( "key1",
+                                 PasswordGenerators.Full.MakePasswords( "key1", masterPassword ).ElementAt( 0 ),
+                                 _masterPasswordId,
+                                 PasswordGenerators.Full.Id,
+                                 new DateTime( ),
+                                 0,
+                                 string.Empty );
+            PasswordDatabase.AddOrUpdate( matchingDigest );
+
+            PasswordDigest notMatchingDigest =
+                Digester.Digest( "key2",
+                                 PasswordGenerators.Full.MakePassword( "key2", "tata".ToSecureString( ) ),
+                                 Guid.NewGuid( ),
+                                 PasswordGenerators.Full.Id,
+                                 new DateTime( ),
+                                 0,
+                                 string.Empty );
+            PasswordDatabase.AddOrUpdate( notMatchingDigest );
+            // Exercise
+            Guid? guid = MasterPasswordMatcher.IdentifyMasterPassword( masterPassword );
+            // Verify
+            Assert.That( guid.HasValue, Is.True );
+            Assert.That( guid, Is.EqualTo( _masterPasswordId ) );
+        }
+
+        [Test]
+        public void FindMasterPasswordInStoreWhenDigestHasLaterIteration( )
         {
             // Setup
             SecureString masterPassword = "toto".ToSecureString( );

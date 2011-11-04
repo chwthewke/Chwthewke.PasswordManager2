@@ -8,7 +8,6 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
-    [ Ignore ]
     public class PasswordDatabaseTest
     {
 // ReSharper disable UnusedAutoPropertyAccessor.Global

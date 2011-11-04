@@ -134,6 +134,26 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( passwordSettingsIdElement.Value, Is.EqualTo( "34579b9f-8ac1-464a-805a-abe564da8848" ).IgnoreCase );
         }
 
+        [ Test ]
+        public void SerializeIterationToElement( )
+        {
+            // Set up
+            _passwords.Add( new PasswordDigestBuilder
+                                {
+                                    Key = "key",
+                                    Hash = new byte[ ] { 0x55, 0xda },
+                                    PasswordGeneratorId = new Guid( "34579b9f-8ac1-464a-805a-abe564da8848" ),
+                                    Iteration = 2
+                                } );
+            // Exercise
+            _serializer.Save( _passwords, _passwordStore );
+            // Verify
+            XElement rootElement = ReadSerializedXml( );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
+
+            XElement iterationElement = SingleChild( passwordElement, PasswordSerializer.IterationElement );
+            Assert.That( iterationElement.Value, Is.EqualTo( "2" ) );
+        }
 
         [ Test ]
         public void SerializePasswordCreationTimestampToElement( )

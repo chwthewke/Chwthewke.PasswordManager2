@@ -33,7 +33,7 @@ namespace Chwthewke.PasswordManager.Storage
             IPasswordGenerator generator = _generators.FirstOrDefault( g => g.Id == dig.PasswordGeneratorId );
             if ( generator == null )
                 return false;
-            string generatedPassword = generator.MakePassword( dig.Key, masterPassword );
+            string generatedPassword = generator.MakePasswords( dig.Key, masterPassword ).ElementAt( dig.Iteration );
             return _hashFactory.GetHash( )
                 .Append( PasswordDigester.DigestSalt, Encoding.UTF8 )
                 .Append( generatedPassword, Encoding.UTF8 )

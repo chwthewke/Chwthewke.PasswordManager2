@@ -63,6 +63,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void UpdateList( )
         {
+            _passwordDatabase.Reload( );
+
             _items = new ObservableCollection<StoredPasswordViewModel>(
                 from password in _passwordDatabase.Passwords
                 orderby password.Key
@@ -70,7 +72,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 );
 
             foreach ( PasswordEditorViewModel editor in Editors )
-                editor.UpdateFromStore( );
+                editor.UpdateFromDatabase( );
 
             UpdateFilteredListView( );
         }
@@ -82,6 +84,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void OpenNewEditorInternal( string passwordKey )
         {
+            UpdateList( );
             PasswordEditorViewModel editor = _editorFactory.PasswordEditorFor( passwordKey );
             editor.CloseRequested += EditorRequestedClose;
             editor.StoreModified += StoreModified;

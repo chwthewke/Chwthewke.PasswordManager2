@@ -23,7 +23,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 
             AddPassword( "abc", "A note", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
             // Exercise
-            ViewModel.UpdateFromStore( );
+            ViewModel.UpdateFromDatabase( );
             // Verify
             Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.True );
             Assert.That( canSaveChanged, Is.True );
@@ -40,7 +40,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 
             AddPassword( "abc", "A note", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
             // Exercise
-            ViewModel.UpdateFromStore( );
+            ViewModel.UpdateFromDatabase( );
             // Verify
             Assert.That( ViewModel.Note, Is.EqualTo( string.Empty ) );
             Assert.That( ViewModel.Slots.First( s => s.Generator == PasswordGenerators.Full ).IsSelected, Is.True );

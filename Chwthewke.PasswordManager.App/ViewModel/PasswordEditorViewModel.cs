@@ -178,7 +178,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Update( );
         }
 
-        public void UpdateFromStore( )
+        public void UpdateFromDatabase( )
         {
             _controller.ReloadBaseline( );
             Update( );

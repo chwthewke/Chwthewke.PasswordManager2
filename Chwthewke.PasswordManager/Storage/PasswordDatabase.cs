@@ -84,7 +84,7 @@ namespace Chwthewke.PasswordManager.Storage
             _passwordSerializer.Save( _passwords.Values, Source );
         }
 
-        private IPasswordStore _source = new NullPasswordStore( );
+        private IPasswordStore _source;
 
         private readonly IDictionary<string, PasswordDigest> _passwords = new Dictionary<string, PasswordDigest>( );
         private readonly IPasswordSerializer _passwordSerializer;
@@ -92,14 +92,24 @@ namespace Chwthewke.PasswordManager.Storage
 
     internal class NullPasswordStore : IPasswordStore
     {
+        public NullPasswordStore( IPasswordSerializer serializer )
+        {
+            serializer.Save( Enumerable.Empty<PasswordDigest>(  ), this );
+            _nullStore = _sw.ToString( );
+            _sw = null;
+        }
+
         public TextReader OpenReader( )
         {
-            return TextReader.Null;
+            return new StringReader( _nullStore );
         }
 
         public TextWriter OpenWriter( )
         {
-            return TextWriter.Null;
+            return _sw;
         }
+
+        private readonly StringWriter _sw = new StringWriter( );
+        private readonly string _nullStore;
     }
 }

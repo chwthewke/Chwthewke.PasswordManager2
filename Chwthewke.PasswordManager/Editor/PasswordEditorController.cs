@@ -138,7 +138,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         public void ReloadBaseline( )
         {
-            _passwordDatabase.Reload( );
+            //_passwordDatabase.Reload( );
             Baseline = _passwordDatabase.FindByKey( Key );
         }
 

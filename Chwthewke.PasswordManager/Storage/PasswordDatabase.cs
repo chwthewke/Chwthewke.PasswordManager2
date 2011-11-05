@@ -94,6 +94,7 @@ namespace Chwthewke.PasswordManager.Storage
     {
         public NullPasswordStore( IPasswordSerializer serializer )
         {
+            _sw = new StringWriter( );
             serializer.Save( Enumerable.Empty<PasswordDigest>(  ), this );
             _nullStore = _sw.ToString( );
             _sw = null;
@@ -106,7 +107,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         public TextWriter OpenWriter( )
         {
-            return _sw;
+            return _sw ?? TextWriter.Null;
         }
 
         private readonly StringWriter _sw = new StringWriter( );

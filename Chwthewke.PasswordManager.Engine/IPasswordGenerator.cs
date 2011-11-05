@@ -4,6 +4,7 @@ using System.Security;
 
 namespace Chwthewke.PasswordManager.Engine
 {
+    [Obsolete]
     public interface IPasswordGenerator
     {
         Guid Id { get; }

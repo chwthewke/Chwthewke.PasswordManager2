@@ -4,6 +4,7 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Storage
 {
+    [ Obsolete ]
     internal class PasswordDigester : IPasswordDigester
     {
         public PasswordDigester( IHashFactory hashFactory, ITimeProvider timeProvider )

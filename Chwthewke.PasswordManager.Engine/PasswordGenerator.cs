@@ -6,6 +6,7 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Engine
 {
+    [Obsolete]
     internal class PasswordGenerator : IPasswordGenerator
     {
         public const string Salt = "tsU&yUaZulAs4eOV";
@@ -27,8 +28,6 @@ namespace Chwthewke.PasswordManager.Engine
                 throw new ArgumentNullException( "converter" );
             if ( alphabet == null )
                 throw new ArgumentNullException( "alphabet" );
-            if ( converter.Base != alphabet.Length )
-                throw new ArgumentException( "The converter's base must match the alphabet length" );
             if ( converter.BytesNeeded( length ) > hashFactory.HashSize )
                 throw new ArgumentException( "Requested password length too large", "length" );
 
@@ -58,8 +57,7 @@ namespace Chwthewke.PasswordManager.Engine
 
         private string PasswordOfHash( byte[ ] hash )
         {
-            byte[ ] passwordBytes = _converter.ConvertBytesToDigits( hash, _length );
-            return _alphabet.ToString( passwordBytes );
+            return _alphabet.ToString( _converter.ConvertBytesToDigits( hash, _length ) );
         }
 
         private byte[ ] HashTogetherWithSalt( string key, SecureString masterPassword )

@@ -3,6 +3,7 @@ using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
+    [Obsolete]
     internal class Alphabet
     {
         private readonly string _symbols;

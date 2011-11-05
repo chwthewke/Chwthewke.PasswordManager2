@@ -2,6 +2,7 @@ using System;
 
 namespace Chwthewke.PasswordManager.Storage
 {
+    [Obsolete]
     public interface IPasswordDigester
     {
         PasswordDigest Digest( string key,

@@ -4,16 +4,15 @@ using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Engine
 {
-    public abstract class BaseConverterTestBase
+    [ TestFixture ]
+    public class BaseConverterTest
     {
-        internal abstract IBaseConverter GetConverter( int theBase );
-
         [ Test ]
         public void Test12Base64DigitsNeeds72Bits( )
         {
             // Setup
             // Exercise
-            IBaseConverter converter = GetConverter( 64 );
+            BaseConverter converter = new BaseConverter( 64 );
             // Verify
             Assert.That( converter.BytesNeeded( 12 ), Is.EqualTo( 9 ) );
         }
@@ -23,7 +22,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         {
             // Setup
             // Exercise
-            IBaseConverter converter = GetConverter( 92 );
+            BaseConverter converter = new BaseConverter( 92 );
             // Verify
             Assert.That( converter.BytesNeeded( 8 ), Is.EqualTo( 7 ) );
         }
@@ -34,7 +33,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Setup
             // Exercise
             // Verify
-            Assert.That( new TestDelegate( ( ) => GetConverter( 257 ) ),
+            Assert.That( new TestDelegate( ( ) => new BaseConverter( 257 ) ),
                          Throws.InstanceOf( typeof ( ArgumentException ) ) );
         }
 
@@ -42,7 +41,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         public void TestCannotConvertWithNotEnoughBytes( )
         {
             // Setup
-            IBaseConverter converter = GetConverter( 16 );
+            BaseConverter converter = new BaseConverter( 16 );
             // Exercise
             // Verify
             Assert.That( new TestDelegate( ( ) => converter.ConvertBytesToDigits( new byte[ ] { 0x00, 0x00 }, 5 ) ),
@@ -63,7 +62,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // 100010 001110 111101 111011 
             byte[ ] expected = { 0x11, 0x1c, 0x2f, 0x37 };
             // Exercise
-            byte[ ] actual = GetConverter( 64 ).ConvertBytesToDigits( src, 4 );
+            byte[ ] actual = ( new BaseConverter( 64 ) ).ConvertBytesToDigits( src, 4 );
             // Verify
             Assert.That( actual, Is.EqualTo( expected ) );
         }
@@ -76,7 +75,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             byte[ ] expected = { 14, 72, 77, 16 };
             // Exercise
-            byte[ ] actual = GetConverter( 100 ).ConvertBytesToDigits( src, 4 );
+            byte[ ] actual = ( new BaseConverter( 100 ) ).ConvertBytesToDigits( src, 4 );
             // Verify
             Assert.That( actual, Is.EqualTo( expected ) );
         }
@@ -88,7 +87,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             byte[ ] src = { 0xff, 0xff, 0x01, 0x08 }; // 131071 + 8 * 2**24
             byte[ ] expected = { 71, 10, 13 }; // 3 bytes actually used -> 131071
             // Exercise
-            byte[ ] actual = GetConverter( 100 ).ConvertBytesToDigits( src, 3 );
+            byte[ ] actual = ( new BaseConverter( 100 ) ).ConvertBytesToDigits( src, 3 );
             // Verify
             Assert.That( actual, Is.EqualTo( expected ) );
         }

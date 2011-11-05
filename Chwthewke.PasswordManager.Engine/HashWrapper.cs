@@ -6,6 +6,7 @@ using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
+    [Obsolete]
     internal class HashWrapper : IHash
     {
         public HashWrapper( HashAlgorithm hashAlgorithm )

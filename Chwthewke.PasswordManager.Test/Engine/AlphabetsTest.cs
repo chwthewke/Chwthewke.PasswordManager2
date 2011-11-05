@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Text;
+﻿using System.Text;
 using Chwthewke.PasswordManager.Engine;
 using NUnit.Framework;
 
@@ -22,7 +21,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         {
             // Setup
             // Exercise
-            byte[ ] asciiBytes = _ascii.GetBytes( AllSymbols( Alphabets.Symbols92 ) );
+            byte[ ] asciiBytes = _ascii.GetBytes( PasswordMaterializers.SymbolsString92 );
             // Verify
             Assert.That( asciiBytes, Is.All.LessThan( 128 ) );
         }
@@ -32,14 +31,9 @@ namespace Chwthewke.PasswordManager.Test.Engine
         {
             // Setup
             // Exercise
-            byte[ ] asciiBytes = _ascii.GetBytes( AllSymbols( Alphabets.Symbols92 ) );
+            byte[ ] asciiBytes = _ascii.GetBytes( PasswordMaterializers.SymbolsString62 );
             // Verify
             Assert.That( asciiBytes, Is.All.LessThan( 128 ) );
-        }
-
-        private static string AllSymbols( Alphabet alphabet )
-        {
-            return alphabet.ToString( Enumerable.Range( 0, alphabet.Length - 1 ).Select( t => (byte) t ).ToArray( ) );
         }
     }
 }

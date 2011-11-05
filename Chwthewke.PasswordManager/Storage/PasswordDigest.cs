@@ -3,6 +3,7 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
+    [ Obsolete ]
     public class PasswordDigest : IEquatable<PasswordDigest>
     {
         public string Key { get; private set; }

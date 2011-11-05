@@ -1,8 +1,10 @@
+using System;
 using System.Security;
 using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
+    [Obsolete]
     internal interface IHash
     {
         IHash Append( byte[ ] bytes );

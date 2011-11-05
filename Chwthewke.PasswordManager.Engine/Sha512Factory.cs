@@ -3,6 +3,7 @@ using System.Security.Cryptography;
 
 namespace Chwthewke.PasswordManager.Engine
 {
+    [Obsolete]
     internal class Sha512Factory : IHashFactory
     {
         public IHash GetHash( )

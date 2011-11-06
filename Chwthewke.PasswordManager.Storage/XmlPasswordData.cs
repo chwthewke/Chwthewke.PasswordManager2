@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Chwthewke.PasswordManager.Storage
 {
@@ -6,6 +7,10 @@ namespace Chwthewke.PasswordManager.Storage
     {
         internal XmlPasswordData( PasswordSerializer2 serializer, IPasswordStore store )
         {
+            if ( serializer == null )
+                throw new ArgumentNullException( "serializer" );
+            if ( store == null )
+                throw new ArgumentNullException( "store" );
             _serializer = serializer;
             _store = store;
         }

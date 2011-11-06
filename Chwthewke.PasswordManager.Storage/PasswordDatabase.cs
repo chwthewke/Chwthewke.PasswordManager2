@@ -5,6 +5,7 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
+    [Obsolete]
     internal class PasswordDatabase : IPasswordDatabase
     {
         public PasswordDatabase( IPasswordSerializer passwordSerializer, IPasswordStore passwordStore )
@@ -90,6 +91,7 @@ namespace Chwthewke.PasswordManager.Storage
         private readonly IPasswordSerializer _passwordSerializer;
     }
 
+    [Obsolete]
     internal class NullPasswordStore : IPasswordStore
     {
         public NullPasswordStore( IPasswordSerializer serializer )

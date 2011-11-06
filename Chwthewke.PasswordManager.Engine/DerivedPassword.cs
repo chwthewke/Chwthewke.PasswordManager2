@@ -6,6 +6,11 @@ namespace Chwthewke.PasswordManager.Engine
     {
         public DerivedPassword( string password, PasswordDigest2 digest )
         {
+            if ( password == null )
+                throw new ArgumentNullException( "password" );
+            if (digest == null)
+                throw new ArgumentNullException( "digest" );
+            
             Password = password;
             Digest = digest;
         }

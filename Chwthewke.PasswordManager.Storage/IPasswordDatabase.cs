@@ -1,7 +1,9 @@
+using System;
 using System.Collections.Generic;
 
 namespace Chwthewke.PasswordManager.Storage
 {
+    [Obsolete]
     public interface IPasswordDatabase
     {
         IPasswordStore Source { get; set; }

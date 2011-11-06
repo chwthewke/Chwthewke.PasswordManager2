@@ -5,6 +5,7 @@ using Chwthewke.PasswordManager.Storage;
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     // TODO factor with PasswordDigestBuilder
+    [Obsolete]
     public class SerializedPassword
     {
         public SerializedPassword( string key )

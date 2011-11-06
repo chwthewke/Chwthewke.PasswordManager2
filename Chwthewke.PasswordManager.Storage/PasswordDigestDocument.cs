@@ -3,10 +3,15 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    public class PasswordDigestDocument
+    public class PasswordDigestDocument : IEquatable<PasswordDigestDocument>
     {
         public PasswordDigestDocument( PasswordDigest2 digest, Guid masterPasswordId, DateTime createdOn, DateTime modifiedOn, string note )
         {
+            if ( digest == null )
+                throw new ArgumentNullException( "digest" );
+            if ( note == null )
+                throw new ArgumentNullException( "note" );
+
             _digest = digest;
             _masterPasswordId = masterPasswordId;
             _createdOn = createdOn;
@@ -68,6 +73,35 @@ namespace Chwthewke.PasswordManager.Storage
         {
             return new PasswordDigestDocument( new PasswordDigest2( _digest.Key, new byte[ 0 ], 0, default( Guid ) ),
                                                default( Guid ), _createdOn, deletedOn, string.Empty );
+        }
+
+        public bool Equals( PasswordDigestDocument other )
+        {
+            if ( ReferenceEquals( null, other ) ) return false;
+            if ( ReferenceEquals( this, other ) ) return true;
+            return Equals( other._digest, _digest ) && other._masterPasswordId.Equals( _masterPasswordId ) &&
+                   other._createdOn.Equals( _createdOn ) && other._modifiedOn.Equals( _modifiedOn ) && Equals( other._note, _note );
+        }
+
+        public override bool Equals( object obj )
+        {
+            if ( ReferenceEquals( null, obj ) ) return false;
+            if ( ReferenceEquals( this, obj ) ) return true;
+            if ( obj.GetType( ) != typeof ( PasswordDigestDocument ) ) return false;
+            return Equals( (PasswordDigestDocument) obj );
+        }
+
+        public override int GetHashCode( )
+        {
+            unchecked
+            {
+                int result = _digest.GetHashCode( );
+                result = ( result * 397 ) ^ _masterPasswordId.GetHashCode( );
+                result = ( result * 397 ) ^ _createdOn.GetHashCode( );
+                result = ( result * 397 ) ^ _modifiedOn.GetHashCode( );
+                result = ( result * 397 ) ^ _note.GetHashCode( );
+                return result;
+            }
         }
 
         private readonly PasswordDigest2 _digest;

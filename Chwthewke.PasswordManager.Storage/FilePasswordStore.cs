@@ -1,3 +1,4 @@
+using System;
 using System.IO;
 using System.Text;
 
@@ -7,6 +8,8 @@ namespace Chwthewke.PasswordManager.Storage
     {
         public FilePasswordStore( FileInfo passwordsFile )
         {
+            if ( passwordsFile == null )
+                throw new ArgumentNullException( "passwordsFile" );
             _passwordsFile = passwordsFile;
         }
 

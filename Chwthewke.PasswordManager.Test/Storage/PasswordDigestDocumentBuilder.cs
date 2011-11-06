@@ -46,7 +46,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             return builder.Build( );
         }
 
-        private PasswordDigestDocument Build( )
+        public PasswordDigestDocument Build( )
         {
             return new PasswordDigestDocument( Digest, MasterPasswordId, CreatedOn, ModifiedOn, Note );
         }

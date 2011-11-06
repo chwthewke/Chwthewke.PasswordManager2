@@ -4,7 +4,7 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public interface IPasswordData
     {
-        IEnumerable<PasswordDigestDocument> LoadPasswords( );
-        void SavePasswords( IEnumerable<PasswordDigestDocument> passwords );
+        IList<PasswordDigestDocument> LoadPasswords( );
+        void SavePasswords( IList<PasswordDigestDocument> passwords );
     }
 }

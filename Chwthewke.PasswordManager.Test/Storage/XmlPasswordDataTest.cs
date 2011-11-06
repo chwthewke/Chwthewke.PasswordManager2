@@ -1,6 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
-using Chwthewke.PasswordManager.Engine;
+﻿using System.Collections.Generic;
+using System.Linq;
 using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
 
@@ -11,7 +10,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
     {
         private XmlPasswordData _passwordData;
         private InMemoryPasswordStore _inMemoryPasswordStore;
-        private List<PasswordDigestDocument> _passwords;
+        private IList<PasswordDigestDocument> _passwords;
         private PasswordSerializer2 _serializer;
 
         [ SetUp ]
@@ -21,34 +20,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer = new PasswordSerializer2( );
             _passwordData = new XmlPasswordData( _serializer, _inMemoryPasswordStore );
 
-            _passwords = new List<PasswordDigestDocument>
-                             {
-                                 new PasswordDigestDocumentBuilder
-                                     {
-                                         Key = "abcd",
-                                         Iteration = 1,
-                                         Hash = new byte[ ] { 0xAA, 0xBB },
-                                         PasswordGenerator = PasswordGenerators2.AlphaNumeric,
-                                         CreatedOn = new DateTime( 2011, 11, 1 ),
-                                         ModifiedOn = new DateTime( 2011, 11, 1 ),
-                                         MasterPasswordId = Guid.NewGuid( ),
-                                         Note = "First password"
-                                     },
-                                 new PasswordDigestDocumentBuilder
-                                     {
-                                         Key = "efgh",
-                                         Iteration = 10,
-                                         Hash = new byte[ ] { 0x0A, 0x0B },
-                                         PasswordGenerator = PasswordGenerators2.Full,
-                                         CreatedOn = new DateTime( 2011, 11, 2 ),
-                                         ModifiedOn = new DateTime( 2011, 11, 3 ),
-                                         MasterPasswordId = Guid.NewGuid( ),
-                                         Note = "Second password"
-                                     },
-                             };
+            _passwords = new[ ] { TestPasswords.Abcd, TestPasswords.Efgh }.ToList( );
         }
 
-        [Test]
+        [ Test ]
         public void SaveWritesPasswordListToXmlAsPerSerializer( )
         {
             // Set up
@@ -58,7 +33,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Verify
             Assert.That( _inMemoryPasswordStore.Content, Is.EqualTo( _serializer.ToXml( _passwords ) ) );
         }
-        [Test]
+
+        [ Test ]
         public void LoadReadsPasswordListFromXmlAsPerSerializer( )
         {
             // Set up

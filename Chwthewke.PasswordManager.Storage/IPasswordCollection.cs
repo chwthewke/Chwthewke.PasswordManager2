@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Chwthewke.PasswordManager.Storage
 {
@@ -12,6 +13,6 @@ namespace Chwthewke.PasswordManager.Storage
 
         bool SavePassword( PasswordDigestDocument password );
 
-        bool DeletePassword( PasswordDigestDocument password );
+        bool DeletePassword( PasswordDigestDocument password, DateTime deletedOn );
     }
 }

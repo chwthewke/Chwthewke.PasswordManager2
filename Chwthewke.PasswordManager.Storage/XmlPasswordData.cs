@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
@@ -15,12 +16,12 @@ namespace Chwthewke.PasswordManager.Storage
             _store = store;
         }
 
-        public IEnumerable<PasswordDigestDocument> LoadPasswords( )
+        public IList<PasswordDigestDocument> LoadPasswords( )
         {
-            return _serializer.Load( _store );
+            return _serializer.Load( _store ).ToList( );
         }
 
-        public void SavePasswords( IEnumerable<PasswordDigestDocument> passwords )
+        public void SavePasswords( IList<PasswordDigestDocument> passwords )
         {
             _serializer.Save( passwords, _store );
         }

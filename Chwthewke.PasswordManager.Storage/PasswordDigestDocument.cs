@@ -64,8 +64,15 @@ namespace Chwthewke.PasswordManager.Storage
             get { return _note; }
         }
 
+        public bool IsDeleted
+        {
+            get { return Digest.Hash.Length == 0; }
+        }
+
         public PasswordDigestDocument Update( PasswordDigest2 newDigest, Guid newMasterPasswordId, DateTime updatedOn, string newNote )
         {
+            if ( newDigest.Key != Key )
+                throw new ArgumentException( "Invalid key in new Digest.", "newDigest" );
             return new PasswordDigestDocument( newDigest, newMasterPasswordId, _createdOn, updatedOn, newNote );
         }
 
@@ -73,6 +80,12 @@ namespace Chwthewke.PasswordManager.Storage
         {
             return new PasswordDigestDocument( new PasswordDigest2( _digest.Key, new byte[ 0 ], 0, default( Guid ) ),
                                                default( Guid ), _createdOn, deletedOn, string.Empty );
+        }
+
+        public override string ToString( )
+        {
+            return string.Format( "MasterPasswordId: {0}, CreatedOn: {1}, ModifiedOn: {2}, Note: {3}, Digest: {4}",
+                                  _masterPasswordId, _createdOn, _modifiedOn, _note, _digest );
         }
 
         public bool Equals( PasswordDigestDocument other )

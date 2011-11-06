@@ -5,16 +5,16 @@ namespace Chwthewke.PasswordManager.Test.Storage
 {
     public class InMemoryPasswordData : IPasswordData
     {
-        public IEnumerable<PasswordDigestDocument> LoadPasswords( )
+        public IList<PasswordDigestDocument> LoadPasswords( )
         {
             return Passwords;
         }
 
-        public void SavePasswords( IEnumerable<PasswordDigestDocument> passwords )
+        public void SavePasswords( IList<PasswordDigestDocument> passwords )
         {
             Passwords = passwords;
         }
 
-        private IEnumerable<PasswordDigestDocument> Passwords { get; set; }
+        private IList<PasswordDigestDocument> Passwords { get; set; }
     }
 }

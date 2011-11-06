@@ -37,7 +37,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Exercise
             string symbols = materializer.ToString( input );
             // Verify
-            Assert.That( symbols, Is.EqualTo( "A1224460E7011A48" ) );
+            Assert.That( symbols, Is.EqualTo( "1A2244067E10A184" ) );
         }
 
         [ Test ]
@@ -61,7 +61,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             // Verify
-            Assert.That( materializer.BytesNeeded, Is.EqualTo( 8 ) );
+            Assert.That( materializer.BytesNeeded, Is.EqualTo( 9 ) );
         }
 
         [Test]

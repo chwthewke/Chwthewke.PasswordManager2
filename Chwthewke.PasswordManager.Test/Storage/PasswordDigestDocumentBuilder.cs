@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Xml.Linq;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 
@@ -49,6 +50,31 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public PasswordDigestDocument Build( )
         {
             return new PasswordDigestDocument( Digest, MasterPasswordId, CreatedOn, ModifiedOn, Note );
+        }
+
+        public XElement ToXml( )
+        {
+            return new XElement( PasswordSerializer2.PasswordElement,
+                                 new XElement( PasswordSerializer2.KeyElement, Key ),
+                                 new XElement( PasswordSerializer2.HashElement,
+                                               Convert.ToBase64String( Hash ) ),
+                                 new XElement( PasswordSerializer2.PasswordSettingsIdElement,
+                                               PasswordGenerator.ToString( ) ),
+                                 new XElement( PasswordSerializer2.IterationElement,
+                                               Iteration.ToString( ) ),
+                                 new XElement( PasswordSerializer2.MasterPasswordIdElement,
+                                               MasterPasswordId.ToString( ) ),
+                                 new XElement( PasswordSerializer2.TimestampElement,
+                                               CreatedOn.Ticks ),
+                                 new XElement( PasswordSerializer2.ModifiedElement,
+                                               ModifiedOn.Ticks ),
+                                 new XElement( PasswordSerializer2.NoteElement,
+                                               Note ) );
+        }
+
+        public static implicit operator XElement( PasswordDigestDocumentBuilder builder )
+        {
+            return builder.ToXml( );
         }
     }
 }

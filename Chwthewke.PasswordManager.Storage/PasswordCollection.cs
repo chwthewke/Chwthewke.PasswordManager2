@@ -17,7 +17,7 @@ namespace Chwthewke.PasswordManager.Storage
                 throw new ArgumentNullException( "key" );
 
             PasswordDigestDocument password = LoadPasswordInternal( key );
-            if ( password.IsDeleted )
+            if ( password == null || password.IsDeleted )
                 return null;
             return password;
         }

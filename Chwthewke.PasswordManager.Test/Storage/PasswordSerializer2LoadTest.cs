@@ -36,9 +36,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void LoadMultiplePasswords( )
         {
             // Setup
+            XElement element1 = new PasswordDigestDocumentBuilder { Key = "aKey" };
+            XElement element2 = new PasswordDigestDocumentBuilder { Key = "anotherKey" };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   (XElement) new SerializedPassword( "aKey" ),
-                                   (XElement) new SerializedPassword( "anotherKey" ) ) );
+                                   element1,
+                                   element2 ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
             // Verify
@@ -50,8 +52,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void LoadReadsPasswordKeyFromElement( )
         {
             // Setup
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey" };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   (XElement) new SerializedPassword( "aKey" ) ) );
+                                   element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
             // Verify
@@ -63,8 +66,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void LoadReadsPasswordHashFromElement( )
         {
             // Setup
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", Hash = new byte[ ] { 0x44, 0x66 } };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   (XElement) new SerializedPassword( "aKey" ) { Hash = new byte[ ] { 0x44, 0x66 } } ) );
+                                   element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
             // Verify
@@ -78,9 +82,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             Guid guid = Guid.Parse( "34579b9f-8ac1-464a-805a-abe564da8848" );
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", MasterPasswordId = guid };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   (XElement)
-                                   new SerializedPassword( "aKey" ) { MasterPasswordId = guid } ) );
+                                   element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
             // Verify
@@ -94,9 +98,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             Guid guid = Guid.Parse( "34579b9f-8ac1-464a-805a-abe564da8848" );
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", PasswordGenerator = guid };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   (XElement)
-                                   new SerializedPassword( "aKey" ) { PasswordSettingsId = guid } ) );
+                                   element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
             // Verify
@@ -110,9 +114,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             DateTime creationTime = new DateTime( 634022874410500302 );
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", CreatedOn = creationTime };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   (XElement)
-                                   new SerializedPassword( "aKey" ) { CreationTime = creationTime } ) );
+                                   element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
             // Verify
@@ -126,9 +130,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             DateTime modificationTime = new DateTime( 634122874455500442 );
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", ModifiedOn = modificationTime };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   (XElement)
-                                   new SerializedPassword( "aKey" ) { ModificationTime = modificationTime } ) );
+                                   element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
             // Verify
@@ -143,8 +147,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             const string note = "a Note";
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", Note = note };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   (XElement) new SerializedPassword( "aKey" ) { Note = note } ) );
+                                   element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
             // Verify
@@ -154,26 +159,28 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         [ Test ]
-        public void LoadReadsNullNoteFromMissingNoteElement( )
+        public void LoadReadsEmptyNoteFromMissingNoteElement( )
         {
             // Setup
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey" };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   (XElement) new SerializedPassword( "aKey" ) ) );
+                                   element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
             // Verify
             PasswordDigestDocument passwordDigest = passwords.First( );
             Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
-            Assert.That( passwordDigest.Note, Is.Null );
+            Assert.That( passwordDigest.Note, Is.Empty );
         }
 
         [ Test ]
         public void LoadSetsDefaultModificationTimeInVersion0File( )
         {
             // Set up
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", CreatedOn = new DateTime( 123456789123L ) };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
                                    new XAttribute( PasswordSerializer2.VersionAttribute, "0" ),
-                                   (XElement) new SerializedPassword( "aKey" ) { CreationTime = new DateTime( 123456789123L ) } ) );
+                                   element ) );
 
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );
@@ -186,10 +193,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void LoadDropsPasswordWithoutModificationTimeInVersion1File( )
         {
             // Set up
-            XElement element = (XElement) new SerializedPassword( "aKey" ) { CreationTime = new DateTime( 123456789123L ) };
-            
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", CreatedOn = new DateTime( 123456789123L ) };
+
             element.Elements( PasswordSerializer2.ModifiedElement ).Remove( );
-            
+
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
                                    new XAttribute( PasswordSerializer2.VersionAttribute, "1" ),
                                    element ) );
@@ -200,17 +207,19 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( passwords, Is.Empty );
         }
 
-        [Test]
+        [ Test ]
         public void LoadFixesInconsistentModificationTimeInVersion1File( )
         {
             // Set up
+            XElement element = new PasswordDigestDocumentBuilder
+                                   {
+                                       Key = "aKey",
+                                       CreatedOn = new DateTime( 123456789123L ),
+                                       ModifiedOn = new DateTime( 111111111111L ),
+                                   };
             SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
                                    new XAttribute( PasswordSerializer2.VersionAttribute, "1" ),
-                                   ( XElement ) new SerializedPassword( "aKey" )
-                                                    {
-                                                        CreationTime = new DateTime( 123456789123L ),
-                                                        ModificationTime = new DateTime( 111111111111L )
-                                                    } ) );
+                                   element ) );
 
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _passwordStore );

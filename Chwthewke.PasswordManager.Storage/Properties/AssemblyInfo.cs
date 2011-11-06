@@ -6,11 +6,11 @@ using System.Runtime.InteropServices;
 // set of attributes. Change these attribute values to modify the information
 // associated with an assembly.
 
-[ assembly: AssemblyTitle( "Chwthewke.PasswordManager.Engine" ) ]
+[ assembly: AssemblyTitle( "Chwthewke.PasswordManager.Storage" ) ]
 [ assembly: AssemblyDescription( "" ) ]
 [ assembly: AssemblyConfiguration( "" ) ]
 [ assembly: AssemblyCompany( "" ) ]
-[ assembly: AssemblyProduct( "Chwthewke.PasswordManager.Engine" ) ]
+[ assembly: AssemblyProduct( "Chwthewke.PasswordManager.Storage" ) ]
 [ assembly: AssemblyCopyright( "Copyright ©  2011" ) ]
 [ assembly: AssemblyTrademark( "" ) ]
 [ assembly: AssemblyCulture( "" ) ]
@@ -23,7 +23,7 @@ using System.Runtime.InteropServices;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 
-[ assembly: Guid( "7c67e9e4-1244-466e-bebd-7d1ff58b3205" ) ]
+[ assembly: Guid( "190aa2c3-92b7-4216-99c7-91575d8c6978" ) ]
 
 // Version information for an assembly consists of the following four values:
 //
@@ -39,7 +39,8 @@ using System.Runtime.InteropServices;
 [ assembly: AssemblyVersion( "1.0.0.0" ) ]
 [ assembly: AssemblyFileVersion( "1.0.0.0" ) ]
 
-[assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Test" )]
-// TEMP
-[assembly: InternalsVisibleTo( "Chwthewke.PasswordManager" )]
-[assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Storage" )]
+// Visibility
+[ assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Test" ) ]
+// TEMPORARY
+
+[ assembly: InternalsVisibleTo( "Chwthewke.PasswordManager" ) ]

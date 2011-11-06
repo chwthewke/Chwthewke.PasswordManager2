@@ -11,7 +11,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
     public class PasswordGeneratorTest
     {
         [ Test ]
-        [Ignore]
+        [ Ignore ]
         public void TestMismatchedLengthsFail( )
         {
             // Setup

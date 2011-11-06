@@ -1,13 +1,14 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Xml;
 using System.Xml.Linq;
+using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    internal class PasswordSerializer : IPasswordSerializer
+    internal class PasswordSerializer2
     {
         public const int Version = 2;
 
@@ -23,17 +24,17 @@ namespace Chwthewke.PasswordManager.Storage
         public const string ModifiedElement = "modified";
         public const string IterationElement = "iteration";
 
-        public void Save( IEnumerable<PasswordDigest> passwordDigests, IPasswordStore store )
+        public void Save( IEnumerable<PasswordDigestDocument> passwordDigests, IPasswordStore store )
         {
             Save( passwordDigests, store.OpenWriter );
         }
 
-        public IEnumerable<PasswordDigest> Load( IPasswordStore store )
+        public IEnumerable<PasswordDigestDocument> Load( IPasswordStore store )
         {
             return Load( store.OpenReader );
         }
 
-        private void Save( IEnumerable<PasswordDigest> passwordDigests, Func<TextWriter> openWriter )
+        private void Save( IEnumerable<PasswordDigestDocument> passwordDigests, Func<TextWriter> openWriter )
         {
             XElement root = new XElement( PasswordStoreElement, new XAttribute( VersionAttribute, Version ), passwordDigests.Select( ToXml ) );
 
@@ -50,24 +51,24 @@ namespace Chwthewke.PasswordManager.Storage
                 root.Save( xmlWriter );
         }
 
-        private static XElement ToXml( PasswordDigest password )
+        private static XElement ToXml( PasswordDigestDocument password )
         {
             var xElement = new XElement( PasswordElement,
-                                         new XElement( KeyElement, password.Key ),
-                                         new XElement( HashElement, Convert.ToBase64String( password.Hash ) ),
+                                         new XElement( KeyElement, password.Digest.Key ),
+                                         new XElement( HashElement, Convert.ToBase64String( password.Digest.Hash ) ),
                                          new XElement( MasterPasswordIdElement, password.MasterPasswordId.ToString( ) ),
                                          new XElement( PasswordSettingsIdElement,
-                                                       password.PasswordGeneratorId.ToString( ) ),
-                                         new XElement( IterationElement, password.Iteration ),
-                                         new XElement( TimestampElement, password.CreationTime.Ticks ),
-                                         new XElement( ModifiedElement, password.ModificationTime.Ticks ) );
+                                                       password.Digest.PasswordGenerator.ToString( ) ),
+                                         new XElement( IterationElement, password.Digest.Iteration ),
+                                         new XElement( TimestampElement, password.CreatedOn.Ticks ),
+                                         new XElement( ModifiedElement, password.ModifiedOn.Ticks ) );
             if ( password.Note != null )
                 xElement.Add( new XElement( NoteElement, password.Note ) );
             return xElement;
         }
 
 
-        private IEnumerable<PasswordDigest> Load( Func<TextReader> openReader )
+        private IEnumerable<PasswordDigestDocument> Load( Func<TextReader> openReader )
         {
             try
             {
@@ -75,11 +76,11 @@ namespace Chwthewke.PasswordManager.Storage
             }
             catch ( XmlException )
             {
-                return Enumerable.Empty<PasswordDigest>( );
+                return Enumerable.Empty<PasswordDigestDocument>( );
             }
         }
 
-        private IEnumerable<PasswordDigest> ReadPasswords( Func<TextReader> openReader )
+        private IEnumerable<PasswordDigestDocument> ReadPasswords( Func<TextReader> openReader )
         {
             using ( TextReader textReader = openReader( ) )
             {
@@ -90,13 +91,13 @@ namespace Chwthewke.PasswordManager.Storage
                 foreach ( XElement passwordElement in root.Elements( PasswordElement ) )
                 {
                     if ( !VerifyRequirements( version, passwordElement,
-                                              new Requirement { ElementName = KeyElement, StartingVersion = 0 },
-                                              new Requirement { ElementName = HashElement, StartingVersion = 0 },
-                                              new Requirement { ElementName = MasterPasswordIdElement, StartingVersion = 0 },
-                                              new Requirement { ElementName = PasswordSettingsIdElement, StartingVersion = 0 },
-                                              new Requirement { ElementName = TimestampElement, StartingVersion = 0 },
-                                              new Requirement { ElementName = ModifiedElement, StartingVersion = 1 },
-                                              new Requirement { ElementName = IterationElement, StartingVersion = 2 } ) )
+                                              new SerializerRequirement { ElementName = KeyElement, StartingVersion = 0 },
+                                              new SerializerRequirement { ElementName = HashElement, StartingVersion = 0 },
+                                              new SerializerRequirement { ElementName = MasterPasswordIdElement, StartingVersion = 0 },
+                                              new SerializerRequirement { ElementName = PasswordSettingsIdElement, StartingVersion = 0 },
+                                              new SerializerRequirement { ElementName = TimestampElement, StartingVersion = 0 },
+                                              new SerializerRequirement { ElementName = ModifiedElement, StartingVersion = 1 },
+                                              new SerializerRequirement { ElementName = IterationElement, StartingVersion = 2 } ) )
 
                         continue;
 
@@ -110,7 +111,8 @@ namespace Chwthewke.PasswordManager.Storage
                     int iteration = ExtractFromElement( passwordElement, IterationElement, ExtractIteration );
 
                     yield return
-                        new PasswordDigest( key, hash, masterPasswordId, passwordSettingsId, creationDate, modificationDate, iteration, note );
+                        new PasswordDigestDocument( new PasswordDigest2( key, hash, iteration, passwordSettingsId ),
+                                                    masterPasswordId, creationDate, modificationDate, note );
                 }
             }
         }
@@ -133,12 +135,12 @@ namespace Chwthewke.PasswordManager.Storage
 
         private DateTime ExtractDateTime( string x, DateTime defaultValue )
         {
-            return x == null ? new DateTime( ) : new DateTime( long.Parse( x ) );
+            return x == null ? defaultValue : new DateTime( long.Parse( x ) );
         }
 
-        private bool VerifyRequirements( int version, XElement passwordElement, params Requirement[ ] requirements )
+        private bool VerifyRequirements( int version, XElement passwordElement, params SerializerRequirement[ ] serializerRequirements )
         {
-            return requirements.All( r => r.Check( passwordElement, version ) );
+            return serializerRequirements.All( r => r.Check( passwordElement, version ) );
         }
 
         private static int ExtractVersion( XElement root )
@@ -152,19 +154,6 @@ namespace Chwthewke.PasswordManager.Storage
         {
             XElement childElement = parent.Element( childName );
             return extractor( childElement == null ? null : childElement.Value );
-        }
-    }
-
-    internal class Requirement
-    {
-        public int StartingVersion { get; set; }
-        public string ElementName { get; set; }
-
-        public bool Check( XElement target, int version )
-        {
-            if ( StartingVersion > version )
-                return true;
-            return target.Element( ElementName ) != null;
         }
     }
 }

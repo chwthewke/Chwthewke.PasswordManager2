@@ -5,6 +5,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
 {
     public class InMemoryPasswordData : IPasswordData
     {
+        public InMemoryPasswordData( )
+        {
+            Passwords = new List<PasswordDigestDocument>( );
+        }
+
         public IList<PasswordDigestDocument> LoadPasswords( )
         {
             return Passwords;

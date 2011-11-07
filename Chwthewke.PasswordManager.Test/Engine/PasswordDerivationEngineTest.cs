@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.AlphaNumeric, 1, 64 ) ).Password;
+                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.AlphaNumeric ) ).Password;
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( "deDYrBiXvMHN" ) );
         }
@@ -36,7 +36,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.Full, 1, 64 ) ).Password;
+                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.Full ) ).Password;
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( "(Z'?6G3(w(" ) );
         }
@@ -48,7 +48,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 3, PasswordGenerators2.Full, 1, 64 ) ).Password;
+                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 3, PasswordGenerators2.Full ) ).Password;
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( @"i)?-'@}>`-" ) );
         }
@@ -59,7 +59,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Setup
             // Exercise
             var generatedPassword =
-                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.AlphaNumeric, 1, 64 ) );
+                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.AlphaNumeric ) );
             // Verify
 
             Assert.That( generatedPassword.Password, Is.EqualTo( "deDYrBiXvMHN" ) );
@@ -84,7 +84,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         {
             // Set up
 
-            PasswordRequest request = new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.Full, 1, 64 );
+            PasswordRequest request = new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.Full );
             // Exercise
             DerivedPassword generatedPassword =
                 _engine.Derive( request );

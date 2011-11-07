@@ -16,9 +16,9 @@ namespace Chwthewke.PasswordManager.Test.Engine
             PasswordMaterializer materializer = PasswordMaterializers.AlphaNumeric;
             const int iterations = 15000;
 
-            PasswordGenerator2 generator = new PasswordGenerator2( derivedKeyFactory, derivedKeyFactory, materializer );
+            PasswordGenerator2 generator = new PasswordGenerator2( derivedKeyFactory, derivedKeyFactory, materializer, 10000, 32 );
             // Exercise
-            DerivedPassword derived = generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), iterations, default( Guid ), 10000, 32 ) );
+            DerivedPassword derived = generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), iterations, default( Guid ) ) );
             // Verify
             string expectedPassword =
                 materializer.ToString( derivedKeyFactory.DeriveKey( Encoding.UTF8.GetBytes( "abcd" ), Encoding.UTF8.GetBytes( "1234" ),
@@ -36,10 +36,10 @@ namespace Chwthewke.PasswordManager.Test.Engine
             const int iterations = 15000;
             const int digestIterations = 10000;
 
-            PasswordGenerator2 generator = new PasswordGenerator2( derivedKeyFactory, derivedKeyFactory, materializer );
+            PasswordGenerator2 generator = new PasswordGenerator2( derivedKeyFactory, derivedKeyFactory, materializer, digestIterations, 32 );
             // Exercise
             DerivedPassword derived = 
-                generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), iterations, PasswordGenerators2.Full, digestIterations, 32 ) );
+                generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), iterations, PasswordGenerators2.Full ) );
             // Verify
 
             byte[ ] expectedHash = derivedKeyFactory.DeriveKey( PasswordGenerator2.DigestSalt, Encoding.UTF8.GetBytes( derived.Password ),

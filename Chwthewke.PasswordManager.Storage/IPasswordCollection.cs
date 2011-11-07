@@ -13,6 +13,12 @@ namespace Chwthewke.PasswordManager.Storage
 
         bool SavePassword( PasswordDigestDocument password );
 
+        /// <summary>
+        /// Convenience method equivalent to <code>Update( password, password.Delete( deletedOn ) )</code>
+        /// </summary>
+        /// <param name="password"></param>
+        /// <param name="deletedOn"></param>
+        /// <returns></returns>
         bool DeletePassword( PasswordDigestDocument password, DateTime deletedOn );
     }
 }

@@ -26,11 +26,11 @@ namespace Chwthewke.PasswordManager.Engine
             return dictionary;
         }
 
-        private static PasswordGenerator2 Sha512Generator( PasswordMaterializer alphabet )
+        private static PasswordGenerator2 Sha512Generator( PasswordMaterializer materializer )
         {
             return new PasswordGenerator2( new Sha512DerivedKeyFactory( ( s, p ) => InternalSalt.Concat( p ).Concat( s ).ToArray( ) ),
                                            new Sha512DerivedKeyFactory( ( s, p ) => s.Concat( p ).ToArray( ) ),
-                                           alphabet );
+                                           materializer, 1, 64 );
         }
 
         internal static readonly byte[ ] InternalSalt = Encoding.UTF8.GetBytes( "tsU&yUaZulAs4eOV" );

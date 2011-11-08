@@ -11,7 +11,6 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Editor
 {
     [ TestFixture ]
-    [ Ignore ]
     public class PasswordEditorModelWithoutPasswordTest
     {
         private IPasswordEditorModelFactory _modelFactory;
@@ -30,7 +29,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
         [ Test ]
-        public void InitiallyHasDefault( )
+        public void InitiallyHasDefaultValues( )
         {
             // Set up
 
@@ -39,7 +38,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
 
             Assert.That( _model.Key, Is.EqualTo( string.Empty ) );
-            Assert.That( _model.IsKeyReadonly, Is.True );
+            Assert.That( _model.IsKeyReadonly, Is.False );
             Assert.That( _model.MasterPassword.Length, Is.EqualTo( 0 ) );
             Assert.That( _model.Iteration, Is.EqualTo( 1 ) );
             Assert.That( _model.Note, Is.EqualTo( string.Empty ) );
@@ -90,7 +89,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.MasterPassword = "AAA".ToSecureString( );
             // Exercise
             _model.Key = "kolp";
-            _model.SelectedPassword = _model.DerivedPasswords.First( );
             // Verify
             Assert.That( _model.Key, Is.EqualTo( "kolp" ) );
             Assert.That( _model.IsDirty, Is.True );
@@ -148,11 +146,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
             Assert.That( _model.IsDirty, Is.True );
             Assert.That( _model.CanSave, Is.False );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
         [ Test ]
-        public void ChangeIterationsWithMasterPasswordMakesEditorDirtyAndSaveable( )
+        public void ChangeIterationsWithMasterPasswordMakesEditorDirty( )
         {
             // Set up
             _model.MasterPassword = "AAA".ToSecureString( );
@@ -160,12 +158,12 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Iteration = 2;
             // Verify
             Assert.That( _model.IsDirty, Is.True );
-            Assert.That( _model.CanSave, Is.True );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.CanSave, Is.False );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
         [ Test ]
-        public void ChangeOnlyNoteMakesSaveable( )
+        public void ChangeOnlyNoteMakesEditorDirty( )
         {
             // Set up
 
@@ -173,8 +171,8 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Note = "A rather longer note.";
             // Verify
             Assert.That( _model.IsDirty, Is.True );
-            Assert.That( _model.CanSave, Is.True );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.CanSave, Is.False );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
 
@@ -189,20 +187,22 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
             Assert.That( _model.IsDirty, Is.True );
             Assert.That( _model.CanSave, Is.False );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
         [ Test ]
-        public void ChangeNoteWithMasterPasswordMakesSaveable( )
+        public void ChangeNoteWithKeyMasterPasswordAndGeneratorMakesSaveable( )
         {
             // Set up
+            _model.Key = "Toto";
             _model.MasterPassword = "AAA".ToSecureString( );
+            _model.SelectedPassword = _model.DerivedPasswords.First( );
             // Exercise
             _model.Note = "A rather longer note.";
             // Verify
             Assert.That( _model.IsDirty, Is.True );
             Assert.That( _model.CanSave, Is.True );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
         private static IEnumerable<Guid> GeneratorGuids

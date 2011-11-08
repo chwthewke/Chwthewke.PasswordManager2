@@ -94,9 +94,14 @@ namespace Chwthewke.PasswordManager.Editor
             {
                 return Key != _original.Key ||
                        Note != _original.Note ||
-                       SelectedPassword.Generator != _original.PasswordGenerator ||
+                       SelectedGenerator != _original.PasswordGenerator ||
                        Iteration != _original.Iteration;
             }
+        }
+
+        private Guid? SelectedGenerator
+        {
+            get { return SelectedPassword == null ? (Guid?)null : SelectedPassword.Generator; }
         }
 
         public bool CanSave

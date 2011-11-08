@@ -6,7 +6,8 @@ namespace Chwthewke.PasswordManager.Editor
 {
     public class DerivedPasswordModel : IDerivedPasswordModel
     {
-        public DerivedPasswordModel( IPasswordDerivationEngine derivationEngine, IPasswordEditorModel editorModel, Guid generator )
+        public DerivedPasswordModel( IPasswordDerivationEngine derivationEngine, IPasswordEditorModel editorModel, 
+            Guid generator )
         {
             if ( derivationEngine == null ) 
                 throw new ArgumentNullException( "derivationEngine" );
@@ -16,7 +17,6 @@ namespace Chwthewke.PasswordManager.Editor
             _derivationEngine = derivationEngine;
             _editorModel = editorModel;
             Generator = generator;
-            Iteration = 1;
         }
 
         public Guid Generator { get; private set; }
@@ -29,11 +29,10 @@ namespace Chwthewke.PasswordManager.Editor
                 SecureString masterPassword = _editorModel.MasterPassword;
                 if ( string.IsNullOrEmpty( key ) || masterPassword.Length == 0 )
                     return null;
-                return _derivationEngine.Derive( new PasswordRequest( key, masterPassword, Iteration, Generator ) );
+                int iteration = _editorModel.Iteration;
+                return _derivationEngine.Derive( new PasswordRequest( key, masterPassword, iteration, Generator ) );
             }
         }
-
-        public int Iteration { get; set; }
 
         private IPasswordEditorModel _editorModel;
         private IPasswordDerivationEngine _derivationEngine;

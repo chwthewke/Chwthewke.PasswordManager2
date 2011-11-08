@@ -10,6 +10,8 @@ namespace Chwthewke.PasswordManager.Editor
 
         SecureString MasterPassword { get; set; }
 
+        int Iteration { get; set; }
+
         IList<IDerivedPasswordModel> DerivedPasswords { get; }
 
         IDerivedPasswordModel SelectedPassword { get; }
@@ -20,6 +22,8 @@ namespace Chwthewke.PasswordManager.Editor
         bool IsDirty { get; }
         bool CanSave { get; }
         bool CanDelete { get; }
+        string Note { get; set; }
+        bool IsKeyReadonly { get; }
 
         bool Save( );
         bool Delete( );

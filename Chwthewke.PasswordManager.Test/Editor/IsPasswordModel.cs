@@ -12,27 +12,25 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
         public static IDerivedPasswordModel For( Guid generator, string key, SecureString masterPassword, int iteration )
         {
-            return new IsPasswordModel( generator, iteration, Engine.Derive(
+            return new IsPasswordModel( generator, Engine.Derive(
                 new PasswordRequest( key, masterPassword, iteration, generator ) ) );
         }
 
-        public static IDerivedPasswordModel Empty( Guid generator, int iteration )
+        public static IDerivedPasswordModel Empty( Guid generator )
         {
-            return new IsPasswordModel( generator, iteration, null );
+            return new IsPasswordModel( generator, null );
         }
 
-        private IsPasswordModel( Guid generator, int iteration, DerivedPassword derivedPassword )
+        private IsPasswordModel( Guid generator, DerivedPassword derivedPassword )
         {
             Generator = generator;
             DerivedPassword = derivedPassword;
-            Iteration = iteration;
         }
 
         public Guid Generator { get; private set; }
 
         public DerivedPassword DerivedPassword { get; private set; }
 
-        public int Iteration { get; set; }
     }
 
     public class DerivedPasswordEqualityComparer : IEqualityComparer<IDerivedPasswordModel>
@@ -45,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             if ( ReferenceEquals( null, y ) || ReferenceEquals( null, x ) )
                 return false;
 
-            return y.Generator.Equals( x.Generator ) && Equals( y.DerivedPassword, x.DerivedPassword ) && y.Iteration == x.Iteration;
+            return y.Generator.Equals( x.Generator ) && Equals( y.DerivedPassword, x.DerivedPassword );
         }
 
         public int GetHashCode( IDerivedPasswordModel o )
@@ -54,7 +52,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
             {
                 int result = o.Generator.GetHashCode( );
                 result = ( result * 397 ) ^ o.DerivedPassword.GetHashCode( );
-                result = ( result * 397 ) ^ o.Iteration;
                 return result;
             }
         }

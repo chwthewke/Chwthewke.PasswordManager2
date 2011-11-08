@@ -7,7 +7,7 @@ namespace Chwthewke.PasswordManager.Editor
     {
         public IPasswordEditorModel CreateModel( PasswordDigestDocument password )
          {
-             return new PasswordEditorModel( password, _passwordCollection, _derivationEngine, _masterPasswordMatcher );
+             return new PasswordEditorModel( _passwordCollection, _derivationEngine, _masterPasswordMatcher, password );
          }
 
         private readonly IPasswordCollection _passwordCollection;

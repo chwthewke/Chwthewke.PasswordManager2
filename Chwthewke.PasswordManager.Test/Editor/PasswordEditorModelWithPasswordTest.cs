@@ -11,7 +11,6 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Editor
 {
     [ TestFixture ]
-    [ Ignore ]
     public class PasswordEditorModelWithPasswordTest
     {
         private IPasswordEditorModelFactory _modelFactory;
@@ -21,7 +20,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         private IPasswordDerivationEngine _engine;
 
         [ SetUp ]
-        public void SetUpModelFactory( )
+        public void SetUpModel( )
         {
             _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
             var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators2.Full ) );
@@ -51,9 +50,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
 
             Assert.That( _model.Key, Is.EqualTo( _original.Key ) );
+            Assert.That( _model.IsKeyReadonly, Is.True );
             Assert.That( _model.MasterPassword.Length, Is.EqualTo( 0 ) );
+            Assert.That( _model.Note, Is.EqualTo( _original.Note ) );
             Assert.That( _model.DerivedPasswords,
-                         Is.EquivalentTo( GeneratorGuids.Select( g => IsPasswordModel.Empty( g, 3 ) ) )
+                         Is.EquivalentTo( GeneratorGuids.Select( g => IsPasswordModel.Empty( g ) ) )
                              .Using( DerivedPasswordEquality ) );
             Assert.That( _model.SelectedPassword,
                          Is.SameAs( _model.DerivedPasswords.Single( dp => dp.Generator == _original.PasswordGenerator ) ) );
@@ -83,7 +84,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
         [ Test ]
-        [ Ignore ]
         public void SetMasterPasswordToOtherMakesEditorSaveable( )
         {
             // Set up

@@ -1,5 +1,4 @@
 using System;
-using System.Linq;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -12,14 +11,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
     public class MasterPasswordMatcher2Test
     {
         private readonly Guid _masterPasswordId = Guid.Parse( "DAAB4016-AF5C-4C79-900E-B01E8D771C12" );
-
-// ReSharper disable UnusedAutoPropertyAccessor.Global
-        public IMasterPasswordMatcher MasterPasswordMatcher { get; set; }
-
-        public IPasswordDigester Digester { get; set; }
-
-        public IPasswordDatabase PasswordDatabase { get; set; }
-// ReSharper restore UnusedAutoPropertyAccessor.Global
 
 
         private IPasswordCollection _passwordCollection;

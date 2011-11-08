@@ -23,9 +23,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
         private IsPasswordModel( Guid generator, int iteration, DerivedPassword derivedPassword )
         {
-            if ( derivedPassword == null )
-                throw new ArgumentNullException( "derivedPassword" );
-
             Generator = generator;
             DerivedPassword = derivedPassword;
             Iteration = iteration;

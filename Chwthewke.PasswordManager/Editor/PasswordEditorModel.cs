@@ -1,9 +1,9 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Editor
 {
@@ -12,6 +12,10 @@ namespace Chwthewke.PasswordManager.Editor
         public PasswordEditorModel( IPasswordCollection passwordCollection, IPasswordDerivationEngine derivationEngine,
                                     IMasterPasswordMatcher masterPasswordMatcher )
         {
+            Key = string.Empty;
+            MasterPassword = new SecureString( );
+            Note = string.Empty;
+
             _passwordCollection = passwordCollection;
             _derivationEngine = derivationEngine;
             _masterPasswordMatcher = masterPasswordMatcher;
@@ -26,16 +30,27 @@ namespace Chwthewke.PasswordManager.Editor
         {
             _original = original;
             Key = _original.Key;
-            MasterPassword = new SecureString( );
-            SelectedPassword = DerivedPasswords.Single( p => p.Generator == _original.PasswordGenerator );
+            SelectedPassword = DerivedPasswords.SingleOrDefault( p => p.Generator == _original.PasswordGenerator );
 
             foreach ( IDerivedPasswordModel derivedPassword in DerivedPasswords )
                 derivedPassword.Iteration = _original.Iteration;
         }
 
-        public string Key { get; set; }
+        private string _key;
+
+        public string Key
+        {
+            get { return _key; }
+            set
+            {
+                if ( !IsKeyReadonly )
+                    _key = value;
+            }
+        }
 
         public SecureString MasterPassword { get; set; }
+
+        public string Note { get; set; }
 
         public IList<IDerivedPasswordModel> DerivedPasswords
         {
@@ -54,6 +69,11 @@ namespace Chwthewke.PasswordManager.Editor
             get { return _original == null ? null : (Guid?) _original.MasterPasswordId; }
         }
 
+        public bool IsKeyReadonly
+        {
+            get { return _original != null; }
+        }
+
         public bool IsDirty
         {
             get { return false; }
@@ -66,7 +86,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         public bool CanDelete
         {
-            get { return false; }
+            get { return true; }
         }
 
         public bool Save( )
@@ -79,7 +99,27 @@ namespace Chwthewke.PasswordManager.Editor
             throw new NotImplementedException( );
         }
 
-        private PasswordDigestDocument _original;
+        private PasswordDigestDocument Current
+        {
+            get
+            {
+                if ( SelectedPassword == null )
+                    return null;
+                if ( SelectedPassword.DerivedPassword == null )
+                    return null;
+                var createdOn = _original == null ? Now : _original.CreatedOn;
+                Guid masterPasswordId = MasterPasswordId ?? Guid.NewGuid( );
+                return new PasswordDigestDocument( SelectedPassword.DerivedPassword.Digest, masterPasswordId, createdOn, Now, Note );
+            }
+        }
+
+
+        private DateTime Now
+        {
+            get { return DateTime.Now; }
+        }
+
+        private readonly PasswordDigestDocument _original;
 
         private readonly IPasswordCollection _passwordCollection;
         private readonly IPasswordDerivationEngine _derivationEngine;

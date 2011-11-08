@@ -14,10 +14,10 @@ namespace Chwthewke.PasswordManager.Editor
         private readonly IPasswordDerivationEngine _derivationEngine;
         private readonly IMasterPasswordMatcher _masterPasswordMatcher;
 
-        public PasswordEditorModelFactory( IPasswordCollection passwords )
+        public PasswordEditorModelFactory( IPasswordCollection passwords, IPasswordDerivationEngine derivationEngine )
         {
             _passwordCollection = passwords;
-            _derivationEngine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
+            _derivationEngine = derivationEngine;
             _masterPasswordMatcher = new MasterPasswordMatcher2( _derivationEngine, _passwordCollection );
         }
     }

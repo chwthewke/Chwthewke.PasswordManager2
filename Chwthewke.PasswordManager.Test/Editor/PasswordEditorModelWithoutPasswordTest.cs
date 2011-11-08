@@ -11,6 +11,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Editor
 {
     [ TestFixture ]
+    [ Ignore ]
     public class PasswordEditorModelWithoutPasswordTest
     {
         private IPasswordEditorModelFactory _modelFactory;

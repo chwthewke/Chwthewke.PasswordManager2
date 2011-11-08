@@ -14,7 +14,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         [ SetUp ]
         public void SetUpEngine( )
         {
-            _engine = new PasswordDerivationEngine( );
+            _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
         }
 
         [ Test ]
@@ -89,7 +89,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             DerivedPassword generatedPassword =
                 _engine.Derive( request );
             // Verify
-            DerivedPassword expected = PasswordGenerators2.GeneratorWithId( PasswordGenerators2.Full ).Derive( request );
+            DerivedPassword expected = PasswordGenerators2.Generators[ PasswordGenerators2.Full ].Derive( request );
             Assert.That( generatedPassword.Password, Is.EqualTo( expected.Password ) );
             Assert.That( generatedPassword.Digest, Is.EqualTo( expected.Digest ) );
         }

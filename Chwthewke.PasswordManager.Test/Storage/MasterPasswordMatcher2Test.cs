@@ -30,7 +30,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void SetUpStore( )
         {
             _passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
-            _passwordDerivationEngine = new PasswordDerivationEngine( );
+            _passwordDerivationEngine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
             _masterPasswordMatcher = new MasterPasswordMatcher2( _passwordDerivationEngine, _passwordCollection );
         }
 

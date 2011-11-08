@@ -14,7 +14,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         IList<IDerivedPasswordModel> DerivedPasswords { get; }
 
-        IDerivedPasswordModel SelectedPassword { get; }
+        IDerivedPasswordModel SelectedPassword { get; set; }
 
         Guid? MasterPasswordId { get; }
         Guid? ExpectedMasterPasswordId { get; }

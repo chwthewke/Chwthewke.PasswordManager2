@@ -5,5 +5,6 @@ namespace Chwthewke.PasswordManager.Editor
     internal interface IPasswordEditorModelFactory
     {
         IPasswordEditorModel CreateModel( PasswordDigestDocument password );
+        IPasswordEditorModel CreatePrisineModel( );
     }
 }

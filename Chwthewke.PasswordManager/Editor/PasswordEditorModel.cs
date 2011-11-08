@@ -90,23 +90,23 @@ namespace Chwthewke.PasswordManager.Editor
 
         public bool IsDirty
         {
-            get { return Key != _original.Key || 
-                Note != _original.Note ||
-                SelectedPassword.Generator != _original.PasswordGenerator ||
-                Iteration != _original.Iteration; }
+            get
+            {
+                return Key != _original.Key ||
+                       Note != _original.Note ||
+                       SelectedPassword.Generator != _original.PasswordGenerator ||
+                       Iteration != _original.Iteration;
+            }
         }
 
         public bool CanSave
         {
-            get { return (IsDirty || MasterPasswordId != _original.MasterPasswordId) &&
-                MasterPassword.Length > 0 &&
-                !string.IsNullOrEmpty( Key ) && 
-                SelectedPassword != null; }
+            get { return CanSaveWithMasterPassword( ) || CanSaveWithoutMasterPassword( ); }
         }
 
         public bool CanDelete
         {
-            get { return true; }
+            get { return IsKeyReadonly; }
         }
 
         public bool Save( )
@@ -117,6 +117,23 @@ namespace Chwthewke.PasswordManager.Editor
         public bool Delete( )
         {
             throw new NotImplementedException( );
+        }
+
+        private bool CanSaveWithMasterPassword( )
+        {
+            return ( IsDirty || MasterPasswordId != _original.MasterPasswordId ) &&
+                   MasterPassword.Length > 0 &&
+                   !string.IsNullOrEmpty( Key ) &&
+                   SelectedPassword != null;
+        }
+
+        private bool CanSaveWithoutMasterPassword( )
+        {
+            return IsDirty &&
+                   MasterPassword.Length == 0 &&
+                   IsKeyReadonly &&
+                   SelectedPassword.Generator == _original.PasswordGenerator &&
+                   Iteration == _original.Iteration;
         }
 
         private PasswordDigestDocument Current

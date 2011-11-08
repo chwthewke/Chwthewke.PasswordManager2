@@ -5,10 +5,15 @@ namespace Chwthewke.PasswordManager.Editor
 {
     internal class PasswordEditorModelFactory : IPasswordEditorModelFactory
     {
+        public IPasswordEditorModel CreatePrisineModel( )
+        {
+            return new PasswordEditorModel( _passwordCollection, _derivationEngine, _masterPasswordMatcher );
+        }
+
         public IPasswordEditorModel CreateModel( PasswordDigestDocument password )
-         {
-             return new PasswordEditorModel( _passwordCollection, _derivationEngine, _masterPasswordMatcher, password );
-         }
+        {
+            return new PasswordEditorModel( _passwordCollection, _derivationEngine, _masterPasswordMatcher, password );
+        }
 
         private readonly IPasswordCollection _passwordCollection;
         private readonly IPasswordDerivationEngine _derivationEngine;

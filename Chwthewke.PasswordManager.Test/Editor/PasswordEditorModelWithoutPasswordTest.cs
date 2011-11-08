@@ -11,11 +11,10 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Editor
 {
     [ TestFixture ]
-    public class PasswordEditorModelWithPasswordTest
+    public class PasswordEditorModelWithoutPasswordTest
     {
         private IPasswordEditorModelFactory _modelFactory;
         private IPasswordEditorModel _model;
-        private PasswordDigestDocument _original;
         private IPasswordCollection _passwordCollection;
         private IPasswordDerivationEngine _engine;
 
@@ -23,25 +22,14 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void SetUpModel( )
         {
             _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
-            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators2.Full ) );
-
-            _original = new PasswordDigestDocumentBuilder
-                            {
-                                Digest = digest.Digest,
-                                CreatedOn = new DateTime( 2011, 11, 1 ),
-                                ModifiedOn = new DateTime( 2011, 11, 3 ),
-                                MasterPasswordId = Guid.NewGuid( ),
-                                Note = "AB IJ"
-                            };
 
             _passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
-            _passwordCollection.SavePassword( _original );
             _modelFactory = new PasswordEditorModelFactory( _passwordCollection, _engine );
-            _model = _modelFactory.CreateModel( _original );
+            _model = _modelFactory.CreatePrisineModel( );
         }
 
         [ Test ]
-        public void InitiallyHasValuesFromLoadedPassword( )
+        public void InitiallyHasDefault( )
         {
             // Set up
 
@@ -49,66 +37,78 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             // Verify
 
-            Assert.That( _model.Key, Is.EqualTo( _original.Key ) );
+            Assert.That( _model.Key, Is.EqualTo( string.Empty ) );
             Assert.That( _model.IsKeyReadonly, Is.True );
             Assert.That( _model.MasterPassword.Length, Is.EqualTo( 0 ) );
-            Assert.That( _model.Iteration, Is.EqualTo( 3 ) );
-            Assert.That( _model.Note, Is.EqualTo( _original.Note ) );
+            Assert.That( _model.Iteration, Is.EqualTo( 1 ) );
+            Assert.That( _model.Note, Is.EqualTo( string.Empty ) );
             Assert.That( _model.DerivedPasswords,
                          Is.EquivalentTo( GeneratorGuids.Select( IsPasswordModel.Empty ) )
                              .Using( DerivedPasswordEquality ) );
-            Assert.That( _model.SelectedPassword,
-                         Is.SameAs( _model.DerivedPasswords.Single( dp => dp.Generator == _original.PasswordGenerator ) ) );
+            Assert.That( _model.SelectedPassword, Is.Null );
             Assert.That( _model.MasterPasswordId, Is.Null );
-            Assert.That( _model.ExpectedMasterPasswordId, Is.EqualTo( _original.MasterPasswordId ) );
+            Assert.That( _model.ExpectedMasterPasswordId, Is.Null );
             Assert.That( _model.IsDirty, Is.False );
             Assert.That( _model.CanSave, Is.False );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
         [ Test ]
-        public void ChangeKeyHasNoEffect( )
+        public void ChangeKeyMakesDirty( )
         {
             // Set up
 
             // Exercise
             _model.Key = "kolp";
             // Verify
-            Assert.That( _model.Key, Is.EqualTo( _original.Key ) );
+            Assert.That( _model.Key, Is.EqualTo( "kolp" ) );
+            Assert.That( _model.IsDirty, Is.True );
+            Assert.That( _model.CanSave, Is.False );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
         [ Test ]
-        public void SetMasterPasswordToActualChangesDerivedPasswordsAndMasterPasswordId( )
+        public void ChangeKeyAndSelectGeneratorWithMasterPasswodMakesDirtyAndSaveable( )
         {
             // Set up
-
+            _model.MasterPassword = "AAA".ToSecureString( );
             // Exercise
-            _model.MasterPassword = "1234".ToSecureString( );
+            _model.Key = "kolp";
+            _model.SelectedPassword = _model.DerivedPasswords.First( );
             // Verify
-            Assert.That( _model.DerivedPasswords,
-                         Is.EquivalentTo( GeneratorGuids.Select( g => IsPasswordModel.For( g, "abij", "1234".ToSecureString( ), 3 ) ) )
-                             .Using( DerivedPasswordEquality ) );
-            Assert.That( _model.MasterPasswordId, Is.EqualTo( _original.MasterPasswordId ) );
-            Assert.That( _model.IsDirty, Is.False );
-            Assert.That( _model.CanSave, Is.False );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.Key, Is.EqualTo( "kolp" ) );
+            Assert.That( _model.IsDirty, Is.True );
+            Assert.That( _model.CanSave, Is.True );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
         [ Test ]
-        public void SetMasterPasswordToOtherMakesEditorSaveableButNotDirty( )
+        public void ChangeKeyWithMasterPasswodMakesDirty( )
+        {
+            // Set up
+            _model.MasterPassword = "AAA".ToSecureString( );
+            // Exercise
+            _model.Key = "kolp";
+            _model.SelectedPassword = _model.DerivedPasswords.First( );
+            // Verify
+            Assert.That( _model.Key, Is.EqualTo( "kolp" ) );
+            Assert.That( _model.IsDirty, Is.True );
+            Assert.That( _model.CanSave, Is.False );
+            Assert.That( _model.CanDelete, Is.False );
+        }
+
+        [ Test ]
+        public void ChangeMasterPasswordOnlyMakesEditorNeitherSaveableNorDirty( )
         {
             // Set up
 
             // Exercise
             _model.MasterPassword = "123".ToSecureString( );
             // Verify
-            Assert.That( _model.DerivedPasswords,
-                         Is.EquivalentTo( GeneratorGuids.Select( g => IsPasswordModel.For( g, "abij", "123".ToSecureString( ), 3 ) ) )
-                             .Using( DerivedPasswordEquality ) );
             Assert.That( _model.MasterPasswordId, Is.Null );
             Assert.That( _model.IsDirty, Is.False );
-            Assert.That( _model.CanSave, Is.True );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.CanSave, Is.False );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
 
@@ -122,11 +122,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
             Assert.That( _model.IsDirty, Is.True );
             Assert.That( _model.CanSave, Is.False );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
         [ Test ]
-        public void ChangeGeneratorWithMasterPasswordMakesEditorDirtyAndSaveable( )
+        public void ChangeGeneratorWithMasterPasswordMakesEditorDirty( )
         {
             // Set up
             _model.MasterPassword = "AAA".ToSecureString( );
@@ -134,8 +134,8 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.SelectedPassword = _model.DerivedPasswords.First( p => p != _model.SelectedPassword );
             // Verify
             Assert.That( _model.IsDirty, Is.True );
-            Assert.That( _model.CanSave, Is.True );
-            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.CanSave, Is.False );
+            Assert.That( _model.CanDelete, Is.False );
         }
 
         [ Test ]
@@ -181,7 +181,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void ChangeNoteAndIterationMakesDirtyButNotSaveable( )
         {
             // Set up
-            
+
             // Exercise
             _model.Note = "A rather longer note.";
             _model.Iteration = 2;
@@ -189,7 +189,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.IsDirty, Is.True );
             Assert.That( _model.CanSave, Is.False );
             Assert.That( _model.CanDelete, Is.True );
-        } 
+        }
 
         [ Test ]
         public void ChangeNoteWithMasterPasswordMakesSaveable( )

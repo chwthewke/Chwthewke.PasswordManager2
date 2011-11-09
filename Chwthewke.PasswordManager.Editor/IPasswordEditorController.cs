@@ -5,6 +5,7 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Editor
 {
+    [ Obsolete ]
     public interface IPasswordEditorController
     {
         string Key { get; set; }

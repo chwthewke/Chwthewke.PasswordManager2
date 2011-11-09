@@ -1,6 +1,5 @@
 using System.Collections.Generic;
 using Autofac;
-using Chwthewke.PasswordManager.Modules;
 
 namespace Chwthewke.PasswordManager.App.Modules
 {

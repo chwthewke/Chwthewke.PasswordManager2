@@ -7,6 +7,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Editor
 {
+    [ Obsolete ]
     internal class PasswordEditorController : IPasswordEditorController
     {
         public PasswordEditorController( IPasswordDatabase passwordDatabase,

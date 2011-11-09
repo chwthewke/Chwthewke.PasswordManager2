@@ -1,7 +1,7 @@
 using System;
 using System.Windows;
 using Autofac;
-using Chwthewke.PasswordManager.Modules;
+using Chwthewke.PasswordManager.App.Modules;
 
 namespace Chwthewke.PasswordManager.Migration
 {

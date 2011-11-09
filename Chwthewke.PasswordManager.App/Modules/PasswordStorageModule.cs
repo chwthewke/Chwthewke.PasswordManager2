@@ -1,7 +1,7 @@
 ﻿using Autofac;
 using Chwthewke.PasswordManager.Storage;
 
-namespace Chwthewke.PasswordManager.Modules
+namespace Chwthewke.PasswordManager.App.Modules
 {
     public class PasswordStorageModule : Module
     {

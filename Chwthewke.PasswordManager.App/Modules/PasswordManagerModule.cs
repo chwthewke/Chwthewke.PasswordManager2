@@ -4,7 +4,7 @@ using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 
-namespace Chwthewke.PasswordManager.Modules
+namespace Chwthewke.PasswordManager.App.Modules
 {
     public class PasswordManagerModule : Module
     {

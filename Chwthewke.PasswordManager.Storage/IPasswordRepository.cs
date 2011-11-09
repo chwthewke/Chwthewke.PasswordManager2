@@ -3,7 +3,7 @@ using System.Collections.Generic;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    public interface IPasswordCollection
+    public interface IPasswordRepository
     {
         IList<PasswordDigestDocument> LoadPasswords( );
 
@@ -21,6 +21,6 @@ namespace Chwthewke.PasswordManager.Storage
         /// <returns></returns>
         bool DeletePassword( PasswordDigestDocument password, DateTime deletedOn );
 
-        void MergeInto( IPasswordCollection target );
+        void MergeInto( IPasswordRepository target );
     }
 }

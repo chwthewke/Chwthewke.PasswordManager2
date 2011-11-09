@@ -4,9 +4,9 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    internal class PasswordCollection : IPasswordCollection
+    internal class PasswordRepository : IPasswordRepository
     {
-        public PasswordCollection( IPasswordData passwordData )
+        public PasswordRepository( IPasswordData passwordData )
         {
             _passwordData = passwordData;
         }
@@ -67,12 +67,12 @@ namespace Chwthewke.PasswordManager.Storage
             return UpdatePassword( password, password.Delete( deletedOn ) );
         }
 
-        public void MergeInto( IPasswordCollection target )
+        public void MergeInto( IPasswordRepository target )
         {
-            if ( !( target is PasswordCollection ) )
+            if ( !( target is PasswordRepository ) )
                 return;
             foreach ( PasswordDigestDocument passwordDigestDocument in LoadPasswordsInternal( ) )
-                ( target as PasswordCollection ).SaveInternal( passwordDigestDocument );
+                ( target as PasswordRepository ).SaveInternal( passwordDigestDocument );
         }
 
         private IList<PasswordDigestDocument> LoadPasswordsInternal( )

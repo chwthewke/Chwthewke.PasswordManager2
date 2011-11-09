@@ -4,11 +4,11 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Test.Storage
 {
-    internal class InMemoryPasswordStore : IPasswordStore
+    internal class InMemoryTextResource : ITextResource
     {
         public string Content { get; set; }
 
-        public InMemoryPasswordStore( )
+        public InMemoryTextResource( )
         {
             Content = string.Empty;
         }

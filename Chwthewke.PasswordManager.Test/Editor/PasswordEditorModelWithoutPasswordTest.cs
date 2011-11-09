@@ -22,9 +22,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
 
-            PasswordCollection passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
+            PasswordRepository passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
 
-            _modelFactory = new PasswordEditorModelFactory( passwordCollection, _engine, new StubTimeProvider( ) );
+            _modelFactory = new PasswordEditorModelFactory( passwordRepository, _engine, new StubTimeProvider( ) );
 
             _model = _modelFactory.CreatePrisineModel( );
         }

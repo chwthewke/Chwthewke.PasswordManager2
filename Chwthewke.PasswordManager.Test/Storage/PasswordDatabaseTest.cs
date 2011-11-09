@@ -11,7 +11,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
     public class PasswordDatabaseTest
     {
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-        public IPasswordStore InMemoryPasswordStore { get; set; }
+        public ITextResource InMemoryTextResource { get; set; }
 
         public IPasswordDatabase Database { get; set; }
 
@@ -27,14 +27,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
                 AppSetUp.TestContainer(
                     b =>
                         {
-                            b.RegisterType<InMemoryPasswordStore>( ).As<IPasswordStore>( ).SingleInstance( );
-                            b.Register<Func<IPasswordStore>>( c => ( ( ) => c.Resolve<IPasswordStore>( ) ) )
-                                .As<Func<IPasswordStore>>( );
+                            b.RegisterType<InMemoryTextResource>( ).As<ITextResource>( ).SingleInstance( );
+                            b.Register<Func<ITextResource>>( c => ( ( ) => c.Resolve<ITextResource>( ) ) )
+                                .As<Func<ITextResource>>( );
                         } );
 
             container.InjectProperties( this );
 
-            Database.Source = InMemoryPasswordStore;
+            Database.Source = InMemoryTextResource;
         }
 
         [ Test ]
@@ -46,13 +46,13 @@ namespace Chwthewke.PasswordManager.Test.Storage
                     {
                         new PasswordDigestBuilder { Key = "abc" },
                     };
-            IPasswordStore newInMemoryPasswordStore = new InMemoryPasswordStore( );
-            Serializer.Save( passwordDigests, newInMemoryPasswordStore );
+            ITextResource newInMemoryTextResource = new InMemoryTextResource( );
+            Serializer.Save( passwordDigests, newInMemoryTextResource );
 
             // Exercise
 
             IPasswordDatabase database = DatabaseFactory.Invoke( );
-            database.Source = newInMemoryPasswordStore;
+            database.Source = newInMemoryTextResource;
 
             // Verify
             Assert.That( database.Passwords, Is.EquivalentTo( passwordDigests ) );
@@ -67,7 +67,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                     {
                         new PasswordDigestBuilder { Key = "abc" },
                     };
-            Serializer.Save( passwordDigests, InMemoryPasswordStore );
+            Serializer.Save( passwordDigests, InMemoryTextResource );
 
             // Exercise
 
@@ -86,9 +86,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
                     {
                         new PasswordDigestBuilder { Key = "abc" },
                     };
-            Serializer.Save( passwordDigests, InMemoryPasswordStore );
+            Serializer.Save( passwordDigests, InMemoryTextResource );
 
-            var newSource = new InMemoryPasswordStore( );
+            var newSource = new InMemoryTextResource( );
             // Exercise
             Database.Source = newSource;
             // Verify
@@ -104,7 +104,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Exercise
             Database.AddOrUpdate( password );
             // Verify
-            Assert.That( Serializer.Load( InMemoryPasswordStore ), Is.EquivalentTo( new List<PasswordDigest> { password } ) );
+            Assert.That( Serializer.Load( InMemoryTextResource ), Is.EquivalentTo( new List<PasswordDigest> { password } ) );
         }
 
         [ Test ]
@@ -112,14 +112,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Set up
             PasswordDigest password = new PasswordDigestBuilder { Key = "def" };
-            Serializer.Save( new List<PasswordDigest> { password }, InMemoryPasswordStore );
+            Serializer.Save( new List<PasswordDigest> { password }, InMemoryTextResource );
 
 
             PasswordDigest updatedPassword = new PasswordDigestBuilder { Key = "def", Hash = new byte[ ] { 0xf3, 0xdd } };
             // Exercise
             Database.AddOrUpdate( updatedPassword );
             // Verify
-            Assert.That( Serializer.Load( InMemoryPasswordStore ), Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
+            Assert.That( Serializer.Load( InMemoryTextResource ), Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
         }
 
         [ Test ]
@@ -130,14 +130,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
             PasswordDigest updatedPassword = new PasswordDigestBuilder
                                                  { Key = "def", Hash = new byte[ ] { 0x03 }, ModificationTime = new DateTime( 4 ) };
-            Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryPasswordStore );
+            Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryTextResource );
 
             // Exercise
             Database.Remove( "def" );
             // Verify
 
             Assert.That( Database.Passwords, Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
-            Assert.That( Serializer.Load( InMemoryPasswordStore ), Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
+            Assert.That( Serializer.Load( InMemoryTextResource ), Is.EquivalentTo( new List<PasswordDigest> { updatedPassword } ) );
         }
 
         [ Test ]
@@ -149,7 +149,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
             PasswordDigest updatedPassword = new PasswordDigestBuilder { Key = "abc", ModificationTime = new DateTime( 3 ) };
 
-            Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryPasswordStore );
+            Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryTextResource );
 
             // Exercise
             Database.Reload( );
@@ -167,7 +167,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
             PasswordDigest updatedPassword = new PasswordDigestBuilder { Key = "abc", ModificationTime = new DateTime( 1 ) };
 
-            Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryPasswordStore );
+            Serializer.Save( new List<PasswordDigest> { updatedPassword }, InMemoryTextResource );
 
             // Exercise
             Database.Reload( );

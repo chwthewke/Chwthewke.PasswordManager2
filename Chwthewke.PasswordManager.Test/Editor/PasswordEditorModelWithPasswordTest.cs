@@ -33,10 +33,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                 Note = "AB IJ"
                             };
 
-            PasswordCollection passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
-            passwordCollection.SavePassword( _original );
+            PasswordRepository passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
+            passwordRepository.SavePassword( _original );
 
-            _modelFactory = new PasswordEditorModelFactory( passwordCollection, _engine, new StubTimeProvider( ) );
+            _modelFactory = new PasswordEditorModelFactory( passwordRepository, _engine, new StubTimeProvider( ) );
             _model = _modelFactory.CreateModel( _original );
         }
 

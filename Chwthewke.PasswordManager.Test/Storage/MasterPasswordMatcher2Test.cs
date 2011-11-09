@@ -13,16 +13,16 @@ namespace Chwthewke.PasswordManager.Test.Storage
         private readonly Guid _masterPasswordId = Guid.Parse( "DAAB4016-AF5C-4C79-900E-B01E8D771C12" );
 
 
-        private IPasswordCollection _passwordCollection;
+        private IPasswordRepository _passwordRepository;
         private IPasswordDerivationEngine _passwordDerivationEngine;
         private IMasterPasswordMatcher _masterPasswordMatcher;
 
         [ SetUp ]
         public void SetUpStore( )
         {
-            _passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
+            _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
             _passwordDerivationEngine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
-            _masterPasswordMatcher = new MasterPasswordMatcher2( _passwordDerivationEngine, _passwordCollection );
+            _masterPasswordMatcher = new MasterPasswordMatcher2( _passwordDerivationEngine, _passwordRepository );
         }
 
         [ Test ]
@@ -37,7 +37,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             PasswordDigestDocument matchingDocument = 
                 new PasswordDigestDocument( match.Digest, _masterPasswordId, new DateTime( 2011, 11, 1 ), new DateTime( 2011, 11, 1 ), string.Empty );
             
-            _passwordCollection.SavePassword( matchingDocument );
+            _passwordRepository.SavePassword( matchingDocument );
 
             DerivedPassword nonMatch =
                 _passwordDerivationEngine.Derive( new PasswordRequest( "key2", "tata".ToSecureString( ), 1, PasswordGenerators2.AlphaNumeric ) );
@@ -45,7 +45,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             PasswordDigestDocument nonMatchingDocument =
                 new PasswordDigestDocument( nonMatch.Digest, Guid.NewGuid( ), new DateTime( 2011, 11, 1 ), new DateTime( 2011, 11, 1 ), string.Empty );
 
-            _passwordCollection.SavePassword( nonMatchingDocument );
+            _passwordRepository.SavePassword( nonMatchingDocument );
 
             // Exercise
             Guid? guid = _masterPasswordMatcher.IdentifyMasterPassword( masterPassword );
@@ -64,7 +64,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             PasswordDigestDocument nonMatchingDocument =
                 new PasswordDigestDocument( nonMatch.Digest, Guid.NewGuid( ), new DateTime( 2011, 11, 1 ), new DateTime( 2011, 11, 1 ), string.Empty );
 
-            _passwordCollection.SavePassword( nonMatchingDocument );
+            _passwordRepository.SavePassword( nonMatchingDocument );
 
             // Exercise
             Guid? guid = _masterPasswordMatcher.IdentifyMasterPassword( "toto".ToSecureString( ) );

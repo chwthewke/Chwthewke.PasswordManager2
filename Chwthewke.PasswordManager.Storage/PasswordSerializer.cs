@@ -24,12 +24,12 @@ namespace Chwthewke.PasswordManager.Storage
         public const string ModifiedElement = "modified";
         public const string IterationElement = "iteration";
 
-        public void Save( IEnumerable<PasswordDigest> passwordDigests, IPasswordStore store )
+        public void Save( IEnumerable<PasswordDigest> passwordDigests, ITextResource store )
         {
             Save( passwordDigests, store.OpenWriter );
         }
 
-        public IEnumerable<PasswordDigest> Load( IPasswordStore store )
+        public IEnumerable<PasswordDigest> Load( ITextResource store )
         {
             return Load( store.OpenReader );
         }

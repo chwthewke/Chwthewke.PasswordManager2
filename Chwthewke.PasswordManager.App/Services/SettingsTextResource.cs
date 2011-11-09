@@ -4,9 +4,9 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    public class SettingsPasswordStore : IPasswordStore
+    public class SettingsTextResource : ITextResource
     {
-        public SettingsPasswordStore( Settings settings )
+        public SettingsTextResource( Settings settings )
         {
             _settings = settings;
         }

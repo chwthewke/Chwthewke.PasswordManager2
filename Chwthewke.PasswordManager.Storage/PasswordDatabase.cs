@@ -8,14 +8,14 @@ namespace Chwthewke.PasswordManager.Storage
     [Obsolete]
     internal class PasswordDatabase : IPasswordDatabase
     {
-        public PasswordDatabase( IPasswordSerializer passwordSerializer, IPasswordStore passwordStore )
+        public PasswordDatabase( IPasswordSerializer passwordSerializer, ITextResource textResource )
         {
             _passwordSerializer = passwordSerializer;
-            _source = passwordStore;
+            _source = textResource;
             MergeFromSource( );
         }
 
-        public IPasswordStore Source
+        public ITextResource Source
         {
             get { return _source; }
             set
@@ -85,16 +85,16 @@ namespace Chwthewke.PasswordManager.Storage
             _passwordSerializer.Save( _passwords.Values, Source );
         }
 
-        private IPasswordStore _source;
+        private ITextResource _source;
 
         private readonly IDictionary<string, PasswordDigest> _passwords = new Dictionary<string, PasswordDigest>( );
         private readonly IPasswordSerializer _passwordSerializer;
     }
 
     [Obsolete]
-    internal class NullPasswordStore : IPasswordStore
+    internal class NullTextResource : ITextResource
     {
-        public NullPasswordStore( IPasswordSerializer serializer )
+        public NullTextResource( IPasswordSerializer serializer )
         {
             _sw = new StringWriter( );
             serializer.Save( Enumerable.Empty<PasswordDigest>(  ), this );

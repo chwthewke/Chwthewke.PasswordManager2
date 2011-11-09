@@ -6,9 +6,9 @@ namespace Chwthewke.PasswordManager.Storage
     [Obsolete]
     public interface IPasswordSerializer
     {
-        void Save( IEnumerable<PasswordDigest> passwordDigests, IPasswordStore store );
+        void Save( IEnumerable<PasswordDigest> passwordDigests, ITextResource store );
 
 
-        IEnumerable<PasswordDigest> Load( IPasswordStore store );
+        IEnumerable<PasswordDigest> Load( ITextResource store );
     }
 }

@@ -33,7 +33,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Exercise
             _viewModel.SelectInternalStorageCommand.Execute( null );
             // Verify
-            Assert.That( _database.Source, Is.InstanceOf<SettingsPasswordStore>( ) );
+            Assert.That( _database.Source, Is.InstanceOf<SettingsTextResource>( ) );
             Assert.That( _viewModel.ExternalStorageSelected, Is.False );
             Assert.That( _viewModel.InternalStorageSelected, Is.True );
         }
@@ -48,7 +48,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Exercise
             _viewModel.SelectExternalStorageCommand.Execute( null );
             // Verify
-            Assert.That( _database.Source, Is.InstanceOf<FilePasswordStore>( ) );
+            Assert.That( _database.Source, Is.InstanceOf<FileTextResource>( ) );
             Assert.That( _viewModel.ExternalStorageSelected, Is.True );
             Assert.That( _viewModel.InternalStorageSelected, Is.False );
         }

@@ -6,7 +6,7 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public class XmlPasswordData : IPasswordData
     {
-        internal XmlPasswordData( PasswordSerializer2 serializer, IPasswordStore store )
+        internal XmlPasswordData( PasswordSerializer2 serializer, ITextResource store )
         {
             if ( serializer == null )
                 throw new ArgumentNullException( "serializer" );
@@ -27,6 +27,6 @@ namespace Chwthewke.PasswordManager.Storage
         }
 
         private readonly PasswordSerializer2 _serializer;
-        private readonly IPasswordStore _store;
+        private readonly ITextResource _store;
     }
 }

@@ -9,30 +9,30 @@ namespace Chwthewke.PasswordManager.Editor
 {
     internal class PasswordEditorModel : IPasswordEditorModel
     {
-        public PasswordEditorModel( IPasswordCollection passwordCollection,
+        public PasswordEditorModel( IPasswordRepository passwordRepository,
                                     IPasswordDerivationEngine derivationEngine,
                                     IMasterPasswordMatcher masterPasswordMatcher,
                                     ITimeProvider timeProvider )
-            : this( passwordCollection, derivationEngine, masterPasswordMatcher, timeProvider, new NewPasswordDocument( ) )
+            : this( passwordRepository, derivationEngine, masterPasswordMatcher, timeProvider, new NewPasswordDocument( ) )
         {
         }
 
-        public PasswordEditorModel( IPasswordCollection passwordCollection,
+        public PasswordEditorModel( IPasswordRepository passwordRepository,
                                     IPasswordDerivationEngine derivationEngine,
                                     IMasterPasswordMatcher masterPasswordMatcher,
                                     ITimeProvider timeProvider,
                                     PasswordDigestDocument original )
-            : this( passwordCollection, derivationEngine, masterPasswordMatcher, timeProvider, new BaselinePasswordDocument( original ) )
+            : this( passwordRepository, derivationEngine, masterPasswordMatcher, timeProvider, new BaselinePasswordDocument( original ) )
         {
         }
 
-        private PasswordEditorModel( IPasswordCollection passwordCollection,
+        private PasswordEditorModel( IPasswordRepository passwordRepository,
                                      IPasswordDerivationEngine derivationEngine,
                                      IMasterPasswordMatcher masterPasswordMatcher,
                                      ITimeProvider timeProvider,
                                      IBaselinePasswordDocument original )
         {
-            _passwordCollection = passwordCollection;
+            _passwordRepository = passwordRepository;
             _derivationEngine = derivationEngine;
             _masterPasswordMatcher = masterPasswordMatcher;
             _timeProvider = timeProvider;
@@ -118,7 +118,7 @@ namespace Chwthewke.PasswordManager.Editor
         {
             bool saveOrUpdate = SaveOrUpdate( );
             if ( saveOrUpdate )
-                Original = new BaselinePasswordDocument( _passwordCollection.LoadPassword( Key ) );
+                Original = new BaselinePasswordDocument( _passwordRepository.LoadPassword( Key ) );
             return saveOrUpdate;
         }
 
@@ -224,14 +224,14 @@ namespace Chwthewke.PasswordManager.Editor
         private bool Save( PasswordDigestDocument passwordDigestDocument )
         {
             if ( _original.Document != null )
-                return _passwordCollection.UpdatePassword( _original.Document, passwordDigestDocument );
+                return _passwordRepository.UpdatePassword( _original.Document, passwordDigestDocument );
             else
-                return _passwordCollection.SavePassword( passwordDigestDocument );
+                return _passwordRepository.SavePassword( passwordDigestDocument );
         }
 
         private bool DeletePassword( )
         {
-            return _passwordCollection.DeletePassword( _original.Document, Now );
+            return _passwordRepository.DeletePassword( _original.Document, Now );
         }
 
         private DateTime Now
@@ -243,7 +243,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         private readonly ITimeProvider _timeProvider;
 
-        private readonly IPasswordCollection _passwordCollection;
+        private readonly IPasswordRepository _passwordRepository;
         private readonly IPasswordDerivationEngine _derivationEngine;
         private readonly IMasterPasswordMatcher _masterPasswordMatcher;
         private readonly IList<IDerivedPasswordModel> _derivedPasswords;

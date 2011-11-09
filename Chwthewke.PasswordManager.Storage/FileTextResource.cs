@@ -4,9 +4,9 @@ using System.Text;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    public class FilePasswordStore : IPasswordStore
+    public class FileTextResource : ITextResource
     {
-        public FilePasswordStore( FileInfo passwordsFile )
+        public FileTextResource( FileInfo passwordsFile )
         {
             if ( passwordsFile == null )
                 throw new ArgumentNullException( "passwordsFile" );

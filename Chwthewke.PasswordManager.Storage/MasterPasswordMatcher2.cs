@@ -7,18 +7,18 @@ namespace Chwthewke.PasswordManager.Storage
 {
     internal class MasterPasswordMatcher2 : IMasterPasswordMatcher
     {
-        public MasterPasswordMatcher2( IPasswordDerivationEngine passwordDerivationEngine, IPasswordCollection passwordCollection )
+        public MasterPasswordMatcher2( IPasswordDerivationEngine passwordDerivationEngine, IPasswordRepository passwordRepository )
         {
             _passwordDerivationEngine = passwordDerivationEngine;
-            _passwordCollection = passwordCollection;
+            _passwordRepository = passwordRepository;
         }
 
         private readonly IPasswordDerivationEngine _passwordDerivationEngine;
-        private readonly IPasswordCollection _passwordCollection;
+        private readonly IPasswordRepository _passwordRepository;
 
         public Guid? IdentifyMasterPassword( SecureString masterPassword )
         {
-            return _passwordCollection.LoadPasswords( )
+            return _passwordRepository.LoadPasswords( )
                 .GroupBy( p => p.MasterPasswordId )
                 .Select( gr => gr.First( ) )
                 .Where( p => MasterPasswordMatches( masterPassword, p ) )

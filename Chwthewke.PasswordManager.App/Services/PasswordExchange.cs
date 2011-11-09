@@ -17,7 +17,7 @@ namespace Chwthewke.PasswordManager.App.Services
         // TODO possibly return a "report" to be presented to the user
         public void ImportPasswords( FileInfo externalPasswordFile )
         {
-            IEnumerable<PasswordDigest> passwords = _passwordSerializer.Load( new FilePasswordStore( externalPasswordFile ) ).ToList( );
+            IEnumerable<PasswordDigest> passwords = _passwordSerializer.Load( new FileTextResource( externalPasswordFile ) ).ToList( );
 
             IDictionary<Guid, Guid> masterPasswordRelations = new Dictionary<Guid, Guid>( );
             IList<PasswordDigest> toImport = new List<PasswordDigest>( );
@@ -51,7 +51,7 @@ namespace Chwthewke.PasswordManager.App.Services
 
         public void ExportPasswords( FileInfo targetFile )
         {
-            _passwordSerializer.Save( _passwordDatabase.Passwords, new FilePasswordStore( targetFile ) );
+            _passwordSerializer.Save( _passwordDatabase.Passwords, new FileTextResource( targetFile ) );
         }
 
         private readonly IPasswordSerializer _passwordSerializer;

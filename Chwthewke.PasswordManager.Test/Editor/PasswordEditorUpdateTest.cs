@@ -14,7 +14,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
     {
         private IPasswordEditorModelFactory _modelFactory;
         private IPasswordEditorModel _model;
-        private IPasswordCollection _passwordCollection;
+        private IPasswordRepository _passwordRepository;
         private IPasswordDerivationEngine _engine;
         private StubTimeProvider _timeProvider;
         private PasswordDigestDocument _original;
@@ -23,7 +23,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void SetUpModel( )
         {
             _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
-            _passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
+            _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
 
             var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators2.Full ) );
 
@@ -36,11 +36,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                 Note = "AB IJ"
                             };
 
-            _passwordCollection.SavePassword( _original );
+            _passwordRepository.SavePassword( _original );
 
             _timeProvider = new StubTimeProvider( );
 
-            _modelFactory = new PasswordEditorModelFactory( _passwordCollection, _engine, _timeProvider );
+            _modelFactory = new PasswordEditorModelFactory( _passwordRepository, _engine, _timeProvider );
             _model = _modelFactory.CreateModel( _original );
         }
 
@@ -55,7 +55,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             var saved = _model.Save( );
             // Verify
             Assert.That( saved, Is.False );
-            Assert.That( _passwordCollection.LoadPassword( "abij" ), Is.EqualTo( _original ) );
+            Assert.That( _passwordRepository.LoadPassword( "abij" ), Is.EqualTo( _original ) );
         }
 
         [ Test ]
@@ -67,7 +67,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             var saved = _model.Save( );
             // Verify
             Assert.That( saved, Is.True );
-            Assert.That( _passwordCollection.LoadPassword( "abij" ), Is.Not.EqualTo( _original ) );
+            Assert.That( _passwordRepository.LoadPassword( "abij" ), Is.Not.EqualTo( _original ) );
         }
 
         [ Test ]
@@ -79,7 +79,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             var saved = _model.Save( );
             // Verify
             Assert.That( saved, Is.True );
-            Assert.That( _passwordCollection.LoadPassword( "abij" ).MasterPasswordId,
+            Assert.That( _passwordRepository.LoadPassword( "abij" ).MasterPasswordId,
                          Is.Not.EqualTo( _original.MasterPasswordId ) );
         }
 
@@ -94,7 +94,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             var saved = _model.Save( );
             // Verify
             Assert.That( saved, Is.True );
-            Assert.That( _passwordCollection.LoadPassword( "abij" ).PasswordGenerator,
+            Assert.That( _passwordRepository.LoadPassword( "abij" ).PasswordGenerator,
                          Is.EqualTo( expected ) );
         }
 
@@ -108,7 +108,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             var saved = _model.Save( );
             // Verify
             Assert.That( saved, Is.True );
-            Assert.That( _passwordCollection.LoadPassword( "abij" ).Iteration,
+            Assert.That( _passwordRepository.LoadPassword( "abij" ).Iteration,
                          Is.EqualTo( 10 ) );
         }
 
@@ -123,7 +123,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             var saved = _model.Save( );
             // Verify
             Assert.That( saved, Is.True );
-            Assert.That( _passwordCollection.LoadPassword( "abij" ).Note,
+            Assert.That( _passwordRepository.LoadPassword( "abij" ).Note,
                          Is.EqualTo( aReallyDifferentNote ) );
         }
 
@@ -137,7 +137,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             var saved = _model.Save( );
             // Verify
             Assert.That( saved, Is.True );
-            Assert.That( _passwordCollection.LoadPassword( "abij" ).Note,
+            Assert.That( _passwordRepository.LoadPassword( "abij" ).Note,
                          Is.EqualTo( aReallyDifferentNote ) );
         }
 
@@ -152,7 +152,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _timeProvider.Now = now;
             // Exercise
             _model.Save( );
-            var savedPassword = _passwordCollection.LoadPassword( "abij" );
+            var savedPassword = _passwordRepository.LoadPassword( "abij" );
             // Verify
             Assert.That( savedPassword.CreatedOn, Is.EqualTo( _original.CreatedOn ) );
             Assert.That( savedPassword.ModifiedOn, Is.EqualTo( now ) );

@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
                 b =>
                     {
                         b.RegisterInstance( TimeProviderMock.Object ).As<ITimeProvider>( );
-                        b.RegisterType<InMemoryPasswordStore>( ).As<IPasswordStore>( ).SingleInstance( );
+                        b.RegisterType<InMemoryTextResource>( ).As<ITextResource>( ).SingleInstance( );
                     } )
                 .InjectProperties( this );
         }

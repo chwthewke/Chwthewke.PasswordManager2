@@ -6,7 +6,7 @@ namespace Chwthewke.PasswordManager.Storage
     [Obsolete]
     public interface IPasswordDatabase
     {
-        IPasswordStore Source { get; set; }
+        ITextResource Source { get; set; }
         IList<PasswordDigest> Passwords { get; }
         PasswordDigest FindByKey( string key );
         void Reload( );

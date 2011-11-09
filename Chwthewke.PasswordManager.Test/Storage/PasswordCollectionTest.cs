@@ -10,7 +10,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
     public class PasswordCollectionTest
     {
         private InMemoryPasswordData _inMemoryPasswordData;
-        private IPasswordCollection _passwordCollection;
+        private IPasswordRepository _passwordRepository;
         private List<PasswordDigestDocument> _allPasswords;
 
         [ SetUp ]
@@ -20,7 +20,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _allPasswords = new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Ijkl }.ToList( );
             _inMemoryPasswordData.SavePasswords( _allPasswords );
 
-            _passwordCollection = new PasswordCollection( _inMemoryPasswordData );
+            _passwordRepository = new PasswordRepository( _inMemoryPasswordData );
         }
 
         [ Test ]
@@ -28,7 +28,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Set up
             // Exercise
-            var passwords = _passwordCollection.LoadPasswords( );
+            var passwords = _passwordRepository.LoadPasswords( );
             // Verify
             Assert.That( passwords, Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh } ) );
         }
@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Set up
 
             // Exercise
-            var password = _passwordCollection.LoadPassword( "abcd" );
+            var password = _passwordRepository.LoadPassword( "abcd" );
             // Verify
             Assert.That( password, Is.EqualTo( TestPasswords.Abcd ) );
         }
@@ -50,7 +50,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Set up
 
             // Exercise
-            var password = _passwordCollection.LoadPassword( "abce" );
+            var password = _passwordRepository.LoadPassword( "abce" );
             // Verify
             Assert.That( password, Is.Null );
         }
@@ -61,7 +61,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Set up
 
             // Exercise
-            var password = _passwordCollection.LoadPassword( "ijkl" );
+            var password = _passwordRepository.LoadPassword( "ijkl" );
             // Verify
             Assert.That( password, Is.Null );
         }
@@ -76,7 +76,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                       Hash = new byte[ ] { 0x12, 0x34 }
                                                   };
             // Exercise
-            var saved = _passwordCollection.SavePassword( password );
+            var saved = _passwordRepository.SavePassword( password );
             // Verify
             Assert.That( saved, Is.True );
             Assert.That( _inMemoryPasswordData.LoadPasswords( ),
@@ -93,7 +93,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                         Hash = new byte[ ] { 0x12, 0x34 },
                                                         ModifiedOn = new DateTime( 2011, 11, 1 )
                                                     };
-            _passwordCollection.SavePassword( passwordV1 );
+            _passwordRepository.SavePassword( passwordV1 );
 
             PasswordDigestDocument passwordV2 = new PasswordDigestDocumentBuilder
                                                     {
@@ -103,7 +103,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                     };
 
             // Exercise
-            var saved = _passwordCollection.SavePassword( passwordV2 );
+            var saved = _passwordRepository.SavePassword( passwordV2 );
 
             // Verify
             Assert.That( saved, Is.True );
@@ -121,7 +121,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                         Hash = new byte[ ] { 0x12, 0x34 },
                                                         ModifiedOn = new DateTime( 2011, 11, 3 )
                                                     };
-            _passwordCollection.SavePassword( passwordV1 );
+            _passwordRepository.SavePassword( passwordV1 );
 
             PasswordDigestDocument passwordV2 = new PasswordDigestDocumentBuilder
                                                     {
@@ -131,7 +131,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                     };
 
             // Exercise
-            var saved = _passwordCollection.SavePassword( passwordV2 );
+            var saved = _passwordRepository.SavePassword( passwordV2 );
 
             // Verify
             Assert.That( saved, Is.False );
@@ -151,7 +151,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                   };
 
             // Exercise
-            var saved = _passwordCollection.SavePassword( password );
+            var saved = _passwordRepository.SavePassword( password );
 
             // Verify
             Assert.That( saved, Is.True );
@@ -171,7 +171,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                   };
 
             // Exercise
-            var saved = _passwordCollection.SavePassword( password );
+            var saved = _passwordRepository.SavePassword( password );
 
             // Verify
             Assert.That( saved, Is.False );
@@ -191,7 +191,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                   };
 
             // Exercise
-            _passwordCollection.SavePassword( password.Delete( new DateTime( 2011, 11, 4 ) ) );
+            _passwordRepository.SavePassword( password.Delete( new DateTime( 2011, 11, 4 ) ) );
 
             // Verify
         }
@@ -208,7 +208,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                   };
             PasswordDigestDocument updatedPassword = Update( password, new DateTime( 2011, 11, 5 ) );
             // Exercise
-            var updated = _passwordCollection.UpdatePassword( password, updatedPassword );
+            var updated = _passwordRepository.UpdatePassword( password, updatedPassword );
             // Verify
             Assert.That( updated, Is.False );
             Assert.That( _inMemoryPasswordData.LoadPasswords( ), Is.EquivalentTo( _allPasswords ) );
@@ -220,7 +220,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Set up
             PasswordDigestDocument updatedPassword = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 5 ) );
             // Exercise
-            var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPassword );
+            var updated = _passwordRepository.UpdatePassword( TestPasswords.Abcd, updatedPassword );
             // Verify
             Assert.That( updated, Is.True );
             Assert.That( _inMemoryPasswordData.LoadPasswords( ),
@@ -232,11 +232,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Set up
             PasswordDigestDocument updatedPasswordV1 = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 5 ) );
-            _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV1 );
+            _passwordRepository.UpdatePassword( TestPasswords.Abcd, updatedPasswordV1 );
             PasswordDigestDocument updatedPasswordV2 = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 6 ) );
 
             // Exercise
-            var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
+            var updated = _passwordRepository.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
             // Verify
             Assert.That( updated, Is.True );
             Assert.That( _inMemoryPasswordData.LoadPasswords( ),
@@ -248,11 +248,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Set up
             PasswordDigestDocument updatedPasswordV1 = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 7 ) );
-            _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV1 );
+            _passwordRepository.UpdatePassword( TestPasswords.Abcd, updatedPasswordV1 );
             PasswordDigestDocument updatedPasswordV2 = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 6 ) );
 
             // Exercise
-            var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
+            var updated = _passwordRepository.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
             // Verify
             Assert.That( updated, Is.False );
             Assert.That( _inMemoryPasswordData.LoadPasswords( ),
@@ -264,11 +264,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Set up
             PasswordDigestDocument deletedPassword = TestPasswords.Abcd.Delete( new DateTime( 2011, 11, 5 ) );
-            _passwordCollection.UpdatePassword( TestPasswords.Abcd, deletedPassword );
+            _passwordRepository.UpdatePassword( TestPasswords.Abcd, deletedPassword );
             PasswordDigestDocument updatedPasswordV2 = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 6 ) );
 
             // Exercise
-            var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
+            var updated = _passwordRepository.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
             // Verify
             Assert.That( updated, Is.True );
             Assert.That( _inMemoryPasswordData.LoadPasswords( ),
@@ -280,11 +280,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Set up
             PasswordDigestDocument deletedPassword = TestPasswords.Abcd.Delete( new DateTime( 2011, 11, 7 ) );
-            _passwordCollection.UpdatePassword( TestPasswords.Abcd, deletedPassword );
+            _passwordRepository.UpdatePassword( TestPasswords.Abcd, deletedPassword );
             PasswordDigestDocument updatedPasswordV2 = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 6 ) );
 
             // Exercise
-            var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
+            var updated = _passwordRepository.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
             // Verify
             Assert.That( updated, Is.False );
             Assert.That( _inMemoryPasswordData.LoadPasswords( ),
@@ -297,12 +297,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Set up
             PasswordDigestDocument updatedPassword = TestPasswords.Abcd.Delete( new DateTime( 2011, 11, 5 ) );
             // Exercise
-            var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPassword );
+            var updated = _passwordRepository.UpdatePassword( TestPasswords.Abcd, updatedPassword );
             // Verify
             Assert.That( updated, Is.True );
             Assert.That( _inMemoryPasswordData.LoadPasswords( ),
                          Is.EquivalentTo( new[ ] { updatedPassword, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
-            Assert.That( _passwordCollection.LoadPasswords( ),
+            Assert.That( _passwordRepository.LoadPasswords( ),
                          Is.EquivalentTo( new[ ] { TestPasswords.Efgh } ) );
         }
 
@@ -312,14 +312,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Set up
             var sourceData = new InMemoryPasswordData( );
             sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd } );
-            IPasswordCollection sourceCollection = new PasswordCollection( sourceData );
+            IPasswordRepository sourceRepository = new PasswordRepository( sourceData );
 
             var targetData = new InMemoryPasswordData( );
             targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Efgh, TestPasswords.Ijkl } );
-            IPasswordCollection targetCollection = new PasswordCollection( targetData );
+            IPasswordRepository targetRepository = new PasswordRepository( targetData );
 
             // Exercise
-            sourceCollection.MergeInto( targetCollection );
+            sourceRepository.MergeInto( targetRepository );
             // Verify
             Assert.That( targetData.LoadPasswords( ),
                          Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
@@ -331,14 +331,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Set up
             var sourceData = new InMemoryPasswordData( );
             sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Ijkl } );
-            IPasswordCollection sourceCollection = new PasswordCollection( sourceData );
+            IPasswordRepository sourceRepository = new PasswordRepository( sourceData );
 
             var targetData = new InMemoryPasswordData( );
             targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Efgh } );
-            IPasswordCollection targetCollection = new PasswordCollection( targetData );
+            IPasswordRepository targetRepository = new PasswordRepository( targetData );
 
             // Exercise
-            sourceCollection.MergeInto( targetCollection );
+            sourceRepository.MergeInto( targetRepository );
             // Verify
             Assert.That( targetData.LoadPasswords( ),
                          Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
@@ -352,14 +352,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
             
             var sourceData = new InMemoryPasswordData( );
             sourceData.SavePasswords( new List<PasswordDigestDocument> { abcdUpdated, TestPasswords.Ijkl } );
-            IPasswordCollection sourceCollection = new PasswordCollection( sourceData );
+            IPasswordRepository sourceRepository = new PasswordRepository( sourceData );
 
             var targetData = new InMemoryPasswordData( );
             targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Efgh } );
-            IPasswordCollection targetCollection = new PasswordCollection( targetData );
+            IPasswordRepository targetRepository = new PasswordRepository( targetData );
 
             // Exercise
-            sourceCollection.MergeInto( targetCollection );
+            sourceRepository.MergeInto( targetRepository );
             // Verify
             Assert.That( targetData.LoadPasswords( ),
                          Is.EquivalentTo( new[ ] { abcdUpdated, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
@@ -373,14 +373,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
             
             var sourceData = new InMemoryPasswordData( );
             sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Ijkl } );
-            IPasswordCollection sourceCollection = new PasswordCollection( sourceData );
+            IPasswordRepository sourceRepository = new PasswordRepository( sourceData );
 
             var targetData = new InMemoryPasswordData( );
             targetData.SavePasswords( new List<PasswordDigestDocument> { abcdUpdated, TestPasswords.Efgh } );
-            IPasswordCollection targetCollection = new PasswordCollection( targetData );
+            IPasswordRepository targetRepository = new PasswordRepository( targetData );
 
             // Exercise
-            sourceCollection.MergeInto( targetCollection );
+            sourceRepository.MergeInto( targetRepository );
             // Verify
             Assert.That( targetData.LoadPasswords( ),
                          Is.EquivalentTo( new[ ] { abcdUpdated, TestPasswords.Efgh, TestPasswords.Ijkl } ) );

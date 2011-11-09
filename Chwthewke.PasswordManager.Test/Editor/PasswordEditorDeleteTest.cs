@@ -13,7 +13,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
     {
         private IPasswordEditorModelFactory _modelFactory;
         private IPasswordEditorModel _model;
-        private IPasswordCollection _passwordCollection;
+        private IPasswordRepository _passwordRepository;
         private IPasswordDerivationEngine _engine;
         private StubTimeProvider _timeProvider;
         private PasswordDigestDocument _original;
@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
             _passwordData = new InMemoryPasswordData( );
-            _passwordCollection = new PasswordCollection( _passwordData );
+            _passwordRepository = new PasswordRepository( _passwordData );
 
             var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators2.Full ) );
 
@@ -37,11 +37,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                 Note = "AB IJ"
                             };
 
-            _passwordCollection.SavePassword( _original );
+            _passwordRepository.SavePassword( _original );
 
             _timeProvider = new StubTimeProvider( );
 
-            _modelFactory = new PasswordEditorModelFactory( _passwordCollection, _engine, _timeProvider );
+            _modelFactory = new PasswordEditorModelFactory( _passwordRepository, _engine, _timeProvider );
             _model = _modelFactory.CreateModel( _original );
         }
 
@@ -53,7 +53,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Exercise
             _model.Delete( );
             // Verify
-            Assert.That( _passwordCollection.LoadPasswords( ), Is.Empty );
+            Assert.That( _passwordRepository.LoadPasswords( ), Is.Empty );
         }
 
         [Test]

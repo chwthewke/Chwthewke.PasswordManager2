@@ -2,7 +2,7 @@ using System.IO;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    public interface IPasswordStore
+    public interface ITextResource
     {
         TextReader OpenReader( );
         TextWriter OpenWriter( );

@@ -7,14 +7,14 @@ namespace Chwthewke.PasswordManager.Test.Storage
     {
         public static string ToXml( this PasswordSerializer2 serializer, IEnumerable<PasswordDigestDocument> passwords )
         {
-            var store = new InMemoryPasswordStore( );
+            var store = new InMemoryTextResource( );
             serializer.Save( passwords, store );
             return store.Content;
         }
 
         public static IEnumerable<PasswordDigestDocument> FromXml( this PasswordSerializer2 serializer, string xml )
         {
-            var store = new InMemoryPasswordStore { Content = xml };
+            var store = new InMemoryTextResource { Content = xml };
             return serializer.Load( store );
         }
     }

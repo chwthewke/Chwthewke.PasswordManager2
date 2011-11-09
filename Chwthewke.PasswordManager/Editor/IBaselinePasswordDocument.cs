@@ -17,6 +17,8 @@ namespace Chwthewke.PasswordManager.Editor
         DateTime? CreatedOn { get; }
 
         string Note { get; }
+
+        PasswordDigestDocument Document { get; }
     }
 
     internal class BaselinePasswordDocument : IBaselinePasswordDocument
@@ -56,6 +58,11 @@ namespace Chwthewke.PasswordManager.Editor
             get { return _baseline.Note; }
         }
 
+        public PasswordDigestDocument Document
+        {
+            get { return _baseline; }
+        }
+
         private readonly PasswordDigestDocument _baseline;
     }
 
@@ -89,6 +96,11 @@ namespace Chwthewke.PasswordManager.Editor
         public string Note
         {
             get { return string.Empty; }
+        }
+
+        public PasswordDigestDocument Document
+        {
+            get { return null; }
         }
     }
 }

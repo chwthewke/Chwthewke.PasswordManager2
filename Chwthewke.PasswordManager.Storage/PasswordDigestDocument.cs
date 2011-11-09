@@ -69,13 +69,6 @@ namespace Chwthewke.PasswordManager.Storage
             get { return Digest.Hash.Length == 0; }
         }
 
-        public PasswordDigestDocument Update( PasswordDigest2 newDigest, Guid newMasterPasswordId, DateTime updatedOn, string newNote )
-        {
-            if ( newDigest.Key != Key )
-                throw new ArgumentException( "Invalid key in new Digest.", "newDigest" );
-            return new PasswordDigestDocument( newDigest, newMasterPasswordId, _createdOn, updatedOn, newNote );
-        }
-
         public PasswordDigestDocument Delete( DateTime deletedOn )
         {
             return new PasswordDigestDocument( new PasswordDigest2( _digest.Key, new byte[ 0 ], 0, default( Guid ) ),

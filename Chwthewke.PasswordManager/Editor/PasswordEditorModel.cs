@@ -11,27 +11,30 @@ namespace Chwthewke.PasswordManager.Editor
     {
         public PasswordEditorModel( IPasswordCollection passwordCollection,
                                     IPasswordDerivationEngine derivationEngine,
-                                    IMasterPasswordMatcher masterPasswordMatcher )
-            : this( new NewPasswordDocument( ), passwordCollection, derivationEngine, masterPasswordMatcher )
+                                    IMasterPasswordMatcher masterPasswordMatcher,
+                                    ITimeProvider timeProvider )
+            : this( new NewPasswordDocument( ), passwordCollection, derivationEngine, masterPasswordMatcher, timeProvider )
         {
         }
 
         public PasswordEditorModel( IPasswordCollection passwordCollection,
                                     IPasswordDerivationEngine derivationEngine,
                                     IMasterPasswordMatcher masterPasswordMatcher,
+                                    ITimeProvider timeProvider,
                                     PasswordDigestDocument original )
-            : this( new BaselinePasswordDocument( original ), passwordCollection, derivationEngine, masterPasswordMatcher )
+            : this( new BaselinePasswordDocument( original ), passwordCollection, derivationEngine, masterPasswordMatcher, timeProvider )
         {
         }
 
         private PasswordEditorModel( IBaselinePasswordDocument original,
                                      IPasswordCollection passwordCollection,
                                      IPasswordDerivationEngine derivationEngine,
-                                     IMasterPasswordMatcher masterPasswordMatcher )
+                                     IMasterPasswordMatcher masterPasswordMatcher, ITimeProvider timeProvider )
         {
             _passwordCollection = passwordCollection;
             _derivationEngine = derivationEngine;
             _masterPasswordMatcher = masterPasswordMatcher;
+            _timeProvider = timeProvider;
 
             _derivedPasswords = _derivationEngine.PasswordGenerators
                 .Select<Guid, IDerivedPasswordModel>( g =>
@@ -101,12 +104,12 @@ namespace Chwthewke.PasswordManager.Editor
 
         private Guid? SelectedGenerator
         {
-            get { return SelectedPassword == null ? (Guid?)null : SelectedPassword.Generator; }
+            get { return SelectedPassword == null ? (Guid?) null : SelectedPassword.Generator; }
         }
 
         public bool CanSave
         {
-            get { return CanSaveWithMasterPassword( ) || CanSaveWithoutMasterPassword( ); }
+            get { return CanSaveWithMasterPassword || CanSaveWithoutMasterPassword; }
         }
 
         public bool CanDelete
@@ -116,7 +119,11 @@ namespace Chwthewke.PasswordManager.Editor
 
         public bool Save( )
         {
-            throw new NotImplementedException( );
+            if ( CanSaveWithoutMasterPassword )
+                return SaveUpdatedNote( );
+            if ( CanSaveWithMasterPassword )
+                return SaveFullUpdate( );
+            return false;
         }
 
         public bool Delete( )
@@ -124,44 +131,76 @@ namespace Chwthewke.PasswordManager.Editor
             throw new NotImplementedException( );
         }
 
-        private bool CanSaveWithMasterPassword( )
-        {
-            return ( IsDirty || MasterPasswordId != _original.MasterPasswordId ) &&
-                   MasterPassword.Length > 0 &&
-                   !string.IsNullOrEmpty( Key ) &&
-                   SelectedPassword != null;
-        }
-
-        private bool CanSaveWithoutMasterPassword( )
-        {
-            return IsDirty &&
-                   MasterPassword.Length == 0 &&
-                   IsKeyReadonly &&
-                   SelectedPassword.Generator == _original.PasswordGenerator &&
-                   Iteration == _original.Iteration;
-        }
-
-        private PasswordDigestDocument Current
+        private bool CanSaveWithMasterPassword
         {
             get
             {
-                if ( SelectedPassword == null )
-                    return null;
-                if ( SelectedPassword.DerivedPassword == null )
-                    return null;
-                DateTime createdOn = _original.CreatedOn ?? Now;
-                Guid masterPasswordId = MasterPasswordId ?? Guid.NewGuid( );
-                return new PasswordDigestDocument( SelectedPassword.DerivedPassword.Digest, masterPasswordId, createdOn, Now, Note );
+                return ( IsDirty || MasterPasswordId != _original.MasterPasswordId ) &&
+                       MasterPassword.Length > 0 &&
+                       !string.IsNullOrEmpty( Key ) &&
+                       SelectedPassword != null;
             }
+        }
+
+        private bool CanSaveWithoutMasterPassword
+        {
+            get
+            {
+                return IsDirty &&
+                       MasterPassword.Length == 0 &&
+                       IsKeyReadonly &&
+                       SelectedPassword.Generator == _original.PasswordGenerator &&
+                       Iteration == _original.Iteration;
+            }
+        }
+
+        private bool SaveFullUpdate( )
+        {
+            if ( SelectedPassword == null )
+                throw new InvalidOperationException( );
+            DateTime createdOn = _original.CreatedOn ?? Now;
+            Guid masterPasswordId = MasterPasswordId ?? Guid.NewGuid( );
+            PasswordDigestDocument current =
+                new PasswordDigestDocument( SelectedPassword.DerivedPassword.Digest, masterPasswordId, createdOn, Now, Note );
+            return Save( current );
+        }
+
+
+        private bool SaveUpdatedNote( )
+        {
+            Guid? masterPasswordId = _original.MasterPasswordId;
+            DateTime? createdOn = _original.CreatedOn;
+            PasswordDigestDocument originalDocument = _original.Document;
+
+            if ( !masterPasswordId.HasValue )
+                throw new InvalidOperationException( );
+            if ( !createdOn.HasValue )
+                throw new InvalidOperationException( );
+            if ( originalDocument == null )
+                throw new InvalidOperationException( );
+
+            PasswordDigestDocument current =
+                new PasswordDigestDocument( originalDocument.Digest, masterPasswordId.Value, createdOn.Value, Now, Note );
+            return Save( current );
+        }
+
+        private bool Save( PasswordDigestDocument passwordDigestDocument )
+        {
+            if ( _original.Document != null )
+                return _passwordCollection.UpdatePassword( _original.Document, passwordDigestDocument );
+            else
+                return _passwordCollection.SavePassword( passwordDigestDocument );
         }
 
 
         private DateTime Now
         {
-            get { return DateTime.Now; }
+            get { return _timeProvider.Now; }
         }
 
         private readonly IBaselinePasswordDocument _original;
+
+        private readonly ITimeProvider _timeProvider;
 
         private readonly IPasswordCollection _passwordCollection;
         private readonly IPasswordDerivationEngine _derivationEngine;

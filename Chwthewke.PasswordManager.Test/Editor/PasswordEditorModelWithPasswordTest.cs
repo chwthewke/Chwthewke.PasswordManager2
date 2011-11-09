@@ -16,7 +16,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
         private IPasswordEditorModelFactory _modelFactory;
         private IPasswordEditorModel _model;
         private PasswordDigestDocument _original;
-        private IPasswordCollection _passwordCollection;
         private IPasswordDerivationEngine _engine;
 
         [ SetUp ]
@@ -34,9 +33,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                 Note = "AB IJ"
                             };
 
-            _passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
-            _passwordCollection.SavePassword( _original );
-            _modelFactory = new PasswordEditorModelFactory( _passwordCollection, _engine );
+            PasswordCollection passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
+            passwordCollection.SavePassword( _original );
+
+            _modelFactory = new PasswordEditorModelFactory( passwordCollection, _engine, new StubTimeProvider( ) );
             _model = _modelFactory.CreateModel( _original );
         }
 

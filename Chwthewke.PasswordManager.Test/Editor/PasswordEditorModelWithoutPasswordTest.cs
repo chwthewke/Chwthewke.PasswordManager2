@@ -15,7 +15,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
     {
         private IPasswordEditorModelFactory _modelFactory;
         private IPasswordEditorModel _model;
-        private IPasswordCollection _passwordCollection;
         private IPasswordDerivationEngine _engine;
 
         [ SetUp ]
@@ -23,8 +22,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
 
-            _passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
-            _modelFactory = new PasswordEditorModelFactory( _passwordCollection, _engine );
+            PasswordCollection passwordCollection = new PasswordCollection( new InMemoryPasswordData( ) );
+
+            _modelFactory = new PasswordEditorModelFactory( passwordCollection, _engine, new StubTimeProvider( ) );
+
             _model = _modelFactory.CreatePrisineModel( );
         }
 

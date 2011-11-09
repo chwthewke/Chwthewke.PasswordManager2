@@ -13,7 +13,7 @@ namespace Chwthewke.PasswordManager.Editor
                                     IPasswordDerivationEngine derivationEngine,
                                     IMasterPasswordMatcher masterPasswordMatcher,
                                     ITimeProvider timeProvider )
-            : this( new NewPasswordDocument( ), passwordCollection, derivationEngine, masterPasswordMatcher, timeProvider )
+            : this( passwordCollection, derivationEngine, masterPasswordMatcher, timeProvider, new NewPasswordDocument( ) )
         {
         }
 
@@ -22,14 +22,15 @@ namespace Chwthewke.PasswordManager.Editor
                                     IMasterPasswordMatcher masterPasswordMatcher,
                                     ITimeProvider timeProvider,
                                     PasswordDigestDocument original )
-            : this( new BaselinePasswordDocument( original ), passwordCollection, derivationEngine, masterPasswordMatcher, timeProvider )
+            : this( passwordCollection, derivationEngine, masterPasswordMatcher, timeProvider, new BaselinePasswordDocument( original ) )
         {
         }
 
-        private PasswordEditorModel( IBaselinePasswordDocument original,
-                                     IPasswordCollection passwordCollection,
+        private PasswordEditorModel( IPasswordCollection passwordCollection,
                                      IPasswordDerivationEngine derivationEngine,
-                                     IMasterPasswordMatcher masterPasswordMatcher, ITimeProvider timeProvider )
+                                     IMasterPasswordMatcher masterPasswordMatcher,
+                                     ITimeProvider timeProvider,
+                                     IBaselinePasswordDocument original )
         {
             _passwordCollection = passwordCollection;
             _derivationEngine = derivationEngine;
@@ -41,14 +42,10 @@ namespace Chwthewke.PasswordManager.Editor
                                                       new DerivedPasswordModel( _derivationEngine, this, g ) )
                 .ToList( );
 
-            _original = original;
 
-            _key = original.Key;
-            Note = _original.Note;
-            Iteration = original.Iteration;
+            Original = original;
 
             MasterPassword = new SecureString( );
-            SelectedPassword = DerivedPasswords.SingleOrDefault( p => p.Generator == _original.PasswordGenerator );
         }
 
         private string _key;
@@ -119,16 +116,47 @@ namespace Chwthewke.PasswordManager.Editor
 
         public bool Save( )
         {
-            if ( CanSaveWithoutMasterPassword )
-                return SaveUpdatedNote( );
-            if ( CanSaveWithMasterPassword )
-                return SaveFullUpdate( );
-            return false;
+            bool saveOrUpdate = SaveOrUpdate( );
+            if ( saveOrUpdate )
+                Original = new BaselinePasswordDocument( _passwordCollection.LoadPassword( Key ) );
+            return saveOrUpdate;
         }
 
         public bool Delete( )
         {
-            throw new NotImplementedException( );
+            if ( !CanDelete )
+                return false;
+            bool deleted = DeletePassword( );
+            if ( !deleted )
+                return false;
+
+            var key = Key;
+            var generator = SelectedGenerator;
+            var iteration = Iteration;
+            var note = Note;
+
+            Original = new NewPasswordDocument( );
+
+            Key = key;
+            SelectedPassword = DerivedPasswords.First( p => p.Generator == generator );
+            Iteration = iteration;
+            Note = note;
+
+            return true;
+        }
+
+        private IBaselinePasswordDocument Original
+        {
+            get { return _original; }
+            set
+            {
+                _original = value;
+
+                _key = _original.Key;
+                Note = _original.Note;
+                Iteration = _original.Iteration;
+                SelectedPassword = DerivedPasswords.SingleOrDefault( p => p.Generator == _original.PasswordGenerator );
+            }
         }
 
         private bool CanSaveWithMasterPassword
@@ -152,6 +180,15 @@ namespace Chwthewke.PasswordManager.Editor
                        SelectedPassword.Generator == _original.PasswordGenerator &&
                        Iteration == _original.Iteration;
             }
+        }
+
+        private bool SaveOrUpdate( )
+        {
+            if ( CanSaveWithoutMasterPassword )
+                return SaveUpdatedNote( );
+            if ( CanSaveWithMasterPassword )
+                return SaveFullUpdate( );
+            return false;
         }
 
         private bool SaveFullUpdate( )
@@ -192,13 +229,17 @@ namespace Chwthewke.PasswordManager.Editor
                 return _passwordCollection.SavePassword( passwordDigestDocument );
         }
 
+        private bool DeletePassword( )
+        {
+            return _passwordCollection.DeletePassword( _original.Document, Now );
+        }
 
         private DateTime Now
         {
             get { return _timeProvider.Now; }
         }
 
-        private readonly IBaselinePasswordDocument _original;
+        private IBaselinePasswordDocument _original;
 
         private readonly ITimeProvider _timeProvider;
 

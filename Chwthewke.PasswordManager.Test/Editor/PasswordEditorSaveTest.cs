@@ -148,5 +148,22 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( savedPassword.CreatedOn, Is.EqualTo( now ) );
             Assert.That( savedPassword.ModifiedOn, Is.EqualTo( now ) );
         }
+
+        [ Test ]
+        public void AfterSaveEditorIsNotDirtyAndKeyIsReadonly( )
+        {
+            // Set up
+            _model.Key = "abcd";
+            _model.MasterPassword = "1234".ToSecureString( );
+            _model.SelectedPassword = _model.DerivedPasswords.First( );
+            
+            // Exercise
+            _model.Save( );
+            // Verify
+            Assert.That( _model.IsDirty, Is.False );
+            Assert.That( _model.CanSave, Is.False );
+            Assert.That( _model.CanDelete, Is.True );
+            Assert.That( _model.IsKeyReadonly, Is.True );
+        } 
     }
 }

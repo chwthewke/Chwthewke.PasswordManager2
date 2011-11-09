@@ -10,15 +10,25 @@ namespace Chwthewke.PasswordManager.App.Modules
     {
         protected override void Load( ContainerBuilder builder )
         {
-            builder.RegisterType<PasswordManagerEditor>( );
+            builder.Register( CreateEditor ).As<IPasswordManagerEditor>( ).SingleInstance( );
 
             builder.RegisterInstance( PasswordManagerEngine.DerivationEngine ).As<IPasswordDerivationEngine>( );
 
-            builder.Register( c => new PasswordManagerStorage( c.Resolve<ITextResource>( ) ) ).As<PasswordManagerStorage>( ).SingleInstance(  );
+            builder.Register( CreateStorage ).As<IPasswordManagerStorage>( ).SingleInstance( );
 
             builder.RegisterType<DynamicTextResource>( ).SingleInstance( );
 
             builder.RegisterType<DynamicTextResource>( ).As<ITextResource>( );
+        }
+
+        private IPasswordManagerStorage CreateStorage( IComponentContext c )
+        {
+            return PasswordManagerStorage.CreateService( c.Resolve<ITextResource>( ) );
+        }
+
+        private IPasswordManagerEditor CreateEditor( IComponentContext c )
+        {
+            return PasswordManagerEditor.CreateEditor( c.Resolve<IPasswordDerivationEngine>( ), c.Resolve<IPasswordManagerStorage>( ) );
         }
     }
 }

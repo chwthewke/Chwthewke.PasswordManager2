@@ -31,7 +31,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             SecureString masterPassword = "toto".ToSecureString( );
 
-            DerivedPassword match = 
+            IDerivedPassword match = 
                 _passwordDerivationEngine.Derive( new PasswordRequest( "key1", masterPassword, 10, PasswordGenerators2.Full ) );
 
             PasswordDigestDocument matchingDocument = 
@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             
             _passwordRepository.SavePassword( matchingDocument );
 
-            DerivedPassword nonMatch =
+            IDerivedPassword nonMatch =
                 _passwordDerivationEngine.Derive( new PasswordRequest( "key2", "tata".ToSecureString( ), 1, PasswordGenerators2.AlphaNumeric ) );
 
             PasswordDigestDocument nonMatchingDocument =
@@ -58,7 +58,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void CannotFindMasterPasswordInStoreWhenNoDigestMatches( )
         {
             // Setup
-            DerivedPassword nonMatch =
+            IDerivedPassword nonMatch =
                 _passwordDerivationEngine.Derive( new PasswordRequest( "key2", "tata".ToSecureString( ), 1, PasswordGenerators2.AlphaNumeric ) );
 
             PasswordDigestDocument nonMatchingDocument =

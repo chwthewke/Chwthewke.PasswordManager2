@@ -387,7 +387,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         [ Test ]
-        [ Ignore ]
         public void MergeRecognizesIdenticalMasterPasswords( )
         {
             // Set up

@@ -10,7 +10,7 @@ namespace Chwthewke.PasswordManager.Engine
             _generators = generators;
         }
 
-        public DerivedPassword Derive( PasswordRequest request )
+        public IDerivedPassword Derive( PasswordRequest request )
         {
             return _generators[ request.PasswordGenerator ].Derive( request );
         }

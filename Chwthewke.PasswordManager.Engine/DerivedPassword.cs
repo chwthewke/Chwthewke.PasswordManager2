@@ -2,15 +2,15 @@
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    public class DerivedPassword : IEquatable<DerivedPassword>
+    internal class DerivedPassword : IEquatable<DerivedPassword>, IDerivedPassword
     {
         public DerivedPassword( string password, PasswordDigest2 digest )
         {
             if ( password == null )
                 throw new ArgumentNullException( "password" );
-            if (digest == null)
+            if ( digest == null )
                 throw new ArgumentNullException( "digest" );
-            
+
             Password = password;
             Digest = digest;
         }

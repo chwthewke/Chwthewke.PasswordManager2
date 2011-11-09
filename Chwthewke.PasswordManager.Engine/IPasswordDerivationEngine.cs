@@ -5,7 +5,7 @@ namespace Chwthewke.PasswordManager.Engine
 {
     public interface IPasswordDerivationEngine
     {
-        DerivedPassword Derive( PasswordRequest request );
+        IDerivedPassword Derive( PasswordRequest request );
 
         IEnumerable<Guid> PasswordGenerators { get; }
     }

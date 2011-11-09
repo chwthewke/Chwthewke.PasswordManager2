@@ -21,20 +21,36 @@ namespace Chwthewke.PasswordManager.Editor
 
         public Guid Generator { get; private set; }
 
-        public DerivedPassword DerivedPassword
+        public IDerivedPassword DerivedPassword
         {
             get
             {
                 string key = _editorModel.Key;
                 SecureString masterPassword = _editorModel.MasterPassword;
                 if ( string.IsNullOrEmpty( key ) || masterPassword.Length == 0 )
-                    return null;
+                    return NullDerivedPassword.Instance;
+
                 int iteration = _editorModel.Iteration;
                 return _derivationEngine.Derive( new PasswordRequest( key, masterPassword, iteration, Generator ) );
             }
         }
 
-        private IPasswordEditorModel _editorModel;
-        private IPasswordDerivationEngine _derivationEngine;
+        private readonly IPasswordEditorModel _editorModel;
+        private readonly IPasswordDerivationEngine _derivationEngine;
+    }
+
+    internal class NullDerivedPassword : IDerivedPassword
+    {
+        public static readonly IDerivedPassword Instance = new NullDerivedPassword( );
+
+        public string Password
+        {
+            get { return string.Empty; }
+        }
+
+        public PasswordDigest2 Digest
+        {
+            get { return null; }
+        }
     }
 }

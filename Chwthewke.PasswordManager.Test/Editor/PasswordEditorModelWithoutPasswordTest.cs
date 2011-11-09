@@ -43,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.Iteration, Is.EqualTo( 1 ) );
             Assert.That( _model.Note, Is.EqualTo( string.Empty ) );
             Assert.That( _model.DerivedPasswords,
-                         Is.EquivalentTo( GeneratorGuids.Select( IsPasswordModel.Empty ) )
+                         Is.EquivalentTo( GeneratorGuids.Select( IsPasswordModel.Empty ).ToList( ) )
                              .Using( DerivedPasswordEquality ) );
             Assert.That( _model.SelectedPassword, Is.Null );
             Assert.That( _model.MasterPasswordId, Is.Null );

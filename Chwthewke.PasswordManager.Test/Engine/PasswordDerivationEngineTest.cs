@@ -86,8 +86,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             PasswordRequest request = new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.Full );
             // Exercise
-            DerivedPassword generatedPassword =
-                _engine.Derive( request );
+            IDerivedPassword generatedPassword = _engine.Derive( request );
             // Verify
             DerivedPassword expected = PasswordGenerators2.Generators[ PasswordGenerators2.Full ].Derive( request );
             Assert.That( generatedPassword.Password, Is.EqualTo( expected.Password ) );

@@ -18,10 +18,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
         public static IDerivedPasswordModel Empty( Guid generator )
         {
-            return new IsPasswordModel( generator, null );
+            return new IsPasswordModel( generator, NullDerivedPassword.Instance );
         }
 
-        private IsPasswordModel( Guid generator, DerivedPassword derivedPassword )
+        private IsPasswordModel( Guid generator, IDerivedPassword derivedPassword )
         {
             Generator = generator;
             DerivedPassword = derivedPassword;
@@ -29,7 +29,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
         public Guid Generator { get; private set; }
 
-        public DerivedPassword DerivedPassword { get; private set; }
+        public IDerivedPassword DerivedPassword { get; private set; }
 
     }
 

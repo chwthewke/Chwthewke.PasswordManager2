@@ -20,13 +20,12 @@ namespace Chwthewke.PasswordManager.Editor
         private readonly IMasterPasswordMatcher _masterPasswordMatcher;
         private readonly ITimeProvider _timeProvider;
 
-        public PasswordManagerEditor( IPasswordRepository passwords, 
-            IPasswordDerivationEngine derivationEngine, 
-            IMasterPasswordMatcher masterPasswordMatcher )
+        public PasswordManagerEditor( IPasswordDerivationEngine derivationEngine,
+                                      PasswordManagerStorage passwordManagerStorage )
         {
-            _passwordRepository = passwords;
+            _passwordRepository = passwordManagerStorage.PasswordRepository;
             _derivationEngine = derivationEngine;
-            _masterPasswordMatcher = masterPasswordMatcher;
+            _masterPasswordMatcher = passwordManagerStorage.MasterPasswordMatcher;
             _timeProvider = new TimeProvider( );
         }
     }

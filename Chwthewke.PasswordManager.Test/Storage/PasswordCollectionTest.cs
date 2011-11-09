@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
 
@@ -224,8 +223,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPassword );
             // Verify
             Assert.That( updated, Is.True );
-            Assert.That( _inMemoryPasswordData.LoadPasswords( ), 
-                Is.EquivalentTo( new[ ] { updatedPassword, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+            Assert.That( _inMemoryPasswordData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { updatedPassword, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
         }
 
         [ Test ]
@@ -240,8 +239,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
             // Verify
             Assert.That( updated, Is.True );
-            Assert.That( _inMemoryPasswordData.LoadPasswords( ), 
-                Is.EquivalentTo( new[ ] { updatedPasswordV2, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+            Assert.That( _inMemoryPasswordData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { updatedPasswordV2, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
         }
 
         [ Test ]
@@ -256,8 +255,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
             // Verify
             Assert.That( updated, Is.False );
-            Assert.That( _inMemoryPasswordData.LoadPasswords( ), 
-                Is.EquivalentTo( new[ ] { updatedPasswordV1, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+            Assert.That( _inMemoryPasswordData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { updatedPasswordV1, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
         }
 
         [ Test ]
@@ -272,8 +271,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
             var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
             // Verify
             Assert.That( updated, Is.True );
-            Assert.That( _inMemoryPasswordData.LoadPasswords( ), 
-                Is.EquivalentTo( new[ ] { updatedPasswordV2, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+            Assert.That( _inMemoryPasswordData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { updatedPasswordV2, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
         }
 
         [ Test ]
@@ -288,11 +287,11 @@ namespace Chwthewke.PasswordManager.Test.Storage
             var updated = _passwordCollection.UpdatePassword( TestPasswords.Abcd, updatedPasswordV2 );
             // Verify
             Assert.That( updated, Is.False );
-            Assert.That( _inMemoryPasswordData.LoadPasswords( ), 
-                Is.EquivalentTo( new[ ] { deletedPassword, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+            Assert.That( _inMemoryPasswordData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { deletedPassword, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
         }
 
-        [Test]
+        [ Test ]
         public void UpdateUnchangedExistingPasswordWithDeletedDeletesIt( )
         {
             // Set up
@@ -302,19 +301,95 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Verify
             Assert.That( updated, Is.True );
             Assert.That( _inMemoryPasswordData.LoadPasswords( ),
-                Is.EquivalentTo( new[ ] { updatedPassword, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+                         Is.EquivalentTo( new[ ] { updatedPassword, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
             Assert.That( _passwordCollection.LoadPasswords( ),
-                Is.EquivalentTo( new[ ] { TestPasswords.Efgh } ) );
+                         Is.EquivalentTo( new[ ] { TestPasswords.Efgh } ) );
         }
 
+        [ Test ]
+        public void MergeAddsOurPasswordsToTarget( )
+        {
+            // Set up
+            var sourceData = new InMemoryPasswordData( );
+            sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd } );
+            IPasswordCollection sourceCollection = new PasswordCollection( sourceData );
+
+            var targetData = new InMemoryPasswordData( );
+            targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Efgh, TestPasswords.Ijkl } );
+            IPasswordCollection targetCollection = new PasswordCollection( targetData );
+
+            // Exercise
+            sourceCollection.MergeInto( targetCollection );
+            // Verify
+            Assert.That( targetData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+        }
+
+        [ Test ]
+        public void MergeAddsOurDeletedPasswordsToTarget( )
+        {
+            // Set up
+            var sourceData = new InMemoryPasswordData( );
+            sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Ijkl } );
+            IPasswordCollection sourceCollection = new PasswordCollection( sourceData );
+
+            var targetData = new InMemoryPasswordData( );
+            targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Efgh } );
+            IPasswordCollection targetCollection = new PasswordCollection( targetData );
+
+            // Exercise
+            sourceCollection.MergeInto( targetCollection );
+            // Verify
+            Assert.That( targetData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+        }
+
+        [ Test ]
+        public void MergeAddsOurMoreRecentPasswordsToTarget( )
+        {
+            // Set up
+            PasswordDigestDocument abcdUpdated = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 9 ) );
+            
+            var sourceData = new InMemoryPasswordData( );
+            sourceData.SavePasswords( new List<PasswordDigestDocument> { abcdUpdated, TestPasswords.Ijkl } );
+            IPasswordCollection sourceCollection = new PasswordCollection( sourceData );
+
+            var targetData = new InMemoryPasswordData( );
+            targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Efgh } );
+            IPasswordCollection targetCollection = new PasswordCollection( targetData );
+
+            // Exercise
+            sourceCollection.MergeInto( targetCollection );
+            // Verify
+            Assert.That( targetData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { abcdUpdated, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+        }
+
+
+        public void MergeSkipsOurLessRecentPasswordsToTarget( )
+        {
+            // Set up
+            PasswordDigestDocument abcdUpdated = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 9 ) );
+            
+            var sourceData = new InMemoryPasswordData( );
+            sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Ijkl } );
+            IPasswordCollection sourceCollection = new PasswordCollection( sourceData );
+
+            var targetData = new InMemoryPasswordData( );
+            targetData.SavePasswords( new List<PasswordDigestDocument> { abcdUpdated, TestPasswords.Efgh } );
+            IPasswordCollection targetCollection = new PasswordCollection( targetData );
+
+            // Exercise
+            sourceCollection.MergeInto( targetCollection );
+            // Verify
+            Assert.That( targetData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { abcdUpdated, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
+        }
 
 
         private PasswordDigestDocument Update( PasswordDigestDocument source, DateTime updatedOn )
         {
-            PasswordDigest2 newDigest = source.Digest;
-            if ( newDigest.Key != source.Key )
-                throw new ArgumentException( "Invalid key in new Digest.", "newDigest" );
-            return new PasswordDigestDocument( newDigest, source.MasterPasswordId, source.CreatedOn, updatedOn, source.Note );
+            return new PasswordDigestDocument( source.Digest, source.MasterPasswordId, source.CreatedOn, updatedOn, source.Note );
         }
     }
 }

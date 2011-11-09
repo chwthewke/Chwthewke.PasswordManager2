@@ -42,7 +42,7 @@ namespace Chwthewke.PasswordManager.Storage
                 return false;
 
             if ( !replacedPassword.Equals( original ) &&
-                replacedPassword.ModifiedOn.CompareTo( password.ModifiedOn ) > 0 )
+                 replacedPassword.ModifiedOn.CompareTo( password.ModifiedOn ) > 0 )
                 return false;
 
             return ReplacePassword( password, replacedPassword );
@@ -55,14 +55,9 @@ namespace Chwthewke.PasswordManager.Storage
             if ( password.IsDeleted )
                 throw new ArgumentException( "A new password must have non-empty hash.", "password" );
 
-            var replacedPassword = LoadPasswordInternal( password.Key );
-
-            if ( replacedPassword != null &&
-                 replacedPassword.ModifiedOn.CompareTo( password.ModifiedOn ) > 0 )
-                return false;
-
-            return ReplacePassword( password, replacedPassword );
+            return SaveInternal( password );
         }
+
 
         public bool DeletePassword( PasswordDigestDocument password, DateTime deletedOn )
         {
@@ -70,6 +65,14 @@ namespace Chwthewke.PasswordManager.Storage
                 throw new ArgumentNullException( "password" );
 
             return UpdatePassword( password, password.Delete( deletedOn ) );
+        }
+
+        public void MergeInto( IPasswordCollection target )
+        {
+            if ( !( target is PasswordCollection ) )
+                return;
+            foreach ( PasswordDigestDocument passwordDigestDocument in LoadPasswordsInternal( ) )
+                ( target as PasswordCollection ).SaveInternal( passwordDigestDocument );
         }
 
         private IList<PasswordDigestDocument> LoadPasswordsInternal( )
@@ -85,6 +88,17 @@ namespace Chwthewke.PasswordManager.Storage
         private PasswordDigestDocument FindPassword( string key, IEnumerable<PasswordDigestDocument> passwords )
         {
             return passwords.FirstOrDefault( d => d.Digest.Key == key );
+        }
+
+        private bool SaveInternal( PasswordDigestDocument password )
+        {
+            var replacedPassword = LoadPasswordInternal( password.Key );
+
+            if ( replacedPassword != null &&
+                 replacedPassword.ModifiedOn.CompareTo( password.ModifiedOn ) > 0 )
+                return false;
+
+            return ReplacePassword( password, replacedPassword );
         }
 
         private bool ReplacePassword( PasswordDigestDocument replacementPassword, PasswordDigestDocument replacedPassword )

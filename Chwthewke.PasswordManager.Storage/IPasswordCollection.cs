@@ -20,5 +20,7 @@ namespace Chwthewke.PasswordManager.Storage
         /// <param name="deletedOn"></param>
         /// <returns></returns>
         bool DeletePassword( PasswordDigestDocument password, DateTime deletedOn );
+
+        void MergeInto( IPasswordCollection target );
     }
 }

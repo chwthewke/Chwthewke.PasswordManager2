@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 namespace Chwthewke.PasswordManager.Engine
 {
     [Obsolete]
-    public static class PasswordGenerators
+    internal static class PasswordGenerators
     {
         public static IPasswordGenerator AlphaNumeric
         {

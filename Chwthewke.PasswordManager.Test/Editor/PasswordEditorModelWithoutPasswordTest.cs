@@ -13,7 +13,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
     [ TestFixture ]
     public class PasswordEditorModelWithoutPasswordTest
     {
-        private IPasswordEditorModelFactory _modelFactory;
         private IPasswordEditorModel _model;
         private IPasswordDerivationEngine _engine;
 
@@ -24,9 +23,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             PasswordRepository passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
 
-            _modelFactory = new PasswordEditorModelFactory( passwordRepository, _engine, new StubTimeProvider( ) );
+            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, passwordRepository );
 
-            _model = _modelFactory.CreatePrisineModel( );
+            _model = new PasswordEditorModel( passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider(  ) );
         }
 
         [ Test ]

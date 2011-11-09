@@ -11,7 +11,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
     [ TestFixture ]
     public class PasswordEditorDeleteTest
     {
-        private IPasswordEditorModelFactory _modelFactory;
         private IPasswordEditorModel _model;
         private IPasswordRepository _passwordRepository;
         private IPasswordDerivationEngine _engine;
@@ -41,8 +40,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             _timeProvider = new StubTimeProvider( );
 
-            _modelFactory = new PasswordEditorModelFactory( _passwordRepository, _engine, _timeProvider );
-            _model = _modelFactory.CreateModel( _original );
+            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, _passwordRepository );
+
+            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider, _original );
         }
 
         [ Test ]
@@ -56,7 +56,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _passwordRepository.LoadPasswords( ), Is.Empty );
         }
 
-        [Test]
+        [ Test ]
         public void DeletePasswordKeepsDeletedPasswordInData( )
         {
             // Set up
@@ -68,7 +68,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _passwordData.LoadPasswords( )[ 0 ].IsDeleted, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void DeletePasswordKeepsEditorFilledAndDirty( )
         {
             // Set up

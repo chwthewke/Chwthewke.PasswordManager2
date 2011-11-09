@@ -4,7 +4,7 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Editor
 {
-    public class DerivedPasswordModel : IDerivedPasswordModel
+    internal class DerivedPasswordModel : IDerivedPasswordModel
     {
         public DerivedPasswordModel( IPasswordDerivationEngine derivationEngine, IPasswordEditorModel editorModel, 
             Guid generator )

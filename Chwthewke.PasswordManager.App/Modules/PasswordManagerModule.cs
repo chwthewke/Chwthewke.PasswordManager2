@@ -17,7 +17,7 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<PasswordDigester>( ).As<IPasswordDigester>( ).SingleInstance( );
 
             builder.RegisterType<Sha512Factory>( ).As<IHashFactory>( ).SingleInstance( );
-            builder.RegisterType<TimeProvider>( ).As<ITimeProvider>( ).SingleInstance( );
+            builder.RegisterType<Storage.TimeProvider>( ).As<Storage.ITimeProvider>( ).SingleInstance( );
 
             builder.RegisterInstance( PasswordGenerators.AlphaNumeric ).As<IPasswordGenerator>( );
             builder.RegisterInstance( PasswordGenerators.Full ).As<IPasswordGenerator>( );

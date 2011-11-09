@@ -1,5 +1,5 @@
 ﻿using System;
-using Chwthewke.PasswordManager.Storage;
+using Chwthewke.PasswordManager.Editor;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {

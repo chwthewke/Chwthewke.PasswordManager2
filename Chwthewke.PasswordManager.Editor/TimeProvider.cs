@@ -1,8 +1,7 @@
 ﻿using System;
 
-namespace Chwthewke.PasswordManager.Storage
+namespace Chwthewke.PasswordManager.Editor
 {
-    [ Obsolete ]
     internal class TimeProvider : ITimeProvider
     {
         public DateTime Now

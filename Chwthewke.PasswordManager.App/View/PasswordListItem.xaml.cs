@@ -1,4 +1,6 @@
-﻿namespace Chwthewke.PasswordManager.App.View
+﻿using Chwthewke.PasswordManager.App.ViewModel;
+
+namespace Chwthewke.PasswordManager.App.View
 {
     /// <summary>
     ///   Interaction logic for PasswordListItem.xaml
@@ -10,9 +12,9 @@
             InitializeComponent( );
         }
 
-        public PasswordListItem ViewModel
+        public StoredPasswordViewModel ViewModel
         {
-            get { return DataContext as PasswordListItem; }
+            get { return DataContext as StoredPasswordViewModel; }
             set { DataContext = value; }
         }
     }

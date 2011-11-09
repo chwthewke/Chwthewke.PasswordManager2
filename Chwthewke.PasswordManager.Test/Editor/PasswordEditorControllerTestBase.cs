@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
         protected IPasswordEditorController Controller;
 
-        protected Mock<ITimeProvider> TimeProviderMock;
+        protected Mock<PasswordManager.Storage.ITimeProvider> TimeProviderMock;
 
         protected readonly DateTime Now = new DateTime( 2011, 8, 15 );
 
@@ -32,13 +32,13 @@ namespace Chwthewke.PasswordManager.Test.Editor
         [ SetUp ]
         public void SetUpDependencies( )
         {
-            TimeProviderMock = new Mock<ITimeProvider>( );
+            TimeProviderMock = new Mock<PasswordManager.Storage.ITimeProvider>( );
             TimeProviderMock.Setup( p => p.Now ).Returns( Now );
 
             AppSetUp.TestContainer(
                 b =>
                     {
-                        b.RegisterInstance( TimeProviderMock.Object ).As<ITimeProvider>( );
+                        b.RegisterInstance( TimeProviderMock.Object ).As<PasswordManager.Storage.ITimeProvider>( );
                         b.RegisterType<InMemoryTextResource>( ).As<ITextResource>( ).SingleInstance( );
                     } )
                 .InjectProperties( this );

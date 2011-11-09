@@ -3,14 +3,14 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Editor
 {
-    internal class PasswordEditorModelFactory : IPasswordEditorModelFactory
+    public class PasswordManagerEditor
     {
-        public IPasswordEditorModel CreatePrisineModel( )
+        public IPasswordEditorModel EmptyModel( )
         {
             return new PasswordEditorModel( _passwordRepository, _derivationEngine, _masterPasswordMatcher, _timeProvider );
         }
 
-        public IPasswordEditorModel CreateModel( PasswordDigestDocument password )
+        public IPasswordEditorModel ModelFor( PasswordDigestDocument password )
         {
             return new PasswordEditorModel( _passwordRepository, _derivationEngine, _masterPasswordMatcher, _timeProvider, password );
         }
@@ -20,12 +20,14 @@ namespace Chwthewke.PasswordManager.Editor
         private readonly IMasterPasswordMatcher _masterPasswordMatcher;
         private readonly ITimeProvider _timeProvider;
 
-        public PasswordEditorModelFactory( IPasswordRepository passwords, IPasswordDerivationEngine derivationEngine, ITimeProvider timeProvider )
+        public PasswordManagerEditor( IPasswordRepository passwords, 
+            IPasswordDerivationEngine derivationEngine, 
+            IMasterPasswordMatcher masterPasswordMatcher )
         {
             _passwordRepository = passwords;
             _derivationEngine = derivationEngine;
-            _timeProvider = timeProvider;
-            _masterPasswordMatcher = new MasterPasswordMatcher2( _derivationEngine, _passwordRepository );
+            _masterPasswordMatcher = masterPasswordMatcher;
+            _timeProvider = new TimeProvider( );
         }
     }
 }

@@ -74,23 +74,37 @@ namespace Chwthewke.PasswordManager.Storage
                 return;
             PasswordRepository targetRepository = target as PasswordRepository;
 
-            IDictionary<Guid, Guid> masterPasswordIdMapping = 
-                MasterPasswordIdMapping( LoadPasswordsInternal( ), targetRepository.LoadPasswordsInternal( ) );
-            //Func<Guid,Guid> updateMasterPasswordId = 
+            var updateMasterPasswordId = MasterPasswordIdMergeFunction( targetRepository );
 
-            foreach ( PasswordDigestDocument passwordDigestDocument in LoadPasswordsInternal( ) )
+            foreach ( PasswordDigestDocument password in LoadPasswordsInternal( ) )
             {
-                targetRepository.SaveInternal( passwordDigestDocument );
+                var copy = new PasswordDigestDocument( password.Digest, updateMasterPasswordId( password.MasterPasswordId ),
+                                                       password.CreatedOn, password.ModifiedOn, password.Note );
+
+                targetRepository.SaveInternal( copy );
             }
         }
 
-        private IDictionary<Guid,Guid> MasterPasswordIdMapping( IEnumerable<PasswordDigestDocument> source, IEnumerable<PasswordDigestDocument> target )
+        private Func<Guid, Guid> MasterPasswordIdMergeFunction( PasswordRepository targetRepository )
         {
-            // TODO duplicate keys
-            return source.SelectMany( s => target.Select( t => new { Source = s, Target = t } ) )
-                .Where( pair => pair.Source.Hash == pair.Target.Hash )
-                .Distinct( )
-                .ToDictionary( pair => pair.Source.MasterPasswordId, pair => pair.Target.MasterPasswordId );
+            var masterPasswordIdMerges = LoadPasswordsInternal( )
+                .SelectMany( s => targetRepository.LoadPasswordsInternal( )
+                                      .Where( ShouldMergeWith( s ) )
+                                      .Select( t => new { Source = s.MasterPasswordId, Target = t.MasterPasswordId } ) )
+                .Distinct( );
+
+            return g => masterPasswordIdMerges
+                            .Where( m => m.Source == g )
+                            .Select( m => m.Target )
+                            .DefaultIfEmpty( g )
+                            .First( );
+        }
+
+        private Func<PasswordDigestDocument, bool> ShouldMergeWith( PasswordDigestDocument document )
+        {
+            return d => d.Key == document.Key &&
+                        d.Hash.SequenceEqual( document.Hash ) &&
+                        d.MasterPasswordId != document.MasterPasswordId;
         }
 
         private IList<PasswordDigestDocument> LoadPasswordsInternal( )

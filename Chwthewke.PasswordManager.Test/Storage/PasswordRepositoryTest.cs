@@ -7,7 +7,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
-    public class PasswordCollectionTest
+    public class PasswordRepositoryTest
     {
         private InMemoryPasswordData _inMemoryPasswordData;
         private IPasswordRepository _passwordRepository;
@@ -349,7 +349,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Set up
             PasswordDigestDocument abcdUpdated = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 9 ) );
-            
+
             var sourceData = new InMemoryPasswordData( );
             sourceData.SavePasswords( new List<PasswordDigestDocument> { abcdUpdated, TestPasswords.Ijkl } );
             IPasswordRepository sourceRepository = new PasswordRepository( sourceData );
@@ -365,12 +365,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
                          Is.EquivalentTo( new[ ] { abcdUpdated, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
         }
 
-
+        [ Test ]
         public void MergeSkipsOurLessRecentPasswordsToTarget( )
         {
             // Set up
             PasswordDigestDocument abcdUpdated = Update( TestPasswords.Abcd, new DateTime( 2011, 11, 9 ) );
-            
+
             var sourceData = new InMemoryPasswordData( );
             sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Ijkl } );
             IPasswordRepository sourceRepository = new PasswordRepository( sourceData );
@@ -386,10 +386,44 @@ namespace Chwthewke.PasswordManager.Test.Storage
                          Is.EquivalentTo( new[ ] { abcdUpdated, TestPasswords.Efgh, TestPasswords.Ijkl } ) );
         }
 
+        [ Test ]
+        [ Ignore ]
+        public void MergeRecognizesIdenticalMasterPasswords( )
+        {
+            // Set up
+            Guid sourceMasterPasswordId = Guid.NewGuid( );
+            var sourceAbcd = WithMasterPasswordId( TestPasswords.Abcd, sourceMasterPasswordId );
+            var sourceEfgh = WithMasterPasswordId( TestPasswords.Efgh, sourceMasterPasswordId );
+
+            var sourceData = new InMemoryPasswordData( );
+            sourceData.SavePasswords( new List<PasswordDigestDocument> { sourceAbcd, sourceEfgh } );
+            IPasswordRepository sourceRepository = new PasswordRepository( sourceData );
+
+            Guid targetMasterPasswordId = Guid.NewGuid( );
+            var targetAbcd = WithMasterPasswordId( TestPasswords.Abcd, targetMasterPasswordId );
+            var targetIjkl = WithMasterPasswordId( TestPasswords.Ijkl, targetMasterPasswordId );
+
+            var targetData = new InMemoryPasswordData( );
+            targetData.SavePasswords( new List<PasswordDigestDocument> { targetAbcd, targetIjkl } );
+            IPasswordRepository targetRepository = new PasswordRepository( targetData );
+
+            // Exercise
+            sourceRepository.MergeInto( targetRepository );
+
+            // Verify
+            Assert.That( targetData.LoadPasswords( ),
+                         Is.EquivalentTo( new[ ] { targetAbcd, targetIjkl, WithMasterPasswordId( sourceEfgh, targetMasterPasswordId ) } ) );
+        }
+
 
         private PasswordDigestDocument Update( PasswordDigestDocument source, DateTime updatedOn )
         {
             return new PasswordDigestDocument( source.Digest, source.MasterPasswordId, source.CreatedOn, updatedOn, source.Note );
+        }
+
+        private PasswordDigestDocument WithMasterPasswordId( PasswordDigestDocument source, Guid masterPasswordId )
+        {
+            return new PasswordDigestDocument( source.Digest, masterPasswordId, source.CreatedOn, source.ModifiedOn, source.Note );
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -71,8 +72,25 @@ namespace Chwthewke.PasswordManager.Storage
         {
             if ( !( target is PasswordRepository ) )
                 return;
+            PasswordRepository targetRepository = target as PasswordRepository;
+
+            IDictionary<Guid, Guid> masterPasswordIdMapping = 
+                MasterPasswordIdMapping( LoadPasswordsInternal( ), targetRepository.LoadPasswordsInternal( ) );
+            //Func<Guid,Guid> updateMasterPasswordId = 
+
             foreach ( PasswordDigestDocument passwordDigestDocument in LoadPasswordsInternal( ) )
-                ( target as PasswordRepository ).SaveInternal( passwordDigestDocument );
+            {
+                targetRepository.SaveInternal( passwordDigestDocument );
+            }
+        }
+
+        private IDictionary<Guid,Guid> MasterPasswordIdMapping( IEnumerable<PasswordDigestDocument> source, IEnumerable<PasswordDigestDocument> target )
+        {
+            // TODO duplicate keys
+            return source.SelectMany( s => target.Select( t => new { Source = s, Target = t } ) )
+                .Where( pair => pair.Source.Hash == pair.Target.Hash )
+                .Distinct( )
+                .ToDictionary( pair => pair.Source.MasterPasswordId, pair => pair.Target.MasterPasswordId );
         }
 
         private IList<PasswordDigestDocument> LoadPasswordsInternal( )

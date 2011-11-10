@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Windows.Input;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.Editor;
-using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -52,8 +50,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void Update( )
         {
-            // TODO NullDerivedPassword ?
-            Content = _model.DerivedPassword == null ? string.Empty : _model.DerivedPassword.Password;
+            Content = _model.DerivedPassword.Password;
             IsSelected = _parent.SelectedPassword == _model;
         }
 
@@ -67,9 +64,5 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private readonly IPasswordEditorModel _parent;
         private readonly IDerivedPasswordModel _model;
-
-        private readonly IPasswordEditorController _controller;
-        private readonly IPasswordGenerator _generator;
-
     }
 }

@@ -28,5 +28,18 @@ namespace Chwthewke.PasswordManager.App.Modules
                            };
             }
         }
+
+        public static IEnumerable<Module> ApplicationModules2
+        {
+            get
+            {
+                return new List<Module>
+                           {
+                               new PasswordManagerModule2( ),
+                               new ApplicationServices( ),
+                               new ApplicationModule( ),
+                           };
+            }
+        }
     }
 }

@@ -16,9 +16,7 @@ namespace Chwthewke.PasswordManager.App.Modules
 
             builder.Register( CreateStorage ).As<IPasswordManagerStorage>( ).SingleInstance( );
 
-            builder.RegisterType<DynamicTextResource>( ).SingleInstance( );
-
-            builder.RegisterType<DynamicTextResource>( ).As<ITextResource>( );
+            builder.RegisterType<EmptyTextResource>( ).As<ITextResource>( ).SingleInstance( );
         }
 
         private IPasswordManagerStorage CreateStorage( IComponentContext c )

@@ -4,8 +4,13 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    internal class XmlPasswordData : IPasswordData
+    public class XmlPasswordData : IPasswordData
     {
+        public static IPasswordData From( ITextResource textResource )
+        {
+            return new XmlPasswordData( new PasswordSerializer2( ), textResource );
+        }
+
         internal XmlPasswordData( PasswordSerializer2 serializer, ITextResource store )
         {
             if ( serializer == null )

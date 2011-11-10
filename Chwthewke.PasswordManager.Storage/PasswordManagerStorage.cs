@@ -10,9 +10,9 @@ namespace Chwthewke.PasswordManager.Storage
 
     internal class DefaultPasswordManagerStorage : IPasswordManagerStorage
     {
-        internal DefaultPasswordManagerStorage( ITextResource passwordsResource )
+        internal DefaultPasswordManagerStorage( IPasswordData passwordData )
         {
-            _passwordRepository = new PasswordRepository( new XmlPasswordData( new PasswordSerializer2(  ), passwordsResource ) );
+            _passwordRepository = new PasswordRepository( passwordData );
         }
 
         public IMasterPasswordMatcher MasterPasswordMatcher
@@ -32,7 +32,12 @@ namespace Chwthewke.PasswordManager.Storage
     {
         public static IPasswordManagerStorage CreateService( ITextResource passwordsResource )
         {
-            return new DefaultPasswordManagerStorage( passwordsResource );
+            return new DefaultPasswordManagerStorage( new XmlPasswordData( new PasswordSerializer2( ), passwordsResource ) );
+        }
+
+        public static IPasswordManagerStorage CreateService( IPasswordData passwordData )
+        {
+            return new DefaultPasswordManagerStorage( passwordData );
         }
     }
 }

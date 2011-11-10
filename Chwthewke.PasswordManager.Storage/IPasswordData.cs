@@ -2,7 +2,7 @@
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    internal interface IPasswordData
+    public interface IPasswordData
     {
         IList<PasswordDigestDocument> LoadPasswords( );
         void SavePasswords( IList<PasswordDigestDocument> passwords );

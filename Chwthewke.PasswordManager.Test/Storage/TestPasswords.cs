@@ -45,5 +45,17 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                                  }
             .Build( )
             .Delete( new DateTime( 2011, 11, 4 ) );
+
+        public static readonly PasswordDigestDocument Mnop = new PasswordDigestDocumentBuilder
+                                                                 {
+                                                                     Key = "mnop",
+                                                                     Iteration = 8,
+                                                                     Hash = new byte[ ] { 0x3A, 0x7B },
+                                                                     PasswordGenerator = PasswordGenerators2.Full,
+                                                                     CreatedOn = new DateTime( 2011, 11, 1 ),
+                                                                     ModifiedOn = new DateTime( 2011, 11, 9 ),
+                                                                     MasterPasswordId = Guid.NewGuid( ),
+                                                                     Note = "Fourth password"
+                                                                 };
     }
 }

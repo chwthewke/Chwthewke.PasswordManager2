@@ -1,7 +1,4 @@
-using System;
-using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
@@ -16,12 +13,12 @@ namespace Chwthewke.PasswordManager.App.Services
         // TODO possibly return a "report" to be presented to the user
         public void ImportPasswords( FileInfo externalPasswordFile )
         {
-            ExternalPasswordRepository( externalPasswordFile ).MergeInto( _passwordRepository );
+            _passwordRepository.Merge( ExternalPasswordRepository( externalPasswordFile ) );
         }
 
         public void ExportPasswords( FileInfo targetFile )
         {
-            _passwordRepository.MergeInto( ExternalPasswordRepository( targetFile ) );
+            ExternalPasswordRepository( targetFile ).Merge( _passwordRepository );
         }
 
         private static IPasswordRepository ExternalPasswordRepository( FileInfo targetFile )

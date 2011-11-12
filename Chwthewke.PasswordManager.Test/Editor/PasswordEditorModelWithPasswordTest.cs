@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -16,6 +17,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         private IPasswordEditorModel _model;
         private PasswordDigestDocument _original;
         private IPasswordDerivationEngine _engine;
+        private IPasswordRepository _passwordRepository;
 
         [ SetUp ]
         public void SetUpModel( )
@@ -32,12 +34,12 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                 Note = "AB IJ"
                             };
 
-            PasswordRepository passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
-            passwordRepository.SavePassword( _original );
+            _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
+            _passwordRepository.SavePassword( _original );
 
-            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, passwordRepository );
+            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, _passwordRepository );
 
-            _model = new PasswordEditorModel( passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ), _original );
+            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ), _original );
         }
 
         [ Test ]
@@ -181,7 +183,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public void ChangeNoteAndIterationMakesDirtyButNotSaveable( )
         {
             // Set up
-            
+
             // Exercise
             _model.Note = "A rather longer note.";
             _model.Iteration = 2;
@@ -189,7 +191,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.IsDirty, Is.True );
             Assert.That( _model.CanSave, Is.False );
             Assert.That( _model.CanDelete, Is.True );
-        } 
+        }
 
         [ Test ]
         public void ChangeNoteWithMasterPasswordMakesSaveable( )
@@ -203,6 +205,103 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.CanSave, Is.True );
             Assert.That( _model.CanDelete, Is.True );
         }
+
+        [ Test ]
+        public void ReloadWithoutBackEndChangeKeepsContentAndStateUnchanged( )
+        {
+            // Set up
+            _model.MasterPassword = "4321".ToSecureString( );
+
+            // Exercise
+            _model.Reload( );
+            // Verify
+            Assert.That( _model.Key, Is.EqualTo( "abij" ) );
+            Assert.That( _model.MasterPassword.ConsumeBytes( Encoding.UTF8, b => Encoding.UTF8.GetString( b ) ),
+                         Is.EqualTo( "4321" ) );
+            Assert.That( _model.SelectedPassword,
+                         Is.EqualTo( _model.DerivedPasswords.First( p => p.Generator == PasswordGenerators2.Full ) ) );
+            Assert.That( _model.Iteration, Is.EqualTo( 3 ) );
+            Assert.That( _model.Note, Is.EqualTo( "AB IJ" ) );
+
+            Assert.That( _model.IsDirty, Is.False );
+            Assert.That( _model.CanSave, Is.True );
+            Assert.That( _model.CanDelete, Is.True );
+        }
+
+        [ Test ]
+        public void ReloadWithBackEndChangeWhileDirtyKeepsContentUnchanged( )
+        {
+            // Set up
+            _model.Iteration = 2;
+            _model.MasterPassword = "4321".ToSecureString( );
+
+            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 5, PasswordGenerators2.AlphaNumeric ) );
+
+            var updated = new PasswordDigestDocumentBuilder
+                              {
+                                  Digest = digest.Digest,
+                                  CreatedOn = new DateTime( 2011, 11, 2 ),
+                                  ModifiedOn = new DateTime( 2011, 11, 5 ),
+                                  MasterPasswordId = Guid.NewGuid( ),
+                                  Note = "AB IJ K"
+                              };
+
+
+            Assert.That( _passwordRepository.SavePassword( updated ), Is.True );
+
+            // Exercise
+            _model.Reload( );
+            // Verify
+            Assert.That( _model.Key, Is.EqualTo( "abij" ) );
+            Assert.That( _model.MasterPassword.ConsumeBytes( Encoding.UTF8, b => Encoding.UTF8.GetString( b ) ),
+                         Is.EqualTo( "4321" ) );
+            Assert.That( _model.SelectedPassword,
+                         Is.EqualTo( _model.DerivedPasswords.First( p => p.Generator == PasswordGenerators2.Full ) ) );
+            Assert.That( _model.Iteration, Is.EqualTo( 2 ) );
+            Assert.That( _model.Note, Is.EqualTo( "AB IJ" ) );
+
+            Assert.That( _model.IsDirty, Is.True );
+            Assert.That( _model.CanSave, Is.True );
+            Assert.That( _model.CanDelete, Is.True );
+        }
+
+        [ Test ]
+        public void ReloadWithBackEndChangeWhileNotDirtyUpdatesContent( )
+        {
+            // Set up
+            _model.MasterPassword = "4321".ToSecureString( );
+
+            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 5, PasswordGenerators2.AlphaNumeric ) );
+
+            var updated = new PasswordDigestDocumentBuilder
+            {
+                Digest = digest.Digest,
+                CreatedOn = new DateTime( 2011, 11, 2 ),
+                ModifiedOn = new DateTime( 2011, 11, 5 ),
+                MasterPasswordId = Guid.NewGuid( ),
+                Note = "AB IJ K"
+            };
+
+
+            Assert.That( _passwordRepository.SavePassword( updated ), Is.True );
+
+
+            // Exercise
+            _model.Reload( );
+            // Verify
+            Assert.That( _model.Key, Is.EqualTo( "abij" ) );
+            Assert.That( _model.MasterPassword.ConsumeBytes( Encoding.UTF8, b => Encoding.UTF8.GetString( b ) ),
+                         Is.EqualTo( "4321" ) );
+            Assert.That( _model.SelectedPassword,
+                         Is.EqualTo( _model.DerivedPasswords.First( p => p.Generator == PasswordGenerators2.AlphaNumeric ) ) );
+            Assert.That( _model.Iteration, Is.EqualTo( 5 ) );
+            Assert.That( _model.Note, Is.EqualTo( "AB IJ K" ) );
+
+            Assert.That( _model.IsDirty, Is.False );
+            Assert.That( _model.CanSave, Is.True );
+            Assert.That( _model.CanDelete, Is.True );
+        }
+
 
         private static IEnumerable<Guid> GeneratorGuids
         {

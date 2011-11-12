@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -15,17 +16,18 @@ namespace Chwthewke.PasswordManager.Test.Editor
     {
         private IPasswordEditorModel _model;
         private IPasswordDerivationEngine _engine;
+        private IPasswordRepository _passwordRepository;
 
         [ SetUp ]
         public void SetUpModel( )
         {
             _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
 
-            PasswordRepository passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
+            _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
 
-            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, passwordRepository );
+            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, _passwordRepository );
 
-            _model = new PasswordEditorModel( passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider(  ) );
+            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ) );
         }
 
         [ Test ]
@@ -204,6 +206,69 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.CanSave, Is.True );
             Assert.That( _model.CanDelete, Is.False );
         }
+
+        [ Test ]
+        public void ReloadWithoutBackEndChangeKeepsContentAndStateUnchanged( )
+        {
+            // Set up
+            _model.Key = "Toto";
+            _model.MasterPassword = "AAA".ToSecureString( );
+            _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.Iteration = 4;
+            _model.Note = "A rather longer note.";
+
+            // Exercise
+            _model.Reload( );
+            // Verify
+            Assert.That( _model.Key, Is.EqualTo( "Toto" ) );
+            Assert.That( _model.MasterPassword.ConsumeBytes( Encoding.UTF8, b => Encoding.UTF8.GetString( b ) ),
+                         Is.EqualTo( "AAA" ) );
+            Assert.That( _model.SelectedPassword, Is.EqualTo( _model.DerivedPasswords.First( ) ) );
+            Assert.That( _model.Iteration, Is.EqualTo( 4 ) );
+            Assert.That( _model.Note, Is.EqualTo( "A rather longer note." ) );
+
+            Assert.That( _model.IsDirty, Is.True );
+            Assert.That( _model.CanSave, Is.True );
+            Assert.That( _model.CanDelete, Is.False );
+        }
+
+        [ Test ]
+        public void ReloadWithBackEndChangeKeepsContentUnchanged( )
+        {
+            // Set up
+            _model.Key = "Toto";
+            _model.MasterPassword = "AAA".ToSecureString( );
+            _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.Iteration = 4;
+            _model.Note = "A rather longer note.";
+
+            _passwordRepository.SavePassword( new PasswordDigestDocumentBuilder
+                                                  {
+                                                      Key = "Toto",
+                                                      Hash = new byte[ ] { 0x11, 0x22 },
+                                                      Iteration = 1,
+                                                      PasswordGenerator = PasswordGenerators2.AlphaNumeric,
+                                                      CreatedOn = new DateTime( 2011, 11, 3 ),
+                                                      ModifiedOn = new DateTime( 2011, 11, 5 ),
+                                                      MasterPasswordId = Guid.NewGuid( ),
+                                                      Note = ""
+                                                  } );
+
+            // Exercise
+            _model.Reload( );
+            // Verify
+            Assert.That( _model.Key, Is.EqualTo( "Toto" ) );
+            Assert.That( _model.MasterPassword.ConsumeBytes( Encoding.UTF8, b => Encoding.UTF8.GetString( b ) ),
+                         Is.EqualTo( "AAA" ) );
+            Assert.That( _model.SelectedPassword, Is.EqualTo( _model.DerivedPasswords.First( ) ) );
+            Assert.That( _model.Iteration, Is.EqualTo( 4 ) );
+            Assert.That( _model.Note, Is.EqualTo( "A rather longer note." ) );
+
+            Assert.That( _model.IsDirty, Is.True );
+            Assert.That( _model.CanSave, Is.True );
+            Assert.That( _model.CanDelete, Is.True );
+        }
+
 
         private static IEnumerable<Guid> GeneratorGuids
         {

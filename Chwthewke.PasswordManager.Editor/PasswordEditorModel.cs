@@ -43,7 +43,8 @@ namespace Chwthewke.PasswordManager.Editor
                 .ToList( );
 
 
-            Original = original;
+            _original = original;
+            UpdateFromOriginal( );
 
             MasterPassword = new SecureString( );
         }
@@ -118,7 +119,7 @@ namespace Chwthewke.PasswordManager.Editor
         {
             bool saveOrUpdate = SaveOrUpdate( );
             if ( saveOrUpdate )
-                Original = new BaselinePasswordDocument( _passwordRepository.LoadPassword( Key ) );
+                _original = new BaselinePasswordDocument( _passwordRepository.LoadPassword( Key ) );
             return saveOrUpdate;
         }
 
@@ -135,7 +136,7 @@ namespace Chwthewke.PasswordManager.Editor
             var iteration = Iteration;
             var note = Note;
 
-            Original = new NewPasswordDocument( );
+            _original = new NewPasswordDocument( );
 
             Key = key;
             SelectedPassword = DerivedPasswords.First( p => p.Generator == generator );
@@ -145,23 +146,12 @@ namespace Chwthewke.PasswordManager.Editor
             return true;
         }
 
-        public void Reload( )
+        private void UpdateFromOriginal( )
         {
-            throw new NotImplementedException( );
-        }
-
-        private IBaselinePasswordDocument Original
-        {
-            get { return _original; }
-            set
-            {
-                _original = value;
-
-                _key = _original.Key;
-                Note = _original.Note;
-                Iteration = _original.Iteration;
-                SelectedPassword = DerivedPasswords.SingleOrDefault( p => p.Generator == _original.PasswordGenerator );
-            }
+            _key = _original.Key;
+            Note = _original.Note;
+            Iteration = _original.Iteration;
+            SelectedPassword = DerivedPasswords.SingleOrDefault( p => p.Generator == _original.PasswordGenerator );
         }
 
         private bool CanSaveWithMasterPassword
@@ -230,13 +220,26 @@ namespace Chwthewke.PasswordManager.Editor
         {
             if ( _original.Document != null )
                 return _passwordRepository.UpdatePassword( _original.Document, passwordDigestDocument );
-            else
-                return _passwordRepository.SavePassword( passwordDigestDocument );
+            return _passwordRepository.SavePassword( passwordDigestDocument );
         }
 
         private bool DeletePassword( )
         {
             return _passwordRepository.DeletePassword( _original.Document, Now );
+        }
+
+        public void Reload( )
+        {
+            PasswordDigestDocument passwordDigestDocument = _passwordRepository.LoadPassword( Key );
+            if ( passwordDigestDocument == null )
+                _original = new NewPasswordDocument( );
+            else
+            {
+                var update = !IsDirty;
+                _original = new BaselinePasswordDocument( passwordDigestDocument );
+                if ( update )
+                    UpdateFromOriginal( );
+            }
         }
 
         private DateTime Now

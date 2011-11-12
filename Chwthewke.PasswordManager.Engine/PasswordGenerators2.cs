@@ -22,7 +22,7 @@ namespace Chwthewke.PasswordManager.Engine
         {
             return new PasswordGenerator2( new Sha512DerivedKeyFactory( ( s, p ) => InternalSalt.Concat( p ).Concat( s ).ToArray( ) ),
                                            new Sha512DerivedKeyFactory( ( s, p ) => s.Concat( p ).ToArray( ) ),
-                                           materializer, 1, 64 );
+                                           materializer, 64 );
         }
 
         internal static readonly byte[ ] InternalSalt = Encoding.UTF8.GetBytes( "tsU&yUaZulAs4eOV" );

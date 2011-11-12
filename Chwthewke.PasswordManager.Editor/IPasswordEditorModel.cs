@@ -27,5 +27,6 @@ namespace Chwthewke.PasswordManager.Editor
 
         bool Save( );
         bool Delete( );
+        void Reload( );
     }
 }

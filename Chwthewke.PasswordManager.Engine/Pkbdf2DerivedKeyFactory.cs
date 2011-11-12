@@ -5,10 +5,17 @@ namespace Chwthewke.PasswordManager.Engine
 {
     internal class Pkbdf2DerivedKeyFactory : IDerivedKeyFactory
     {
+        public Pkbdf2DerivedKeyFactory( int baseIterations )
+        {
+            _baseIterations = baseIterations;
+        }
+
+        private readonly int _baseIterations;
+
         public byte[ ] DeriveKey( byte[ ] salt, byte[ ] password, int iterations, int byteCount )
         {
             byte[ ] combinedSalt = InternalSalt.Concat( salt ).ToArray( );
-            return new Rfc2898DeriveBytes( password, combinedSalt, iterations ).GetBytes( byteCount );
+            return new Rfc2898DeriveBytes( password, combinedSalt, _baseIterations + iterations ).GetBytes( byteCount );
         }
 
         internal static readonly byte[ ] InternalSalt = new byte[ ]

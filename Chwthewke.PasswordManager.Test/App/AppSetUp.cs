@@ -5,6 +5,7 @@ using Chwthewke.PasswordManager.App.Modules;
 
 namespace Chwthewke.PasswordManager.Test.App
 {
+    [Obsolete]
     internal class AppSetUp
     {
         // TODO clean up API

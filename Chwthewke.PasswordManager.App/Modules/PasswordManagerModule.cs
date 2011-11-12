@@ -6,6 +6,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Modules
 {
+    [Obsolete]
     public class PasswordManagerModule : Module
     {
         protected override void Load( ContainerBuilder builder )

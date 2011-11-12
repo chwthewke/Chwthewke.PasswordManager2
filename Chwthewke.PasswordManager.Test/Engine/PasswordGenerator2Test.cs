@@ -12,17 +12,17 @@ namespace Chwthewke.PasswordManager.Test.Engine
         public void GeneratorUsesDerivedKeyFactoryAndMaterializerToDerivePasswordFromRequest( )
         {
             // Set up
-            IDerivedKeyFactory derivedKeyFactory = new Pkbdf2DerivedKeyFactory( );
+            IDerivedKeyFactory derivedKeyFactory = new Pkbdf2DerivedKeyFactory( 15000 );
+            IDerivedKeyFactory digestFactory = new Pkbdf2DerivedKeyFactory( 10000 );
             PasswordMaterializer materializer = PasswordMaterializers.AlphaNumeric;
-            const int iterations = 15000;
 
-            PasswordGenerator2 generator = new PasswordGenerator2( derivedKeyFactory, derivedKeyFactory, materializer, 10000, 32 );
+            PasswordGenerator2 generator = new PasswordGenerator2( derivedKeyFactory, digestFactory, materializer, 32 );
             // Exercise
-            DerivedPassword derived = generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), iterations, default( Guid ) ) );
+            DerivedPassword derived = generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), 3, default( Guid ) ) );
             // Verify
             string expectedPassword =
                 materializer.ToString( derivedKeyFactory.DeriveKey( Encoding.UTF8.GetBytes( "abcd" ), Encoding.UTF8.GetBytes( "1234" ),
-                                                                    iterations, materializer.BytesNeeded ) );
+                                                                    3, materializer.BytesNeeded ) );
 
             Assert.That( derived.Password, Is.EqualTo( expectedPassword ) );
         }
@@ -31,20 +31,19 @@ namespace Chwthewke.PasswordManager.Test.Engine
         public void GeneratorUsesDerivedKeyFactoryToCreateDigest( )
         {
             // Set up
-            IDerivedKeyFactory derivedKeyFactory = new Pkbdf2DerivedKeyFactory( );
+            IDerivedKeyFactory derivedKeyFactory = new Pkbdf2DerivedKeyFactory( 15000 );
+            IDerivedKeyFactory digestFactory = new Pkbdf2DerivedKeyFactory( 10000 );
             PasswordMaterializer materializer = PasswordMaterializers.AlphaNumeric;
-            const int iterations = 15000;
-            const int digestIterations = 10000;
 
-            PasswordGenerator2 generator = new PasswordGenerator2( derivedKeyFactory, derivedKeyFactory, materializer, digestIterations, 32 );
+            PasswordGenerator2 generator = new PasswordGenerator2( derivedKeyFactory, digestFactory, materializer, 32 );
             // Exercise
             DerivedPassword derived = 
-                generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), iterations, PasswordGenerators2.Full ) );
+                generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), 1, PasswordGenerators2.Full ) );
             // Verify
 
-            byte[ ] expectedHash = derivedKeyFactory.DeriveKey( PasswordGenerator2.DigestSalt, Encoding.UTF8.GetBytes( derived.Password ),
-                                                                digestIterations, 32 );
-            PasswordDigest2 expectedDigest = new PasswordDigest2( "abcd", expectedHash, iterations, PasswordGenerators2.Full );
+            byte[ ] expectedHash = digestFactory.DeriveKey( PasswordGenerator2.DigestSalt, Encoding.UTF8.GetBytes( derived.Password ),
+                                                                1, 32 );
+            PasswordDigest2 expectedDigest = new PasswordDigest2( "abcd", expectedHash, 1, PasswordGenerators2.Full );
 
             Assert.That( derived.Digest, Is.EqualTo( expectedDigest ) );
         }

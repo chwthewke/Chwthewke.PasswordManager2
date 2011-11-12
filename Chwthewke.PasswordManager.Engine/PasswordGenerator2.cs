@@ -8,7 +8,6 @@ namespace Chwthewke.PasswordManager.Engine
         private readonly IDerivedKeyFactory _digestFactory;
         private readonly PasswordMaterializer _materializer;
 
-        private readonly int _digestIterations;
         private readonly int _digestLength;
 
         internal static readonly byte[ ] DigestSalt = new byte[ ]
@@ -17,13 +16,12 @@ namespace Chwthewke.PasswordManager.Engine
                                                               0x28, 0x2d, 0x54, 0x72, 0x66,
                                                           };
 
-        public PasswordGenerator2( IDerivedKeyFactory derivedPasswordFactory, IDerivedKeyFactory digestFactory, PasswordMaterializer materializer, 
-            int digestIterations, int digestLength )
+        public PasswordGenerator2( IDerivedKeyFactory derivedPasswordFactory, IDerivedKeyFactory digestFactory, 
+            PasswordMaterializer materializer, int digestLength )
         {
             _derivedPasswordFactory = derivedPasswordFactory;
             _digestFactory = digestFactory;
             _materializer = materializer;
-            _digestIterations = digestIterations;
             _digestLength = digestLength;
         }
 
@@ -41,7 +39,7 @@ namespace Chwthewke.PasswordManager.Engine
                 _materializer.ToString( derivedPasswordBytes );
 
             byte[ ] digestBytes =
-                _digestFactory.DeriveKey( DigestSalt, GetBytes( derivedPassword ), _digestIterations, _digestLength );
+                _digestFactory.DeriveKey( DigestSalt, GetBytes( derivedPassword ), 1, _digestLength );
 
             return new DerivedPassword( derivedPassword,
                                         new PasswordDigest2( request.Key, digestBytes, request.Iterations, request.PasswordGenerator ) );

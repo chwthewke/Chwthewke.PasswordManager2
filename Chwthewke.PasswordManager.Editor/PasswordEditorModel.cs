@@ -145,6 +145,11 @@ namespace Chwthewke.PasswordManager.Editor
             return true;
         }
 
+        public void Reload( )
+        {
+            throw new NotImplementedException( );
+        }
+
         private IBaselinePasswordDocument Original
         {
             get { return _original; }

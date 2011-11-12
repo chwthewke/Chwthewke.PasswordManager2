@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using Autofac;
 
@@ -15,6 +16,7 @@ namespace Chwthewke.PasswordManager.App.Modules
             return builder.Build( );
         }
 
+        [Obsolete]
         public static IEnumerable<Module> ApplicationModules
         {
             get

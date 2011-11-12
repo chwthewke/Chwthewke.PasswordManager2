@@ -51,8 +51,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Set up
 
             // Exercise
-            _model.Delete( );
+            var deleted = _model.Delete( );
             // Verify
+            Assert.That( deleted, Is.True );
             Assert.That( _passwordRepository.LoadPasswords( ), Is.Empty );
         }
 
@@ -62,8 +63,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Set up
 
             // Exercise
-            _model.Delete( );
+            var deleted = _model.Delete( );
             // Verify
+            Assert.That( deleted, Is.True );
             Assert.That( _passwordData.LoadPasswords( ), Has.Count.EqualTo( 1 ) );
             Assert.That( _passwordData.LoadPasswords( )[ 0 ].IsDeleted, Is.True );
         }
@@ -74,8 +76,9 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Set up
 
             // Exercise
-            _model.Delete( );
+            var deleted = _model.Delete( );
             // Verify
+            Assert.That( deleted, Is.True );
             Assert.That( _model.Key, Is.EqualTo( "abij" ) );
             Assert.That( _model.SelectedPassword.Generator, Is.EqualTo( PasswordGenerators2.Full ) );
             Assert.That( _model.Iteration, Is.EqualTo( 3 ) );

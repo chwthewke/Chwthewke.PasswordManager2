@@ -54,6 +54,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             IsSelected = _parent.SelectedPassword == _model;
         }
 
+        public IDerivedPasswordModel Model
+        {
+            get { return _model; }
+        }
+
         private Guid Generator
         {
             get { return _model.Generator; }

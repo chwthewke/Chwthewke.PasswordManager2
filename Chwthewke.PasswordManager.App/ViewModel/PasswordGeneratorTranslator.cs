@@ -4,8 +4,9 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
-    internal class PasswordGeneratorTranslator
+    internal static class PasswordGeneratorTranslator
     {
+        [ Obsolete ]
         public static string NameKey( IPasswordGenerator generator )
         {
             return NameKey( generator.Id );
@@ -16,6 +17,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             return "PasswordGenerator" + generatorId.ToString( "N" );
         }
 
+        [ Obsolete ]
         public static string DescriptionKey( IPasswordGenerator generator )
         {
             return DescriptionKey( generator.Id );
@@ -25,6 +27,5 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             return "PasswordGeneratorDescription" + generatorId.ToString( "N" );
         }
-
     }
 }

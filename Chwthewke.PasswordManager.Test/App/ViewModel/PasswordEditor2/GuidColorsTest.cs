@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Media;
 using Chwthewke.PasswordManager.Engine;
+using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
 
@@ -16,7 +17,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
 
             // Exercise
             // Verify
-            Assert.That( App.ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
+            Assert.That( ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
         }
 
         [ Test ]
@@ -26,41 +27,41 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
 
             // Exercise
             // Verify
-            Assert.That( App.ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
+            Assert.That( ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
         }
 
         [ Test ]
         public void NoActualGuidColorWithUnknownMasterPassword( )
         {
             // Setup
-            App.ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Exercise
             // Verify
-            Assert.That( App.ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
+            Assert.That( ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
         }
 
         [ Test ]
         public void NoActualGuidColorWithUnknownMasterPasswordAfter( )
         {
             // Setup
-            AddPassword( "abc", string.Empty, PasswordGenerators.AlphaNumeric, "12345".ToSecureString( ) );
-            App.ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
+            AddPassword( "abc", PasswordGenerators2.AlphaNumeric, 1, "12345".ToSecureString( ), string.Empty );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Exercise
-            App.ViewModel.UpdateMasterPassword( "123456".ToSecureString( ) );
+            ViewModel.UpdateMasterPassword( "123456".ToSecureString( ) );
             // Verify
-            Assert.That( App.ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
+            Assert.That( ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
         }
 
         [ Test ]
         public void ActualGuidColorIsSetWithKnownMasterPassword( )
         {
             // Setup
-            AddPassword( "abc", string.Empty, PasswordGenerators.AlphaNumeric, "12345".ToSecureString( ) );
-            Guid masterPasswordGuid = PasswordDatabase.FindByKey( "abc" ).MasterPasswordId;
+            AddPassword( "abc", PasswordGenerators2.AlphaNumeric, 1, "12345".ToSecureString( ), string.Empty );
+            Guid masterPasswordGuid = PasswordRepository.LoadPassword( "abc" ).MasterPasswordId;
             // Exercise
-            App.ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
+            ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
-            Assert.That( App.ViewModel.ActualGuidColor, Is.EqualTo( GuidToColorConverter.Convert( masterPasswordGuid ) ) );
+            Assert.That( ViewModel.ActualGuidColor, Is.EqualTo( GuidToColorConverter.Convert( masterPasswordGuid ) ) );
         }
 
         [ Test ]
@@ -68,14 +69,15 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
         {
             // Setup
 
-            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            Guid expectedMasterPasswordId = PasswordDatabase.FindByKey( "abde" ).MasterPasswordId;
+            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            PasswordDigestDocument password = PasswordRepository.LoadPassword( "abde" );
+            Guid expectedMasterPasswordId = password.MasterPasswordId;
 
             // Exercise
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( password );
 
             // Verify
-            Assert.That( App.ViewModel.RequiredGuidColor,
+            Assert.That( ViewModel.RequiredGuidColor,
                          Is.EqualTo( GuidToColorConverter.Convert( expectedMasterPasswordId ) ) );
         }
 
@@ -83,49 +85,49 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
         public void GuidColorsAreSetAfterSavingPassword( )
         {
             // Setup
-            App.ViewModel.Key = "abde";
-            App.ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
-            App.ViewModel.DerivedPasswords[ 0 ].IsSelected = true;
+            ViewModel.Key = "abde";
+            ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
+            ViewModel.DerivedPasswords[ 0 ].IsSelected = true;
 
-            Assert.That( App.ViewModel.SaveCommand.CanExecute( null ), Is.True );
+            Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.True );
             // Exercise
-            App.ViewModel.SaveCommand.Execute( null );
+            ViewModel.SaveCommand.Execute( null );
             // Verify
-            Assert.That( App.ViewModel.RequiredGuidColor, Is.Not.EqualTo( Colors.Transparent ) );
-            Assert.That( App.ViewModel.ActualGuidColor, Is.EqualTo( App.ViewModel.RequiredGuidColor ) );
+            Assert.That( ViewModel.RequiredGuidColor, Is.Not.EqualTo( Colors.Transparent ) );
+            Assert.That( ViewModel.ActualGuidColor, Is.EqualTo( ViewModel.RequiredGuidColor ) );
         }
 
         [ Test ]
         public void GuidColorsAreUnsetAfterDeletingPassword( )
         {
             // Setup
-            AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abc", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
 
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abc" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abc" ) );
 
-            App.ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
+            ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
             // Exercise
-            App.ViewModel.DeleteCommand.Execute( null );
+            ViewModel.DeleteCommand.Execute( null );
             // Verify
-            Assert.That( App.ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
-            Assert.That( App.ViewModel.ActualGuidColor, Is.EqualTo( Colors.Transparent ) );
+            Assert.That( ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
+            Assert.That( ViewModel.ActualGuidColor, Is.EqualTo( Colors.Transparent ) );
         }
 
         [ Test ]
         public void ActualGuidColorIsKeptAfterDeletingPasswordIfStillPresent( )
         {
             // Setup
-            AddPassword( "abd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
-            AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abd", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
+            AddPassword( "abc", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
 
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abc" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abc" ) );
 
-            App.ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
+            ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
             // Exercise
-            App.ViewModel.DeleteCommand.Execute( null );
+            ViewModel.DeleteCommand.Execute( null );
             // Verify
-            Assert.That( App.ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
-            Assert.That( App.ViewModel.ActualGuidColor, Is.Not.EqualTo( Colors.Transparent ) );
+            Assert.That( ViewModel.RequiredGuidColor, Is.EqualTo( Colors.Transparent ) );
+            Assert.That( ViewModel.ActualGuidColor, Is.Not.EqualTo( Colors.Transparent ) );
         }
     }
 }

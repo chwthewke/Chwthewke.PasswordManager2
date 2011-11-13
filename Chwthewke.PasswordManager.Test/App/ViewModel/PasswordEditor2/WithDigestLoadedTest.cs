@@ -1,3 +1,4 @@
+using System.Linq;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
@@ -12,27 +13,27 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
         {
             // Setup
 
-            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
+            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
 
             // Exercise
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
             // Verify
-            Assert.That( App.ViewModel.Key, Is.EqualTo( "abde" ) );
-            Assert.That( App.ViewModel.DerivedPasswords.First( s => s.Generator == PasswordGenerators.AlphaNumeric ).IsSelected );
-            Assert.That( App.ViewModel.Note, Is.EqualTo( "yadda yadda" ) );
-            Assert.That( App.ViewModel.Title, Is.EqualTo( "abde" ) );
+            Assert.That( ViewModel.Key, Is.EqualTo( "abde" ) );
+            Assert.That( ViewModel.DerivedPasswords.First( s => s.Model.Generator == PasswordGenerators2.AlphaNumeric ).IsSelected );
+            Assert.That( ViewModel.Note, Is.EqualTo( "yadda yadda" ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( "abde" ) );
         }
 
         [ Test ]
         public void LoadPasswordAllowsDeleteCommand( )
         {
             // Setup
-            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
+            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
 
             // Exercise
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
             // Verify
-            Assert.That( App.ViewModel.DeleteCommand.CanExecute( null ), Is.True );
+            Assert.That( ViewModel.DeleteCommand.CanExecute( null ), Is.True );
         }
 
         [ Test ]
@@ -40,63 +41,63 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
         {
             // Setup
 
-            AddPassword( "abde", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abde", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
             // Exercise
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
             // Verify
-            Assert.That( App.ViewModel.IsKeyReadonly, Is.True );
+            Assert.That( ViewModel.IsKeyReadonly, Is.True );
         }
 
         [ Test ]
         public void LoadPasswordMakesKeyUnmodifiable( )
         {
             // Setup
-            AddPassword( "abde", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            AddPassword( "abde", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
             // Exercise
-            App.ViewModel.Key = "abcd";
+            ViewModel.Key = "abcd";
             // Verify
-            Assert.That( App.ViewModel.Key, Is.EqualTo( "abde" ) );
+            Assert.That( ViewModel.Key, Is.EqualTo( "abde" ) );
         }
 
         [ Test ]
         public void LoadPasswordPreventsPasswordSlotSelectionFromClear( )
         {
             // Setup
-            AddPassword( "abde", string.Empty, PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
-            App.ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
+            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), string.Empty );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
+            ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
             // Exercise
-            App.ViewModel.UpdateMasterPassword( string.Empty.ToSecureString( ) );
+            ViewModel.UpdateMasterPassword( string.Empty.ToSecureString( ) );
             // Verify
-            Assert.That( App.ViewModel.DerivedPasswords.Any( slot => slot.IsSelected ) );
+            Assert.That( ViewModel.DerivedPasswords.Any( slot => slot.IsSelected ) );
         }
 
         [ Test ]
         public void DeletePasswordWhenCommandAvailable( )
         {
             // Setup
-            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
             // Exercise
-            App.ViewModel.DeleteCommand.Execute( null );
+            ViewModel.DeleteCommand.Execute( null );
             // Verify
-            Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.Null );
+            Assert.That( PasswordRepository.LoadPassword( "abde" ), Is.Null );
         }
 
         [ Test ]
         public void DeletePasswordChangesCanExecuteDelete( )
         {
             // Setup
-            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword("abde") );
 
             bool deleteChanged = false;
-            App.ViewModel.DeleteCommand.CanExecuteChanged += ( s, e ) => deleteChanged = true;
+            ViewModel.DeleteCommand.CanExecuteChanged += ( s, e ) => deleteChanged = true;
             // Exercise
-            App.ViewModel.DeleteCommand.Execute( null );
+            ViewModel.DeleteCommand.Execute( null );
             // Verify
-            Assert.That( PasswordDatabase.FindByKey( "abde" ), Is.Null );
+            Assert.That( PasswordRepository.LoadPassword( "abde" ), Is.Null );
             Assert.That( deleteChanged );
         }
 
@@ -104,13 +105,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
         public void DeletePasswordRaisesStoreModified( )
         {
             // Setup
-            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword("abde") );
 
             bool storeModifiedRaised = false;
-            App.ViewModel.StoreModified += ( s, e ) => { storeModifiedRaised = true; };
+            ViewModel.StoreModified += ( s, e ) => { storeModifiedRaised = true; };
             // Exercise
-            App.ViewModel.DeleteCommand.Execute( null );
+            ViewModel.DeleteCommand.Execute( null );
             // Verify
             Assert.That( storeModifiedRaised, Is.True );
         }
@@ -119,18 +120,18 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
         public void DeletePasswordDoesNotResetEditor( )
         {
             // Setup
-            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            App.ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword("abde") );
 
-            App.ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
+            ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
             // Exercise
-            App.ViewModel.DeleteCommand.Execute( null );
+            ViewModel.DeleteCommand.Execute( null );
             // Verify
-            Assert.That( App.ViewModel.Key, Is.EqualTo( "abde" ) );
-            Assert.That( App.ViewModel.Note, Is.EqualTo( "yadda yadda" ) );
-            Assert.That( App.ViewModel.DerivedPasswords.First( slot => slot.IsSelected ).Generator,
-                         Is.EqualTo( PasswordGenerators.AlphaNumeric ) );
-            Assert.That( App.ViewModel.IsKeyReadonly, Is.False );
+            Assert.That( ViewModel.Key, Is.EqualTo( "abde" ) );
+            Assert.That( ViewModel.Note, Is.EqualTo( "yadda yadda" ) );
+            Assert.That( ViewModel.DerivedPasswords.First( slot => slot.IsSelected ).Model.Generator,
+                         Is.EqualTo( PasswordGenerators2.AlphaNumeric ) );
+            Assert.That( ViewModel.IsKeyReadonly, Is.False );
         }
     }
 }

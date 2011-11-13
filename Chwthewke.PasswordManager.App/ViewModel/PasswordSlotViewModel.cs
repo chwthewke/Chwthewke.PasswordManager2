@@ -7,6 +7,7 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
+    [Obsolete]
     public class PasswordSlotViewModel : ObservableObject
     {
         public PasswordSlotViewModel( IPasswordEditorController controller, IPasswordGenerator generator )

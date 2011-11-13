@@ -49,7 +49,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _model.Key; }
             set
             {
-                _model.Key = value;
+                _model.Key = string.IsNullOrWhiteSpace( value ) ? string.Empty : value;
                 RaisePropertyChanged( ( ) => Key );
                 Update( );
             }
@@ -64,6 +64,17 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                     return;
                 _title = value;
                 RaisePropertyChanged( ( ) => Title );
+            }
+        }
+
+        public int Iteration
+        {
+            get { return _model.Iteration; }
+            set
+            {
+                _model.Iteration = value;
+                RaisePropertyChanged( ( ) => Iteration );
+                Update( );
             }
         }
 

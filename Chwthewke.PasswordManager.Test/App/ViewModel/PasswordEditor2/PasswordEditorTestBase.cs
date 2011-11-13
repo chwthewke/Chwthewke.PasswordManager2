@@ -63,5 +63,10 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
         {
             AddPassword( key, generator.Id, iteration, masterPassword, note );
         }
+
+        protected string DerivedPassword( Guid generator, string key, SecureString masterPassword, int iterations )
+        {
+            return Engine.Derive( new PasswordRequest( key, masterPassword, iterations, generator ) ).Password;
+        }
     }
 }

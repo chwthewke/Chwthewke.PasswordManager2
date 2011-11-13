@@ -13,6 +13,7 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
+    [Obsolete]
     public class PasswordEditorViewModel : ObservableObject
     {
         public PasswordEditorViewModel( IPasswordEditorController controller,

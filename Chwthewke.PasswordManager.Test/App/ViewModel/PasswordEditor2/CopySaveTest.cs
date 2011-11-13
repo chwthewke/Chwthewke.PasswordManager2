@@ -6,7 +6,6 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
 {
     [ TestFixture ]
-    [ Ignore ]
     public class CopySaveTest : PasswordEditorTestBase
     {
         [ Test ]

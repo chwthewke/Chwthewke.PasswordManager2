@@ -6,6 +6,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
+    [Obsolete]
     public class StoredPasswordViewModel : ObservableObject
     {
         public string Name

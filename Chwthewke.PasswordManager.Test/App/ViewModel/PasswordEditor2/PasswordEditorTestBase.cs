@@ -30,7 +30,10 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
         public IPasswordManagerStorage Storage { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 
-        protected IPasswordRepository PasswordRepository { get { return Storage.PasswordRepository; }}
+        protected IPasswordRepository PasswordRepository
+        {
+            get { return Storage.PasswordRepository; }
+        }
 
 
         [ SetUp ]
@@ -39,6 +42,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
             TestInjection
                 .TestContainer( TestInjection.Mock<IClipboardService>( ) )
                 .InjectProperties( this );
+
+            PasswordRepository.PasswordData = new InMemoryPasswordData( );
 
             ViewModel = ViewModelFactory.NewPasswordEditor( );
         }
@@ -53,7 +58,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
                     } );
         }
 
-        [Obsolete]
+        [ Obsolete ]
         protected void AddPassword( string key, string note, IPasswordGenerator generator, SecureString masterPassword, int iteration = 1 )
         {
             AddPassword( key, generator.Id, iteration, masterPassword, note );

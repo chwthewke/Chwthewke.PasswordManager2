@@ -1,8 +1,10 @@
+using System;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
+    [Obsolete]
     public class PasswordEditorViewModelFactory
     {
         public PasswordEditorViewModelFactory( IClipboardService clipboardService, IGuidToColorConverter guidToColor,

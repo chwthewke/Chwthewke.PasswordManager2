@@ -3,7 +3,6 @@ using Autofac;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Storage;
-using Chwthewke.PasswordManager.Test.Util;
 using Moq;
 using NUnit.Framework;
 
@@ -20,8 +19,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         public void SetUpViewModel( )
         {
             IContainer container = AppSetUp.TestContainer(
-                new MockModule<IFileSelectionService>( _fileSelectionServiceMock )
-                );
+                b => b.RegisterInstance( _fileSelectionServiceMock.Object ).As<IFileSelectionService>( ));
             _viewModel = container.Resolve<PasswordManagerViewModel>( );
             _database = container.Resolve<IPasswordDatabase>( );
         }

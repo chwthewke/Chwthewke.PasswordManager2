@@ -5,9 +5,9 @@ using Chwthewke.PasswordManager.Editor;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
-    public class PasswordSlotViewModel2 : ObservableObject
+    public class DerivedPasswordViewModel : ObservableObject
     {
-        public PasswordSlotViewModel2( IDerivedPasswordModel model, IPasswordEditorModel parent )
+        public DerivedPasswordViewModel( IDerivedPasswordModel model, IPasswordEditorModel parent )
         {
             _model = model;
             _parent = parent;

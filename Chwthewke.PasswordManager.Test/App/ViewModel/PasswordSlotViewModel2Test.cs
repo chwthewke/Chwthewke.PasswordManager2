@@ -26,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             _editorModel = Editor.EmptyModel( );
             _derivedPasswordModel = _editorModel.DerivedPasswords.First( dp => dp.Generator == PasswordGenerators2.Full );
 
-            _viewModel = new PasswordSlotViewModel2( _derivedPasswordModel, _editorModel );
+            _viewModel = new DerivedPasswordViewModel( _derivedPasswordModel, _editorModel );
         }
 
         [ Test ]
@@ -157,7 +157,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.Content, Is.EqualTo( string.Empty ) );
         }
 
-        private PasswordSlotViewModel2 _viewModel;
+        private DerivedPasswordViewModel _viewModel;
         private IPasswordEditorModel _editorModel;
         private IDerivedPasswordModel _derivedPasswordModel;
     }

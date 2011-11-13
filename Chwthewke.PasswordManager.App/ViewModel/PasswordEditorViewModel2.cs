@@ -9,7 +9,6 @@ using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
-using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
@@ -22,11 +21,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _model = model;
             _clipboardService = clipboardService;
             _guidToColor = guidToColor;
-            _slots = new ObservableCollection<PasswordSlotViewModel2>(
-                _model.DerivedPasswords.Select( dp => new PasswordSlotViewModel2( dp, _model ) ) );
+            _derivedPasswords = new ObservableCollection<DerivedPasswordViewModel>(
+                _model.DerivedPasswords.Select( dp => new DerivedPasswordViewModel( dp, _model ) ) );
 
-            foreach ( PasswordSlotViewModel2 passwordSlotViewModel in Slots )
-                passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;
+            foreach ( DerivedPasswordViewModel passwordSlotViewModel in DerivedPasswords )
+                passwordSlotViewModel.PropertyChanged += OnDerivedPasswordPropertyChanged;
 
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
@@ -142,9 +141,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
-        public ObservableCollection<PasswordSlotViewModel2> Slots
+        public ObservableCollection<DerivedPasswordViewModel> DerivedPasswords
         {
-            get { return _slots; }
+            get { return _derivedPasswords; }
         }
 
         public ICommand SaveCommand
@@ -200,13 +199,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 closeRequested( this, EventArgs.Empty );
         }
 
-        private void OnSlotPropertyChanged( object sender, PropertyChangedEventArgs e )
+        private void OnDerivedPasswordPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
             if ( e.PropertyName != "IsSelected" )
                 return;
 
-            PasswordSlotViewModel2 selectedSlot = Slots.FirstOrDefault( s => s.IsSelected );
-            _model.SelectedPassword = selectedSlot == null ? null : selectedSlot.Model;
+            DerivedPasswordViewModel selected = DerivedPasswords.FirstOrDefault( s => s.IsSelected );
+            _model.SelectedPassword = selected == null ? null : selected.Model;
+
+            Update( );
 
             _saveCommand.RaiseCanExecuteChanged( );
             _copyCommand.RaiseCanExecuteChanged( );
@@ -288,7 +289,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             IsKeyReadonly = _model.IsKeyReadonly;
 
-            foreach ( var slot in Slots )
+            foreach ( var slot in DerivedPasswords )
             {
                 slot.Update( );
             }
@@ -340,7 +341,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private Color _actualGuidColor = Colors.Transparent;
         private string _masterPasswordHint = string.Empty;
 
-        private readonly ObservableCollection<PasswordSlotViewModel2> _slots;
+        private readonly ObservableCollection<DerivedPasswordViewModel> _derivedPasswords;
 
         private string _copyText;
 

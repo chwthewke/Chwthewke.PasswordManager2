@@ -1,5 +1,4 @@
 ﻿using System;
-using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.Editor
@@ -25,6 +24,8 @@ namespace Chwthewke.PasswordManager.Editor
     {
         public BaselinePasswordDocument( PasswordDigestDocument baseline )
         {
+            if ( baseline == null )
+                throw new ArgumentNullException( "baseline" );
             _baseline = baseline;
         }
 

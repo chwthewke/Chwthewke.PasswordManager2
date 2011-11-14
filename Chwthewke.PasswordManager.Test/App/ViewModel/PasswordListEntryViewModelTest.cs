@@ -130,7 +130,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             var viewModel = new StoredPasswordViewModel2( password, GuidToColor, FuzzyDateFormatter );
 
             // Verify
-            Assert.That( viewModel.MasterPasswordGuid, Is.EqualTo( "adb07a84-ed76-420f-9570-d0684dd044fe" ) );
+            Assert.That( viewModel.MasterPasswordGuid, Is.EqualTo( guid ) );
             Assert.That( viewModel.MasterPasswordColor, Is.EqualTo( GuidToColor.Convert( guid ) ) );
         }
 

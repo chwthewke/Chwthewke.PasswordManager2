@@ -11,15 +11,15 @@ namespace Chwthewke.PasswordManager.Editor
 
     public static class PasswordManagerEditor
     {
-        public static IPasswordManagerEditor CreateEditor( IPasswordDerivationEngine derivationEngine, IPasswordManagerStorage passwordManagerStorage )
+        public static IPasswordManagerEditor CreateService( IPasswordDerivationEngine derivationEngine,
+                                                            IPasswordManagerStorage passwordManagerStorage, ITimeProvider timeProvider )
         {
-            return new DefaultPasswordManagerEditor( derivationEngine, passwordManagerStorage );
+            return new DefaultPasswordManagerEditor( derivationEngine, passwordManagerStorage, timeProvider );
         }
     }
 
     internal class DefaultPasswordManagerEditor : IPasswordManagerEditor
     {
-
         public IPasswordEditorModel EmptyModel( )
         {
             return new PasswordEditorModel( _passwordRepository, _derivationEngine, _masterPasswordMatcher, _timeProvider );
@@ -36,12 +36,13 @@ namespace Chwthewke.PasswordManager.Editor
         private readonly ITimeProvider _timeProvider;
 
         internal DefaultPasswordManagerEditor( IPasswordDerivationEngine derivationEngine,
-                                      IPasswordManagerStorage passwordManagerStorage )
+                                               IPasswordManagerStorage passwordManagerStorage,
+                                               ITimeProvider timeProvider )
         {
             _passwordRepository = passwordManagerStorage.PasswordRepository;
             _derivationEngine = derivationEngine;
+            _timeProvider = timeProvider;
             _masterPasswordMatcher = passwordManagerStorage.MasterPasswordMatcher;
-            _timeProvider = new TimeProvider( );
         }
     }
 }

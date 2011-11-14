@@ -3,6 +3,7 @@ using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
+using ITimeProvider = Chwthewke.PasswordManager.Editor.ITimeProvider;
 
 namespace Chwthewke.PasswordManager.App.Modules
 {
@@ -26,7 +27,9 @@ namespace Chwthewke.PasswordManager.App.Modules
 
         private IPasswordManagerEditor CreateEditor( IComponentContext c )
         {
-            return PasswordManagerEditor.CreateEditor( c.Resolve<IPasswordDerivationEngine>( ), c.Resolve<IPasswordManagerStorage>( ) );
+            return PasswordManagerEditor.CreateService( c.Resolve<IPasswordDerivationEngine>( ),
+                                                        c.Resolve<IPasswordManagerStorage>( ),
+                                                        c.Resolve<ITimeProvider>( ) );
         }
     }
 }

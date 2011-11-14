@@ -1,7 +1,6 @@
 using System.Linq;
 using Autofac;
 using Chwthewke.PasswordManager.App.ViewModel;
-using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
@@ -10,28 +9,34 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
     [ TestFixture ]
-    public class PasswordListTest
+    public class PasswordListViewModel2Test
     {
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-        public PasswordListViewModel PasswordList { get; set; }
+        public PasswordListViewModel2 PasswordList { get; set; }
 
-        public IPasswordDatabase PasswordDatabase { get; set; }
+        public IPasswordManagerStorage Storage { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 
+        public IPasswordRepository PasswordRepository
+        {
+            get { return Storage.PasswordRepository; }
+        }
 
         [ SetUp ]
         public void SetUpContainer( )
         {
-            AppSetUp.TestContainer( ).InjectProperties( this );
+            TestInjection.TestContainer( ).InjectProperties( this );
+
+            PasswordRepository.PasswordData = new InMemoryPasswordData( );
         }
 
         [ Test ]
         public void ListHasPasswords( )
         {
             // Setup
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc" } );
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abde" } );
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abcd" } );
+            PasswordRepository.SavePassword( new PasswordDigestDocumentBuilder { Key = "abc" } );
+            PasswordRepository.SavePassword( new PasswordDigestDocumentBuilder { Key = "abde" } );
+            PasswordRepository.SavePassword( new PasswordDigestDocumentBuilder { Key = "abcd" } );
             // Exercise
             PasswordList.UpdateList( );
             // Verify
@@ -83,7 +88,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Setup
             PasswordList.Editors[ 0 ].Key = "ab";
 
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc", PasswordGeneratorId = PasswordGenerators.Full.Id } );
+            PasswordRepository.SavePassword( new PasswordDigestDocumentBuilder { Key = "abc" } );
+
             PasswordList.UpdateList( );
             // Exercise
             PasswordList.OpenNewEditor( PasswordList.VisibleItems[ 0 ] );
@@ -97,8 +103,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         public void LoadPasswordIntoNewEditorReusesPristineInitialEditor( )
         {
             // Setup
+            PasswordRepository.SavePassword( new PasswordDigestDocumentBuilder { Key = "abc" } );
 
-            PasswordDatabase.AddOrUpdate( new PasswordDigestBuilder { Key = "abc", PasswordGeneratorId = PasswordGenerators.Full.Id } );
             PasswordList.UpdateList( );
             // Exercise
             PasswordList.OpenNewEditor( PasswordList.VisibleItems[ 0 ] );
@@ -117,10 +123,10 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Exercise
             editor.Key = "abcd";
             editor.UpdateMasterPassword( "1234".ToSecureString( ) );
-            editor.Slots[ 0 ].IsSelected = true;
+            editor.DerivedPasswords[ 0 ].IsSelected = true;
             editor.SaveCommand.Execute( null );
             // Verify
-            Assert.That( PasswordDatabase.Passwords.Count( ), Is.EqualTo( 1 ) );
+            Assert.That( PasswordRepository.LoadPasswords( ).Count( ), Is.EqualTo( 1 ) );
             Assert.That( PasswordList.VisibleItems.Select( it => it.Name ).ToArray( ), Is.EqualTo( new[ ] { "abcd" } ) );
         }
 
@@ -158,10 +164,10 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             editor.CloseCommand.Execute( null );
             editor.Key = "abcd";
             editor.UpdateMasterPassword( "1234".ToSecureString( ) );
-            editor.Slots[ 0 ].IsSelected = true;
+            editor.DerivedPasswords[ 0 ].IsSelected = true;
             editor.SaveCommand.Execute( null );
             // Verify
-            Assert.That( PasswordDatabase.Passwords.Count( ), Is.EqualTo( 1 ) );
+            Assert.That( PasswordRepository.LoadPasswords( ).Count( ), Is.EqualTo( 1 ) );
             Assert.That( PasswordList.VisibleItems.Select( it => it.Name ), Is.Empty );
         }
     }

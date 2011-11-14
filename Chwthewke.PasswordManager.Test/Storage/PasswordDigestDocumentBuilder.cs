@@ -38,8 +38,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public PasswordDigestDocumentBuilder( )
         {
             Key = "key";
-            Hash = new byte[ ] { };
+            Hash = new byte[ ] { 0x00 };
             Note = string.Empty;
+            Iteration = 1;
+            PasswordGenerator = PasswordGenerators2.AlphaNumeric;
         }
 
         public static implicit operator PasswordDigestDocument( PasswordDigestDocumentBuilder builder )

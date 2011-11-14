@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Globalization;
-using Chwthewke.PasswordManager.Storage;
+using Chwthewke.PasswordManager.Editor;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {

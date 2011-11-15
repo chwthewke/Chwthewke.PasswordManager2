@@ -16,7 +16,7 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<ClipboardService>( ).As<IClipboardService>( );
             builder.RegisterType<DialogFileSelectionService>( ).As<IFileSelectionService>( );
 
-            builder.RegisterType<PasswordExchange>( ).As<IPasswordExchange>( );
+            builder.RegisterType<PasswordExchange2>( ).As<IPasswordExchange>( );
             builder.RegisterType<FuzzyDateFormatter>( ).As<IFuzzyDateFormatter>( );
             builder.RegisterType<TimeProvider>( ).As<ITimeProvider>( );
 

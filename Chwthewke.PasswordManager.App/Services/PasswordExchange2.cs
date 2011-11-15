@@ -5,20 +5,21 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class PasswordExchange2 : IPasswordExchange
     {
-        public PasswordExchange2( IPasswordRepository passwordRepository )
+
+        public PasswordExchange2( IPasswordManagerStorage storage )
         {
-            _passwordRepository = passwordRepository;
+            _storage = storage;
         }
 
         // TODO possibly return a "report" to be presented to the user
         public void ImportPasswords( FileInfo externalPasswordFile )
         {
-            _passwordRepository.Merge( ExternalPasswordRepository( externalPasswordFile ) );
+            _storage.PasswordRepository.Merge( ExternalPasswordRepository( externalPasswordFile ) );
         }
 
         public void ExportPasswords( FileInfo targetFile )
         {
-            ExternalPasswordRepository( targetFile ).Merge( _passwordRepository );
+            ExternalPasswordRepository( targetFile ).Merge( _storage.PasswordRepository );
         }
 
         private static IPasswordRepository ExternalPasswordRepository( FileInfo targetFile )
@@ -26,6 +27,7 @@ namespace Chwthewke.PasswordManager.App.Services
             return PasswordManagerStorage.CreateService( new FileTextResource( targetFile ) ).PasswordRepository;
         }
 
-        private readonly IPasswordRepository _passwordRepository;
+        private readonly IPasswordManagerStorage _storage;
+
     }
 }

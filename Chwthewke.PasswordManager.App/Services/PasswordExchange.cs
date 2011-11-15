@@ -6,6 +6,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
+    [Obsolete]
     public class PasswordExchange : IPasswordExchange
     {
         public PasswordExchange( IPasswordSerializer passwordSerializer, IPasswordDatabase passwordDatabase )

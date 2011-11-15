@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.App.Modules
                            {
                                new PasswordManagerModule2( ),
                                new ApplicationServices( ),
-                               new ApplicationModule2( ),
+                               new ViewModelsModule( ),
                            };
             }
         }

@@ -308,6 +308,73 @@ namespace Chwthewke.PasswordManager.Test.Storage
         }
 
         [ Test ]
+        public void DeletePassswordIsLikeUpdatingItWithDeletedPassword( )
+        {
+            // Set up
+            var passwordToDelete = _passwordRepository.LoadPassword( "abcd" );
+            // Exercise
+            var deleted = _passwordRepository.DeletePassword( passwordToDelete, new DateTime( 2011, 11, 11 ) );
+            // Verify
+            Assert.That( deleted, Is.True );
+            Assert.That( _passwordRepository.LoadPassword( "abcd" ), Is.Null );
+        }
+
+        [ Test ]
+        public void SaveOverPreviouslyDeletedPasswordOverwritesIt( )
+        {
+            // Set up
+            var passwordToDelete = _passwordRepository.LoadPassword( "abcd" );
+            _passwordRepository.DeletePassword( passwordToDelete, new DateTime( 2011, 11, 11 ) );
+
+            PasswordDigestDocument newVersion = new PasswordDigestDocumentBuilder
+                                                    {
+                                                        Key = "abcd",
+                                                        Hash = new byte[ ] { 0x65 },
+                                                        PasswordGenerator = PasswordGenerators2.AlphaNumeric,
+                                                        Iteration = 2,
+                                                        MasterPasswordId = Guid.NewGuid( ),
+                                                        CreatedOn = new DateTime( 2011, 11, 12 ),
+                                                        ModifiedOn = new DateTime( 2011, 11, 13 ),
+                                                        Note = ""
+                                                    };
+
+            // Exercise
+            var saved = _passwordRepository.SavePassword( newVersion );
+            // Verify
+            Assert.That( saved, Is.True );
+            Assert.That( _passwordRepository.LoadPassword( "abcd" ), Is.EqualTo( newVersion ) );
+            Assert.That( _inMemoryPasswordData.LoadPasswords( ).Where( p => p.Key == "abcd" ).Count( ), Is.EqualTo( 1 ) );
+        }
+
+        [ Test ]
+        public void UpdatePreviouslyDeletedPasswordOverwritesIt( )
+        {
+            // Set up
+            var passwordToDelete = _passwordRepository.LoadPassword( "abcd" );
+            _passwordRepository.DeletePassword( passwordToDelete, new DateTime( 2011, 11, 11 ) );
+
+            PasswordDigestDocument newVersion = new PasswordDigestDocumentBuilder
+                                                    {
+                                                        Key = "abcd",
+                                                        Hash = new byte[ ] { 0x65 },
+                                                        PasswordGenerator = PasswordGenerators2.AlphaNumeric,
+                                                        Iteration = 2,
+                                                        MasterPasswordId = Guid.NewGuid( ),
+                                                        CreatedOn = new DateTime( 2011, 11, 12 ),
+                                                        ModifiedOn = new DateTime( 2011, 11, 13 ),
+                                                        Note = ""
+                                                    };
+
+            PasswordDigestDocument deleted = _inMemoryPasswordData.LoadPasswords( ).First( p => p.Key == "abcd" );
+            // Exercise
+            var updated = _passwordRepository.UpdatePassword( deleted, newVersion );
+            // Verify
+            Assert.That( updated, Is.True );
+            Assert.That( _passwordRepository.LoadPassword( "abcd" ), Is.EqualTo( newVersion ) );
+            Assert.That( _inMemoryPasswordData.LoadPasswords( ).Where( p => p.Key == "abcd" ).Count( ), Is.EqualTo( 1 ) );
+        }
+
+        [ Test ]
         public void MergeAddsOurPasswordsToTarget( )
         {
             // Set up

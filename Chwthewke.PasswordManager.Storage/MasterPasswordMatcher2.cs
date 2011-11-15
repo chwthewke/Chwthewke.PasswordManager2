@@ -18,6 +18,8 @@ namespace Chwthewke.PasswordManager.Storage
 
         public Guid? IdentifyMasterPassword( SecureString masterPassword )
         {
+            if ( masterPassword.Length == 0 )
+                return null;
             return _passwordRepository.LoadPasswords( )
                 .GroupBy( p => p.MasterPasswordId )
                 .Select( gr => gr.First( ) )

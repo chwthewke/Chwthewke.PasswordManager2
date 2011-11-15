@@ -57,17 +57,64 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _passwordRepository.LoadPasswords( ), Is.Empty );
         }
 
+
         [ Test ]
         public void DeletePasswordKeepsDeletedPasswordInData( )
         {
             // Set up
-
             // Exercise
             var deleted = _model.Delete( );
             // Verify
             Assert.That( deleted, Is.True );
             Assert.That( _passwordData.LoadPasswords( ), Has.Count.EqualTo( 1 ) );
             Assert.That( _passwordData.LoadPasswords( )[ 0 ].IsDeleted, Is.True );
+        }
+
+        [ Test ]
+        public void DeletePasswordModifiedEarlierReallyDeletesIt( )
+        {
+            // Set up
+            _timeProvider.Now = new DateTime( 2011, 11, 5 );
+            _passwordRepository.UpdatePassword( _original, new PasswordDigestDocumentBuilder
+                                                               {
+                                                                   Digest = _original.Digest,
+                                                                   CreatedOn = _original.CreatedOn,
+                                                                   ModifiedOn = new DateTime( 2011, 11, 4 ),
+                                                                   Note = "I changed the note.",
+                                                                   MasterPasswordId = _original.MasterPasswordId
+                                                               } );
+
+            // Exercise
+            var deleted = _model.Delete( );
+            // Verify
+            Assert.That( deleted, Is.True );
+            Assert.That( _passwordRepository.LoadPasswords( ), Is.Empty );
+            Assert.That( _passwordData.LoadPasswords( ), Has.Count.EqualTo( 1 ) );
+            Assert.That( _passwordData.LoadPasswords( )[ 0 ].IsDeleted, Is.True );
+        }
+
+        [ Test ]
+        public void DeletePasswordModifiedLaterLeavesIt( )
+        {
+            // Set up
+            _timeProvider.Now = new DateTime( 2011, 11, 5 );
+            PasswordDigestDocument updated = new PasswordDigestDocumentBuilder
+                                                 {
+                                                     Digest = _original.Digest,
+                                                     CreatedOn = _original.CreatedOn,
+                                                     ModifiedOn = new DateTime( 2011, 11, 6 ),
+                                                     Note = "I changed the note.",
+                                                     MasterPasswordId = _original.MasterPasswordId
+                                                 };
+            _passwordRepository.UpdatePassword( _original, updated );
+
+            // Exercise
+            var deleted = _model.Delete( );
+            // Verify
+            Assert.That( deleted, Is.False );
+            Assert.That( _passwordRepository.LoadPasswords( ), Is.EquivalentTo( new[ ] { updated } ) );
+            Assert.That( _passwordData.LoadPasswords( ), Has.Count.EqualTo( 1 ) );
+            Assert.That( _passwordData.LoadPasswords( )[ 0 ].IsDeleted, Is.False );
         }
 
         [ Test ]

@@ -10,7 +10,7 @@ namespace Chwthewke.PasswordManager.App.Modules
         {
             ContainerBuilder builder = new ContainerBuilder( );
 
-            foreach ( Module module in ApplicationModules )
+            foreach ( Module module in ApplicationModules2 )
                 builder.RegisterModule( module );
 
             return builder.Build( );

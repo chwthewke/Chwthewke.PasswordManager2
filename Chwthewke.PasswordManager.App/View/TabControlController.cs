@@ -15,7 +15,7 @@ namespace Chwthewke.PasswordManager.App.View
             _tabbed = tabbed;
         }
 
-        public ObservableCollection<PasswordEditorViewModel> Editors
+        public ObservableCollection<PasswordEditorViewModel2> Editors
         {
             get { return _editors; }
             set
@@ -35,11 +35,11 @@ namespace Chwthewke.PasswordManager.App.View
             {
                 case NotifyCollectionChangedAction.Add:
                     foreach ( object item in e.NewItems )
-                        AddEditor( (PasswordEditorViewModel) item );
+                        AddEditor( (PasswordEditorViewModel2) item );
                     break;
                 case NotifyCollectionChangedAction.Remove:
                     foreach ( object item in e.OldItems )
-                        RemoveEditor( (PasswordEditorViewModel) item );
+                        RemoveEditor( (PasswordEditorViewModel2) item );
                     break;
                 case NotifyCollectionChangedAction.Replace:
                 case NotifyCollectionChangedAction.Move:
@@ -54,13 +54,13 @@ namespace Chwthewke.PasswordManager.App.View
         private void ResetEditors( )
         {
             ClearEditors( );
-            foreach ( PasswordEditorViewModel editorViewModel in Editors )
+            foreach ( PasswordEditorViewModel2 editorViewModel in Editors )
             {
                 AddEditor( editorViewModel );
             }
         }
 
-        private void AddEditor( PasswordEditorViewModel editorViewModel )
+        private void AddEditor( PasswordEditorViewModel2 editorViewModel )
         {
             TabItem newItem = CreateTabItem( editorViewModel );
             _tabbed.AddItem( newItem );
@@ -68,7 +68,7 @@ namespace Chwthewke.PasswordManager.App.View
         }
 
 
-        private void RemoveEditor( PasswordEditorViewModel editorViewModel )
+        private void RemoveEditor( PasswordEditorViewModel2 editorViewModel )
         {
             TabItem tabItem = FindTabItem( editorViewModel );
 
@@ -86,7 +86,7 @@ namespace Chwthewke.PasswordManager.App.View
             _tabbed.Clear( );
         }
 
-        private static TabItem CreateTabItem( PasswordEditorViewModel editorViewModel )
+        private static TabItem CreateTabItem( PasswordEditorViewModel2 editorViewModel )
         {
             return new TabItem
                        {
@@ -95,7 +95,7 @@ namespace Chwthewke.PasswordManager.App.View
                        };
         }
 
-        private TabItem FindTabItem( PasswordEditorViewModel editorViewModel )
+        private TabItem FindTabItem( PasswordEditorViewModel2 editorViewModel )
         {
             Func<TabItem, bool> hasMatchingEditor =
                 item => item.Content is PasswordEditor
@@ -106,6 +106,6 @@ namespace Chwthewke.PasswordManager.App.View
 
 
         private readonly ITabbed _tabbed;
-        private ObservableCollection<PasswordEditorViewModel> _editors;
+        private ObservableCollection<PasswordEditorViewModel2> _editors;
     }
 }

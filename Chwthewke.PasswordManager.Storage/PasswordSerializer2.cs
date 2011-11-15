@@ -119,7 +119,8 @@ namespace Chwthewke.PasswordManager.Storage
 
         private int ExtractIteration( string s )
         {
-            return string.IsNullOrEmpty( s ) ? 0 : int.Parse( s );
+            // TODO unit test coercion
+            return string.IsNullOrEmpty( s ) ? 1 : Math.Max( 1, int.Parse( s ) );
         }
 
         private DateTime ExtractCreationDate( string s )

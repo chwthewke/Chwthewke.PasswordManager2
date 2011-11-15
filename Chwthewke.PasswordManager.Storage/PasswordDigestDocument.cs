@@ -110,6 +110,16 @@ namespace Chwthewke.PasswordManager.Storage
             }
         }
 
+        public static bool operator ==( PasswordDigestDocument left, PasswordDigestDocument right )
+        {
+            return Equals( left, right );
+        }
+
+        public static bool operator !=( PasswordDigestDocument left, PasswordDigestDocument right )
+        {
+            return !Equals( left, right );
+        }
+
         private readonly PasswordDigest2 _digest;
 
         private readonly Guid _masterPasswordId;

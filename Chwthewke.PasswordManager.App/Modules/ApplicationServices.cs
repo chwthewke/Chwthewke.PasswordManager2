@@ -25,7 +25,6 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<SingleInstanceManager>( );
             builder.RegisterType<PasswordManagerApp>( );
 
-            builder.Register( c => new PasswordManagerWindow( c.Resolve<PasswordManagerViewModel>( ) ) );
         }
 
         private static GuidToColorConverter GuidToColorConverter

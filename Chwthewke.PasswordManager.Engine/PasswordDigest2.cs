@@ -44,7 +44,6 @@ namespace Chwthewke.PasswordManager.Engine
             unchecked
             {
                 int result = Key.GetHashCode( );
-                result = ( result * 397 ) ^ Hash.GetHashCode( );
                 result = ( result * 397 ) ^ Iteration;
                 result = ( result * 397 ) ^ PasswordGenerator.GetHashCode( );
                 return result;

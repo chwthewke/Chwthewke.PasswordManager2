@@ -16,6 +16,7 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<PasswordEditorViewModelFactory>( );
             builder.RegisterType<StoredPasswordViewModel>( );
 
+
         }
     }
 }

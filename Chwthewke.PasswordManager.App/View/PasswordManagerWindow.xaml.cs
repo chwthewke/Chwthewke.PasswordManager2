@@ -11,16 +11,16 @@ namespace Chwthewke.PasswordManager.App.View
         {
         }
 
-        public PasswordManagerWindow( PasswordManagerViewModel viewModel )
+        public PasswordManagerWindow( PasswordManagerViewModel2 viewModel )
         {
             if ( viewModel != null )
                 ViewModel = viewModel;
             InitializeComponent( );
         }
 
-        public PasswordManagerViewModel ViewModel
+        public PasswordManagerViewModel2 ViewModel
         {
-            get { return DataContext as PasswordManagerViewModel; }
+            get { return DataContext as PasswordManagerViewModel2; }
             set { DataContext = value; }
         }
 

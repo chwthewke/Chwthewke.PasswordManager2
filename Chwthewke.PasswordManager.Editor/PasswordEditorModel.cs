@@ -61,7 +61,20 @@ namespace Chwthewke.PasswordManager.Editor
             }
         }
 
-        public SecureString MasterPassword { get; set; }
+        public SecureString MasterPassword
+        {
+            get { return _masterPassword; }
+            set
+            {
+                _masterPassword = value;
+                UpdateMasterPasswordId( );
+            }
+        }
+
+        private void UpdateMasterPasswordId( )
+        {
+            MasterPasswordId = _masterPasswordMatcher.IdentifyMasterPassword( _masterPassword );
+        }
 
         public int Iteration { get; set; }
 
@@ -74,10 +87,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         public IDerivedPasswordModel SelectedPassword { get; set; }
 
-        public Guid? MasterPasswordId
-        {
-            get { return _masterPasswordMatcher.IdentifyMasterPassword( MasterPassword ); }
-        }
+        public Guid? MasterPasswordId { get; set; }
 
         public Guid? ExpectedMasterPasswordId
         {
@@ -119,7 +129,10 @@ namespace Chwthewke.PasswordManager.Editor
         {
             bool saveOrUpdate = SaveOrUpdate( );
             if ( saveOrUpdate )
+            {
                 _original = new BaselinePasswordDocument( _passwordRepository.LoadPassword( Key ) );
+                UpdateMasterPasswordId( );
+            }
             return saveOrUpdate;
         }
 
@@ -131,17 +144,17 @@ namespace Chwthewke.PasswordManager.Editor
             if ( !deleted )
                 return false;
 
-            var key = Key;
-            var generator = SelectedGenerator;
-            var iteration = Iteration;
-            var note = Note;
+//            var key = Key;
+//            var generator = SelectedGenerator;
+//            var iteration = Iteration;
+//            var note = Note;
 
             _original = new NewPasswordDocument( );
-
-            Key = key;
-            SelectedPassword = DerivedPasswords.First( p => p.Generator == generator );
-            Iteration = iteration;
-            Note = note;
+            UpdateMasterPasswordId( );
+//            Key = key;
+//            SelectedPassword = DerivedPasswords.First( p => p.Generator == generator );
+//            Iteration = iteration;
+//            Note = note;
 
             return true;
         }
@@ -240,12 +253,15 @@ namespace Chwthewke.PasswordManager.Editor
                 if ( update )
                     UpdateFromOriginal( );
             }
+            //UpdateMasterPasswordId(  );
         }
 
         private DateTime Now
         {
             get { return _timeProvider.Now; }
         }
+
+        private SecureString _masterPassword;
 
         private IBaselinePasswordDocument _original;
 

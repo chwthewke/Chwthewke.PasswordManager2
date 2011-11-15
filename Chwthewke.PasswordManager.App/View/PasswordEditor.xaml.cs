@@ -13,13 +13,13 @@ namespace Chwthewke.PasswordManager.App.View
             InitializeComponent( );
         }
 
-        public PasswordEditorViewModel ViewModel
+        public PasswordEditorViewModel2 ViewModel
         {
-            get { return DataContext as PasswordEditorViewModel; }
+            get { return DataContext as PasswordEditorViewModel2; }
             set { DataContext = value; }
         }
 
-        private void PasswordBox_PasswordChanged( object sender, RoutedEventArgs e )
+        private void PasswordBoxPasswordChanged( object sender, RoutedEventArgs e )
         {
             ViewModel.UpdateMasterPassword( _masterPassword.SecurePassword );
         }

@@ -9,6 +9,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
     [ TestFixture ]
+    [ Ignore ]
     internal class PasswordManagerViewModelTest
     {
         private PasswordManagerViewModel _viewModel;
@@ -19,7 +20,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         public void SetUpViewModel( )
         {
             IContainer container = AppSetUp.TestContainer(
-                b => b.RegisterInstance( _fileSelectionServiceMock.Object ).As<IFileSelectionService>( ));
+                b => b.RegisterInstance( _fileSelectionServiceMock.Object ).As<IFileSelectionService>( ) );
             _viewModel = container.Resolve<PasswordManagerViewModel>( );
             _database = container.Resolve<IPasswordDatabase>( );
         }

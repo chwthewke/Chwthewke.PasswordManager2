@@ -9,6 +9,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
     [ TestFixture ]
+    [Ignore]
     public class PasswordManagerViewModel2Test
     {
 // ReSharper disable MemberCanBePrivate.Global

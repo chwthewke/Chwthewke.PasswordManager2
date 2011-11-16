@@ -2,13 +2,13 @@
 <SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="Chwthewke.PasswordManager.App.Properties" GeneratedClassName="Settings">
   <Profiles />
   <Settings>
-    <Setting Name="PasswordDatabase" Type="System.String" Scope="User">
+    <Setting Name="SavedPasswordData" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="PasswordsAreExternal" Type="System.Boolean" Scope="User">
       <Value Profile="(Default)">False</Value>
     </Setting>
-    <Setting Name="ExternalPasswordDatabase" Type="System.String" Scope="User">
+    <Setting Name="ExternalPasswordDatabaseFile" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
   </Settings>

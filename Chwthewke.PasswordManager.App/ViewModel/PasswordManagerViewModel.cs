@@ -96,7 +96,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void SetInternalStorage( )
         {
             _settings.PasswordsAreExternal = false;
-            _settings.ExternalPasswordDatabase = string.Empty;
+            _settings.ExternalPasswordDatabaseFile = string.Empty;
             _settings.Save( );
         }
 
@@ -116,8 +116,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void SetExternalStorage( FileInfo externalFile )
         {
             _settings.PasswordsAreExternal = true;
-            _settings.ExternalPasswordDatabase = externalFile.FullName;
-            _settings.PasswordDatabase = string.Empty;
+            _settings.ExternalPasswordDatabaseFile = externalFile.FullName;
+            _settings.SavedPasswordData = string.Empty;
             _settings.Save( );
         }
 
@@ -130,7 +130,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void ActivateStorageType( )
         {
             if ( _settings.PasswordsAreExternal )
-                _passwordDatabase.Source = new FileTextResource( new FileInfo( _settings.ExternalPasswordDatabase ) );
+                _passwordDatabase.Source = new FileTextResource( new FileInfo( _settings.ExternalPasswordDatabaseFile ) );
             else
                 _passwordDatabase.Source = new SettingsTextResource( _settings );
             _passwordList.UpdateList( );

@@ -14,7 +14,7 @@ namespace Chwthewke.PasswordManager.App.Services
 
         public TextReader OpenReader( )
         {
-            return new StringReader( _settings.PasswordDatabase );
+            return new StringReader( _settings.SavedPasswordData );
         }
 
         public TextWriter OpenWriter( )
@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.App.Services
 
         private void SaveDatabase( string s )
         {
-            _settings.PasswordDatabase = s;
+            _settings.SavedPasswordData = s;
             _settings.Save( );
         }
 

@@ -19,8 +19,8 @@ namespace Chwthewke.PasswordManager.App.Services
             ImportOldPasswords( s =>
                                     {
                                         s.PasswordsAreExternal = true;
-                                        s.ExternalPasswordDatabase = externalFile.FullName;
-                                        s.PasswordDatabase = string.Empty;
+                                        s.ExternalPasswordDatabaseFile = externalFile.FullName;
+                                        s.SavedPasswordData = string.Empty;
                                         s.Save( );
                                     } );
         }
@@ -30,7 +30,7 @@ namespace Chwthewke.PasswordManager.App.Services
             ImportOldPasswords( s =>
                                     {
                                         s.PasswordsAreExternal = false;
-                                        s.ExternalPasswordDatabase = string.Empty;
+                                        s.ExternalPasswordDatabaseFile = string.Empty;
                                     } );
         }
 
@@ -67,7 +67,7 @@ namespace Chwthewke.PasswordManager.App.Services
 
         private IPasswordData ExternalPasswordData( )
         {
-            return XmlPasswordData.From( new FileTextResource( new FileInfo( _settings.ExternalPasswordDatabase ) ) );
+            return XmlPasswordData.From( new FileTextResource( new FileInfo( _settings.ExternalPasswordDatabaseFile ) ) );
         }
 
 

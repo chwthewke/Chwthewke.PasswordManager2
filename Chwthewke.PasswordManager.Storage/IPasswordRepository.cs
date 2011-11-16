@@ -5,7 +5,7 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public interface IPasswordRepository
     {
-        IPasswordData PasswordData { set; }
+        void SetPasswordData( IPasswordData value );
 
         IList<PasswordDigestDocument> LoadPasswords( );
 

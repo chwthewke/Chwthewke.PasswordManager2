@@ -43,7 +43,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
                 .TestContainer( TestInjection.Mock<IClipboardService>( ) )
                 .InjectProperties( this );
 
-            PasswordRepository.PasswordData = new InMemoryPasswordData( );
+            PasswordRepository.SetPasswordData( new InMemoryPasswordData( ) );
 
             ViewModel = ViewModelFactory.NewPasswordEditor( );
         }

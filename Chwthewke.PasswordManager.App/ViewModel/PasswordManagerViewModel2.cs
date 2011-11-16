@@ -134,7 +134,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 passwordSource = new FileTextResource( new FileInfo( _settings.ExternalPasswordDatabase ) );
             else
                 passwordSource = new SettingsTextResource( _settings );
-            _storage.PasswordRepository.PasswordData = XmlPasswordData.From( passwordSource );
+            _storage.PasswordRepository.SetPasswordData( XmlPasswordData.From( passwordSource ) );
 
             _passwordList.UpdateList( );
         }

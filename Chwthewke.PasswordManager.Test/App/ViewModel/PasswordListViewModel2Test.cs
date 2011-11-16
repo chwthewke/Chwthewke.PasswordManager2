@@ -27,7 +27,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         {
             TestInjection.TestContainer( ).InjectProperties( this );
 
-            PasswordRepository.PasswordData = new InMemoryPasswordData( );
+            PasswordRepository.SetPasswordData( new InMemoryPasswordData( ) );
         }
 
         [ Test ]

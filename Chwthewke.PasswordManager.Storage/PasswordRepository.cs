@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -14,34 +13,49 @@ namespace Chwthewke.PasswordManager.Storage
             _passwordData = passwordData;
         }
 
-        public IPasswordData PasswordData
+        public void SetPasswordData( IPasswordData value )
         {
-            get { return _passwordData; }
-            set
-            {
-                if ( value == null )
-                    throw new ArgumentNullException( "value" );
+            if ( value == null )
+                throw new ArgumentNullException( "value" );
 
-                var oldPasswordData = _passwordData;
-                _passwordData = value;
-                Merge( new PasswordRepository( oldPasswordData ) );
-            }
+            var oldPasswordData = _passwordData;
+            _passwordData = value;
+            Merge( new PasswordRepository( oldPasswordData ) );
+        }
+
+
+        public IList<PasswordDigestDocument> LoadPasswords( )
+        {
+            Load( );
+            return new List<PasswordDigestDocument>( _passwordsCache.Values.Where( p => !p.IsDeleted ) );
         }
 
         public PasswordDigestDocument LoadPassword( string key )
         {
-            if ( key == null )
-                throw new ArgumentNullException( "key" );
+            Load( );
 
-            PasswordDigestDocument password = LoadPasswordInternal( key );
-            if ( password == null || password.IsDeleted )
+            if ( !_passwordsCache.ContainsKey( key ) )
                 return null;
-            return password;
+
+            PasswordDigestDocument password = _passwordsCache[ key ];
+            return password.IsDeleted ? null : password;
         }
 
-        public IList<PasswordDigestDocument> LoadPasswords( )
+        public bool SavePassword( PasswordDigestDocument password )
         {
-            return LoadPasswordsInternal( ).Where( p => !p.IsDeleted ).ToList( );
+            if ( password == null )
+                throw new ArgumentNullException( "password" );
+
+            if ( password.IsDeleted )
+                throw new ArgumentException( "A new password must have non-empty hash.", "password" );
+
+            // TODO internal IDisposable ?
+            Load( );
+
+            var mergedPasswords = Merge( new[ ] { password }, false );
+
+            Save( );
+            return mergedPasswords.Count( ) > 0;
         }
 
         public bool UpdatePassword( PasswordDigestDocument original, PasswordDigestDocument password )
@@ -54,28 +68,15 @@ namespace Chwthewke.PasswordManager.Storage
             if ( original.Key != password.Key )
                 throw new ArgumentException( "Replacement must have same key as original.", "password" );
 
-            var replacedPassword = LoadPasswordInternal( original.Key );
-            if ( replacedPassword == null )
+            Load( );
+
+            if ( !_passwordsCache.ContainsKey( original.Key ) )
                 return false;
+            var mergedPasswords = Merge( new[ ] { password }, false );
 
-            if ( !replacedPassword.Equals( original ) &&
-                 replacedPassword.ModifiedOn.CompareTo( password.ModifiedOn ) > 0 )
-                return false;
-
-            ReplacePassword( password, replacedPassword );
-            return true;
+            Save( );
+            return mergedPasswords.Count( ) > 0;
         }
-
-        public bool SavePassword( PasswordDigestDocument password )
-        {
-            if ( password == null )
-                throw new ArgumentNullException( "password" );
-            if ( password.IsDeleted )
-                throw new ArgumentException( "A new password must have non-empty hash.", "password" );
-
-            return SaveInternal( password );
-        }
-
 
         public bool DeletePassword( PasswordDigestDocument password, DateTime deletedOn )
         {
@@ -85,16 +86,6 @@ namespace Chwthewke.PasswordManager.Storage
             return UpdatePassword( password, password.Delete( deletedOn ) );
         }
 
-        public void Merge( PasswordRepository passwordRepository )
-        {
-            IList<PasswordDigestDocument> passwords = passwordRepository.LoadPasswordsInternal( );
-
-            var updateMasterPasswordId = MasterPasswordIdMergeFunction( passwords );
-
-            SaveInternal( passwords.Select( p => new PasswordDigestDocument( p.Digest, updateMasterPasswordId( p.MasterPasswordId ),
-                                                                             p.CreatedOn, p.ModifiedOn, p.Note ) ) );
-        }
-
         public void Merge( IPasswordRepository passwordRepository )
         {
             if ( !( passwordRepository is PasswordRepository ) )
@@ -102,94 +93,116 @@ namespace Chwthewke.PasswordManager.Storage
             Merge( passwordRepository as PasswordRepository );
         }
 
-        private Func<Guid, Guid> MasterPasswordIdMergeFunction( IList<PasswordDigestDocument> sourcePasswords )
+        private void Merge( PasswordRepository passwordRepository )
         {
-            var masterPasswordIdMerges = sourcePasswords
-                .SelectMany( s => _passwordData.LoadPasswords( )
-                                      .Where( ShouldMergeWith( s ) )
-                                      .Select( t => new { Source = s.MasterPasswordId, Target = t.MasterPasswordId } ) )
-                .Distinct( );
-
-            return g => masterPasswordIdMerges
-                            .Where( m => m.Source == g )
-                            .Select( m => m.Target )
-                            .DefaultIfEmpty( g )
-                            .First( );
+            Load( );
+            Merge( passwordRepository._passwordData.LoadPasswords( ), true );
+            Save( );
         }
 
-        private Func<PasswordDigestDocument, bool> ShouldMergeWith( PasswordDigestDocument document )
+        private IEnumerable<PasswordDigestDocument> Merge( IEnumerable<PasswordDigestDocument> newPasswords, bool mergeMasterPasswordIds )
         {
-            return d => d.Key == document.Key &&
-                        d.Hash.SequenceEqual( document.Hash ) &&
-                        d.MasterPasswordId != document.MasterPasswordId;
+            var newPasswordsList = new List<PasswordDigestDocument>( newPasswords );
+            IMasterPasswordIdMapper mapper;
+            if ( mergeMasterPasswordIds )
+                mapper = new MergeMasterPasswordMapper( newPasswordsList, _passwordsCache.Values );
+            else
+                mapper = new IdentityMasterPasswordMapper( );
+
+            return Merge( newPasswordsList, mapper );
         }
 
-        private IList<PasswordDigestDocument> LoadPasswordsInternal( )
+        private IEnumerable<PasswordDigestDocument> Merge( IEnumerable<PasswordDigestDocument> newPasswords, IMasterPasswordIdMapper mapper )
         {
-            return _passwordData.LoadPasswords( );
+            IList<PasswordDigestDocument> result = new List<PasswordDigestDocument>( );
+            foreach ( var newPassword in newPasswords )
+            {
+                DateTime creation;
+                if ( _passwordsCache.ContainsKey( newPassword.Key ) )
+                {
+                    var oldPassword = _passwordsCache[ newPassword.Key ];
+                    if ( oldPassword.ModifiedOn.CompareTo( newPassword.ModifiedOn ) > 0 )
+                        continue;
+                    if ( oldPassword.IsDeleted )
+                        creation = newPassword.CreatedOn;
+                    else
+                        creation = new[ ] { oldPassword.CreatedOn, newPassword.CreatedOn }.Min( );
+                }
+                else
+                {
+                    creation = newPassword.CreatedOn;
+                }
+
+                var mergedPassword = new PasswordDigestDocument( newPassword.Digest,
+                                                                 mapper.MapMasterPassword( newPassword.MasterPasswordId ),
+                                                                 creation,
+                                                                 newPassword.ModifiedOn,
+                                                                 newPassword.Note );
+                _passwordsCache[ mergedPassword.Key ] = mergedPassword;
+                result.Add( mergedPassword );
+            }
+            return result;
         }
 
-        private PasswordDigestDocument LoadPasswordInternal( string key )
+
+        private void Load( )
         {
-            return FindPassword( key, LoadPasswordsInternal( ) );
+            _passwordsCache = _passwordData.LoadPasswords( ).ToDictionary( p => p.Key );
         }
 
-        private PasswordDigestDocument FindPassword( string key, IEnumerable<PasswordDigestDocument> passwords )
+        private void Save( )
         {
-            return passwords.FirstOrDefault( d => d.Digest.Key == key );
+            _passwordData.SavePasswords( _passwordsCache.Values.ToList( ) );
         }
 
-        private bool SaveInternal( IEnumerable<PasswordDigestDocument> passwords )
+        private IDictionary<String, PasswordDigestDocument> _passwordsCache = new Dictionary<string, PasswordDigestDocument>( );
+
+        private interface IMasterPasswordIdMapper
         {
-            IList<PasswordDigestDocument[ ]> replacements = passwords
-                .SelectMany( PasswordReplacement )
-                .ToList( );
-            var replacedPasswords = replacements
-                .Select( r => r[ 0 ] )
-                .Where( p => p != null );
-            var replacementPasswords = replacements
-                .Select( r => r[ 1 ] )
-                .ToList( );
-
-            if ( replacementPasswords.Count( ) == 0 )
-                return false;
-
-            ReplacePasswords( replacementPasswords, replacedPasswords );
-            return true;
+            Guid MapMasterPassword( Guid id );
         }
 
-        private bool SaveInternal( PasswordDigestDocument password )
+        private class MergeMasterPasswordMapper : IMasterPasswordIdMapper
         {
-            return SaveInternal( new List<PasswordDigestDocument> { password } );
+            public MergeMasterPasswordMapper( IEnumerable<PasswordDigestDocument> sourcePasswords,
+                                              IEnumerable<PasswordDigestDocument> targetPasswords )
+            {
+                var masterPasswordIdMerges = sourcePasswords
+                    .SelectMany( s => targetPasswords
+                                          .Where( ShouldMergeWith( s ) )
+                                          .Select( t => new { Source = s.MasterPasswordId, Target = t.MasterPasswordId } ) )
+                    .Distinct( );
+
+                foreach ( var merge in masterPasswordIdMerges )
+                {
+                    if ( !_mapping.ContainsKey( merge.Source ) )
+                        _mapping[ merge.Source ] = merge.Target;
+                }
+            }
+
+            public Guid MapMasterPassword( Guid id )
+            {
+                return _mapping.ContainsKey( id ) ? _mapping[ id ] : id;
+            }
+
+            private Func<PasswordDigestDocument, bool> ShouldMergeWith( PasswordDigestDocument document )
+            {
+                return d => d.Key == document.Key &&
+                            d.Hash.SequenceEqual( document.Hash ) &&
+                            d.MasterPasswordId != document.MasterPasswordId;
+            }
+
+            private readonly IDictionary<Guid, Guid> _mapping = new Dictionary<Guid, Guid>( );
         }
 
-        private IEnumerable<PasswordDigestDocument[ ]> PasswordReplacement( PasswordDigestDocument password )
+        private class IdentityMasterPasswordMapper : IMasterPasswordIdMapper
         {
-            var replacedPassword = LoadPasswordInternal( password.Key );
-            if ( replacedPassword == null )
-                yield return new[ ] { null, password };
-            else if ( replacedPassword.ModifiedOn.CompareTo( password.ModifiedOn ) <= 0 )
-                yield return new[ ] { replacedPassword, password };
-            yield break;
+            public Guid MapMasterPassword( Guid id )
+            {
+                return id;
+            }
         }
 
-        private void ReplacePasswords( IEnumerable<PasswordDigestDocument> replacementPasswords,
-                                       IEnumerable<PasswordDigestDocument> replacedPasswords )
-        {
-            IList<PasswordDigestDocument> passwords =
-                LoadPasswordsInternal( )
-                    .Except( replacedPasswords )
-                    .Concat( replacementPasswords )
-                    .OrderBy( p => p.Key )
-                    .ToList( );
-            _passwordData.SavePasswords( passwords );
-        }
-
-        private void ReplacePassword( PasswordDigestDocument replacementPassword, PasswordDigestDocument replacedPassword )
-        {
-            ReplacePasswords( new List<PasswordDigestDocument> { replacementPassword },
-                              new List<PasswordDigestDocument> { replacedPassword } );
-        }
 
         private IPasswordData _passwordData;
     }

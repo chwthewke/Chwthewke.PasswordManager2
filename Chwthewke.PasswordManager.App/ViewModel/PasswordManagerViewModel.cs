@@ -88,9 +88,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void ExecuteSelectInternalStorage( )
         {
-            SetInternalStorage( );
-
             UpdateStorageType( );
+
+            SetInternalStorage( );
         }
 
         private void SetInternalStorage( )

@@ -494,7 +494,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Mnop } );
 
             // Exercise
-            repository.PasswordData = targetData;
+            repository.SetPasswordData( targetData );
             // Verify
             Assert.That( repository.LoadPasswords( ),
                          Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Mnop } ) );
@@ -512,7 +512,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Mnop } );
 
             // Exercise
-            repository.PasswordData = targetData;
+            repository.SetPasswordData( targetData );
             // Verify
             Assert.That( targetData.LoadPasswords( ),
                          Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Mnop } ) );
@@ -528,7 +528,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
             var targetData = new InMemoryPasswordData( );
             targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Mnop } );
-            repository.PasswordData = targetData;
+            repository.SetPasswordData( targetData );
 
             PasswordDigestDocument newPassword = new PasswordDigestDocumentBuilder
                                                      {

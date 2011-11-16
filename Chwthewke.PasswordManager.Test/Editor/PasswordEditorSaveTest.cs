@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
 
-            _timeProvider = new StubTimeProvider( );
+            _timeProvider = new StubTimeProvider { Now = new DateTime( 2011, 11, 16 ) };
 
             IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, _passwordRepository );
             _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider );
@@ -155,7 +155,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Key = "abcd";
             _model.MasterPassword = "1234".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
-            
+
             // Exercise
             _model.Save( );
             // Verify
@@ -163,6 +163,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.CanSave, Is.False );
             Assert.That( _model.CanDelete, Is.True );
             Assert.That( _model.IsKeyReadonly, Is.True );
-        } 
+        }
     }
 }

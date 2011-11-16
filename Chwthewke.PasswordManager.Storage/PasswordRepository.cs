@@ -13,15 +13,12 @@ namespace Chwthewke.PasswordManager.Storage
             _passwordData = passwordData;
         }
 
-        public void SetPasswordData( IPasswordData value )
+        public IPasswordData PasswordData
         {
-            if ( value == null )
-                throw new ArgumentNullException( "value" );
-
-            var oldPasswordData = _passwordData;
-            _passwordData = value;
-            Merge( new PasswordRepository( oldPasswordData ) );
+            get { return _passwordData; }
+            set { SetPasswordData( value ); }
         }
+
 
 
         public IList<PasswordDigestDocument> LoadPasswords( )
@@ -86,17 +83,10 @@ namespace Chwthewke.PasswordManager.Storage
             return UpdatePassword( password, password.Delete( deletedOn ) );
         }
 
-        public void Merge( IPasswordRepository passwordRepository )
-        {
-            if ( !( passwordRepository is PasswordRepository ) )
-                return;
-            Merge( passwordRepository as PasswordRepository );
-        }
-
-        private void Merge( PasswordRepository passwordRepository )
+        public void Merge( IEnumerable<PasswordDigestDocument> passwordData )
         {
             Load( );
-            Merge( passwordRepository._passwordData.LoadPasswords( ), true );
+            Merge( passwordData, true );
             Save( );
         }
 
@@ -153,6 +143,16 @@ namespace Chwthewke.PasswordManager.Storage
         private void Save( )
         {
             _passwordData.SavePasswords( _passwordsCache.Values.ToList( ) );
+        }
+
+        private void SetPasswordData( IPasswordData value )
+        {
+            if ( value == null )
+                throw new ArgumentNullException( "value" );
+
+            var oldPasswordData = _passwordData;
+            _passwordData = value;
+            Merge( oldPasswordData.LoadPasswords( ) );
         }
 
         private IDictionary<String, PasswordDigestDocument> _passwordsCache = new Dictionary<string, PasswordDigestDocument>( );

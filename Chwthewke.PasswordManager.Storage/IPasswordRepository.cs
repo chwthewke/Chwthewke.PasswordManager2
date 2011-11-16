@@ -5,7 +5,7 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public interface IPasswordRepository
     {
-        void SetPasswordData( IPasswordData value );
+        IPasswordData PasswordData { get; set; }
 
         IList<PasswordDigestDocument> LoadPasswords( );
 
@@ -23,7 +23,6 @@ namespace Chwthewke.PasswordManager.Storage
         /// <returns></returns>
         bool DeletePassword( PasswordDigestDocument password, DateTime deletedOn );
 
-        void Merge( IPasswordRepository passwordRepository );
-
+        void Merge( IEnumerable<PasswordDigestDocument> passwordData );
     }
 }

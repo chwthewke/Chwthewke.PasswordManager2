@@ -14,12 +14,14 @@ namespace Chwthewke.PasswordManager.App.Services
         // TODO possibly return a "report" to be presented to the user
         public void ImportPasswords( FileInfo externalPasswordFile )
         {
-            _storage.PasswordRepository.Merge( ExternalPasswordRepository( externalPasswordFile ) );
+            var importedPasswords =
+                XmlPasswordData.From( new FileTextResource( externalPasswordFile ) ).LoadPasswords( );
+            _storage.PasswordRepository.Merge( importedPasswords );
         }
 
         public void ExportPasswords( FileInfo targetFile )
         {
-            ExternalPasswordRepository( targetFile ).Merge( _storage.PasswordRepository );
+            ExternalPasswordRepository( targetFile ).Merge( _storage.PasswordRepository.PasswordData.LoadPasswords( ) );
         }
 
         private static IPasswordRepository ExternalPasswordRepository( FileInfo targetFile )

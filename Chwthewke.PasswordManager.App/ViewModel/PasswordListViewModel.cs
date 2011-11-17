@@ -62,8 +62,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void UpdateList( )
         {
-//            _passwordRepository.Reload( );
-
             _items = new ObservableCollection<PasswordListEntryViewModel>(
                 from password in _storage.PasswordRepository.LoadPasswords( )
                 orderby password.Key

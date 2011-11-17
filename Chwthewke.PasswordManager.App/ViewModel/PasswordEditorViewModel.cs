@@ -202,6 +202,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public void UpdateFromDatabase( )
         {
             _model.Reload( );
+            // TODO Hackish, think about it - maybe extract OnUpdateFooBar methods
+            Iteration = _model.Iteration;
+            Note = _model.Note;
             Update( );
         }
 

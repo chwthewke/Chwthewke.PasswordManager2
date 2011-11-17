@@ -253,7 +253,7 @@ namespace Chwthewke.PasswordManager.Editor
                 if ( update )
                     UpdateFromOriginal( );
             }
-            //UpdateMasterPasswordId(  );
+            UpdateMasterPasswordId( );
         }
 
         private DateTime Now

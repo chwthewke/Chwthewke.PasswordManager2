@@ -21,6 +21,7 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<TimeProvider>( ).As<ITimeProvider>( );
 
             builder.RegisterInstance( Settings.Default ).As<Settings>( );
+            builder.RegisterType<StorageConfiguration>( ).As<IStorageConfiguration>( ).SingleInstance( );
 
             builder.RegisterType<SingleInstanceManager>( );
             builder.RegisterType<PasswordManagerApp>( );

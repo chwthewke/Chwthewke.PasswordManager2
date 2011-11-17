@@ -8,14 +8,14 @@ namespace Chwthewke.PasswordManager.App.Modules
     {
         protected override void Load( ContainerBuilder builder )
         {
-            builder.RegisterType<PasswordManagerViewModel2>( );
+            builder.RegisterType<PasswordManagerViewModel>( );
 
-            builder.RegisterType<PasswordListViewModel2>( );
-            builder.RegisterType<StoredPasswordViewModel2>( );
+            builder.RegisterType<PasswordListViewModel>( );
+            builder.RegisterType<PasswordListEntryViewModel>( );
 
-            builder.RegisterType<PasswordEditorViewModelFactory2>( );
+            builder.RegisterType<PasswordEditorViewModelFactory>( );
 
-            builder.Register( c => new PasswordManagerWindow( c.Resolve<PasswordManagerViewModel2>( ) ) )
+            builder.Register( c => new PasswordManagerWindow( c.Resolve<PasswordManagerViewModel>( ) ) )
                 .As<PasswordManagerWindow>( )
                 .SingleInstance( );
         }

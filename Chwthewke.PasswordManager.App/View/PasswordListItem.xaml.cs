@@ -12,9 +12,9 @@ namespace Chwthewke.PasswordManager.App.View
             InitializeComponent( );
         }
 
-        public StoredPasswordViewModel2 ViewModel
+        public PasswordListEntryViewModel ViewModel
         {
-            get { return DataContext as StoredPasswordViewModel2; }
+            get { return DataContext as PasswordListEntryViewModel; }
             set { DataContext = value; }
         }
     }

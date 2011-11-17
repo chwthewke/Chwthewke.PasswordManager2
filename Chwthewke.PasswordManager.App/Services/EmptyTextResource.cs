@@ -3,6 +3,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
+    // TODO this is still in use, but is this still useful ?
     public class EmptyTextResource : ITextResource
     {
         public TextReader OpenReader( )

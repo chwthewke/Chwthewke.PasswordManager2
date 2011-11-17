@@ -16,17 +16,17 @@ namespace Chwthewke.PasswordManager.App.View
             _tabsController = new TabControlController( new TabControlWrapper( _editorTabs ) );
         }
 
-        public PasswordListViewModel2 ViewModel
+        public PasswordListViewModel ViewModel
         {
-            get { return DataContext as PasswordListViewModel2; }
+            get { return DataContext as PasswordListViewModel; }
             set { DataContext = value; }
         }
 
         protected override void OnPropertyChanged( DependencyPropertyChangedEventArgs e )
         {
             base.OnPropertyChanged( e );
-            if ( e.Property == DataContextProperty && e.NewValue is PasswordListViewModel2 )
-                _tabsController.Editors = ( (PasswordListViewModel2) e.NewValue ).Editors;
+            if ( e.Property == DataContextProperty && e.NewValue is PasswordListViewModel )
+                _tabsController.Editors = ( (PasswordListViewModel) e.NewValue ).Editors;
         }
 
         private void PasswordItemDoubleClicked( object sender, MouseButtonEventArgs e )
@@ -35,10 +35,10 @@ namespace Chwthewke.PasswordManager.App.View
             if ( item == null )
                 return;
 
-            StoredPasswordViewModel2 storedPassword = item.DataContext as StoredPasswordViewModel2;
+            PasswordListEntryViewModel passwordListEntry = item.DataContext as PasswordListEntryViewModel;
 
-            if ( storedPassword != null )
-                ViewModel.OpenNewEditor( storedPassword );
+            if ( passwordListEntry != null )
+                ViewModel.OpenNewEditor( passwordListEntry );
         }
 
         private readonly TabControlController _tabsController;

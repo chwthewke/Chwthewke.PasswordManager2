@@ -9,27 +9,23 @@ using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
-using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
-    [Obsolete]
     public class PasswordEditorViewModel : ObservableObject
     {
-        public PasswordEditorViewModel( IPasswordEditorController controller,
-                                        IClipboardService clipboardService,
-                                        IGuidToColorConverter guidToColor )
+        public PasswordEditorViewModel( IPasswordEditorModel model,
+                                         IClipboardService clipboardService,
+                                         IGuidToColorConverter guidToColor )
         {
-            _controller = controller;
-
+            _model = model;
             _clipboardService = clipboardService;
             _guidToColor = guidToColor;
-            _slots =
-                new ObservableCollection<PasswordSlotViewModel>(
-                    _controller.Generators.Select( g => new PasswordSlotViewModel( _controller, g ) ) );
+            _derivedPasswords = new ObservableCollection<DerivedPasswordViewModel>(
+                _model.DerivedPasswords.Select( dp => new DerivedPasswordViewModel( dp, _model ) ) );
 
-            foreach ( PasswordSlotViewModel passwordSlotViewModel in Slots )
-                passwordSlotViewModel.PropertyChanged += OnSlotPropertyChanged;
+            foreach ( DerivedPasswordViewModel passwordSlotViewModel in DerivedPasswords )
+                passwordSlotViewModel.PropertyChanged += OnDerivedPasswordPropertyChanged;
 
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
@@ -45,17 +41,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public bool IsPristine
         {
-            get { return Key == string.Empty && Note == string.Empty && _controller.MasterPassword.Length == 0 ; }
+            get { return Key == string.Empty && Note == string.Empty && _model.MasterPassword.Length == 0; }
         }
 
         public string Key
         {
-            get { return _controller.Key; }
+            get { return _model.Key; }
             set
             {
-                if ( IsKeyReadonly )
-                    return;
-                _controller.Key = value;
+                _model.Key = string.IsNullOrWhiteSpace( value ) ? string.Empty : value;
                 RaisePropertyChanged( ( ) => Key );
                 Update( );
             }
@@ -73,12 +67,23 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
-        public string Note
+        public int Iteration
         {
-            get { return _controller.Note; }
+            get { return _model.Iteration; }
             set
             {
-                _controller.Note = value;
+                _model.Iteration = value;
+                RaisePropertyChanged( ( ) => Iteration );
+                Update( );
+            }
+        }
+
+        public string Note
+        {
+            get { return _model.Note; }
+            set
+            {
+                _model.Note = value;
                 RaisePropertyChanged( ( ) => Note );
                 Update( );
             }
@@ -147,9 +152,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             }
         }
 
-        public ObservableCollection<PasswordSlotViewModel> Slots
+        public ObservableCollection<DerivedPasswordViewModel> DerivedPasswords
         {
-            get { return _slots; }
+            get { return _derivedPasswords; }
         }
 
         public ICommand SaveCommand
@@ -174,14 +179,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void UpdateMasterPassword( SecureString masterPassword )
         {
-            _controller.MasterPassword = masterPassword;
-            ActualGuidColor = ConvertGuid( _controller.MasterPasswordId );
+            _model.MasterPassword = masterPassword;
+            ActualGuidColor = ConvertGuid( _model.MasterPasswordId );
             Update( );
         }
 
         public void UpdateFromDatabase( )
         {
-            _controller.ReloadBaseline( );
+            _model.Reload( );
             Update( );
         }
 
@@ -205,13 +210,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 closeRequested( this, EventArgs.Empty );
         }
 
-        private void OnSlotPropertyChanged( object sender, PropertyChangedEventArgs e )
+        private void OnDerivedPasswordPropertyChanged( object sender, PropertyChangedEventArgs e )
         {
             if ( e.PropertyName != "IsSelected" )
                 return;
 
-            PasswordSlotViewModel selectedSlot = Slots.FirstOrDefault( s => s.IsSelected );
-            _controller.SelectedGenerator = selectedSlot == null ? null : selectedSlot.Generator;
+            DerivedPasswordViewModel selected = DerivedPasswords.FirstOrDefault( s => s.IsSelected );
+            _model.SelectedPassword = selected == null ? null : selected.Model;
+
+            Update( );
 
             _saveCommand.RaiseCanExecuteChanged( );
             _copyCommand.RaiseCanExecuteChanged( );
@@ -221,14 +228,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private bool CanExecuteSave( )
         {
-            return _controller.IsSaveable;
+            return _model.CanSave;
         }
 
         private void ExecuteSave( )
         {
             if ( !CanExecuteSave( ) )
                 return;
-            _controller.SavePassword( );
+            _model.Save( );
 
             UpdateSaved( );
             RaiseStoreModified( );
@@ -236,7 +243,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private bool CanExecuteDelete( )
         {
-            return _controller.IsPasswordLoaded;
+            return _model.CanDelete;
         }
 
         private void ExecuteDelete( )
@@ -244,36 +251,44 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( !CanExecuteDelete( ) )
                 return;
 
-            _controller.DeletePassword( );
+            _model.Delete( );
 
             UpdateSaved( );
             RaiseStoreModified( );
         }
 
+        private string DeriveDerivedPassword( )
+        {
+            IDerivedPasswordModel derivedPasswordModel = _model.SelectedPassword;
+            if ( derivedPasswordModel == null )
+                return string.Empty;
+            return derivedPasswordModel.DerivedPassword.Password;
+        }
+
         private bool CanExecuteCopy( )
         {
-            return !String.IsNullOrEmpty( _controller.SelectedPassword );
+            return !String.IsNullOrEmpty( _derivedPassword );
         }
 
         private void ExecuteCopy( )
         {
             if ( !CanExecuteCopy( ) )
                 return;
-            _clipboardService.CopyToClipboard( _controller.SelectedPassword );
+            _clipboardService.CopyToClipboard( _derivedPassword );
         }
 
         private void UpdateSaved( )
         {
             Update( );
 
-            ActualGuidColor = ConvertGuid( _controller.MasterPasswordId );
+            ActualGuidColor = ConvertGuid( _model.MasterPasswordId );
         }
 
         private string DerivePasswordHint( )
         {
-            if ( _controller.ExpectedMasterPasswordId == null ) return string.Empty;
+            if ( _model.ExpectedMasterPasswordId == null ) return string.Empty;
 
-            if ( _controller.MasterPasswordId == _controller.ExpectedMasterPasswordId )
+            if ( _model.MasterPasswordId == _model.ExpectedMasterPasswordId )
                 return Resources.PasswordHintFulfilled;
 
             return Resources.PasswordHint;
@@ -282,25 +297,23 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void Update( )
         {
             Title = DeriveTitle( );
-            IsKeyReadonly = DeriveKeyReadonly( );
 
-            foreach ( var slot in Slots )
+            IsKeyReadonly = _model.IsKeyReadonly;
+
+            foreach ( var slot in DerivedPasswords )
             {
-                slot.Update(  );
+                slot.Update( );
             }
 
-            RequiredGuidColor = ConvertGuid( _controller.ExpectedMasterPasswordId );
+            RequiredGuidColor = ConvertGuid( _model.ExpectedMasterPasswordId );
 
             CopyText = DeriveCopyText( );
+
+            _derivedPassword = DeriveDerivedPassword( );
 
             _saveCommand.RaiseCanExecuteChanged( );
             _copyCommand.RaiseCanExecuteChanged( );
             _deleteCommand.RaiseCanExecuteChanged( );
-        }
-
-        private bool DeriveKeyReadonly( )
-        {
-            return _controller.IsPasswordLoaded;
         }
 
         private string DeriveTitle( )
@@ -313,22 +326,22 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             else
                 title = Key;
 
-            return _controller.IsSaveable ? title + "*" : title;
+            return _model.IsDirty ? title + "*" : title;
         }
 
         private string DeriveCopyText( )
         {
-            IPasswordGenerator selectedGenerator = _controller.SelectedGenerator;
-            string qualifier = selectedGenerator == null
-                                   ? Resources.CopyPasswordDefaultQualifier
-                                   : Resources.ResourceManager.GetString( PasswordGeneratorTranslator.NameKey( selectedGenerator ) );
-            return string.Format(
-                Resources.CopyPasswordTemplate,
-                qualifier );
+            IDerivedPasswordModel derivedPasswordModel = _model.SelectedPassword;
+            string qualifier;
+            if ( derivedPasswordModel == null )
+                qualifier = Resources.CopyPasswordDefaultQualifier;
+            else
+                qualifier = Resources.ResourceManager.GetString( PasswordGeneratorTranslator.NameKey( derivedPasswordModel.Generator ) );
+            return string.Format( Resources.CopyPasswordTemplate, qualifier );
         }
 
 
-        private readonly IPasswordEditorController _controller;
+        private readonly IPasswordEditorModel _model;
         private readonly IClipboardService _clipboardService;
         private readonly IGuidToColorConverter _guidToColor;
 
@@ -339,9 +352,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private Color _actualGuidColor = Colors.Transparent;
         private string _masterPasswordHint = string.Empty;
 
-        private readonly ObservableCollection<PasswordSlotViewModel> _slots;
+        private readonly ObservableCollection<DerivedPasswordViewModel> _derivedPasswords;
 
         private string _copyText;
+
+        private string _derivedPassword;
 
         private readonly IUpdatableCommand _saveCommand;
         private readonly IUpdatableCommand _deleteCommand;

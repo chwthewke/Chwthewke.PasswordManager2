@@ -53,7 +53,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 
 
             // Exercise
-            var viewModel = new StoredPasswordViewModel2( password, GuidToColor, FuzzyDateFormatter );
+            var viewModel = new PasswordListEntryViewModel( password, GuidToColor, FuzzyDateFormatter );
 
             // Verify
 
@@ -79,7 +79,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 
 
             // Exercise
-            var viewModel = new StoredPasswordViewModel2( password, GuidToColor, FuzzyDateFormatter );
+            var viewModel = new PasswordListEntryViewModel( password, GuidToColor, FuzzyDateFormatter );
 
             // Verify
             Assert.That( viewModel.CreationDate, Is.EqualTo( FuzzyDateFormatter.Format( new DateTime( 2011, 11, 11 ) ) ) );
@@ -102,7 +102,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 
 
             // Exercise
-            var viewModel = new StoredPasswordViewModel2( password, GuidToColor, FuzzyDateFormatter );
+            var viewModel = new PasswordListEntryViewModel( password, GuidToColor, FuzzyDateFormatter );
 
             // Verify
             Assert.That( viewModel.GeneratorName, Is.EqualTo( Resources.PasswordGeneratorccf1451c4b3045a499b0d54ec3c3a7ee ) );
@@ -127,7 +127,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 
 
             // Exercise
-            var viewModel = new StoredPasswordViewModel2( password, GuidToColor, FuzzyDateFormatter );
+            var viewModel = new PasswordListEntryViewModel( password, GuidToColor, FuzzyDateFormatter );
 
             // Verify
             Assert.That( viewModel.MasterPasswordGuid, Is.EqualTo( guid ) );
@@ -150,7 +150,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 
 
             // Exercise
-            var viewModel = new StoredPasswordViewModel2( password, GuidToColor, FuzzyDateFormatter );
+            var viewModel = new PasswordListEntryViewModel( password, GuidToColor, FuzzyDateFormatter );
 
             // Verify
             Assert.That( viewModel.NoteVisible, Is.True );
@@ -172,7 +172,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 
 
             // Exercise
-            var viewModel = new StoredPasswordViewModel2( password, GuidToColor, FuzzyDateFormatter );
+            var viewModel = new PasswordListEntryViewModel( password, GuidToColor, FuzzyDateFormatter );
 
             // Verify
             Assert.That( viewModel.NoteVisible, Is.False );

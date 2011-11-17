@@ -10,7 +10,7 @@ using Chwthewke.PasswordManager.Test.Engine;
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
     [ TestFixture ]
-    public class PasswordSlotViewModel2Test
+    public class DerivedPasswordViewModelTest
     {
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global

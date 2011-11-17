@@ -10,13 +10,12 @@ namespace Chwthewke.PasswordManager.App.Modules
         {
             ContainerBuilder builder = new ContainerBuilder( );
 
-            foreach ( Module module in ApplicationModules2 )
+            foreach ( Module module in ApplicationModules )
                 builder.RegisterModule( module );
 
             return builder.Build( );
         }
 
-        [Obsolete]
         public static IEnumerable<Module> ApplicationModules
         {
             get
@@ -24,20 +23,6 @@ namespace Chwthewke.PasswordManager.App.Modules
                 return new List<Module>
                            {
                                new PasswordManagerModule( ),
-                               new PasswordStorageModule( ),
-                               new ApplicationServices( ),
-                               new ApplicationModule( ),
-                           };
-            }
-        }
-
-        public static IEnumerable<Module> ApplicationModules2
-        {
-            get
-            {
-                return new List<Module>
-                           {
-                               new PasswordManagerModule2( ),
                                new ApplicationServices( ),
                                new ViewModelsModule( ),
                            };

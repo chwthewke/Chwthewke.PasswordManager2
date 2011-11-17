@@ -1,7 +1,7 @@
 using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
 
-namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
+namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
     public class DerivedPasswordSelectionTest : PasswordEditorTestBase

@@ -1,8 +1,9 @@
 using System.Linq;
 using Chwthewke.PasswordManager.App.ViewModel;
+using Chwthewke.PasswordManager.Engine;
 using NUnit.Framework;
 
-namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
+namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
 {
     [ TestFixture ]
     public class BasicTest : PasswordEditorTestBase
@@ -29,9 +30,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 
             // Exercise
             // Verify
-            Assert.That( ViewModel.Slots, Is.Not.Empty );
-            Assert.That( ViewModel.Slots.Select( s => s.Generator ), Is.EquivalentTo( Generators ) );
-            Assert.That( ViewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.DerivedPasswords, Is.Not.Empty );
+            Assert.That( ViewModel.DerivedPasswords.Select( s => s.Model.Generator ), Is.EquivalentTo( PasswordGenerators2.Generators.Keys ) );
+            Assert.That( ViewModel.DerivedPasswords.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 
         [ Test ]

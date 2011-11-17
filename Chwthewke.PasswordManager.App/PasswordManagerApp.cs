@@ -49,6 +49,6 @@ namespace Chwthewke.PasswordManager.App
             _passwordList.UpdateList( );
         }
 
-        private readonly PasswordListViewModel2 _passwordList;
+        private readonly PasswordListViewModel _passwordList;
     }
 }

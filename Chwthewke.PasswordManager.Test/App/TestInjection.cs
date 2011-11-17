@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.Test.App
         {
             ContainerBuilder containerBuilder = new ContainerBuilder( );
             
-            foreach ( IModule module in AppConfiguration.ApplicationModules2.Concat( modules ) )
+            foreach ( IModule module in AppConfiguration.ApplicationModules.Concat( modules ) )
                 containerBuilder.RegisterModule( module );
             
             return containerBuilder.Build( );

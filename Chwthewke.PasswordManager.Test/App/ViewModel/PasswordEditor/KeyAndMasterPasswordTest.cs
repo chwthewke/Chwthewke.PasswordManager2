@@ -26,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Note = "yiddi yoddo";
             // Verify
-            Assert.That( ViewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( PasswordEditorViewModel.NewTitle + "*" ) );
         }
 
         [ Test ]
@@ -36,7 +36,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Key = "abc";
             // Verify
-            Assert.That( ViewModel.Title, Is.EqualTo( "abc" ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( "abc*" ) );
         }
 
         [ Test ]
@@ -47,7 +47,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Key = "abcdefghij0123456789abcdefghij";
             // Verify
-            Assert.That( ViewModel.Title, Is.EqualTo( "abcdefghij0123456789abcd..." ) );
+            Assert.That( ViewModel.Title, Is.EqualTo( "abcdefghij0123456789abcd...*" ) );
         }
 
         [ Test ]
@@ -58,7 +58,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
-            Assert.That( ViewModel.Slots.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.DerivedPasswords.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 
         [ Test ]
@@ -69,7 +69,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
-            Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.DerivedPasswords.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
         }
 
         [ Test ]
@@ -77,12 +77,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             ViewModel.Key = "abc";
+            ViewModel.Iteration = 3;
             SecureString masterPassword = "12345".ToSecureString( );
             // Exercise
             ViewModel.UpdateMasterPassword( masterPassword );
             // Verify
             Assert.That(
-                ViewModel.Slots.Select( s => s.Content == s.Generator.MakePassword( "abc", masterPassword ) ).ToList( ),
+                ViewModel.DerivedPasswords.Select( s => s.Content == DerivedPassword( s.Model.Generator, "abc", masterPassword, 3 ) ).ToList( ),
                 Has.All.True );
         }
 
@@ -96,8 +97,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.Key = "abcd";
             // Verify
             Assert.That(
-                ViewModel.Slots
-                    .Select( s => s.Content == s.Generator.MakePassword( "abcd", "12345".ToSecureString( ) ) )
+                ViewModel.DerivedPasswords
+                    .Select( s => s.Content == DerivedPassword( s.Model.Generator, "abcd", "12345".ToSecureString( ), 1 ) )
                     .ToList( ),
                 Has.All.True );
         }
@@ -111,7 +112,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.Key = string.Empty;
             // Verify
-            Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.DerivedPasswords.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
         }
 
         [ Test ]
@@ -123,7 +124,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             ViewModel.UpdateMasterPassword( string.Empty.ToSecureString( ) );
             // Verify
-            Assert.That( ViewModel.Slots.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
+            Assert.That( ViewModel.DerivedPasswords.Select( s => s.Content ).ToList( ), Has.All.EqualTo( string.Empty ) );
         }
     }
 }

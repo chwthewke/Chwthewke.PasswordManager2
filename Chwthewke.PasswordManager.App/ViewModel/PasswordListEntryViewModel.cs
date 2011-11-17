@@ -6,7 +6,7 @@ using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
-    public class StoredPasswordViewModel2 : ObservableObject
+    public class PasswordListEntryViewModel : ObservableObject
     {
         public string Name
         {
@@ -57,14 +57,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _password; }
         }
 
-        public StoredPasswordViewModel2( PasswordDigestDocument password, IGuidToColorConverter guidColorConverter, IFuzzyDateFormatter fuzzyDateFormatter )
+        public PasswordListEntryViewModel( PasswordDigestDocument password, IGuidToColorConverter guidColorConverter, IFuzzyDateFormatter fuzzyDateFormatter )
         {
             _password = password;
             _guidColorConverter = guidColorConverter;
             _fuzzyDateFormatter = fuzzyDateFormatter;
         }
 
-        public delegate StoredPasswordViewModel2 Factory( PasswordDigestDocument password );
+        public delegate PasswordListEntryViewModel Factory( PasswordDigestDocument password );
 
         private readonly PasswordDigestDocument _password;
         private readonly IGuidToColorConverter _guidColorConverter;

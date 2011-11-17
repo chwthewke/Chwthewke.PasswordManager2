@@ -1,29 +1,35 @@
-using System;
-using Autofac;
+﻿using Autofac;
+using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
+using ITimeProvider = Chwthewke.PasswordManager.Editor.ITimeProvider;
 
 namespace Chwthewke.PasswordManager.App.Modules
 {
-    [Obsolete]
     public class PasswordManagerModule : Module
     {
         protected override void Load( ContainerBuilder builder )
         {
-            // Controller
-            builder.RegisterType<PasswordEditorControllerFactory>( );
+            builder.Register( CreateEditor ).As<IPasswordManagerEditor>( ).SingleInstance( );
 
-            // Engine
-            builder.RegisterType<PasswordDigester>( ).As<IPasswordDigester>( ).SingleInstance( );
+            builder.RegisterInstance( PasswordManagerEngine.DerivationEngine ).As<IPasswordDerivationEngine>( );
 
-            builder.RegisterType<Sha512Factory>( ).As<IHashFactory>( ).SingleInstance( );
-            builder.RegisterType<Storage.TimeProvider>( ).As<Storage.ITimeProvider>( ).SingleInstance( );
+            builder.Register( CreateStorage ).As<IPasswordManagerStorage>( ).SingleInstance( );
 
-            builder.RegisterInstance( PasswordGenerators.AlphaNumeric ).As<IPasswordGenerator>( );
-            builder.RegisterInstance( PasswordGenerators.Full ).As<IPasswordGenerator>( );
+            builder.RegisterType<EmptyTextResource>( ).As<ITextResource>( ).SingleInstance( );
+        }
 
-            builder.RegisterInstance<Func<Guid>>( Guid.NewGuid ).As<Func<Guid>>( );
+        private IPasswordManagerStorage CreateStorage( IComponentContext c )
+        {
+            return PasswordManagerStorage.CreateService( c.Resolve<ITextResource>( ) );
+        }
+
+        private IPasswordManagerEditor CreateEditor( IComponentContext c )
+        {
+            return PasswordManagerEditor.CreateService( c.Resolve<IPasswordDerivationEngine>( ),
+                                                        c.Resolve<IPasswordManagerStorage>( ),
+                                                        c.Resolve<ITimeProvider>( ) );
         }
     }
 }

@@ -1,6 +1,7 @@
 using System;
 using System.Windows.Media;
 using Chwthewke.PasswordManager.Engine;
+using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using NUnit.Framework;
 
@@ -43,7 +44,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void NoActualGuidColorWithUnknownMasterPasswordAfter( )
         {
             // Setup
-            AddPassword( "abc", string.Empty, PasswordGenerators.AlphaNumeric, "12345".ToSecureString( ) );
+            AddPassword( "abc", PasswordGenerators2.AlphaNumeric, 1, "12345".ToSecureString( ), string.Empty );
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Exercise
             ViewModel.UpdateMasterPassword( "123456".ToSecureString( ) );
@@ -55,8 +56,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ActualGuidColorIsSetWithKnownMasterPassword( )
         {
             // Setup
-            AddPassword( "abc", string.Empty, PasswordGenerators.AlphaNumeric, "12345".ToSecureString( ) );
-            Guid masterPasswordGuid = PasswordDatabase.FindByKey( "abc" ).MasterPasswordId;
+            AddPassword( "abc", PasswordGenerators2.AlphaNumeric, 1, "12345".ToSecureString( ), string.Empty );
+            Guid masterPasswordGuid = PasswordRepository.LoadPassword( "abc" ).MasterPasswordId;
             // Exercise
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Verify
@@ -68,11 +69,12 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
 
-            AddPassword( "abde", "yadda yadda", PasswordGenerators.AlphaNumeric, "123".ToSecureString( ) );
-            Guid expectedMasterPasswordId = PasswordDatabase.FindByKey( "abde" ).MasterPasswordId;
+            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            PasswordDigestDocument password = PasswordRepository.LoadPassword( "abde" );
+            Guid expectedMasterPasswordId = password.MasterPasswordId;
 
             // Exercise
-            ViewModel = ViewModelFactory.PasswordEditorFor( "abde" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( password );
 
             // Verify
             Assert.That( ViewModel.RequiredGuidColor,
@@ -85,7 +87,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
             ViewModel.Key = "abde";
             ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
-            ViewModel.Slots[ 0 ].IsSelected = true;
+            ViewModel.DerivedPasswords[ 0 ].IsSelected = true;
 
             Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.True );
             // Exercise
@@ -99,9 +101,9 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void GuidColorsAreUnsetAfterDeletingPassword( )
         {
             // Setup
-            AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abc", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
 
-            ViewModel = ViewModelFactory.PasswordEditorFor( "abc" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abc" ) );
 
             ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
             // Exercise
@@ -115,10 +117,10 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ActualGuidColorIsKeptAfterDeletingPasswordIfStillPresent( )
         {
             // Setup
-            AddPassword( "abd", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
-            AddPassword( "abc", string.Empty, PasswordGenerators.Full, "123".ToSecureString( ) );
+            AddPassword( "abd", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
+            AddPassword( "abc", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
 
-            ViewModel = ViewModelFactory.PasswordEditorFor( "abc" );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abc" ) );
 
             ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
             // Exercise

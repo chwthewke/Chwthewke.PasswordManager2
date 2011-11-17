@@ -14,13 +14,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
             ViewModel.Key = "abc";
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
-            PasswordSlotViewModel slot = ViewModel.Slots[ 0 ];
-            slot.IsSelected = true;
+            DerivedPasswordViewModel derivedPassword = ViewModel.DerivedPasswords[ 0 ];
+            derivedPassword.IsSelected = true;
             Assert.That( ViewModel.CopyCommand.CanExecute( null ), Is.True );
             // Exercise
             ViewModel.CopyCommand.Execute( null );
             // Verify
-            ClipboardServiceMock.Verify( cs => cs.CopyToClipboard( It.Is<string>( s => s == slot.Content ) ) );
+            ClipboardServiceMock.Verify( cs => cs.CopyToClipboard( It.Is<string>( s => s == derivedPassword.Content ) ) );
         }
 
         [ Test ]
@@ -29,13 +29,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
             ViewModel.Key = "abc";
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
-            PasswordSlotViewModel slot = ViewModel.Slots[ 0 ];
-            slot.IsSelected = true;
+            DerivedPasswordViewModel derivedPassword = ViewModel.DerivedPasswords[ 0 ];
+            derivedPassword.IsSelected = true;
             Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.True );
             // Exercise
             ViewModel.SaveCommand.Execute( null );
             // Verify
-            Assert.That( PasswordDatabase.FindByKey( "abc" ), Is.Not.Null );
+            Assert.That( PasswordRepository.LoadPassword( "abc" ), Is.Not.Null );
         }
 
         [ Test ]
@@ -44,8 +44,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Setup
             ViewModel.Key = "abc";
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
-            PasswordSlotViewModel slot = ViewModel.Slots[ 0 ];
-            slot.IsSelected = true;
+            DerivedPasswordViewModel derivedPassword = ViewModel.DerivedPasswords[ 0 ];
+            derivedPassword.IsSelected = true;
             Assert.That( ViewModel.SaveCommand.CanExecute( null ), Is.True );
             bool storeModifiedRaised = false;
             ViewModel.StoreModified += ( s, e ) => { storeModifiedRaised = true; };

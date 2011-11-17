@@ -13,7 +13,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
     {
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
-        public PasswordManagerViewModel2 ViewModel { get; set; }
+        public PasswordManagerViewModel ViewModel { get; set; }
 
         public Mock<IFileSelectionService> FileSelectionServiceMock { get; set; }
 

@@ -3,25 +3,21 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
-using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
-using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordManagerViewModel : ObservableObject
     {
-        public PasswordManagerViewModel( PasswordListViewModel passwordList,
-                                         IFileSelectionService fileSelectionService,
-                                         IPasswordDatabase passwordDatabase,
-                                         Settings settings,
-                                         IPasswordExchange passwordExchange )
+        public PasswordManagerViewModel( IFileSelectionService fileSelectionService,
+                                          IPasswordExchange passwordExchange,
+                                          IStorageConfiguration storageConfiguration,
+                                          PasswordListViewModel passwordList )
         {
             _passwordList = passwordList;
             _passwordExchange = passwordExchange;
+            _storageConfiguration = storageConfiguration;
             _fileSelectionService = fileSelectionService;
-            _passwordDatabase = passwordDatabase;
-            _settings = settings;
 
             _selectInternalStorageCommand = new RelayCommand( ExecuteSelectInternalStorage );
             _selectExternalStorageCommand = new RelayCommand( ExecuteSelectExternalStorage );
@@ -29,7 +25,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _importPasswordsCommand = new RelayCommand( ExecuteImportPasswords );
             _exportPasswordsCommand = new RelayCommand( ExecuteExportPasswords );
 
-            UpdateStorageType( );
+            Update( );
         }
 
         public PasswordListViewModel PasswordList
@@ -88,17 +84,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void ExecuteSelectInternalStorage( )
         {
-            UpdateStorageType( );
+            _storageConfiguration.SelectInternalStorage( );
 
-            SetInternalStorage( );
+            Update( );
         }
 
-        private void SetInternalStorage( )
-        {
-            _settings.PasswordsAreExternal = false;
-            _settings.ExternalPasswordDatabaseFile = string.Empty;
-            _settings.Save( );
-        }
 
         private void ExecuteSelectExternalStorage( )
         {
@@ -108,38 +98,18 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( externalFile == null )
                 return;
 
-            SetExternalStorage( externalFile );
+            _storageConfiguration.SelectExternalStorage( externalFile );
 
-            UpdateStorageType( );
+            Update( );
         }
 
-        private void SetExternalStorage( FileInfo externalFile )
-        {
-            _settings.PasswordsAreExternal = true;
-            _settings.ExternalPasswordDatabaseFile = externalFile.FullName;
-            _settings.SavedPasswordData = string.Empty;
-            _settings.Save( );
-        }
 
-        private void UpdateStorageType( )
+        private void Update( )
         {
-            UpdateStorageTypeUi( );
-            ActivateStorageType( );
-        }
+            ExternalStorageSelected = _storageConfiguration.StorageType == StorageType.External;
+            InternalStorageSelected = _storageConfiguration.StorageType == StorageType.Internal;
 
-        private void ActivateStorageType( )
-        {
-            if ( _settings.PasswordsAreExternal )
-                _passwordDatabase.Source = new FileTextResource( new FileInfo( _settings.ExternalPasswordDatabaseFile ) );
-            else
-                _passwordDatabase.Source = new SettingsTextResource( _settings );
             _passwordList.UpdateList( );
-        }
-
-        private void UpdateStorageTypeUi( )
-        {
-            ExternalStorageSelected = _settings.PasswordsAreExternal;
-            InternalStorageSelected = !_settings.PasswordsAreExternal;
         }
 
         private void ExecuteImportPasswords( )
@@ -176,10 +146,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly PasswordListViewModel _passwordList;
         private readonly IFileSelectionService _fileSelectionService;
 
-        private readonly IPasswordDatabase _passwordDatabase;
-
         private readonly IPasswordExchange _passwordExchange;
-        private readonly Settings _settings;
+        private readonly IStorageConfiguration _storageConfiguration;
 
         private bool _externalStorageSelected;
         private bool _internalStorageSelected;

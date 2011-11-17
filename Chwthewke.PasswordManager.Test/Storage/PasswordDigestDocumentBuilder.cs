@@ -23,9 +23,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         public string Note { get; set; }
 
-        public PasswordDigest2 Digest
+        public PasswordDigest Digest
         {
-            get { return new PasswordDigest2( Key, Hash, Iteration, PasswordGenerator ); }
+            get { return new PasswordDigest( Key, Hash, Iteration, PasswordGenerator ); }
             set
             {
                 Key = value.Key;
@@ -41,7 +41,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Hash = new byte[ ] { 0x00 };
             Note = string.Empty;
             Iteration = 1;
-            PasswordGenerator = PasswordGenerators2.AlphaNumeric;
+            PasswordGenerator = PasswordGenerators.AlphaNumeric;
         }
 
         public static implicit operator PasswordDigestDocument( PasswordDigestDocumentBuilder builder )

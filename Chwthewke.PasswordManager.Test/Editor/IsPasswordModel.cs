@@ -8,7 +8,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 {
     public class IsPasswordModel : IDerivedPasswordModel
     {
-        private static readonly IPasswordDerivationEngine Engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
+        private static readonly IPasswordDerivationEngine Engine = new PasswordDerivationEngine( PasswordGenerators.Generators );
 
         public static IDerivedPasswordModel For( Guid generator, string key, SecureString masterPassword, int iteration )
         {

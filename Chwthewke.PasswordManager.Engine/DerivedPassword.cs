@@ -4,7 +4,7 @@ namespace Chwthewke.PasswordManager.Engine
 {
     internal class DerivedPassword : IEquatable<DerivedPassword>, IDerivedPassword
     {
-        public DerivedPassword( string password, PasswordDigest2 digest )
+        public DerivedPassword( string password, PasswordDigest digest )
         {
             if ( password == null )
                 throw new ArgumentNullException( "password" );
@@ -16,7 +16,7 @@ namespace Chwthewke.PasswordManager.Engine
         }
 
         public string Password { get; private set; }
-        public PasswordDigest2 Digest { get; private set; }
+        public PasswordDigest Digest { get; private set; }
 
         public bool Equals( DerivedPassword other )
         {

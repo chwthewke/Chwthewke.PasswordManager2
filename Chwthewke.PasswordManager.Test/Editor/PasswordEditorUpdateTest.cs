@@ -21,10 +21,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
         [ SetUp ]
         public void SetUpModel( )
         {
-            _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
+            _engine = new PasswordDerivationEngine( PasswordGenerators.Generators );
             _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
 
-            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators2.Full ) );
+            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators.Full ) );
 
             _original = new PasswordDigestDocumentBuilder
                             {
@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             _timeProvider = new StubTimeProvider { Now = new DateTime( 2011, 11, 16 ) };
 
-            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, _passwordRepository );
+            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
 
             _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider, _original );
         }

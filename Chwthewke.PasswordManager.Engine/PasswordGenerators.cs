@@ -1,43 +1,30 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Collections.ObjectModel;
+using System.Linq;
+using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    [Obsolete]
     internal static class PasswordGenerators
     {
-        public static IPasswordGenerator AlphaNumeric
+        internal static readonly Guid AlphaNumeric = Guid.Parse( "{74728a10-33d4-4245-b7c9-5d72fc424c41}" );
+        internal static readonly Guid Full = Guid.Parse( "{ccf1451c-4b30-45a4-99b0-d54ec3c3a7ee}" );
+
+        internal static readonly IDictionary<Guid, PasswordGenerator> Generators =
+            new[ ]
+                {
+                    new { Id = AlphaNumeric, Generator = Sha512Generator( PasswordMaterializers.AlphaNumeric ) },
+                    new { Id = Full, Generator = Sha512Generator( PasswordMaterializers.Full ) },
+                }
+                .ToDictionary( z => z.Id, z => z.Generator );
+
+        private static PasswordGenerator Sha512Generator( PasswordMaterializer materializer )
         {
-            get { return _alphaNumeric; }
+            return new PasswordGenerator( new Sha512DerivedKeyFactory( ( s, p ) => InternalSalt.Concat( p ).Concat( s ).ToArray( ) ),
+                                           new Sha512DerivedKeyFactory( ( s, p ) => s.Concat( p ).ToArray( ) ),
+                                           materializer, 64 );
         }
 
-        public static IPasswordGenerator Full
-        {
-            get { return _full; }
-        }
-
-        public static IEnumerable<IPasswordGenerator> All
-        {
-            get { return new ReadOnlyCollection<IPasswordGenerator>( new List<IPasswordGenerator> { _alphaNumeric, _full } ); }
-        }
-
-
-        private static PasswordGenerator Sha512Generator( Guid id, Alphabet alphabet, int passwordLength )
-        {
-            return new PasswordGenerator( id,
-                                          _sha512Factory,
-                                          new BaseConverter( alphabet.Length ),
-                                          alphabet,
-                                          passwordLength );
-        }
-
-        private static readonly IHashFactory _sha512Factory = new Sha512Factory( );
-
-        private static readonly PasswordGenerator _alphaNumeric =
-            Sha512Generator( Guid.Parse( "{74728a10-33d4-4245-b7c9-5d72fc424c41}" ), Alphabets.Symbols62, 12 );
-
-        private static readonly PasswordGenerator _full =
-            Sha512Generator( Guid.Parse( "{ccf1451c-4b30-45a4-99b0-d54ec3c3a7ee}" ), Alphabets.Symbols92, 10 );
+        internal static readonly byte[ ] InternalSalt = Encoding.UTF8.GetBytes( "tsU&yUaZulAs4eOV" );
     }
 }

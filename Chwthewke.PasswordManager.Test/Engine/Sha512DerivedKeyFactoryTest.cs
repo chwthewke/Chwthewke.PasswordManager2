@@ -13,7 +13,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
         [ SetUp ]
         public void SetupDerivedKeyFactory( )
         {
-            _derivedKeyFactory = new Sha512DerivedKeyFactory( ( s, p ) => PasswordGenerators2.InternalSalt.Concat( p ).Concat( s ).ToArray( ) );
+            _derivedKeyFactory = new Sha512DerivedKeyFactory( ( s, p ) => PasswordGenerators.InternalSalt.Concat( p ).Concat( s ).ToArray( ) );
         }
 
         /*

@@ -5,9 +5,9 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    internal class MasterPasswordMatcher2 : IMasterPasswordMatcher
+    internal class MasterPasswordMatcher : IMasterPasswordMatcher
     {
-        public MasterPasswordMatcher2( IPasswordDerivationEngine passwordDerivationEngine, IPasswordRepository passwordRepository )
+        public MasterPasswordMatcher( IPasswordDerivationEngine passwordDerivationEngine, IPasswordRepository passwordRepository )
         {
             _passwordDerivationEngine = passwordDerivationEngine;
             _passwordRepository = passwordRepository;

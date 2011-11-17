@@ -22,7 +22,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             return new PasswordDigestDocumentBuilder
                        {
-                           Digest = new PasswordDigest2( source.Digest.Key,
+                           Digest = new PasswordDigest( source.Digest.Key,
                                                          source.Digest.Hash.Clone( ) as byte[ ],
                                                          source.Digest.Iteration,
                                                          source.Digest.PasswordGenerator ),

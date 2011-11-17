@@ -21,11 +21,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
         [ SetUp ]
         public void SetUpModel( )
         {
-            _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
+            _engine = new PasswordDerivationEngine( PasswordGenerators.Generators );
 
             _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
 
-            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, _passwordRepository );
+            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
 
             _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ) );
         }
@@ -247,7 +247,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                                       Key = "Toto",
                                                       Hash = new byte[ ] { 0x11, 0x22 },
                                                       Iteration = 1,
-                                                      PasswordGenerator = PasswordGenerators2.AlphaNumeric,
+                                                      PasswordGenerator = PasswordGenerators.AlphaNumeric,
                                                       CreatedOn = new DateTime( 2011, 11, 3 ),
                                                       ModifiedOn = new DateTime( 2011, 11, 5 ),
                                                       MasterPasswordId = Guid.NewGuid( ),
@@ -272,7 +272,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
         private static IEnumerable<Guid> GeneratorGuids
         {
-            get { return PasswordGenerators2.Generators.Keys; }
+            get { return PasswordGenerators.Generators.Keys; }
         }
 
         private static DerivedPasswordEqualityComparer DerivedPasswordEquality

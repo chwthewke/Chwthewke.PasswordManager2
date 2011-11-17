@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             TestInjection.TestContainer( ).InjectProperties( this );
 
             _editorModel = Editor.EmptyModel( );
-            _derivedPasswordModel = _editorModel.DerivedPasswords.First( dp => dp.Generator == PasswordGenerators2.Full );
+            _derivedPasswordModel = _editorModel.DerivedPasswords.First( dp => dp.Generator == PasswordGenerators.Full );
 
             _viewModel = new DerivedPasswordViewModel( _derivedPasswordModel, _editorModel );
         }

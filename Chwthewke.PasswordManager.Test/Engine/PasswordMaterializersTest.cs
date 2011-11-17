@@ -5,7 +5,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Engine
 {
     [ TestFixture ]
-    public class AlphabetsTest
+    public class PasswordMaterializersTest
     {
         private Encoding _ascii;
 

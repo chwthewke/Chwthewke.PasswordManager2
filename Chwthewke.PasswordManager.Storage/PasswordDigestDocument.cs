@@ -5,7 +5,7 @@ namespace Chwthewke.PasswordManager.Storage
 {
     public class PasswordDigestDocument : IEquatable<PasswordDigestDocument>
     {
-        public PasswordDigestDocument( PasswordDigest2 digest, Guid masterPasswordId, DateTime createdOn, DateTime modifiedOn, string note )
+        public PasswordDigestDocument( PasswordDigest digest, Guid masterPasswordId, DateTime createdOn, DateTime modifiedOn, string note )
         {
             if ( digest == null )
                 throw new ArgumentNullException( "digest" );
@@ -19,7 +19,7 @@ namespace Chwthewke.PasswordManager.Storage
             _note = note;
         }
 
-        public PasswordDigest2 Digest
+        public PasswordDigest Digest
         {
             get { return _digest; }
         }
@@ -71,7 +71,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         public PasswordDigestDocument Delete( DateTime deletedOn )
         {
-            return new PasswordDigestDocument( new PasswordDigest2( _digest.Key, new byte[ 0 ], 0, default( Guid ) ),
+            return new PasswordDigestDocument( new PasswordDigest( _digest.Key, new byte[ 0 ], 0, default( Guid ) ),
                                                default( Guid ), _createdOn, deletedOn, string.Empty );
         }
 
@@ -120,7 +120,7 @@ namespace Chwthewke.PasswordManager.Storage
             return !Equals( left, right );
         }
 
-        private readonly PasswordDigest2 _digest;
+        private readonly PasswordDigest _digest;
 
         private readonly Guid _masterPasswordId;
 

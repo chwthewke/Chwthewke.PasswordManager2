@@ -20,13 +20,13 @@ namespace Chwthewke.PasswordManager.Test.Editor
         [ SetUp ]
         public void SetUpModel( )
         {
-            _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
+            _engine = new PasswordDerivationEngine( PasswordGenerators.Generators );
 
             _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
 
             _timeProvider = new StubTimeProvider { Now = new DateTime( 2011, 11, 16 ) };
 
-            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, _passwordRepository );
+            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
             _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider );
         }
 

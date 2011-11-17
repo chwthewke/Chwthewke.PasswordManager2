@@ -48,7 +48,7 @@ namespace Chwthewke.PasswordManager.Editor
             get { return string.Empty; }
         }
 
-        public PasswordDigest2 Digest
+        public PasswordDigest Digest
         {
             get { return null; }
         }

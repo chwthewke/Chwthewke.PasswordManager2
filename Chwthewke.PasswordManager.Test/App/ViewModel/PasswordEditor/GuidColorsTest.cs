@@ -44,7 +44,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void NoActualGuidColorWithUnknownMasterPasswordAfter( )
         {
             // Setup
-            AddPassword( "abc", PasswordGenerators2.AlphaNumeric, 1, "12345".ToSecureString( ), string.Empty );
+            AddPassword( "abc", PasswordGenerators.AlphaNumeric, 1, "12345".ToSecureString( ), string.Empty );
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
             // Exercise
             ViewModel.UpdateMasterPassword( "123456".ToSecureString( ) );
@@ -56,7 +56,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ActualGuidColorIsSetWithKnownMasterPassword( )
         {
             // Setup
-            AddPassword( "abc", PasswordGenerators2.AlphaNumeric, 1, "12345".ToSecureString( ), string.Empty );
+            AddPassword( "abc", PasswordGenerators.AlphaNumeric, 1, "12345".ToSecureString( ), string.Empty );
             Guid masterPasswordGuid = PasswordRepository.LoadPassword( "abc" ).MasterPasswordId;
             // Exercise
             ViewModel.UpdateMasterPassword( "12345".ToSecureString( ) );
@@ -69,7 +69,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
 
-            AddPassword( "abde", PasswordGenerators2.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            AddPassword( "abde", PasswordGenerators.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
             PasswordDigestDocument password = PasswordRepository.LoadPassword( "abde" );
             Guid expectedMasterPasswordId = password.MasterPasswordId;
 
@@ -101,7 +101,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void GuidColorsAreUnsetAfterDeletingPassword( )
         {
             // Setup
-            AddPassword( "abc", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
+            AddPassword( "abc", PasswordGenerators.Full, 1, "123".ToSecureString( ), string.Empty );
 
             ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abc" ) );
 
@@ -117,8 +117,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ActualGuidColorIsKeptAfterDeletingPasswordIfStillPresent( )
         {
             // Setup
-            AddPassword( "abd", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
-            AddPassword( "abc", PasswordGenerators2.Full, 1, "123".ToSecureString( ), string.Empty );
+            AddPassword( "abd", PasswordGenerators.Full, 1, "123".ToSecureString( ), string.Empty );
+            AddPassword( "abc", PasswordGenerators.Full, 1, "123".ToSecureString( ), string.Empty );
 
             ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abc" ) );
 

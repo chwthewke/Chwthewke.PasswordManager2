@@ -5,7 +5,7 @@ namespace Chwthewke.PasswordManager.Engine
 {
     internal class PasswordDerivationEngine : IPasswordDerivationEngine
     {
-        public PasswordDerivationEngine( IDictionary<Guid, PasswordGenerator2> generators )
+        public PasswordDerivationEngine( IDictionary<Guid, PasswordGenerator> generators )
         {
             _generators = generators;
         }
@@ -20,6 +20,6 @@ namespace Chwthewke.PasswordManager.Engine
             get { return _generators.Keys; }
         }
 
-        private readonly IDictionary<Guid, PasswordGenerator2> _generators;
+        private readonly IDictionary<Guid, PasswordGenerator> _generators;
     }
 }

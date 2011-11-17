@@ -11,7 +11,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Storage
 {
     [ TestFixture ]
-    public class PasswordSerializer2LoadTest
+    public class PasswordSerializerLoadTest
     {
         [ SetUp ]
         public void SetUpSerializer( )

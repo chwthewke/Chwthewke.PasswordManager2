@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    public class PasswordDigest2 : IEquatable<PasswordDigest2>
+    public class PasswordDigest : IEquatable<PasswordDigest>
     {
-        public PasswordDigest2( string key, byte[ ] hash, int iteration, Guid passwordGenerator )
+        public PasswordDigest( string key, byte[ ] hash, int iteration, Guid passwordGenerator )
         {
             if ( key == null )
                 throw new ArgumentNullException( "key" );
@@ -23,7 +23,7 @@ namespace Chwthewke.PasswordManager.Engine
         public int Iteration { get; private set; }
         public Guid PasswordGenerator { get; private set; }
 
-        public bool Equals( PasswordDigest2 other )
+        public bool Equals( PasswordDigest other )
         {
             if ( ReferenceEquals( null, other ) ) return false;
             if ( ReferenceEquals( this, other ) ) return true;
@@ -35,8 +35,8 @@ namespace Chwthewke.PasswordManager.Engine
         {
             if ( ReferenceEquals( null, obj ) ) return false;
             if ( ReferenceEquals( this, obj ) ) return true;
-            if ( obj.GetType( ) != typeof ( PasswordDigest2 ) ) return false;
-            return Equals( (PasswordDigest2) obj );
+            if ( obj.GetType( ) != typeof ( PasswordDigest ) ) return false;
+            return Equals( (PasswordDigest) obj );
         }
 
         public override int GetHashCode( )

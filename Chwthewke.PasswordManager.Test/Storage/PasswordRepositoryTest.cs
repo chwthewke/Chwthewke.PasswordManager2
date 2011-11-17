@@ -330,7 +330,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                     {
                                                         Key = "abcd",
                                                         Hash = new byte[ ] { 0x65 },
-                                                        PasswordGenerator = PasswordGenerators2.AlphaNumeric,
+                                                        PasswordGenerator = PasswordGenerators.AlphaNumeric,
                                                         Iteration = 2,
                                                         MasterPasswordId = Guid.NewGuid( ),
                                                         CreatedOn = new DateTime( 2011, 11, 12 ),
@@ -357,7 +357,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                     {
                                                         Key = "abcd",
                                                         Hash = new byte[ ] { 0x65 },
-                                                        PasswordGenerator = PasswordGenerators2.AlphaNumeric,
+                                                        PasswordGenerator = PasswordGenerators.AlphaNumeric,
                                                         Iteration = 2,
                                                         MasterPasswordId = Guid.NewGuid( ),
                                                         CreatedOn = new DateTime( 2011, 11, 12 ),
@@ -524,7 +524,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                      {
                                                          Key = "qrst",
                                                          Hash = new byte[ ] { 0xAB, 0xEF },
-                                                         PasswordGenerator = PasswordGenerators2.AlphaNumeric
+                                                         PasswordGenerator = PasswordGenerators.AlphaNumeric
                                                      };
             // Exercise
             repository.SavePassword( newPassword );

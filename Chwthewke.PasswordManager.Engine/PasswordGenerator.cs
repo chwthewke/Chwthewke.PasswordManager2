@@ -1,78 +1,54 @@
-using System;
-using System.Collections.Generic;
-using System.Security;
-using System.Text;
-using System.Linq;
+﻿using System.Text;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    [Obsolete]
-    internal class PasswordGenerator : IPasswordGenerator
+    internal class PasswordGenerator
     {
-        public const string Salt = "tsU&yUaZulAs4eOV";
+        private readonly IDerivedKeyFactory _derivedPasswordFactory;
+        private readonly IDerivedKeyFactory _digestFactory;
+        private readonly PasswordMaterializer _materializer;
 
-        public Guid Id
+        private readonly int _digestLength;
+
+        internal static readonly byte[ ] DigestSalt = new byte[ ]
+                                                          {
+                                                              0x24, 0x78, 0x5a, 0x5b, 0x75,
+                                                              0x28, 0x2d, 0x54, 0x72, 0x66,
+                                                          };
+
+        public PasswordGenerator( IDerivedKeyFactory derivedPasswordFactory, IDerivedKeyFactory digestFactory, 
+            PasswordMaterializer materializer, int digestLength )
         {
-            get { return _id; }
+            _derivedPasswordFactory = derivedPasswordFactory;
+            _digestFactory = digestFactory;
+            _materializer = materializer;
+            _digestLength = digestLength;
         }
 
-        public PasswordGenerator( Guid id,
-                                  IHashFactory hashFactory,
-                                  IBaseConverter converter,
-                                  Alphabet alphabet,
-                                  int length )
+        public DerivedPassword Derive( PasswordRequest request )
         {
-            if ( hashFactory == null )
-                throw new ArgumentNullException( "hashFactory" );
-            if ( converter == null )
-                throw new ArgumentNullException( "converter" );
-            if ( alphabet == null )
-                throw new ArgumentNullException( "alphabet" );
-            if ( converter.BytesNeeded( length ) > hashFactory.HashSize )
-                throw new ArgumentException( "Requested password length too large", "length" );
-
-            _hashFactory = hashFactory;
-            _converter = converter;
-            _length = length;
-            _alphabet = alphabet;
-            _id = id;
+            return request.MasterPassword.ConsumeBytes( Encoding.UTF8, bytes => DeriveInternal( request, bytes ) );
         }
 
-        public string MakePassword( string key, SecureString masterPassword )
+        private DerivedPassword DeriveInternal( PasswordRequest request, byte[ ] passwordBytes )
         {
-            return MakePasswords( key, masterPassword ).First( );
+            byte[ ] derivedPasswordBytes =
+                _derivedPasswordFactory.DeriveKey( GetBytes( request.Key ), passwordBytes, request.Iterations, _materializer.BytesNeeded );
+
+            string derivedPassword =
+                _materializer.ToString( derivedPasswordBytes );
+
+            byte[ ] digestBytes =
+                _digestFactory.DeriveKey( DigestSalt, GetBytes( derivedPassword ), 1, _digestLength );
+
+            return new DerivedPassword( derivedPassword,
+                                        new PasswordDigest( request.Key, digestBytes, request.Iterations, request.PasswordGenerator ) );
         }
 
-        public IEnumerable<string> MakePasswords( string key, SecureString masterPassword )
-        {
-            string previousPassword = key;
-            while ( true )
-            {
-                byte[ ] hash = HashTogetherWithSalt( previousPassword, masterPassword );
-                yield return previousPassword = PasswordOfHash( hash );
-            }
-// ReSharper disable FunctionNeverReturns
-        }
-// ReSharper restore FunctionNeverReturns
 
-        private string PasswordOfHash( byte[ ] hash )
+        private byte[ ] GetBytes( string str )
         {
-            return _alphabet.ToString( _converter.ConvertBytesToDigits( hash, _length ) );
+            return Encoding.UTF8.GetBytes( str );
         }
-
-        private byte[ ] HashTogetherWithSalt( string key, SecureString masterPassword )
-        {
-            return _hashFactory.GetHash( )
-                .Append( Salt, Encoding.UTF8 )
-                .Append( masterPassword, Encoding.UTF8 )
-                .Append( key, Encoding.UTF8 )
-                .GetValue( );
-        }
-
-        private readonly IHashFactory _hashFactory;
-        private readonly IBaseConverter _converter;
-        private readonly Alphabet _alphabet;
-        private readonly int _length;
-        private readonly Guid _id;
     }
 }

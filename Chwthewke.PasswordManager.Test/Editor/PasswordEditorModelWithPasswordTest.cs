@@ -22,8 +22,8 @@ namespace Chwthewke.PasswordManager.Test.Editor
         [ SetUp ]
         public void SetUpModel( )
         {
-            _engine = new PasswordDerivationEngine( PasswordGenerators2.Generators );
-            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators2.Full ) );
+            _engine = new PasswordDerivationEngine( PasswordGenerators.Generators );
+            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators.Full ) );
 
             _original = new PasswordDigestDocumentBuilder
                             {
@@ -37,7 +37,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
             _passwordRepository.SavePassword( _original );
 
-            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher2( _engine, _passwordRepository );
+            IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
 
             _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ), _original );
         }
@@ -219,7 +219,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.MasterPassword.ConsumeBytes( Encoding.UTF8, b => Encoding.UTF8.GetString( b ) ),
                          Is.EqualTo( "4321" ) );
             Assert.That( _model.SelectedPassword,
-                         Is.EqualTo( _model.DerivedPasswords.First( p => p.Generator == PasswordGenerators2.Full ) ) );
+                         Is.EqualTo( _model.DerivedPasswords.First( p => p.Generator == PasswordGenerators.Full ) ) );
             Assert.That( _model.Iteration, Is.EqualTo( 3 ) );
             Assert.That( _model.Note, Is.EqualTo( "AB IJ" ) );
 
@@ -235,7 +235,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Iteration = 2;
             _model.MasterPassword = "4321".ToSecureString( );
 
-            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 5, PasswordGenerators2.AlphaNumeric ) );
+            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 5, PasswordGenerators.AlphaNumeric ) );
 
             var updated = new PasswordDigestDocumentBuilder
                               {
@@ -256,7 +256,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.MasterPassword.ConsumeBytes( Encoding.UTF8, b => Encoding.UTF8.GetString( b ) ),
                          Is.EqualTo( "4321" ) );
             Assert.That( _model.SelectedPassword,
-                         Is.EqualTo( _model.DerivedPasswords.First( p => p.Generator == PasswordGenerators2.Full ) ) );
+                         Is.EqualTo( _model.DerivedPasswords.First( p => p.Generator == PasswordGenerators.Full ) ) );
             Assert.That( _model.Iteration, Is.EqualTo( 2 ) );
             Assert.That( _model.Note, Is.EqualTo( "AB IJ" ) );
 
@@ -271,7 +271,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Set up
             _model.MasterPassword = "4321".ToSecureString( );
 
-            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 5, PasswordGenerators2.AlphaNumeric ) );
+            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 5, PasswordGenerators.AlphaNumeric ) );
 
             var updated = new PasswordDigestDocumentBuilder
             {
@@ -293,7 +293,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.MasterPassword.ConsumeBytes( Encoding.UTF8, b => Encoding.UTF8.GetString( b ) ),
                          Is.EqualTo( "4321" ) );
             Assert.That( _model.SelectedPassword,
-                         Is.EqualTo( _model.DerivedPasswords.First( p => p.Generator == PasswordGenerators2.AlphaNumeric ) ) );
+                         Is.EqualTo( _model.DerivedPasswords.First( p => p.Generator == PasswordGenerators.AlphaNumeric ) ) );
             Assert.That( _model.Iteration, Is.EqualTo( 5 ) );
             Assert.That( _model.Note, Is.EqualTo( "AB IJ K" ) );
 
@@ -305,7 +305,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
         private static IEnumerable<Guid> GeneratorGuids
         {
-            get { return PasswordGenerators2.Generators.Keys; }
+            get { return PasswordGenerators.Generators.Keys; }
         }
 
         private static DerivedPasswordEqualityComparer DerivedPasswordEquality

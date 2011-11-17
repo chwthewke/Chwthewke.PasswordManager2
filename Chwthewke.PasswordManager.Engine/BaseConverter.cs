@@ -5,7 +5,7 @@ using System.Numerics;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    internal class BaseConverter : IBaseConverter
+    internal class BaseConverter
     {
         public int BytesNeeded( int numDigits )
         {

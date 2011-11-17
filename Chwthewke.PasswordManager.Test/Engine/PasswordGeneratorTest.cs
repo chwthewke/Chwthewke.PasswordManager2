@@ -1,6 +1,4 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
+﻿using System;
 using System.Text;
 using Chwthewke.PasswordManager.Engine;
 using NUnit.Framework;
@@ -11,114 +9,43 @@ namespace Chwthewke.PasswordManager.Test.Engine
     public class PasswordGeneratorTest
     {
         [ Test ]
-        [ Ignore ]
-        public void TestMismatchedLengthsFail( )
+        public void GeneratorUsesDerivedKeyFactoryAndMaterializerToDerivePasswordFromRequest( )
         {
-            // Setup
-            Alphabet symbols50 = new Alphabet( new StringBuilder( ).Append( new char[ 50 ] ).ToString( ) );
-            IBaseConverter baseConverter = new BaseConverter( 12 );
+            // Set up
+            IDerivedKeyFactory derivedKeyFactory = new Pkbdf2DerivedKeyFactory( 15000 );
+            IDerivedKeyFactory digestFactory = new Pkbdf2DerivedKeyFactory( 10000 );
+            PasswordMaterializer materializer = PasswordMaterializers.AlphaNumeric;
+
+            PasswordGenerator generator = new PasswordGenerator( derivedKeyFactory, digestFactory, materializer, 32 );
             // Exercise
+            DerivedPassword derived = generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), 3, default( Guid ) ) );
             // Verify
-            Assert.That(
-                new TestDelegate(
-                    ( ) => new PasswordGenerator( default( Guid ), new Sha512Factory( ), baseConverter, symbols50, 8 ) ),
-                Throws.InstanceOf( typeof ( ArgumentException ) ) );
+            string expectedPassword =
+                materializer.ToString( derivedKeyFactory.DeriveKey( Encoding.UTF8.GetBytes( "abcd" ), Encoding.UTF8.GetBytes( "1234" ),
+                                                                    3, materializer.BytesNeeded ) );
+
+            Assert.That( derived.Password, Is.EqualTo( expectedPassword ) );
         }
 
         [ Test ]
-        public void TestCanGeneratePasswordsWith64BytesEntropy( )
+        public void GeneratorUsesDerivedKeyFactoryToCreateDigest( )
         {
-            // Setup
-            Alphabet symbols16 = new Alphabet( "0123456789ABCDEF" );
-            IBaseConverter baseConverter = new BaseConverter( 16 );
+            // Set up
+            IDerivedKeyFactory derivedKeyFactory = new Pkbdf2DerivedKeyFactory( 15000 );
+            IDerivedKeyFactory digestFactory = new Pkbdf2DerivedKeyFactory( 10000 );
+            PasswordMaterializer materializer = PasswordMaterializers.AlphaNumeric;
+
+            PasswordGenerator generator = new PasswordGenerator( derivedKeyFactory, digestFactory, materializer, 32 );
             // Exercise
-            new PasswordGenerator( default( Guid ), new Sha512Factory( ), baseConverter, symbols16, 128 );
+            DerivedPassword derived = 
+                generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), 1, PasswordGenerators.Full ) );
             // Verify
-        }
 
-        [ Test ]
-        public void TestCannotGeneratePasswordsWithArbitraryEntropy( )
-        {
-            // Setup
-            Alphabet symbols16 = new Alphabet( "0123456789ABCDEF" );
-            IBaseConverter baseConverter = new BaseConverter( 16 );
-            // Exercise
-            Assert.That(
-                new TestDelegate(
-                    ( ) =>
-                    new PasswordGenerator( default( Guid ), new Sha512Factory( ), baseConverter, symbols16, 129 ) ),
-                Throws.InstanceOf( typeof ( ArgumentException ) ) );
-            // Verify
-        }
+            byte[ ] expectedHash = digestFactory.DeriveKey( PasswordGenerator.DigestSalt, Encoding.UTF8.GetBytes( derived.Password ),
+                                                                1, 32 );
+            PasswordDigest expectedDigest = new PasswordDigest( "abcd", expectedHash, 1, PasswordGenerators.Full );
 
-        [ Test ]
-        public void TestGeneratePassword( )
-        {
-            // Setup
-            const string domain = "chwthewke.net";
-            const string masterPassword = "m@st3rp@ssw0rd";
-
-
-            Alphabet alphabet = Alphabets.Symbols92;
-            IBaseConverter baseConverter = new BaseConverter( 92 );
-
-
-            IPasswordGenerator engine =
-                new PasswordGenerator( default( Guid ), new Sha512Factory( ), baseConverter, alphabet, 10 );
-
-            // Exercise
-            string password = engine.MakePassword( domain, masterPassword.ToSecureString( ) );
-
-            // Verify
-            byte[ ] hash =
-                new Sha512Factory( ).GetHash( ).Append(
-                    Encoding.UTF8.GetBytes( PasswordGenerator.Salt + masterPassword + domain ) )
-                    .GetValue( );
-            byte[ ] passwordDigits = baseConverter.ConvertBytesToDigits( hash, 10 );
-            string expectedPassword = alphabet.ToString( passwordDigits );
-            Assert.That( password, Is.EqualTo( expectedPassword ) );
-        }
-
-        [ Test ]
-        public void GenerateMultiplePasswords( )
-        {
-            // Setup
-            const string domain = "chwthewke.net";
-            const string masterPassword = "m@st3rp@ssw0rd";
-
-
-            Alphabet alphabet = Alphabets.Symbols92;
-            IBaseConverter baseConverter = new BaseConverter( 92 );
-
-
-            IHashFactory hashFactory = new Sha512Factory( );
-            IPasswordGenerator engine =
-                new PasswordGenerator( default( Guid ), hashFactory, baseConverter, alphabet, 10 );
-
-            // Exercise
-            IEnumerable<string> passwords = engine.MakePasswords( domain, masterPassword.ToSecureString( ) );
-
-            // Verify
-            byte[ ] hash =
-                hashFactory.GetHash( ).Append(
-                    Encoding.UTF8.GetBytes( PasswordGenerator.Salt + masterPassword + domain ) )
-                    .GetValue( );
-            var expectedFirstPassword = PasswordOfHash( alphabet, 10, baseConverter, hash );
-
-            byte[ ] secondHash =
-                hashFactory.GetHash( ).Append(
-                    Encoding.UTF8.GetBytes( PasswordGenerator.Salt + masterPassword + expectedFirstPassword ) )
-                    .GetValue( );
-            var expectedSecondPassword = PasswordOfHash( alphabet, 10, baseConverter, secondHash );
-
-            Assert.That( passwords.Take( 2 ).SequenceEqual( new List<string> { expectedFirstPassword, expectedSecondPassword } ), Is.True );
-        }
-
-        private static string PasswordOfHash( Alphabet alphabet, int numDigits, IBaseConverter baseConverter, byte[ ] hash )
-        {
-            byte[ ] passwordDigits = baseConverter.ConvertBytesToDigits( hash, numDigits );
-            string expectedPassword = alphabet.ToString( passwordDigits );
-            return expectedPassword;
+            Assert.That( derived.Digest, Is.EqualTo( expectedDigest ) );
         }
     }
 }

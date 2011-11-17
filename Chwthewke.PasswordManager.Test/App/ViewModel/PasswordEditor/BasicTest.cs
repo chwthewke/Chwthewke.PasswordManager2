@@ -31,7 +31,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Exercise
             // Verify
             Assert.That( ViewModel.DerivedPasswords, Is.Not.Empty );
-            Assert.That( ViewModel.DerivedPasswords.Select( s => s.Model.Generator ), Is.EquivalentTo( PasswordGenerators2.Generators.Keys ) );
+            Assert.That( ViewModel.DerivedPasswords.Select( s => s.Model.Generator ), Is.EquivalentTo( PasswordGenerators.Generators.Keys ) );
             Assert.That( ViewModel.DerivedPasswords.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 

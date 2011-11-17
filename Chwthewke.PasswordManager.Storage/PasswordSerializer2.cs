@@ -111,7 +111,7 @@ namespace Chwthewke.PasswordManager.Storage
                     int iteration = ExtractFromElement( passwordElement, IterationElement, ExtractIteration );
 
                     yield return
-                        new PasswordDigestDocument( new PasswordDigest2( key, hash, iteration, passwordSettingsId ),
+                        new PasswordDigestDocument( new PasswordDigest( key, hash, iteration, passwordSettingsId ),
                                                     masterPasswordId, creationDate, modificationDate, note );
                 }
             }

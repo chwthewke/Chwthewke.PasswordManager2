@@ -17,7 +17,7 @@ namespace Chwthewke.PasswordManager.Storage
 
         public IMasterPasswordMatcher MasterPasswordMatcher
         {
-            get { return new MasterPasswordMatcher2( PasswordManagerEngine.DerivationEngine, _passwordRepository ); }
+            get { return new MasterPasswordMatcher( PasswordManagerEngine.DerivationEngine, _passwordRepository ); }
         }
 
         public IPasswordRepository PasswordRepository

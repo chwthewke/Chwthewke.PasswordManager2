@@ -4,7 +4,7 @@
     {
         public static IPasswordDerivationEngine DerivationEngine
         {
-            get { return new PasswordDerivationEngine( PasswordGenerators2.Generators ); }
+            get { return new PasswordDerivationEngine( PasswordGenerators.Generators ); }
         }
     }
 }

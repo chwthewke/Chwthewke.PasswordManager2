@@ -14,10 +14,10 @@ namespace Chwthewke.PasswordManager.Test.App
             // Exercise
             // Verify
             Assert.That(
-                Resources.ResourceManager.GetString( "PasswordGenerator" + PasswordGenerators.Full.Id.ToString( "N" ) ),
+                Resources.ResourceManager.GetString( "PasswordGenerator" + PasswordGenerators.Full.ToString( "N" ) ),
                 Is.EqualTo( "Complex" ) );
             Assert.That(
-                Resources.ResourceManager.GetString( "PasswordGenerator" + PasswordGenerators.AlphaNumeric.Id.ToString( "N" ) ),
+                Resources.ResourceManager.GetString( "PasswordGenerator" + PasswordGenerators.AlphaNumeric.ToString( "N" ) ),
                 Is.EqualTo( "Alphanumeric" ) );
         }
     }

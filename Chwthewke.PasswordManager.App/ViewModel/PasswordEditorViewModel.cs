@@ -32,6 +32,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
             _closeCommand = new RelayCommand( RaiseCloseRequested );
 
+            _increaseIterationCommand = new RelayCommand( ExecuteIncreaseIteration, CanExecuteIncreaseIteration );
+            _decreaseIterationCommand = new RelayCommand( ExecuteDecreaseIteration, CanExecuteDecreaseIteration );
+
             Update( );
         }
 
@@ -74,6 +77,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             {
                 _model.Iteration = value;
                 RaisePropertyChanged( ( ) => Iteration );
+                _increaseIterationCommand.RaiseCanExecuteChanged(  );
+                _decreaseIterationCommand.RaiseCanExecuteChanged(  );
                 Update( );
             }
         }
@@ -177,6 +182,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _closeCommand; }
         }
 
+        public ICommand DecreaseIterationCommand
+        {
+            get { return _decreaseIterationCommand; }
+        }
+
+        public ICommand IncreaseIterationCommand
+        {
+            get { return _increaseIterationCommand; }
+        }
+
         public void UpdateMasterPassword( SecureString masterPassword )
         {
             _model.MasterPassword = masterPassword;
@@ -224,6 +239,26 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _copyCommand.RaiseCanExecuteChanged( );
 
             CopyText = DeriveCopyText( );
+        }
+
+        private bool CanExecuteIncreaseIteration( )
+        {
+            return Iteration < int.MaxValue;
+        }
+
+        private void ExecuteIncreaseIteration( )
+        {
+            Iteration += 1;
+        }
+
+        private bool CanExecuteDecreaseIteration( )
+        {
+            return Iteration > 1;
+        }
+
+        private void ExecuteDecreaseIteration( )
+        {
+            Iteration -= 1;
         }
 
         private bool CanExecuteSave( )
@@ -361,6 +396,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly IUpdatableCommand _saveCommand;
         private readonly IUpdatableCommand _deleteCommand;
         private readonly IUpdatableCommand _copyCommand;
+        private readonly IUpdatableCommand _increaseIterationCommand;
+        private readonly IUpdatableCommand _decreaseIterationCommand;
         private readonly ICommand _closeCommand;
 
         public const string NewTitle = "(new)";

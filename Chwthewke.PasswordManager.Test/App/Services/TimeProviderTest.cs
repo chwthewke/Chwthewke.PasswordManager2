@@ -1,8 +1,9 @@
 using System;
-using Chwthewke.PasswordManager.Storage;
+using Chwthewke.PasswordManager.App.Services;
+using Chwthewke.PasswordManager.Editor;
 using NUnit.Framework;
 
-namespace Chwthewke.PasswordManager.Test.Storage
+namespace Chwthewke.PasswordManager.Test.App.Services
 {
     [ TestFixture ]
     public class TimeProviderTest

@@ -9,8 +9,15 @@ namespace Chwthewke.PasswordManager.Test.Engine
     [ TestFixture ]
     public class PasswordGeneratorRegressionTest
     {
+        private IPasswordDerivationEngine _derivationEngine;
         private const string Key = "chwthewke";
         private const string Password = "m@st3rP4ssw0rD!";
+
+        [SetUp]
+        public void SetUpDerivationEngine( )
+        {
+            _derivationEngine = PasswordManagerEngine.DerivationEngine;
+        }
 
         [ Test ]
         public void GenerateSamplePasswordWithAlphanumeric( )
@@ -19,9 +26,9 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                PasswordGenerators.AlphaNumeric.MakePassword( Key, Password.ToSecureString( ) );
+                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.AlphaNumeric ) );
             // Verify
-            Assert.That( generatedPassword, Is.EqualTo( "deDYrBiXvMHN" ) );
+            Assert.That( generatedPassword.Password, Is.EqualTo( "deDYrBiXvMHN" ) );
         }
 
         [ Test ]
@@ -31,9 +38,9 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                PasswordGenerators.Full.MakePassword( Key, Password.ToSecureString( ) );
+                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.Full ) );
             // Verify
-            Assert.That( generatedPassword, Is.EqualTo( "(Z'?6G3(w(" ) );
+            Assert.That( generatedPassword.Password, Is.EqualTo( "(Z'?6G3(w(" ) );
         }
 
         [ Test ]
@@ -43,25 +50,22 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                PasswordGenerators.Full.MakePasswords( Key, Password.ToSecureString( ) ).ElementAt( 2 );
+                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 2, PasswordGenerators2.Full ) );
             // Verify
-            Assert.That( generatedPassword, Is.EqualTo( @"\noZ=Wa/qU" ) );
+            Assert.That( generatedPassword.Password, Is.EqualTo( "b;WY;^fB)7" ) );
         }
 
         [ Test ]
         public void GenerateSamplePasswordAndDigestWithAlphanumeric( )
         {
             // Setup
-            PasswordDigester digester = new PasswordDigester( new Sha512Factory( ), new TimeProvider( ) );
             // Exercise
             var generatedPassword =
-                PasswordGenerators.AlphaNumeric.MakePassword( Key, Password.ToSecureString( ) );
-            PasswordDigest digest = digester.Digest( Key, generatedPassword, PasswordGenerators.AlphaNumeric.Id, default( Guid ), null, 1,
-                                                     string.Empty );
+                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators2.AlphaNumeric ) );                PasswordGenerators.AlphaNumeric.MakePassword( Key, Password.ToSecureString( ) );
             // Verify
 
-            Assert.That( generatedPassword, Is.EqualTo( "deDYrBiXvMHN" ) );
-            Assert.That( digest.Hash,
+            Assert.That( generatedPassword.Password, Is.EqualTo( "deDYrBiXvMHN" ) );
+            Assert.That( generatedPassword.Digest.Hash,
                          Is.EquivalentTo( new byte[ ]
                                               {
                                                   0x0E, 0x4A, 0xB3, 0xB3, 0xE5, 0xF6, 0x6F, 0xCF,

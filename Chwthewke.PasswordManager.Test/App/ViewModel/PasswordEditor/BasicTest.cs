@@ -3,7 +3,7 @@ using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Engine;
 using NUnit.Framework;
 
-namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor2
+namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 {
     [ TestFixture ]
     public class BasicTest : PasswordEditorTestBase

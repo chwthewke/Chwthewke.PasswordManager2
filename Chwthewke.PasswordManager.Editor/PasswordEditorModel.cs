@@ -144,17 +144,8 @@ namespace Chwthewke.PasswordManager.Editor
             if ( !deleted )
                 return false;
 
-//            var key = Key;
-//            var generator = SelectedGenerator;
-//            var iteration = Iteration;
-//            var note = Note;
-
             _original = new NewPasswordDocument( );
             UpdateMasterPasswordId( );
-//            Key = key;
-//            SelectedPassword = DerivedPasswords.First( p => p.Generator == generator );
-//            Iteration = iteration;
-//            Note = note;
 
             return true;
         }

@@ -32,7 +32,7 @@ namespace Chwthewke.PasswordManager.Storage
     {
         public static IPasswordManagerStorage CreateService( ITextResource passwordsResource )
         {
-            return new DefaultPasswordManagerStorage( new XmlPasswordData( new PasswordSerializer2( ), passwordsResource ) );
+            return new DefaultPasswordManagerStorage( XmlPasswordData.From( passwordsResource ) );
         }
 
         public static IPasswordManagerStorage CreateService( IPasswordData passwordData )

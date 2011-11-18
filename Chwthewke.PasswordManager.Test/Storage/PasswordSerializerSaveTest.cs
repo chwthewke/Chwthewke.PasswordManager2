@@ -13,7 +13,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         [ SetUp ]
         public void SetUpSerializer( )
         {
-            _serializer = new PasswordSerializer2( );
+            _serializer = new PasswordSerializer( );
             _textResource = new InMemoryTextResource( );
             _passwords = new List<PasswordDigestDocument>( );
         }
@@ -39,9 +39,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Verify
             XElement xElement = ReadSerializedXml( );
             Assert.That( xElement.IsEmpty );
-            Assert.That( xElement.Name, Is.EqualTo( (XName) PasswordSerializer2.PasswordStoreElement ) );
+            Assert.That( xElement.Name, Is.EqualTo( (XName) PasswordSerializer.PasswordStoreElement ) );
 
-            XAttribute versionAttribute = xElement.Attribute( PasswordSerializer2.VersionAttribute );
+            XAttribute versionAttribute = xElement.Attribute( PasswordSerializer.VersionAttribute );
             Assert.That( versionAttribute, Is.Not.Null );
 // ReSharper disable PossibleNullReferenceException
             Assert.That( versionAttribute.Value, Is.EqualTo( "2" ) );
@@ -59,7 +59,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Verify
             XElement rootElement = ReadSerializedXml( );
             Assert.That( rootElement.Elements( ).Count( ), Is.EqualTo( 2 ) );
-            Assert.That( rootElement.Elements( PasswordSerializer2.PasswordElement ).Count( ), Is.EqualTo( 2 ) );
+            Assert.That( rootElement.Elements( PasswordSerializer.PasswordElement ).Count( ), Is.EqualTo( 2 ) );
         }
 
         [ Test ]
@@ -71,9 +71,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Save( _passwords, _textResource );
             // Verify
             XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = SingleChild( rootElement, PasswordSerializer2.PasswordElement );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
 
-            XElement keyElement = SingleChild( passwordElement, PasswordSerializer2.KeyElement );
+            XElement keyElement = SingleChild( passwordElement, PasswordSerializer.KeyElement );
             Assert.That( keyElement.Value, Is.EqualTo( "key" ) );
         }
 
@@ -88,9 +88,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Save( _passwords, _textResource );
             // Verify
             XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = SingleChild( rootElement, PasswordSerializer2.PasswordElement );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
 
-            XElement hashElement = SingleChild( passwordElement, PasswordSerializer2.HashElement );
+            XElement hashElement = SingleChild( passwordElement, PasswordSerializer.HashElement );
             Assert.That( hashElement.Value, Is.EqualTo( Convert.ToBase64String( new byte[ ] { 0x55, 0xda } ) ) );
         }
 
@@ -109,9 +109,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Verify
             XElement rootElement = ReadSerializedXml( );
 
-            XElement passwordElement = SingleChild( rootElement, PasswordSerializer2.PasswordElement );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
 
-            XElement masterPasswordIdElement = SingleChild( passwordElement, PasswordSerializer2.MasterPasswordIdElement );
+            XElement masterPasswordIdElement = SingleChild( passwordElement, PasswordSerializer.MasterPasswordIdElement );
             Assert.That( masterPasswordIdElement.Value, Is.EqualTo( "34579b9f-8ac1-464a-805a-abe564da8848" ).IgnoreCase );
         }
 
@@ -129,10 +129,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Save( _passwords, _textResource );
             // Verify
             XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = SingleChild( rootElement, PasswordSerializer2.PasswordElement );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
 
 
-            XElement passwordSettingsIdElement = SingleChild( passwordElement, PasswordSerializer2.PasswordSettingsIdElement );
+            XElement passwordSettingsIdElement = SingleChild( passwordElement, PasswordSerializer.PasswordSettingsIdElement );
             Assert.That( passwordSettingsIdElement.Value, Is.EqualTo( "34579b9f-8ac1-464a-805a-abe564da8848" ).IgnoreCase );
         }
 
@@ -151,9 +151,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Save( _passwords, _textResource );
             // Verify
             XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = SingleChild( rootElement, PasswordSerializer2.PasswordElement );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
 
-            XElement iterationElement = SingleChild( passwordElement, PasswordSerializer2.IterationElement );
+            XElement iterationElement = SingleChild( passwordElement, PasswordSerializer.IterationElement );
             Assert.That( iterationElement.Value, Is.EqualTo( "2" ) );
         }
 
@@ -171,9 +171,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Save( _passwords, _textResource );
             // Verify
             XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = SingleChild( rootElement, PasswordSerializer2.PasswordElement );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
 
-            XElement creationDateElement = SingleChild( passwordElement, PasswordSerializer2.TimestampElement );
+            XElement creationDateElement = SingleChild( passwordElement, PasswordSerializer.TimestampElement );
             Assert.That( creationDateElement.Value, Is.EqualTo( "634022874410500302" ) );
         }
 
@@ -191,9 +191,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Save( _passwords, _textResource );
             // Verify
             XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = SingleChild( rootElement, PasswordSerializer2.PasswordElement );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
 
-            XElement modificationDateElement = SingleChild( passwordElement, PasswordSerializer2.ModifiedElement );
+            XElement modificationDateElement = SingleChild( passwordElement, PasswordSerializer.ModifiedElement );
             Assert.That( modificationDateElement.Value, Is.EqualTo( "634022374410599302" ) );
         }
 
@@ -211,9 +211,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Save( _passwords, _textResource );
             // Verify
             XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = SingleChild( rootElement, PasswordSerializer2.PasswordElement );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
 
-            XElement noteElement = SingleChild( passwordElement, PasswordSerializer2.NoteElement );
+            XElement noteElement = SingleChild( passwordElement, PasswordSerializer.NoteElement );
             Assert.That( noteElement.Value, Is.EqualTo( "No note" ) );
         }
 
@@ -226,9 +226,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _serializer.Save( _passwords, _textResource );
             // Verify
             XElement rootElement = ReadSerializedXml( );
-            XElement passwordElement = SingleChild( rootElement, PasswordSerializer2.PasswordElement );
+            XElement passwordElement = SingleChild( rootElement, PasswordSerializer.PasswordElement );
 
-            XElement noteElement = SingleChild( passwordElement, PasswordSerializer2.NoteElement );
+            XElement noteElement = SingleChild( passwordElement, PasswordSerializer.NoteElement );
             Assert.That( noteElement.Value, Is.EqualTo( string.Empty ) );
         }
 
@@ -245,7 +245,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             return XElement.Parse( _textResource.Content );
         }
 
-        private PasswordSerializer2 _serializer;
+        private PasswordSerializer _serializer;
 
         private IList<PasswordDigestDocument> _passwords;
 

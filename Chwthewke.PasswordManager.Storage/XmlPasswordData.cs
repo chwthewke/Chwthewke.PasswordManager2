@@ -8,10 +8,10 @@ namespace Chwthewke.PasswordManager.Storage
     {
         public static IPasswordData From( ITextResource textResource )
         {
-            return new XmlPasswordData( new PasswordSerializer2( ), textResource );
+            return new XmlPasswordData( new PasswordSerializer( ), textResource );
         }
 
-        internal XmlPasswordData( PasswordSerializer2 serializer, ITextResource store )
+        internal XmlPasswordData( PasswordSerializer serializer, ITextResource store )
         {
             if ( serializer == null )
                 throw new ArgumentNullException( "serializer" );
@@ -31,7 +31,7 @@ namespace Chwthewke.PasswordManager.Storage
             _serializer.Save( passwords, _store );
         }
 
-        private readonly PasswordSerializer2 _serializer;
+        private readonly PasswordSerializer _serializer;
         private readonly ITextResource _store;
     }
 }

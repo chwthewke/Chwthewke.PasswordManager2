@@ -1,4 +1,5 @@
-﻿using Autofac;
+﻿using System.Collections.Generic;
+using Autofac;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
@@ -17,12 +18,11 @@ namespace Chwthewke.PasswordManager.App.Modules
 
             builder.Register( CreateStorage ).As<IPasswordManagerStorage>( ).SingleInstance( );
 
-            builder.RegisterType<EmptyTextResource>( ).As<ITextResource>( ).SingleInstance( );
         }
 
         private IPasswordManagerStorage CreateStorage( IComponentContext c )
         {
-            return PasswordManagerStorage.CreateService( c.Resolve<ITextResource>( ) );
+            return PasswordManagerStorage.CreateService( new NullPasswordData() );
         }
 
         private IPasswordManagerEditor CreateEditor( IComponentContext c )
@@ -30,6 +30,19 @@ namespace Chwthewke.PasswordManager.App.Modules
             return PasswordManagerEditor.CreateService( c.Resolve<IPasswordDerivationEngine>( ),
                                                         c.Resolve<IPasswordManagerStorage>( ),
                                                         c.Resolve<ITimeProvider>( ) );
+        }
+    }
+
+    // null object for stubbing at init time
+    internal class NullPasswordData : IPasswordData
+    {
+        public IList<PasswordDigestDocument> LoadPasswords( )
+        {
+            return new List<PasswordDigestDocument>( );
+        }
+
+        public void SavePasswords( IList<PasswordDigestDocument> passwords )
+        {
         }
     }
 }

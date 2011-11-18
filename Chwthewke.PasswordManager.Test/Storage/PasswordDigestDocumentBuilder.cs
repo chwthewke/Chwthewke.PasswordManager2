@@ -56,21 +56,21 @@ namespace Chwthewke.PasswordManager.Test.Storage
 
         public XElement ToXml( )
         {
-            return new XElement( PasswordSerializer2.PasswordElement,
-                                 new XElement( PasswordSerializer2.KeyElement, Key ),
-                                 new XElement( PasswordSerializer2.HashElement,
+            return new XElement( PasswordSerializer.PasswordElement,
+                                 new XElement( PasswordSerializer.KeyElement, Key ),
+                                 new XElement( PasswordSerializer.HashElement,
                                                Convert.ToBase64String( Hash ) ),
-                                 new XElement( PasswordSerializer2.PasswordSettingsIdElement,
+                                 new XElement( PasswordSerializer.PasswordSettingsIdElement,
                                                PasswordGenerator.ToString( ) ),
-                                 new XElement( PasswordSerializer2.IterationElement,
+                                 new XElement( PasswordSerializer.IterationElement,
                                                Iteration.ToString( ) ),
-                                 new XElement( PasswordSerializer2.MasterPasswordIdElement,
+                                 new XElement( PasswordSerializer.MasterPasswordIdElement,
                                                MasterPasswordId.ToString( ) ),
-                                 new XElement( PasswordSerializer2.TimestampElement,
+                                 new XElement( PasswordSerializer.TimestampElement,
                                                CreatedOn.Ticks ),
-                                 new XElement( PasswordSerializer2.ModifiedElement,
+                                 new XElement( PasswordSerializer.ModifiedElement,
                                                ModifiedOn.Ticks ),
-                                 new XElement( PasswordSerializer2.NoteElement,
+                                 new XElement( PasswordSerializer.NoteElement,
                                                Note ) );
         }
 

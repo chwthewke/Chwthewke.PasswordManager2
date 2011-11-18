@@ -16,7 +16,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         [ SetUp ]
         public void SetUpSerializer( )
         {
-            _serializer = new PasswordSerializer2( );
+            _serializer = new PasswordSerializer( );
             _textResource = new InMemoryTextResource( );
         }
 
@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         public void LoadEmptyPasswordStore( )
         {
             // Setup
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement ) );
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
             // Verify
@@ -38,7 +38,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             XElement element1 = new PasswordDigestDocumentBuilder { Key = "aKey" };
             XElement element2 = new PasswordDigestDocumentBuilder { Key = "anotherKey" };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    element1,
                                    element2 ) );
             // Exercise
@@ -53,7 +53,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey" };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
@@ -67,7 +67,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", Hash = new byte[ ] { 0x44, 0x66 } };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
@@ -83,7 +83,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             Guid guid = Guid.Parse( "34579b9f-8ac1-464a-805a-abe564da8848" );
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", MasterPasswordId = guid };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
@@ -99,7 +99,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             Guid guid = Guid.Parse( "34579b9f-8ac1-464a-805a-abe564da8848" );
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", PasswordGenerator = guid };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
@@ -115,7 +115,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             DateTime creationTime = new DateTime( 634022874410500302 );
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", CreatedOn = creationTime };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
@@ -131,7 +131,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             DateTime modificationTime = new DateTime( 634122874455500442 );
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", ModifiedOn = modificationTime };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
@@ -148,7 +148,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             const string note = "a Note";
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", Note = note };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
@@ -163,7 +163,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey" };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
                                    element ) );
             // Exercise
             IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
@@ -178,8 +178,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Set up
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", CreatedOn = new DateTime( 123456789123L ) };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   new XAttribute( PasswordSerializer2.VersionAttribute, "0" ),
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
+                                   new XAttribute( PasswordSerializer.VersionAttribute, "0" ),
                                    element ) );
 
             // Exercise
@@ -195,10 +195,10 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Set up
             XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", CreatedOn = new DateTime( 123456789123L ) };
 
-            element.Elements( PasswordSerializer2.ModifiedElement ).Remove( );
+            element.Elements( PasswordSerializer.ModifiedElement ).Remove( );
 
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   new XAttribute( PasswordSerializer2.VersionAttribute, "1" ),
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
+                                   new XAttribute( PasswordSerializer.VersionAttribute, "1" ),
                                    element ) );
 
             // Exercise
@@ -217,8 +217,8 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                        CreatedOn = new DateTime( 123456789123L ),
                                        ModifiedOn = new DateTime( 111111111111L ),
                                    };
-            SaveXml( new XElement( PasswordSerializer2.PasswordStoreElement,
-                                   new XAttribute( PasswordSerializer2.VersionAttribute, "1" ),
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement,
+                                   new XAttribute( PasswordSerializer.VersionAttribute, "1" ),
                                    element ) );
 
             // Exercise
@@ -242,7 +242,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _textResource.Content = stringWriter.ToString( );
         }
 
-        private PasswordSerializer2 _serializer;
+        private PasswordSerializer _serializer;
 
         private InMemoryTextResource _textResource;
     }

@@ -8,7 +8,7 @@ using Chwthewke.PasswordManager.Engine;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    internal class PasswordSerializer2
+    internal class PasswordSerializer
     {
         public const int Version = 2;
 

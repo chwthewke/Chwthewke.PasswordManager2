@@ -11,13 +11,13 @@ namespace Chwthewke.PasswordManager.Test.Storage
         private XmlPasswordData _passwordData;
         private InMemoryTextResource _inMemoryTextResource;
         private IList<PasswordDigestDocument> _passwords;
-        private PasswordSerializer2 _serializer;
+        private PasswordSerializer _serializer;
 
         [ SetUp ]
         public void SetupPasswordData( )
         {
             _inMemoryTextResource = new InMemoryTextResource( );
-            _serializer = new PasswordSerializer2( );
+            _serializer = new PasswordSerializer( );
             _passwordData = new XmlPasswordData( _serializer, _inMemoryTextResource );
 
             _passwords = new[ ] { TestPasswords.Abcd, TestPasswords.Efgh }.ToList( );

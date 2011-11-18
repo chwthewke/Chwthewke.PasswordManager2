@@ -60,6 +60,5 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( ViewModel.InternalStorageSelected, Is.False );
         }
 
-        // TODO need to do more to test password storage. Probably with real "test" files.
     }
 }

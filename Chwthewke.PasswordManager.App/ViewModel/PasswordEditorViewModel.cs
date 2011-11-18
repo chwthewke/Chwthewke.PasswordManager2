@@ -349,8 +349,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             return Resources.PasswordHint;
         }
 
+
+        // TODO too many responsibilities, split class maybe
+        private bool _updating;
         private void Update( )
         {
+            // Horrid patch to make this method non-reentrant
+            if ( _updating )
+                return;
+            _updating = true;
             KeyChanged(  );
             IterationChanged(  );
             NoteChanged(  );
@@ -374,6 +381,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _saveCommand.RaiseCanExecuteChanged( );
             _copyCommand.RaiseCanExecuteChanged( );
             _deleteCommand.RaiseCanExecuteChanged( );
+            _updating = false;
         }
 
         private string DeriveTitle( )

@@ -153,7 +153,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         }
 
         [ Test ]
-        [Ignore]
         public void ReloadPasswordDoesNotUpdateWhenDirty( )
         {
             // Set up
@@ -179,7 +178,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Verify
             Assert.That( ViewModel.Iteration, Is.EqualTo( 3 ) );
             Assert.That( ViewModel.DerivedPasswords.First( p => p.IsSelected ).Model.Generator, Is.EqualTo( PasswordGenerators.AlphaNumeric ) );
-            Assert.That( ViewModel.RequiredGuidColor, Is.EqualTo( GuidToColorConverter.Convert( original.MasterPasswordId ) ) );
         }
     }
 }

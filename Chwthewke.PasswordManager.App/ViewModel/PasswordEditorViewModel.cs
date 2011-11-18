@@ -53,7 +53,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             set
             {
                 _model.Key = string.IsNullOrWhiteSpace( value ) ? string.Empty : value;
-                RaisePropertyChanged( ( ) => Key );
                 Update( );
             }
         }
@@ -76,9 +75,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             set
             {
                 _model.Iteration = value;
-                RaisePropertyChanged( ( ) => Iteration );
-                _increaseIterationCommand.RaiseCanExecuteChanged(  );
-                _decreaseIterationCommand.RaiseCanExecuteChanged(  );
                 Update( );
             }
         }
@@ -89,7 +85,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             set
             {
                 _model.Note = value;
-                RaisePropertyChanged( ( ) => Note );
                 Update( );
             }
         }
@@ -195,16 +190,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public void UpdateMasterPassword( SecureString masterPassword )
         {
             _model.MasterPassword = masterPassword;
-            ActualGuidColor = ConvertGuid( _model.MasterPasswordId );
+            
             Update( );
         }
 
-        public void UpdateFromDatabase( )
+        public void Reload( )
         {
             _model.Reload( );
-            // TODO Hackish, think about it - maybe extract OnUpdateFooBar methods
-            Iteration = _model.Iteration;
-            Note = _model.Note;
             Update( );
         }
 
@@ -212,6 +204,28 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private Color ConvertGuid( Guid? masterPasswordId )
         {
             return masterPasswordId.HasValue ? _guidToColor.Convert( masterPasswordId.Value ) : Colors.Transparent;
+        }
+
+        private void KeyChanged( )
+        {
+            RaisePropertyChanged( ( ) => Key );
+        }
+
+        private void MasterPasswordChanged( )
+        {
+            ActualGuidColor = ConvertGuid( _model.MasterPasswordId );
+        }
+
+        private void IterationChanged( )
+        {
+            RaisePropertyChanged( ( ) => Iteration );
+            _increaseIterationCommand.RaiseCanExecuteChanged( );
+            _decreaseIterationCommand.RaiseCanExecuteChanged( );
+        }
+
+        private void NoteChanged( )
+        {
+            RaisePropertyChanged( ( ) => Note );
         }
 
         private void RaiseStoreModified( )
@@ -334,6 +348,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void Update( )
         {
+            KeyChanged(  );
+            IterationChanged(  );
+            NoteChanged(  );
+            MasterPasswordChanged( );
+
             Title = DeriveTitle( );
 
             IsKeyReadonly = _model.IsKeyReadonly;

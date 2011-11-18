@@ -69,7 +69,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 );
 
             foreach ( PasswordEditorViewModel editor in Editors )
-                editor.UpdateFromDatabase( );
+                editor.Reload( );
 
             UpdateFilteredListView( );
         }

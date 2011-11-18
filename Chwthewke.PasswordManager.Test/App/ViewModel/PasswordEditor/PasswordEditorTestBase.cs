@@ -46,7 +46,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel = ViewModelFactory.NewPasswordEditor( );
         }
 
-        protected void AddPassword( string key, Guid generator, int iteration, SecureString masterPassword, string note )
+        protected PasswordDigestDocument AddPassword( string key, Guid generator, int iteration, SecureString masterPassword, string note )
         {
             PasswordRepository.SavePassword(
                 new PasswordDigestDocumentBuilder
@@ -54,6 +54,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
                         Digest = Engine.Derive( new PasswordRequest( key, masterPassword, iteration, generator ) ).Digest,
                         Note = note
                     } );
+            return PasswordRepository.LoadPassword( key );
         }
 
         protected string DerivedPassword( Guid generator, string key, SecureString masterPassword, int iterations )

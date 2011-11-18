@@ -247,8 +247,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( e.PropertyName != "IsSelected" )
                 return;
 
-            DerivedPasswordViewModel selected = DerivedPasswords.FirstOrDefault( s => s.IsSelected );
-            _model.SelectedPassword = selected == null ? null : selected.Model;
+            var source = sender as DerivedPasswordViewModel;
+            if ( source == null || !source.IsSelected )
+                return;
+
+            _model.SelectedPassword = source.Model;
 
             Update( );
 

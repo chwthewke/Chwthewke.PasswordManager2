@@ -15,8 +15,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     public class PasswordEditorViewModel : ObservableObject
     {
         public PasswordEditorViewModel( IPasswordEditorModel model,
-                                         IClipboardService clipboardService,
-                                         IGuidToColorConverter guidToColor )
+                                        IClipboardService clipboardService,
+                                        IGuidToColorConverter guidToColor )
         {
             _model = model;
             _clipboardService = clipboardService;
@@ -44,7 +44,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public bool IsPristine
         {
-            get { return Key == string.Empty && Note == string.Empty && _model.MasterPassword.Length == 0; }
+            get
+            {
+                return Key == string.Empty &&
+                       Note == string.Empty &&
+                       _model.MasterPassword.Length == 0 &&
+                       Iteration == 1 &&
+                       DerivedPasswords.All( p => !p.IsSelected );
+            }
         }
 
         public string Key
@@ -190,7 +197,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public void UpdateMasterPassword( SecureString masterPassword )
         {
             _model.MasterPassword = masterPassword;
-            
+
             Update( );
         }
 
@@ -352,15 +359,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         // TODO too many responsibilities, split class maybe
         private bool _updating;
+
         private void Update( )
         {
             // Horrid patch to make this method non-reentrant
             if ( _updating )
                 return;
             _updating = true;
-            KeyChanged(  );
-            IterationChanged(  );
-            NoteChanged(  );
+            KeyChanged( );
+            IterationChanged( );
+            NoteChanged( );
             MasterPasswordChanged( );
 
             Title = DeriveTitle( );

@@ -261,11 +261,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _model.SelectedPassword = source.Model;
 
             Update( );
-
-            _saveCommand.RaiseCanExecuteChanged( );
-            _copyCommand.RaiseCanExecuteChanged( );
-
-            CopyText = DeriveCopyText( );
         }
 
         private bool CanExecuteIncreaseIteration( )

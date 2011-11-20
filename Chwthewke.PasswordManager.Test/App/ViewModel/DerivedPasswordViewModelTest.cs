@@ -91,7 +91,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         }
 
         [ Test ]
-        public void SelectAndUpdateMarksViewModelSelected( )
+        public void SelectAndRefreshMarksViewModelSelected( )
         {
             // Set up
             bool propertyChanged = false;
@@ -100,7 +100,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             _editorModel.SelectedPassword = _derivedPasswordModel;
 
             // Exercise
-            _viewModel.Update( );
+            _viewModel.UpdateFromModel( );
             // Verify
             Assert.That( propertyChanged );
             Assert.That( _viewModel.IsSelected, Is.True );
@@ -116,7 +116,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             _editorModel.SelectedPassword = _editorModel.DerivedPasswords.First( p => p != _derivedPasswordModel );
 
             // Exercise
-            _viewModel.Update( );
+            _viewModel.UpdateFromInput( );
             // Verify
             Assert.That( propertyChanged, Is.False );
             Assert.That( _viewModel.IsSelected, Is.False );
@@ -132,7 +132,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             _editorModel.Key = "abc";
             _editorModel.MasterPassword = "123".ToSecureString( );
             // Exercise
-            _viewModel.Update( );
+            _viewModel.UpdateFromInput( );
             // Verify
             Assert.That( propertyChanged, Is.True );
             Assert.That( _viewModel.Content, Is.EqualTo( "[0dY\\,&<P{" ) );
@@ -144,14 +144,14 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Set up
             _editorModel.Key = "abc";
             _editorModel.MasterPassword = "123".ToSecureString( );
-            _viewModel.Update(  );
+            _viewModel.UpdateFromInput(  );
             
             bool propertyChanged = false;
             _viewModel.PropertyChanged += ( s, e ) => { propertyChanged |= e.PropertyName == "Content"; };
 
             _editorModel.MasterPassword = "".ToSecureString( );
             // Exercise
-            _viewModel.Update( );
+            _viewModel.UpdateFromInput( );
             // Verify
             Assert.That( propertyChanged, Is.True );
             Assert.That( _viewModel.Content, Is.EqualTo( string.Empty ) );

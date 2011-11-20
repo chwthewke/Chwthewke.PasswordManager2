@@ -14,7 +14,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
-        public PasswordEditorViewModel( IPasswordEditorModel model,
+        internal PasswordEditorViewModel( IPasswordEditorModel model,
                                         IClipboardService clipboardService,
                                         IGuidToColorConverter guidToColor )
         {
@@ -35,7 +35,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _increaseIterationCommand = new RelayCommand( ExecuteIncreaseIteration, CanExecuteIncreaseIteration );
             _decreaseIterationCommand = new RelayCommand( ExecuteDecreaseIteration, CanExecuteDecreaseIteration );
 
-            Update( );
+            Refresh( );
         }
 
         public event EventHandler StoreModified;
@@ -60,6 +60,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             set
             {
                 _model.Key = string.IsNullOrWhiteSpace( value ) ? string.Empty : value;
+
+                RaisePropertyChanged( () => Key );
+                
                 Update( );
             }
         }
@@ -82,6 +85,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             set
             {
                 _model.Iteration = value;
+                RaisePropertyChanged( () => Iteration );
+                
                 Update( );
             }
         }
@@ -92,20 +97,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             set
             {
                 _model.Note = value;
+                RaisePropertyChanged( () => Note );
+
                 Update( );
             }
         }
 
         public bool IsKeyReadonly
         {
-            get { return _isKeyReadonly; }
-            private set
-            {
-                if ( _isKeyReadonly == value )
-                    return;
-                _isKeyReadonly = value;
-                RaisePropertyChanged( ( ) => IsKeyReadonly );
-            }
+            get { return _model.IsKeyReadonly; }
         }
 
         public Color RequiredGuidColor
@@ -117,7 +117,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                     return;
                 _requiredGuidColor = value;
                 RaisePropertyChanged( ( ) => RequiredGuidColor );
-                MasterPasswordHint = DerivePasswordHint( );
             }
         }
 
@@ -131,7 +130,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                     return;
                 _actualGuidColor = value;
                 RaisePropertyChanged( ( ) => ActualGuidColor );
-                MasterPasswordHint = DerivePasswordHint( );
             }
         }
 
@@ -204,35 +202,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public void Reload( )
         {
             _model.Reload( );
-            Update( );
+            Refresh( );
         }
 
 
         private Color ConvertGuid( Guid? masterPasswordId )
         {
             return masterPasswordId.HasValue ? _guidToColor.Convert( masterPasswordId.Value ) : Colors.Transparent;
-        }
-
-        private void KeyChanged( )
-        {
-            RaisePropertyChanged( ( ) => Key );
-        }
-
-        private void MasterPasswordChanged( )
-        {
-            ActualGuidColor = ConvertGuid( _model.MasterPasswordId );
-        }
-
-        private void IterationChanged( )
-        {
-            RaisePropertyChanged( ( ) => Iteration );
-            _increaseIterationCommand.RaiseCanExecuteChanged( );
-            _decreaseIterationCommand.RaiseCanExecuteChanged( );
-        }
-
-        private void NoteChanged( )
-        {
-            RaisePropertyChanged( ( ) => Note );
         }
 
         private void RaiseStoreModified( )
@@ -294,7 +270,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 return;
             _model.Save( );
 
-            UpdateSaved( );
+            Refresh( );
             RaiseStoreModified( );
         }
 
@@ -310,7 +286,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             _model.Delete( );
 
-            UpdateSaved( );
+            Refresh(  );
             RaiseStoreModified( );
         }
 
@@ -334,13 +310,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _clipboardService.CopyToClipboard( _derivedPassword );
         }
 
-        private void UpdateSaved( )
-        {
-            Update( );
-
-            ActualGuidColor = ConvertGuid( _model.MasterPasswordId );
-        }
-
         private string DerivePasswordHint( )
         {
             if ( _model.ExpectedMasterPasswordId == null ) return string.Empty;
@@ -351,41 +320,42 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             return Resources.PasswordHint;
         }
 
-
-        // TODO too many responsibilities, split class maybe
-        private bool _updating;
-
         private void Update( )
         {
-            // Horrid patch to make this method non-reentrant
-            if ( _updating )
-                return;
-            _updating = true;
-            KeyChanged( );
-            IterationChanged( );
-            NoteChanged( );
-            MasterPasswordChanged( );
-
             Title = DeriveTitle( );
 
-            IsKeyReadonly = _model.IsKeyReadonly;
+            _increaseIterationCommand.RaiseCanExecuteChanged( );
+            _decreaseIterationCommand.RaiseCanExecuteChanged( );
+
+            ActualGuidColor = ConvertGuid( _model.MasterPasswordId );
+            MasterPasswordHint = DerivePasswordHint( );
 
             foreach ( var slot in DerivedPasswords )
-            {
                 slot.Update( );
-            }
-
-            RequiredGuidColor = ConvertGuid( _model.ExpectedMasterPasswordId );
-
-            CopyText = DeriveCopyText( );
-
             _derivedPassword = DeriveDerivedPassword( );
 
-            _saveCommand.RaiseCanExecuteChanged( );
+            CopyText = DeriveCopyText( );
             _copyCommand.RaiseCanExecuteChanged( );
+
+            _saveCommand.RaiseCanExecuteChanged( );
             _deleteCommand.RaiseCanExecuteChanged( );
-            _updating = false;
         }
+
+        private void Refresh( )
+        {
+            RaisePropertyChanged( () => Key );
+            RaisePropertyChanged( () => Note );
+            RaisePropertyChanged( () => Iteration );
+            RaisePropertyChanged( () => IsKeyReadonly );
+
+            foreach ( var derivedPassword in DerivedPasswords )
+                derivedPassword.Refresh(  );
+            
+            RequiredGuidColor = ConvertGuid( _model.ExpectedMasterPasswordId );
+
+            Update( );
+        }
+
 
         private string DeriveTitle( )
         {
@@ -417,7 +387,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly IGuidToColorConverter _guidToColor;
 
         private string _title = NewTitle;
-        private bool _isKeyReadonly;
 
         private Color _requiredGuidColor = Colors.Transparent;
         private Color _actualGuidColor = Colors.Transparent;

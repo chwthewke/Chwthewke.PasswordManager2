@@ -16,7 +16,8 @@ namespace Chwthewke.PasswordManager.Storage
         public IPasswordData PasswordData
         {
             get { return _passwordData; }
-            set {
+            set
+            {
                 if ( value == null )
                     throw new ArgumentNullException( "value" );
 
@@ -25,16 +26,16 @@ namespace Chwthewke.PasswordManager.Storage
         }
 
 
-
         public IList<PasswordDigestDocument> LoadPasswords( )
         {
-            Load( );
+            TryLoad( );
             return new List<PasswordDigestDocument>( _passwordsCache.Values.Where( p => !p.IsDeleted ) );
         }
 
+
         public PasswordDigestDocument LoadPassword( string key )
         {
-            Load( );
+            TryLoad( );
 
             if ( !_passwordsCache.ContainsKey( key ) )
                 return null;
@@ -93,6 +94,17 @@ namespace Chwthewke.PasswordManager.Storage
             Load( );
             Merge( passwordData, true );
             Save( );
+        }
+
+        private void TryLoad( )
+        {
+            try
+            {
+                Load( );
+            }
+            catch ( PasswordsFileException )
+            {
+            }
         }
 
         private IEnumerable<PasswordDigestDocument> Merge( IEnumerable<PasswordDigestDocument> newPasswords, bool mergeMasterPasswordIds )

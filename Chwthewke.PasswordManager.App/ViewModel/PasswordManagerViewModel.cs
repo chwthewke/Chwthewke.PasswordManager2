@@ -4,20 +4,23 @@ using System.Windows;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Services;
+using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordManagerViewModel : ObservableObject
     {
         public PasswordManagerViewModel( IFileSelectionService fileSelectionService,
-                                          IPasswordExchange passwordExchange,
-                                          IStorageConfiguration storageConfiguration,
-                                          PasswordListViewModel passwordList )
+                                         IDialogService dialogService,
+                                         IPasswordExchange passwordExchange,
+                                         IStorageConfiguration storageConfiguration,
+                                         PasswordListViewModel passwordList )
         {
             _passwordList = passwordList;
             _passwordExchange = passwordExchange;
             _storageConfiguration = storageConfiguration;
             _fileSelectionService = fileSelectionService;
+            _dialogService = dialogService;
 
             _selectInternalStorageCommand = new RelayCommand( ExecuteSelectInternalStorage );
             _selectExternalStorageCommand = new RelayCommand( ExecuteSelectExternalStorage );
@@ -84,7 +87,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void ExecuteSelectInternalStorage( )
         {
-            _storageConfiguration.SelectInternalStorage( );
+            try
+            {
+                _storageConfiguration.SelectInternalStorage( );
+            }
+            catch ( PasswordsFileException e )
+            {
+                _dialogService.ShowFileError( string.Format( "Error while switching storage to internal: {0}", e.Message ) );
+            }
 
             Update( );
         }
@@ -98,7 +108,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( externalFile == null )
                 return;
 
-            _storageConfiguration.SelectExternalStorage( externalFile );
+            try
+            {
+                _storageConfiguration.SelectExternalStorage( externalFile );
+            }
+            catch ( PasswordsFileException e )
+            {
+                _dialogService.ShowFileError( string.Format( "Error while switching storage to external file {0}: {1}", externalFile, e.Message ) );
+            }
 
             Update( );
         }
@@ -114,10 +131,17 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void ExecuteImportPasswords( )
         {
-            foreach (
-                FileInfo importedFile in _fileSelectionService.SelectExternalPasswordFileToImport( _initialDirectory ) )
+            foreach ( FileInfo importedFile in 
+                _fileSelectionService.SelectExternalPasswordFileToImport( _initialDirectory ) )
             {
-                _passwordExchange.ImportPasswords( importedFile );
+                try
+                {
+                    _passwordExchange.ImportPasswords( importedFile );
+                }
+                catch ( PasswordsFileException e )
+                {
+                    _dialogService.ShowFileError( string.Format( "Error while importing from {0}: {1}", importedFile.Name, e.Message ) );
+                }
             }
 
             _passwordList.UpdateList( );
@@ -127,8 +151,17 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             FileInfo targetFile = _fileSelectionService.SelectExternalPasswordFile( _initialDirectory );
 
-            if ( targetFile != null )
+            if ( targetFile == null )
+                return;
+
+            try
+            {
                 _passwordExchange.ExportPasswords( targetFile );
+            }
+            catch ( PasswordsFileException e )
+            {
+                _dialogService.ShowFileError( string.Format( "Error while exporting to {0}: {1}", targetFile.Name, e.Message ) );
+            }
         }
 
 
@@ -145,6 +178,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private readonly PasswordListViewModel _passwordList;
         private readonly IFileSelectionService _fileSelectionService;
+        private readonly IDialogService _dialogService;
 
         private readonly IPasswordExchange _passwordExchange;
         private readonly IStorageConfiguration _storageConfiguration;

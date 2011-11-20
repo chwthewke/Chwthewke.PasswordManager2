@@ -9,17 +9,20 @@ using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
+using Chwthewke.PasswordManager.Storage;
 
 namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
         internal PasswordEditorViewModel( IPasswordEditorModel model,
-                                        IClipboardService clipboardService,
-                                        IGuidToColorConverter guidToColor )
+                                          IClipboardService clipboardService,
+                                          IDialogService dialogService,
+                                          IGuidToColorConverter guidToColor )
         {
             _model = model;
             _clipboardService = clipboardService;
+            _dialogService = dialogService;
             _guidToColor = guidToColor;
             _derivedPasswords = new ObservableCollection<DerivedPasswordViewModel>(
                 _model.DerivedPasswords.Select( dp => new DerivedPasswordViewModel( dp, _model ) ) );
@@ -61,8 +64,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             {
                 _model.Key = string.IsNullOrWhiteSpace( value ) ? string.Empty : value;
 
-                RaisePropertyChanged( () => Key );
-                
+                RaisePropertyChanged( ( ) => Key );
+
                 Update( );
             }
         }
@@ -85,8 +88,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             set
             {
                 _model.Iteration = value;
-                RaisePropertyChanged( () => Iteration );
-                
+                RaisePropertyChanged( ( ) => Iteration );
+
                 Update( );
             }
         }
@@ -97,7 +100,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             set
             {
                 _model.Note = value;
-                RaisePropertyChanged( () => Note );
+                RaisePropertyChanged( ( ) => Note );
 
                 Update( );
             }
@@ -268,7 +271,15 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             if ( !CanExecuteSave( ) )
                 return;
-            _model.Save( );
+
+            try
+            {
+                _model.Save( );
+            }
+            catch ( PasswordsFileException e )
+            {
+                _dialogService.ShowFileError( string.Format( "Error while saving password: {0}", e.Message ) );
+            }
 
             Refresh( );
             RaiseStoreModified( );
@@ -284,9 +295,16 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             if ( !CanExecuteDelete( ) )
                 return;
 
-            _model.Delete( );
+            try
+            {
+                _model.Delete( );
+            }
+            catch ( PasswordsFileException e )
+            {
+                _dialogService.ShowFileError( string.Format( "Error while deleting password: {0}", e.Message ) );
+            }
 
-            Refresh(  );
+            Refresh( );
             RaiseStoreModified( );
         }
 
@@ -343,14 +361,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void Refresh( )
         {
-            RaisePropertyChanged( () => Key );
-            RaisePropertyChanged( () => Note );
-            RaisePropertyChanged( () => Iteration );
-            RaisePropertyChanged( () => IsKeyReadonly );
+            RaisePropertyChanged( ( ) => Key );
+            RaisePropertyChanged( ( ) => Note );
+            RaisePropertyChanged( ( ) => Iteration );
+            RaisePropertyChanged( ( ) => IsKeyReadonly );
 
             foreach ( var derivedPassword in DerivedPasswords )
-                derivedPassword.Refresh(  );
-            
+                derivedPassword.Refresh( );
+
             RequiredGuidColor = ConvertGuid( _model.ExpectedMasterPasswordId );
 
             Update( );
@@ -384,6 +402,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private readonly IPasswordEditorModel _model;
         private readonly IClipboardService _clipboardService;
+        private readonly IDialogService _dialogService;
         private readonly IGuidToColorConverter _guidToColor;
 
         private string _title = NewTitle;

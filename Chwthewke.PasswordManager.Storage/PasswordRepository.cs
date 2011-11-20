@@ -16,7 +16,12 @@ namespace Chwthewke.PasswordManager.Storage
         public IPasswordData PasswordData
         {
             get { return _passwordData; }
-            set { SetPasswordData( value ); }
+            set {
+                if ( value == null )
+                    throw new ArgumentNullException( "value" );
+
+                _passwordData = value;
+            }
         }
 
 
@@ -143,16 +148,6 @@ namespace Chwthewke.PasswordManager.Storage
         private void Save( )
         {
             _passwordData.SavePasswords( _passwordsCache.Values.ToList( ) );
-        }
-
-        private void SetPasswordData( IPasswordData value )
-        {
-            if ( value == null )
-                throw new ArgumentNullException( "value" );
-
-            var oldPasswordData = _passwordData;
-            _passwordData = value;
-            Merge( oldPasswordData.LoadPasswords( ) );
         }
 
         private IDictionary<String, PasswordDigestDocument> _passwordsCache = new Dictionary<string, PasswordDigestDocument>( );

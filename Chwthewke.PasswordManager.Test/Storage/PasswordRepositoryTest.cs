@@ -472,68 +472,6 @@ namespace Chwthewke.PasswordManager.Test.Storage
                          Is.EquivalentTo( new[ ] { targetAbcd, targetIjkl, WithMasterPasswordId( sourceEfgh, targetMasterPasswordId ) } ) );
         }
 
-        [ Test ]
-        public void SetDataMergesPasswords( )
-        {
-            // Set up
-            var sourceData = new InMemoryPasswordData( );
-            sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Efgh } );
-            IPasswordRepository repository = new PasswordRepository( sourceData );
-
-            var targetData = new InMemoryPasswordData( );
-            targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Mnop } );
-
-            // Exercise
-            repository.PasswordData = targetData;
-            // Verify
-            Assert.That( repository.LoadPasswords( ),
-                         Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Mnop } ) );
-        }
-
-        [ Test ]
-        public void SetDataSavesMergedPasswordsToNewData( )
-        {
-            // Set up
-            var sourceData = new InMemoryPasswordData( );
-            sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Efgh } );
-            IPasswordRepository repository = new PasswordRepository( sourceData );
-
-            var targetData = new InMemoryPasswordData( );
-            targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Mnop } );
-
-            // Exercise
-            repository.PasswordData = targetData;
-            // Verify
-            Assert.That( targetData.LoadPasswords( ),
-                         Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Mnop } ) );
-        }
-
-        [ Test ]
-        public void SetDataSavesFurtherPasswordsToNewData( )
-        {
-            // Set up
-            var sourceData = new InMemoryPasswordData( );
-            sourceData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Abcd, TestPasswords.Efgh } );
-            IPasswordRepository repository = new PasswordRepository( sourceData );
-
-            var targetData = new InMemoryPasswordData( );
-            targetData.SavePasswords( new List<PasswordDigestDocument> { TestPasswords.Mnop } );
-            repository.PasswordData = targetData;
-
-            PasswordDigestDocument newPassword = new PasswordDigestDocumentBuilder
-                                                     {
-                                                         Key = "qrst",
-                                                         Hash = new byte[ ] { 0xAB, 0xEF },
-                                                         PasswordGenerator = PasswordGenerators.AlphaNumeric
-                                                     };
-            // Exercise
-            repository.SavePassword( newPassword );
-            // Verify
-            Assert.That( targetData.LoadPasswords( ),
-                         Is.EquivalentTo( new[ ] { TestPasswords.Abcd, TestPasswords.Efgh, TestPasswords.Mnop, newPassword } ) );
-        }
-
-
         private PasswordDigestDocument Update( PasswordDigestDocument source, DateTime updatedOn )
         {
             return new PasswordDigestDocument( source.Digest, source.MasterPasswordId, source.CreatedOn, updatedOn, source.Note );

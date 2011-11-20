@@ -46,7 +46,7 @@ namespace Chwthewke.PasswordManager.Storage
         }
 
 
-        private A WrappingFileExceptions<A>( Func<A> function )
+        private T WrappingFileExceptions<T>( Func<T> function )
         {
             try
             {

@@ -33,7 +33,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
-            _closeCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.Self ) );
+
+            _closeSelfCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.Self ) );
+            _closeAllCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.All ) );
+            _closeAllButSelfCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.AllButSelf ) );
+            _closeToTheRightCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.RightOfSelf ) );
+            _closeInsecureCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.Insecure ) );
 
             Refresh( );
         }
@@ -177,9 +182,54 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _copyCommand; }
         }
 
-        public ICommand CloseCommand
+        public ICommand CloseSelfCommand
         {
-            get { return _closeCommand; }
+            get { return _closeSelfCommand; }
+        }
+
+        public string CloseSelfText
+        {
+            get { return Resources.CloseSelf; }
+        }
+
+        public ICommand CloseAllCommand
+        {
+            get { return _closeAllCommand; }
+        }
+
+        public string CloseAllText
+        {
+            get { return Resources.CloseAll; }
+        }
+
+        public ICommand CloseAllButSelfCommand
+        {
+            get { return _closeAllButSelfCommand; }
+        }
+
+        public string CloseAllButSelfText
+        {
+            get { return Resources.CloseAllButSelf; }
+        }
+
+        public ICommand CloseToTheRightCommand
+        {
+            get { return _closeToTheRightCommand; }
+        }
+
+        public string CloseToTheRightText
+        {
+            get { return Resources.CloseAllToTheRight; }
+        }
+
+        public ICommand CloseInsecureCommand
+        {
+            get { return _closeInsecureCommand; }
+        }
+
+        public string CloseInsecureText
+        {
+            get { return Resources.CloseAllInsecure; }
         }
 
         public void UpdateMasterPassword( SecureString masterPassword )
@@ -384,7 +434,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly IUpdatableCommand _saveCommand;
         private readonly IUpdatableCommand _deleteCommand;
         private readonly IUpdatableCommand _copyCommand;
-        private readonly ICommand _closeCommand;
+
+        private readonly ICommand _closeSelfCommand;
+        private readonly ICommand _closeAllCommand;
+        private readonly ICommand _closeAllButSelfCommand;
+        private readonly ICommand _closeToTheRightCommand;
+        private readonly ICommand _closeInsecureCommand;
 
         public const string NewTitle = "(new)";
     }

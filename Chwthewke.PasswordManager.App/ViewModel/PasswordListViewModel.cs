@@ -2,6 +2,7 @@
 using System.Collections.ObjectModel;
 using System.Linq;
 using System.Windows.Input;
+using System.Windows.Media;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.Storage;
 
@@ -91,8 +92,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             Editors.Add( editor );
 
-            if ( _forcedEditor != null && _forcedEditor.IsPristine )
-                CloseEditor( _forcedEditor );
+            CloseEditors( e => e == _forcedEditor && e.IsPristine );
         }
 
         private void StoreModified( object sender, EventArgs e )
@@ -101,10 +101,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         }
 
 
-        private void EditorRequestedClose( object sender, CloseEditorEventArgs e )
+        internal void EditorRequestedClose( object sender, CloseEditorEventArgs e )
         {
-            PasswordEditorViewModel editor = sender as PasswordEditorViewModel;
-            CloseEditor( editor );
+            var editor = sender as PasswordEditorViewModel;
+            Func<PasswordEditorViewModel, bool> predicate = CloseRequestPredicate( editor, e.Type );
+            CloseEditors( predicate );
         }
 
         private Func<PasswordEditorViewModel, bool> CloseRequestPredicate( PasswordEditorViewModel source, CloseEditorEventType type )
@@ -120,25 +121,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 case CloseEditorEventType.RightOfSelf:
                     return e => Editors.IndexOf( e ) > Editors.IndexOf( source );
                 case CloseEditorEventType.Insecure:
-                    return e => e.RequiredGuidColor == e.ActualGuidColor;
+                    return e => e.RequiredGuidColor == e.ActualGuidColor && e.RequiredGuidColor != Colors.Transparent;
                 default:
                     throw new ArgumentOutOfRangeException( "type" );
             }
-        }
-
-        [ Obsolete ]
-        private void CloseEditor( PasswordEditorViewModel editor )
-        {
-            if ( editor != null )
-            {
-                editor.CloseRequested -= EditorRequestedClose;
-                editor.StoreModified -= StoreModified;
-                Editors.Remove( editor );
-                if ( editor == _forcedEditor )
-                    _forcedEditor = null;
-            }
-
-            EnforceAtLeastOneEditor( );
         }
 
         private void CloseEditors( Func<PasswordEditorViewModel, bool> predicate )

@@ -141,4 +141,19 @@
   <data name="PasswordHintFulfilled" xml:space="preserve">
     <value>The master password is correct.</value>
   </data>
+  <data name="CloseAll" xml:space="preserve">
+    <value>Close all</value>
+  </data>
+  <data name="CloseAllButSelf" xml:space="preserve">
+    <value>Close others</value>
+  </data>
+  <data name="CloseAllInsecure" xml:space="preserve">
+    <value>Close visible passwords</value>
+  </data>
+  <data name="CloseAllToTheRight" xml:space="preserve">
+    <value>Close tabs to the right</value>
+  </data>
+  <data name="CloseSelf" xml:space="preserve">
+    <value>Close</value>
+  </data>
 </root>

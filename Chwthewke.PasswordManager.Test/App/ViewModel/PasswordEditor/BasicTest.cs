@@ -35,6 +35,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.DerivedPasswords.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 
+        // TODO test all close variations
+
         [ Test ]
         public void CloseCommandRaisesCloseRequested( )
         {
@@ -42,7 +44,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             bool closeRequested = false;
             ViewModel.CloseRequested += ( s, e ) => { closeRequested = true; };
             // Exercise
-            ViewModel.CloseCommand.Execute( null );
+            ViewModel.CloseSelfCommand.Execute( null );
             // Verify
             Assert.That( closeRequested, Is.True );
         }

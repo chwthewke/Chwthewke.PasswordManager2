@@ -131,37 +131,13 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         }
 
         [ Test ]
-        public void EditorIsClosedByItsRequest( )
-        {
-            // Setup
-            PasswordList.OpenEditorCommand.Execute( null );
-            // Exercise
-            PasswordList.Editors[ 0 ].CloseCommand.Execute( null );
-            // Verify
-            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
-        }
-
-        [ Test ]
-        public void CloseLastEditorReplacesWithNew( )
-        {
-            // Set up
-            PasswordList.Editors[ 0 ].Key = "abcd";
-            // Exercise
-            PasswordList.Editors[ 0 ].CloseCommand.Execute( null );
-            // Verify
-            Assert.That( PasswordList.Editors.Count, Is.EqualTo( 1 ) );
-            Assert.That( PasswordList.Editors[ 0 ].Key, Is.EqualTo( string.Empty ) );
-            Assert.That( PasswordList.Editors[ 0 ].IsKeyReadonly, Is.False );
-        }
-
-        [ Test ]
         public void PasswordListIsNoLongerUpdatedByClosedEditorChange( )
         {
             // Setup
             PasswordList.OpenEditorCommand.Execute( null );
             var editor = PasswordList.Editors[ 0 ];
             // Exercise
-            editor.CloseCommand.Execute( null );
+            editor.CloseSelfCommand.Execute( null );
             editor.Key = "abcd";
             editor.UpdateMasterPassword( "1234".ToSecureString( ) );
             editor.DerivedPasswords[ 0 ].IsSelected = true;

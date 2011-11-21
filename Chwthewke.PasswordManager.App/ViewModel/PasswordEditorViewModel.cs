@@ -33,7 +33,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _saveCommand = new RelayCommand( ExecuteSave, CanExecuteSave );
             _copyCommand = new RelayCommand( ExecuteCopy, CanExecuteCopy );
             _deleteCommand = new RelayCommand( ExecuteDelete, CanExecuteDelete );
-            _closeCommand = new RelayCommand( RaiseCloseRequested );
+            _closeCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.Self ) );
 
             _increaseIterationCommand = new RelayCommand( ExecuteIncreaseIteration, CanExecuteIncreaseIteration );
             _decreaseIterationCommand = new RelayCommand( ExecuteDecreaseIteration, CanExecuteDecreaseIteration );
@@ -43,7 +43,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public event EventHandler StoreModified;
 
-        public event EventHandler CloseRequested;
+        public event EventHandler<CloseEditorEventArgs> CloseRequested;
 
         public bool IsPristine
         {
@@ -221,11 +221,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 storeModified( this, EventArgs.Empty );
         }
 
-        private void RaiseCloseRequested( )
+        private void RaiseCloseRequested( CloseEditorEventType closeEditorEventType )
         {
-            EventHandler closeRequested = CloseRequested;
+            EventHandler<CloseEditorEventArgs> closeRequested = CloseRequested;
             if ( closeRequested != null )
-                closeRequested( this, EventArgs.Empty );
+                closeRequested( this, new CloseEditorEventArgs( closeEditorEventType ) );
         }
 
         private void OnDerivedPasswordPropertyChanged( object sender, PropertyChangedEventArgs e )

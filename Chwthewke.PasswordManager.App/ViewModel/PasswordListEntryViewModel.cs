@@ -43,12 +43,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _fuzzyDateFormatter.Format( _password.ModifiedOn ); }
         }
 
-        public string GeneratorName
+        public string GeneratorNameAndIteration
         {
             get
             {
-                return Resources.ResourceManager.GetString(
-                    PasswordGeneratorTranslator.NameKey( _password.PasswordGenerator ) );
+                return string.Format( "{0} ({1})",
+                                      Resources.ResourceManager.GetString( PasswordGeneratorTranslator.NameKey( _password.PasswordGenerator ) ),
+                                      _password.Iteration.ToString( ) );
             }
         }
 
@@ -57,7 +58,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _password; }
         }
 
-        public PasswordListEntryViewModel( PasswordDigestDocument password, IGuidToColorConverter guidColorConverter, IFuzzyDateFormatter fuzzyDateFormatter )
+        public PasswordListEntryViewModel( PasswordDigestDocument password, IGuidToColorConverter guidColorConverter,
+                                           IFuzzyDateFormatter fuzzyDateFormatter )
         {
             _password = password;
             _guidColorConverter = guidColorConverter;

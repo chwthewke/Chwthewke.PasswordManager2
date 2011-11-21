@@ -105,7 +105,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             var viewModel = new PasswordListEntryViewModel( password, GuidToColor, FuzzyDateFormatter );
 
             // Verify
-            Assert.That( viewModel.GeneratorName, Is.EqualTo( Resources.PasswordGeneratorccf1451c4b3045a499b0d54ec3c3a7ee ) );
+            Assert.That( viewModel.GeneratorNameAndIteration, Is.EqualTo( Resources.PasswordGeneratorccf1451c4b3045a499b0d54ec3c3a7ee + " (2)" ) );
         }
 
         [ Test ]

@@ -10,8 +10,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     public class PasswordListViewModel : ObservableObject
     {
         public PasswordListViewModel( IPasswordManagerStorage storage,
-                                       PasswordEditorViewModelFactory editorFactory,
-                                       PasswordListEntryViewModel.Factory entryFactory )
+                                      PasswordEditorViewModelFactory editorFactory,
+                                      PasswordListEntryViewModel.Factory entryFactory )
         {
             _storage = storage;
             _editorFactory = editorFactory;
@@ -84,8 +84,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             UpdateList( );
             // TODO this null check goes down all the way, why ?
             PasswordEditorViewModel editor = passwordDocument == null
-                                                  ? _editorFactory.NewPasswordEditor( )
-                                                  : _editorFactory.PasswordEditorFor( passwordDocument );
+                                                 ? _editorFactory.NewPasswordEditor( )
+                                                 : _editorFactory.PasswordEditorFor( passwordDocument );
             editor.CloseRequested += EditorRequestedClose;
             editor.StoreModified += StoreModified;
 
@@ -101,15 +101,51 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         }
 
 
-        private void EditorRequestedClose( object sender, EventArgs e )
+        private void EditorRequestedClose( object sender, CloseEditorEventArgs e )
         {
             PasswordEditorViewModel editor = sender as PasswordEditorViewModel;
             CloseEditor( editor );
         }
 
+        private Func<PasswordEditorViewModel, bool> CloseRequestPredicate( PasswordEditorViewModel source, CloseEditorEventType type )
+        {
+            switch ( type )
+            {
+                case CloseEditorEventType.Self:
+                    return e => e == source;
+                case CloseEditorEventType.All:
+                    return e => true;
+                case CloseEditorEventType.AllButSelf:
+                    return e => e != source;
+                case CloseEditorEventType.RightOfSelf:
+                    return e => Editors.IndexOf( e ) > Editors.IndexOf( source );
+                case CloseEditorEventType.Insecure:
+                    return e => e.RequiredGuidColor == e.ActualGuidColor;
+                default:
+                    throw new ArgumentOutOfRangeException( "type" );
+            }
+        }
+
+        [ Obsolete ]
         private void CloseEditor( PasswordEditorViewModel editor )
         {
             if ( editor != null )
+            {
+                editor.CloseRequested -= EditorRequestedClose;
+                editor.StoreModified -= StoreModified;
+                Editors.Remove( editor );
+                if ( editor == _forcedEditor )
+                    _forcedEditor = null;
+            }
+
+            EnforceAtLeastOneEditor( );
+        }
+
+        private void CloseEditors( Func<PasswordEditorViewModel, bool> predicate )
+        {
+            var editorsToClose = Editors.Where( predicate ).ToList( );
+
+            foreach ( var editor in editorsToClose )
             {
                 editor.CloseRequested -= EditorRequestedClose;
                 editor.StoreModified -= StoreModified;

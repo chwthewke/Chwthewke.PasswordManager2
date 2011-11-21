@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using System.Linq;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Engine;
@@ -38,15 +39,64 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         // TODO test all close variations
 
         [ Test ]
-        public void CloseCommandRaisesCloseRequested( )
+        public void CloseSelfCommandRaisesCloseSelfRequest( )
         {
             // Setup
-            bool closeRequested = false;
-            ViewModel.CloseRequested += ( s, e ) => { closeRequested = true; };
+            IList<CloseEditorEventType> closeRequests = new List<CloseEditorEventType>( );
+            ViewModel.CloseRequested += ( s, e ) => closeRequests.Add( e.Type );
             // Exercise
             ViewModel.CloseSelfCommand.Execute( null );
             // Verify
-            Assert.That( closeRequested, Is.True );
+            Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.Self } ) );
         }
+
+        [Test]
+        public void CloseAllCommandRaisesCloseAllRequest( )
+        {
+            // Setup
+            IList<CloseEditorEventType> closeRequests = new List<CloseEditorEventType>( );
+            ViewModel.CloseRequested += ( s, e ) => closeRequests.Add( e.Type );
+            // Exercise
+            ViewModel.CloseAllCommand.Execute( null );
+            // Verify
+            Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.All } ) );
+        }
+
+        [Test]
+        public void CloseAllButSelfCommandRaisesCloseAllButSelfRequest( )
+        {
+            // Setup
+            IList<CloseEditorEventType> closeRequests = new List<CloseEditorEventType>( );
+            ViewModel.CloseRequested += ( s, e ) => closeRequests.Add( e.Type );
+            // Exercise
+            ViewModel.CloseAllButSelfCommand.Execute( null );
+            // Verify
+            Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.AllButSelf } ) );
+        }
+
+        [Test]
+        public void CloseToTheRightCommandRaisesCloseRightOfSelfRequest( )
+        {
+            // Setup
+            IList<CloseEditorEventType> closeRequests = new List<CloseEditorEventType>( );
+            ViewModel.CloseRequested += ( s, e ) => closeRequests.Add( e.Type );
+            // Exercise
+            ViewModel.CloseToTheRightCommand.Execute( null );
+            // Verify
+            Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.RightOfSelf } ) );
+        }
+
+        [Test]
+        public void CloseInsecureCommandRaisesCloseInsecureRequest( )
+        {
+            // Setup
+            IList<CloseEditorEventType> closeRequests = new List<CloseEditorEventType>( );
+            ViewModel.CloseRequested += ( s, e ) => closeRequests.Add( e.Type );
+            // Exercise
+            ViewModel.CloseInsecureCommand.Execute( null );
+            // Verify
+            Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.Insecure } ) );
+        }
+
     }
 }

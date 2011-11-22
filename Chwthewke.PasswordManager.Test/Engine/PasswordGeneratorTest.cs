@@ -12,8 +12,8 @@ namespace Chwthewke.PasswordManager.Test.Engine
         public void GeneratorUsesDerivedKeyFactoryAndMaterializerToDerivePasswordFromRequest( )
         {
             // Set up
-            IDerivedKeyFactory derivedKeyFactory = new Pkbdf2DerivedKeyFactory( 15000 );
-            IDerivedKeyFactory digestFactory = new Pkbdf2DerivedKeyFactory( 10000 );
+            IDerivedKeyFactory derivedKeyFactory = new Pbkdf2DerivedKeyFactory( 15000 );
+            IDerivedKeyFactory digestFactory = new Pbkdf2DerivedKeyFactory( 10000 );
             PasswordMaterializer materializer = PasswordMaterializers.AlphaNumeric;
 
             PasswordGenerator generator = new PasswordGenerator( derivedKeyFactory, digestFactory, materializer, 32 );
@@ -31,19 +31,19 @@ namespace Chwthewke.PasswordManager.Test.Engine
         public void GeneratorUsesDerivedKeyFactoryToCreateDigest( )
         {
             // Set up
-            IDerivedKeyFactory derivedKeyFactory = new Pkbdf2DerivedKeyFactory( 15000 );
-            IDerivedKeyFactory digestFactory = new Pkbdf2DerivedKeyFactory( 10000 );
+            IDerivedKeyFactory derivedKeyFactory = new Pbkdf2DerivedKeyFactory( 15000 );
+            IDerivedKeyFactory digestFactory = new Pbkdf2DerivedKeyFactory( 10000 );
             PasswordMaterializer materializer = PasswordMaterializers.AlphaNumeric;
 
             PasswordGenerator generator = new PasswordGenerator( derivedKeyFactory, digestFactory, materializer, 32 );
             // Exercise
             DerivedPassword derived = 
-                generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), 1, PasswordGenerators.Full ) );
+                generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), 1, PasswordGenerators.LegacyFull ) );
             // Verify
 
             byte[ ] expectedHash = digestFactory.DeriveKey( PasswordGenerator.DigestSalt, Encoding.UTF8.GetBytes( derived.Password ),
                                                                 1, 32 );
-            PasswordDigest expectedDigest = new PasswordDigest( "abcd", expectedHash, 1, PasswordGenerators.Full );
+            PasswordDigest expectedDigest = new PasswordDigest( "abcd", expectedHash, 1, PasswordGenerators.LegacyFull );
 
             Assert.That( derived.Digest, Is.EqualTo( expectedDigest ) );
         }

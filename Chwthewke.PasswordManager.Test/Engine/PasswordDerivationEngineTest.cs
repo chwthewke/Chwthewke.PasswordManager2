@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.AlphaNumeric ) ).Password;
+                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.LegacyAlphaNumeric ) ).Password;
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( "deDYrBiXvMHN" ) );
         }
@@ -36,7 +36,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.Full ) ).Password;
+                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.LegacyFull ) ).Password;
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( "(Z'?6G3(w(" ) );
         }
@@ -48,7 +48,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 3, PasswordGenerators.Full ) ).Password;
+                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 3, PasswordGenerators.LegacyFull ) ).Password;
             // Verify
             Assert.That( generatedPassword, Is.EqualTo( @"i)?-'@}>`-" ) );
         }
@@ -59,7 +59,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Setup
             // Exercise
             var generatedPassword =
-                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.AlphaNumeric ) );
+                _engine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.LegacyAlphaNumeric ) );
             // Verify
 
             Assert.That( generatedPassword.Password, Is.EqualTo( "deDYrBiXvMHN" ) );
@@ -75,7 +75,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
                                                                           0xCA, 0x63, 0x29, 0xD9, 0x17, 0xFE, 0x42, 0x2B,
                                                                           0x35, 0x8D, 0xC8, 0xF9, 0x46, 0x63, 0xF0, 0x58,
                                                                       },
-                                                                  1, PasswordGenerators.AlphaNumeric );
+                                                                  1, PasswordGenerators.LegacyAlphaNumeric );
             Assert.That( generatedPassword.Digest, Is.EqualTo( expectedDigest ) );
         }
 
@@ -84,11 +84,11 @@ namespace Chwthewke.PasswordManager.Test.Engine
         {
             // Set up
 
-            PasswordRequest request = new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.Full );
+            PasswordRequest request = new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.LegacyFull );
             // Exercise
             IDerivedPassword generatedPassword = _engine.Derive( request );
             // Verify
-            DerivedPassword expected = PasswordGenerators.Generators[ PasswordGenerators.Full ].Derive( request );
+            DerivedPassword expected = PasswordGenerators.Generators[ PasswordGenerators.LegacyFull ].Derive( request );
             Assert.That( generatedPassword.Password, Is.EqualTo( expected.Password ) );
             Assert.That( generatedPassword.Digest, Is.EqualTo( expected.Digest ) );
         }

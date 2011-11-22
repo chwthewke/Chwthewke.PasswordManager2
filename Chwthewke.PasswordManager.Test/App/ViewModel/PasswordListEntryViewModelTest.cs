@@ -45,7 +45,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
                                                   {
                                                       Key = "ABCD",
                                                       Iteration = 2,
-                                                      PasswordGenerator = PasswordGenerators.Full,
+                                                      PasswordGenerator = PasswordGenerators.LegacyFull,
                                                       CreatedOn = new DateTime( 2011, 11, 11 ),
                                                       ModifiedOn = new DateTime( 2011, 11, 14 ),
                                                       Note = "Need this for EFGH"
@@ -71,7 +71,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
                                                   {
                                                       Key = "ABCD",
                                                       Iteration = 2,
-                                                      PasswordGenerator = PasswordGenerators.Full,
+                                                      PasswordGenerator = PasswordGenerators.LegacyFull,
                                                       CreatedOn = new DateTime( 2011, 11, 11 ),
                                                       ModifiedOn = new DateTime( 2011, 11, 14 ),
                                                       Note = "Need this for EFGH"
@@ -94,7 +94,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
                                                   {
                                                       Key = "ABCD",
                                                       Iteration = 2,
-                                                      PasswordGenerator = PasswordGenerators.Full,
+                                                      PasswordGenerator = PasswordGenerators.LegacyFull,
                                                       CreatedOn = new DateTime( 2011, 11, 11 ),
                                                       ModifiedOn = new DateTime( 2011, 11, 14 ),
                                                       Note = "Need this for EFGH"
@@ -118,7 +118,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
                                                   {
                                                       Key = "ABCD",
                                                       Iteration = 2,
-                                                      PasswordGenerator = PasswordGenerators.Full,
+                                                      PasswordGenerator = PasswordGenerators.LegacyFull,
                                                       CreatedOn = new DateTime( 2011, 11, 11 ),
                                                       ModifiedOn = new DateTime( 2011, 11, 14 ),
                                                       Note = "Need this for EFGH",
@@ -142,7 +142,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
                                                   {
                                                       Key = "ABCD",
                                                       Iteration = 2,
-                                                      PasswordGenerator = PasswordGenerators.Full,
+                                                      PasswordGenerator = PasswordGenerators.LegacyFull,
                                                       CreatedOn = new DateTime( 2011, 11, 11 ),
                                                       ModifiedOn = new DateTime( 2011, 11, 14 ),
                                                       Note = "Need this for EFGH"
@@ -164,7 +164,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
                                                   {
                                                       Key = "ABCD",
                                                       Iteration = 2,
-                                                      PasswordGenerator = PasswordGenerators.Full,
+                                                      PasswordGenerator = PasswordGenerators.LegacyFull,
                                                       CreatedOn = new DateTime( 2011, 11, 11 ),
                                                       ModifiedOn = new DateTime( 2011, 11, 14 ),
                                                       Note = ""

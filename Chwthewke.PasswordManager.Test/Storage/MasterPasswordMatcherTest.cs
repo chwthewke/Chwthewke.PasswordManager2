@@ -32,7 +32,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             SecureString masterPassword = "toto".ToSecureString( );
 
             IDerivedPassword match = 
-                _passwordDerivationEngine.Derive( new PasswordRequest( "key1", masterPassword, 10, PasswordGenerators.Full ) );
+                _passwordDerivationEngine.Derive( new PasswordRequest( "key1", masterPassword, 10, PasswordGenerators.LegacyFull ) );
 
             PasswordDigestDocument matchingDocument = 
                 new PasswordDigestDocument( match.Digest, _masterPasswordId, new DateTime( 2011, 11, 1 ), new DateTime( 2011, 11, 1 ), string.Empty );
@@ -40,7 +40,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             _passwordRepository.SavePassword( matchingDocument );
 
             IDerivedPassword nonMatch =
-                _passwordDerivationEngine.Derive( new PasswordRequest( "key2", "tata".ToSecureString( ), 1, PasswordGenerators.AlphaNumeric ) );
+                _passwordDerivationEngine.Derive( new PasswordRequest( "key2", "tata".ToSecureString( ), 1, PasswordGenerators.LegacyAlphaNumeric ) );
 
             PasswordDigestDocument nonMatchingDocument =
                 new PasswordDigestDocument( nonMatch.Digest, Guid.NewGuid( ), new DateTime( 2011, 11, 1 ), new DateTime( 2011, 11, 1 ), string.Empty );
@@ -59,7 +59,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
         {
             // Setup
             IDerivedPassword nonMatch =
-                _passwordDerivationEngine.Derive( new PasswordRequest( "key2", "tata".ToSecureString( ), 1, PasswordGenerators.AlphaNumeric ) );
+                _passwordDerivationEngine.Derive( new PasswordRequest( "key2", "tata".ToSecureString( ), 1, PasswordGenerators.LegacyAlphaNumeric ) );
 
             PasswordDigestDocument nonMatchingDocument =
                 new PasswordDigestDocument( nonMatch.Digest, Guid.NewGuid( ), new DateTime( 2011, 11, 1 ), new DateTime( 2011, 11, 1 ), string.Empty );

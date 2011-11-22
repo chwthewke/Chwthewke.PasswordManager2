@@ -124,7 +124,25 @@ namespace Chwthewke.PasswordManager.App.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Complex.
+        /// </summary>
+        internal static string PasswordGenerator09ec011706614bef8248ef8e3ea0eb81 {
+            get {
+                return ResourceManager.GetString("PasswordGenerator09ec011706614bef8248ef8e3ea0eb81", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Alphanumeric.
+        /// </summary>
+        internal static string PasswordGenerator3b120ddba21b40acb028e086ed8b23c1 {
+            get {
+                return ResourceManager.GetString("PasswordGenerator3b120ddba21b40acb028e086ed8b23c1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Alphanumeric (legacy).
         /// </summary>
         internal static string PasswordGenerator74728a1033d44245b7c95d72fc424c41 {
             get {
@@ -133,7 +151,7 @@ namespace Chwthewke.PasswordManager.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Complex.
+        ///   Looks up a localized string similar to Complex (legacy).
         /// </summary>
         internal static string PasswordGeneratorccf1451c4b3045a499b0d54ec3c3a7ee {
             get {
@@ -142,7 +160,25 @@ namespace Chwthewke.PasswordManager.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generates a 10-character password, using lower- and upper-case letters and digits..
+        ///   Looks up a localized string similar to Generates an 10-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; &quot; &apos; ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `.
+        /// </summary>
+        internal static string PasswordGeneratorDescription09ec011706614bef8248ef8e3ea0eb81 {
+            get {
+                return ResourceManager.GetString("PasswordGeneratorDescription09ec011706614bef8248ef8e3ea0eb81", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generates a 12-character password, using lower- and upper-case letters and digits..
+        /// </summary>
+        internal static string PasswordGeneratorDescription3b120ddba21b40acb028e086ed8b23c1 {
+            get {
+                return ResourceManager.GetString("PasswordGeneratorDescription3b120ddba21b40acb028e086ed8b23c1", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Generates a 12-character password, using lower- and upper-case letters and digits..
         /// </summary>
         internal static string PasswordGeneratorDescription74728a1033d44245b7c95d72fc424c41 {
             get {
@@ -151,7 +187,7 @@ namespace Chwthewke.PasswordManager.App.Properties {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to Generates an 8-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; &quot; &apos; ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `.
+        ///   Looks up a localized string similar to Generates a 10-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; &quot; &apos; ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `.
         /// </summary>
         internal static string PasswordGeneratorDescriptionccf1451c4b3045a499b0d54ec3c3a7ee {
             get {

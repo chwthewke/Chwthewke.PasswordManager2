@@ -330,7 +330,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                     {
                                                         Key = "abcd",
                                                         Hash = new byte[ ] { 0x65 },
-                                                        PasswordGenerator = PasswordGenerators.AlphaNumeric,
+                                                        PasswordGenerator = PasswordGenerators.LegacyAlphaNumeric,
                                                         Iteration = 2,
                                                         MasterPasswordId = Guid.NewGuid( ),
                                                         CreatedOn = new DateTime( 2011, 11, 12 ),
@@ -357,7 +357,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                                                     {
                                                         Key = "abcd",
                                                         Hash = new byte[ ] { 0x65 },
-                                                        PasswordGenerator = PasswordGenerators.AlphaNumeric,
+                                                        PasswordGenerator = PasswordGenerators.LegacyAlphaNumeric,
                                                         Iteration = 2,
                                                         MasterPasswordId = Guid.NewGuid( ),
                                                         CreatedOn = new DateTime( 2011, 11, 12 ),

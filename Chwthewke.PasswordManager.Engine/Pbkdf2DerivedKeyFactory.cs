@@ -3,9 +3,9 @@ using System.Linq;
 
 namespace Chwthewke.PasswordManager.Engine
 {
-    internal class Pkbdf2DerivedKeyFactory : IDerivedKeyFactory
+    internal class Pbkdf2DerivedKeyFactory : IDerivedKeyFactory
     {
-        public Pkbdf2DerivedKeyFactory( int baseIterations )
+        public Pbkdf2DerivedKeyFactory( int baseIterations )
         {
             _baseIterations = baseIterations;
         }

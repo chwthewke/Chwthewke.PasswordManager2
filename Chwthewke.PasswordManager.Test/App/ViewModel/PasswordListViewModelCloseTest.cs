@@ -40,19 +40,19 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             var masterPasswordId = Guid.NewGuid( );
             _abc = new PasswordDigestDocumentBuilder
                        {
-                           Digest = PasswordDigest( "abc", "123", 1, PasswordGenerators.Full ),
+                           Digest = PasswordDigest( "abc", "123", 1, PasswordGenerators.LegacyFull ),
                            MasterPasswordId = masterPasswordId
                        };
 
             _def = new PasswordDigestDocumentBuilder
                        {
-                           Digest = PasswordDigest( "def", "123", 2, PasswordGenerators.AlphaNumeric ),
+                           Digest = PasswordDigest( "def", "123", 2, PasswordGenerators.LegacyAlphaNumeric ),
                            MasterPasswordId = masterPasswordId
                        };
 
             _ghi = new PasswordDigestDocumentBuilder
                        {
-                           Digest = PasswordDigest( "ghi", "123", 1, PasswordGenerators.AlphaNumeric ),
+                           Digest = PasswordDigest( "ghi", "123", 1, PasswordGenerators.LegacyAlphaNumeric ),
                            MasterPasswordId = masterPasswordId
                        };
 

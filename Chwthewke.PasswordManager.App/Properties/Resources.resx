@@ -124,16 +124,16 @@
     <value>Copy {0} Password</value>
   </data>
   <data name="PasswordGenerator74728a1033d44245b7c95d72fc424c41" xml:space="preserve">
-    <value>Alphanumeric</value>
+    <value>Alphanumeric (legacy)</value>
   </data>
   <data name="PasswordGeneratorccf1451c4b3045a499b0d54ec3c3a7ee" xml:space="preserve">
-    <value>Complex</value>
+    <value>Complex (legacy)</value>
   </data>
   <data name="PasswordGeneratorDescription74728a1033d44245b7c95d72fc424c41" xml:space="preserve">
-    <value>Generates a 10-character password, using lower- and upper-case letters and digits.</value>
+    <value>Generates a 12-character password, using lower- and upper-case letters and digits.</value>
   </data>
   <data name="PasswordGeneratorDescriptionccf1451c4b3045a499b0d54ec3c3a7ee" xml:space="preserve">
-    <value>Generates an 8-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; " ' ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `</value>
+    <value>Generates a 10-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; " ' ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `</value>
   </data>
   <data name="PasswordHint" xml:space="preserve">
     <value>This colored hollow border serves as a hint of the master password. When the master password is correctly entered, the border will be filled.</value>
@@ -155,5 +155,17 @@
   </data>
   <data name="CloseSelf" xml:space="preserve">
     <value>Close</value>
+  </data>
+  <data name="PasswordGenerator09ec011706614bef8248ef8e3ea0eb81" xml:space="preserve">
+    <value>Complex</value>
+  </data>
+  <data name="PasswordGenerator3b120ddba21b40acb028e086ed8b23c1" xml:space="preserve">
+    <value>Alphanumeric</value>
+  </data>
+  <data name="PasswordGeneratorDescription09ec011706614bef8248ef8e3ea0eb81" xml:space="preserve">
+    <value>Generates an 10-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; " ' ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `</value>
+  </data>
+  <data name="PasswordGeneratorDescription3b120ddba21b40acb028e086ed8b23c1" xml:space="preserve">
+    <value>Generates a 12-character password, using lower- and upper-case letters and digits.</value>
   </data>
 </root>

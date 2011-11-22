@@ -41,7 +41,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Hash = new byte[ ] { 0x00 };
             Note = string.Empty;
             Iteration = 1;
-            PasswordGenerator = PasswordGenerators.AlphaNumeric;
+            PasswordGenerator = PasswordGenerators.LegacyAlphaNumeric;
         }
 
         public static implicit operator PasswordDigestDocument( PasswordDigestDocumentBuilder builder )

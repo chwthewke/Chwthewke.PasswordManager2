@@ -15,7 +15,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ReloadPasswordUpdatesNote( )
         {
             // Setup
-            var original = AddPassword( "abde", PasswordGenerators.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            var original = AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
             ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
 
             bool noteUpdated = false;
@@ -41,7 +41,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ReloadPasswordUpdatesMasterPasswordIdAndExpectedColor( )
         {
             // Setup
-            var original = AddPassword( "abde", PasswordGenerators.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            var original = AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
             ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
 
             bool expecteColorUpdated = false;
@@ -68,7 +68,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ReloadPasswordUpdatesActualGuidColor( )
         {
             // Setup
-            var original = AddPassword( "abde", PasswordGenerators.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            var original = AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
             ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
             ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
 
@@ -97,7 +97,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ReloadPasswordUpdateIteration( )
         {
             // Set up
-            var original = AddPassword( "abde", PasswordGenerators.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            var original = AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
             ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
 
             bool iterationUpdated = false;
@@ -125,7 +125,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ReloadPasswordUpdatesSelectedDerivedPassword( )
         {
             // Set up
-            var original = AddPassword( "abde", PasswordGenerators.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            var original = AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
             ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
 
             bool derivedPasswordUpdated = false;
@@ -136,7 +136,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
 
             PasswordDigestDocument updated = new PasswordDigestDocumentBuilder
                                                  {
-                                                     Digest = new PasswordDigest( original.Key, original.Hash, 1, PasswordGenerators.Full ),
+                                                     Digest = new PasswordDigest( original.Key, original.Hash, 1, PasswordGenerators.LegacyFull ),
                                                      Note = original.Note,
                                                      CreatedOn = original.CreatedOn,
                                                      ModifiedOn = original.ModifiedOn.AddDays( 1 ),
@@ -148,7 +148,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.Reload( );
             // Verify
             Assert.That( ViewModel.DerivedPasswords.First( p => p.IsSelected ).Model.Generator,
-                         Is.EqualTo( PasswordGenerators.Full ) );
+                         Is.EqualTo( PasswordGenerators.LegacyFull ) );
             Assert.That( derivedPasswordUpdated, Is.True );
         }
 
@@ -156,11 +156,11 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void ReloadPasswordDoesNotUpdateWhenDirty( )
         {
             // Set up
-            var original = AddPassword( "abde", PasswordGenerators.AlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
+            var original = AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
             ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
 
             var updatedDigest = 
-                Engine.Derive( new PasswordRequest( original.Key, "123".ToSecureString( ), 1, PasswordGenerators.Full ) ).Digest;
+                Engine.Derive( new PasswordRequest( original.Key, "123".ToSecureString( ), 1, PasswordGenerators.LegacyFull ) ).Digest;
 
             PasswordDigestDocument updated = new PasswordDigestDocumentBuilder
                                                  {
@@ -177,7 +177,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             ViewModel.Reload( );
             // Verify
             Assert.That( ViewModel.Iteration, Is.EqualTo( 3 ) );
-            Assert.That( ViewModel.DerivedPasswords.First( p => p.IsSelected ).Model.Generator, Is.EqualTo( PasswordGenerators.AlphaNumeric ) );
+            Assert.That( ViewModel.DerivedPasswords.First( p => p.IsSelected ).Model.Generator, Is.EqualTo( PasswordGenerators.LegacyAlphaNumeric ) );
         }
     }
 }

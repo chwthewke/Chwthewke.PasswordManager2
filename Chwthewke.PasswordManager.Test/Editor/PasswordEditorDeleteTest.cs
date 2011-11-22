@@ -25,7 +25,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _passwordData = new InMemoryPasswordData( );
             _passwordRepository = new PasswordRepository( _passwordData );
 
-            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators.Full ) );
+            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators.LegacyFull ) );
 
             _original = new PasswordDigestDocumentBuilder
                             {
@@ -127,7 +127,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
             Assert.That( deleted, Is.True );
             Assert.That( _model.Key, Is.EqualTo( "abij" ) );
-            Assert.That( _model.SelectedPassword.Generator, Is.EqualTo( PasswordGenerators.Full ) );
+            Assert.That( _model.SelectedPassword.Generator, Is.EqualTo( PasswordGenerators.LegacyFull ) );
             Assert.That( _model.Iteration, Is.EqualTo( 3 ) );
             Assert.That( _model.Note, Is.EqualTo( "AB IJ" ) );
 

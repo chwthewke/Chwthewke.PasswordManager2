@@ -26,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.AlphaNumeric ) );
+                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.LegacyAlphaNumeric ) );
             // Verify
             Assert.That( generatedPassword.Password, Is.EqualTo( "deDYrBiXvMHN" ) );
         }
@@ -38,7 +38,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.Full ) );
+                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.LegacyFull ) );
             // Verify
             Assert.That( generatedPassword.Password, Is.EqualTo( "(Z'?6G3(w(" ) );
         }
@@ -50,7 +50,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             // Exercise
             var generatedPassword =
-                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 2, PasswordGenerators.Full ) );
+                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 2, PasswordGenerators.LegacyFull ) );
             // Verify
             Assert.That( generatedPassword.Password, Is.EqualTo( "b;WY;^fB)7" ) );
         }
@@ -61,7 +61,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Setup
             // Exercise
             var generatedPassword =
-                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.AlphaNumeric ) );                
+                _derivationEngine.Derive( new PasswordRequest( Key, Password.ToSecureString( ), 1, PasswordGenerators.LegacyAlphaNumeric ) );                
             // Verify
 
             Assert.That( generatedPassword.Password, Is.EqualTo( "deDYrBiXvMHN" ) );

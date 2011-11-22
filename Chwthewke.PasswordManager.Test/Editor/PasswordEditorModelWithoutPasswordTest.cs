@@ -247,7 +247,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
                                                       Key = "Toto",
                                                       Hash = new byte[ ] { 0x11, 0x22 },
                                                       Iteration = 1,
-                                                      PasswordGenerator = PasswordGenerators.AlphaNumeric,
+                                                      PasswordGenerator = PasswordGenerators.LegacyAlphaNumeric,
                                                       CreatedOn = new DateTime( 2011, 11, 3 ),
                                                       ModifiedOn = new DateTime( 2011, 11, 5 ),
                                                       MasterPasswordId = Guid.NewGuid( ),

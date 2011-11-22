@@ -24,7 +24,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _engine = new PasswordDerivationEngine( PasswordGenerators.Generators );
             _passwordRepository = new PasswordRepository( new InMemoryPasswordData( ) );
 
-            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators.Full ) );
+            var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 3, PasswordGenerators.LegacyFull ) );
 
             _original = new PasswordDigestDocumentBuilder
                             {

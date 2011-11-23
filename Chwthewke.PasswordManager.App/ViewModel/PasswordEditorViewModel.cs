@@ -40,6 +40,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _closeToTheRightCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.RightOfSelf ) );
             _closeInsecureCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.Insecure ) );
 
+            _updateWorker = UpdateBackgroundWorker( ( s, e ) => ( (Action) e.Argument ).Invoke( ) );
+
+
             Refresh( );
         }
 
@@ -64,11 +67,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _model.Key; }
             set
             {
-                _model.Key = string.IsNullOrWhiteSpace( value ) ? string.Empty : value;
-
                 RaisePropertyChanged( ( ) => Key );
 
-                Update( );
+                UpdateWith( ( ) => _model.Key = CoerceKey( value ) );
             }
         }
 
@@ -89,10 +90,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _model.Iteration; }
             set
             {
-                _model.Iteration = value;
                 RaisePropertyChanged( ( ) => Iteration );
-
-                Update( );
+                UpdateWith( ( ) => _model.Iteration = value );
             }
         }
 
@@ -234,9 +233,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public void UpdateMasterPassword( SecureString masterPassword )
         {
-            _model.MasterPassword = masterPassword;
-
-            Update( );
+            UpdateWith( ( ) => _model.MasterPassword = masterPassword );
         }
 
         public void Reload( )
@@ -245,6 +242,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Refresh( );
         }
 
+        private string CoerceKey( string key )
+        {
+            return string.IsNullOrWhiteSpace( key ) ? string.Empty : key;
+        }
 
         private Color ConvertGuid( Guid? masterPasswordId )
         {
@@ -373,6 +374,12 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _deleteCommand.RaiseCanExecuteChanged( );
         }
 
+        private void UpdateWith( Action action )
+        {
+            _updateWorker.CancelAsync( );
+            _updateWorker.RunWorkerAsync( action );
+        }
+
         private void Refresh( )
         {
             RaisePropertyChanged( ( ) => Key );
@@ -385,7 +392,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             RequiredGuidColor = ConvertGuid( _model.ExpectedMasterPasswordId );
 
-            Update( );
+            UpdateWith( ( ) => { } );
         }
 
 
@@ -413,6 +420,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             return string.Format( Resources.CopyPasswordTemplate, qualifier );
         }
 
+        private BackgroundWorker UpdateBackgroundWorker( DoWorkEventHandler handler )
+        {
+            var updateBackgroundWorker = new BackgroundWorker { WorkerSupportsCancellation = true };
+            updateBackgroundWorker.DoWork += handler;
+            updateBackgroundWorker.RunWorkerCompleted += ( s, e ) => { if ( !updateBackgroundWorker.CancellationPending ) Update( ); };
+            return updateBackgroundWorker;
+        }
 
         private readonly IPasswordEditorModel _model;
         private readonly IClipboardService _clipboardService;
@@ -440,6 +454,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _closeAllButSelfCommand;
         private readonly ICommand _closeToTheRightCommand;
         private readonly ICommand _closeInsecureCommand;
+        
+        private readonly BackgroundWorker _updateWorker;
 
         public const string NewTitle = "(new)";
     }

@@ -38,8 +38,7 @@ namespace Chwthewke.PasswordManager.Editor
             _timeProvider = timeProvider;
 
             _derivedPasswords = _derivationEngine.PasswordGenerators
-                .Select<Guid, IDerivedPasswordModel>( g =>
-                                                      new DerivedPasswordModel( _derivationEngine, this, g ) )
+                .Select<Guid, IDerivedPasswordModel>( g => new DerivedPasswordModel( _derivationEngine, g ) )
                 .ToList( );
 
 
@@ -49,15 +48,16 @@ namespace Chwthewke.PasswordManager.Editor
             MasterPassword = new SecureString( );
         }
 
-        private string _key;
 
         public string Key
         {
             get { return _key; }
             set
             {
-                if ( !IsKeyReadonly )
-                    _key = value;
+                if ( IsKeyReadonly )
+                    return;
+                _key = value;
+                UpdateDerivedPasswords( );
             }
         }
 
@@ -68,6 +68,7 @@ namespace Chwthewke.PasswordManager.Editor
             {
                 _masterPassword = value;
                 UpdateMasterPasswordId( );
+                UpdateDerivedPasswords( );
             }
         }
 
@@ -76,7 +77,16 @@ namespace Chwthewke.PasswordManager.Editor
             MasterPasswordId = _masterPasswordMatcher.IdentifyMasterPassword( _masterPassword );
         }
 
-        public int Iteration { get; set; }
+        public int Iteration
+        {
+            get { return _iteration; }
+            set
+            {
+                _iteration = value;
+                UpdateDerivedPasswords( );
+            }
+        }
+
 
         public string Note { get; set; }
 
@@ -156,6 +166,12 @@ namespace Chwthewke.PasswordManager.Editor
             Note = _original.Note;
             Iteration = _original.Iteration;
             SelectedPassword = DerivedPasswords.SingleOrDefault( p => p.Generator == _original.PasswordGenerator );
+        }
+
+        private void UpdateDerivedPasswords( )
+        {
+            foreach ( var derivedPasswordModel in DerivedPasswords )
+                derivedPasswordModel.UpdateDerivedPassword( Key, MasterPassword, Iteration );
         }
 
         private bool CanSaveWithMasterPassword
@@ -252,7 +268,9 @@ namespace Chwthewke.PasswordManager.Editor
             get { return _timeProvider.Now; }
         }
 
-        private SecureString _masterPassword;
+        private string _key;
+        private int _iteration;
+        private SecureString _masterPassword = new SecureString();
 
         private IBaselinePasswordDocument _original;
 

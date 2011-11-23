@@ -21,6 +21,10 @@ namespace Chwthewke.PasswordManager.Test.Editor
             return new IsPasswordModel( generator, NullDerivedPassword.Instance );
         }
 
+        public void UpdateDerivedPassword( string key, SecureString masterPassword, int iteration )
+        {
+        }
+
         private IsPasswordModel( Guid generator, IDerivedPassword derivedPassword )
         {
             Generator = generator;

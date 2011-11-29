@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
@@ -40,8 +41,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _closeToTheRightCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.RightOfSelf ) );
             _closeInsecureCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.Insecure ) );
 
-            _updateWorker = UpdateBackgroundWorker( ( s, e ) => ( (Action) e.Argument ).Invoke( ) );
-
+            // TODO inject
+            _executor = new ExclusiveExecutor( );
+            _scheduler = new DelayedScheduler( );
 
             Refresh( );
         }
@@ -376,8 +378,20 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void UpdateWith( Action action )
         {
-            _updateWorker.CancelAsync( );
-            _updateWorker.RunWorkerAsync( action );
+            RaisePropertyChanged( ( ) => Key );
+            RaisePropertyChanged( ( ) => Note );
+            RaisePropertyChanged( ( ) => Iteration );
+
+            int seq = _executor.Next;
+            var dispatcher = Dispatcher.CurrentDispatcher;
+            _scheduler.Schedule(
+                ( ) =>
+                    {
+                        _executor.ExecuteIfCurrent( seq, action );
+                        _executor.ExecuteIfCurrent( seq, ( ) => dispatcher.BeginInvoke( new Action( Update ) ) );
+                    },
+                100 );
+
         }
 
         private void Refresh( )
@@ -392,7 +406,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
             RequiredGuidColor = ConvertGuid( _model.ExpectedMasterPasswordId );
 
-            UpdateWith( ( ) => { } );
+            Update( );
         }
 
 
@@ -454,7 +468,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _closeAllButSelfCommand;
         private readonly ICommand _closeToTheRightCommand;
         private readonly ICommand _closeInsecureCommand;
-        
+
+        private readonly ExclusiveExecutor _executor;
+        private readonly DelayedScheduler _scheduler;
         private readonly BackgroundWorker _updateWorker;
 
         public const string NewTitle = "(new)";

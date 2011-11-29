@@ -4,6 +4,68 @@ using System.Timers;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
+    internal class ExclusiveExecutor
+    {
+        private volatile int _sequenceNumber;
+        private readonly object _lockObject = new object( );
+
+        public int Next
+        {
+            get
+            {
+                lock ( _lockObject )
+                {
+                    _sequenceNumber += 1;
+                    return _sequenceNumber;
+                }
+            }
+        }
+
+        public void ExecuteIfCurrent( int number, Action action )
+        {
+            if ( number == _sequenceNumber )
+                action( );
+        }
+    }
+
+    internal class DelayedScheduler
+    {
+        private readonly ICollection<Timer> _timers = new HashSet<Timer>( );
+        private readonly object _lockObject = new object(  );
+
+        public void Schedule( Action action, double interval )
+        {
+            StartTimer( (s,e) => action(), interval );
+        }
+
+        private void StartTimer( ElapsedEventHandler handler, double timerDuration )
+        {
+            var timer = new Timer( timerDuration );
+            timer.Elapsed += RemoveTimer;
+            timer.Elapsed += handler;
+
+            lock ( _lockObject )
+            {
+                _timers.Add( timer );
+                timer.Start( );
+            }
+        }
+
+        private void RemoveTimer( object source, ElapsedEventArgs args )
+        {
+            Timer timer = source as Timer;
+            if ( timer == null )
+                return;
+
+            lock ( _lockObject )
+            {
+                timer.Stop( );
+                _timers.Remove( timer );
+            }
+        }
+
+    }
+
     internal class DelayedExecutor
     {
         public const int TimerDuration = 100;

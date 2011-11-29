@@ -15,7 +15,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class PasswordEditorViewModel : ObservableObject
     {
-        internal PasswordEditorViewModel( IPasswordEditorModel model,
+        public PasswordEditorViewModel( IPasswordEditorModel model,
                                           IClipboardService clipboardService,
                                           IDialogService dialogService,
                                           IGuidToColorConverter guidToColor )
@@ -43,6 +43,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             Refresh( );
         }
 
+        public delegate PasswordEditorViewModel Factory( IPasswordEditorModel model );
+
         public event EventHandler StoreModified;
 
         public event EventHandler<CloseEditorEventArgs> CloseRequested;
@@ -65,8 +67,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             set
             {
                 _model.Key = string.IsNullOrWhiteSpace( value ) ? string.Empty : value;
-
                 RaisePropertyChanged( ( ) => Key );
+
+                ScheduleDerivedPasswordUpdate( );
 
                 Update( );
             }
@@ -91,6 +94,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             {
                 _model.Iteration = value;
                 RaisePropertyChanged( ( ) => Iteration );
+
+                ScheduleDerivedPasswordUpdate( );
 
                 Update( );
             }
@@ -236,6 +241,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             _model.MasterPassword = masterPassword;
 
+            ScheduleDerivedPasswordUpdate( );
             Update( );
         }
 
@@ -243,6 +249,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             _model.Reload( );
             Refresh( );
+        }
+
+        private void ScheduleDerivedPasswordUpdate( )
+        {
+            _model.UpdateDerivedPasswords( );
         }
 
 

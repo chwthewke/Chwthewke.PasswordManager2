@@ -26,6 +26,8 @@ namespace Chwthewke.PasswordManager.Editor
         {
         }
 
+        // TODO factory delegate for autofac
+
         private PasswordEditorModel( IPasswordRepository passwordRepository,
                                      IPasswordDerivationEngine derivationEngine,
                                      IMasterPasswordMatcher masterPasswordMatcher,
@@ -38,8 +40,7 @@ namespace Chwthewke.PasswordManager.Editor
             _timeProvider = timeProvider;
 
             _derivedPasswords = _derivationEngine.PasswordGenerators
-                .Select<Guid, IDerivedPasswordModel>( g =>
-                                                      new DerivedPasswordModel( _derivationEngine, this, g ) )
+                .Select( g => new DerivedPasswordModel( _derivationEngine, g ) )
                 .ToList( );
 
 
@@ -49,15 +50,16 @@ namespace Chwthewke.PasswordManager.Editor
             MasterPassword = new SecureString( );
         }
 
-        private string _key;
 
         public string Key
         {
             get { return _key; }
             set
             {
-                if ( !IsKeyReadonly )
-                    _key = value;
+                if ( IsKeyReadonly )
+                    return;
+                _key = value;
+                UpdateDerivedPasswords( );
             }
         }
 
@@ -68,6 +70,7 @@ namespace Chwthewke.PasswordManager.Editor
             {
                 _masterPassword = value;
                 UpdateMasterPasswordId( );
+                UpdateDerivedPasswords( );
             }
         }
 
@@ -76,18 +79,27 @@ namespace Chwthewke.PasswordManager.Editor
             MasterPasswordId = _masterPasswordMatcher.IdentifyMasterPassword( _masterPassword );
         }
 
-        public int Iteration { get; set; }
+        public int Iteration
+        {
+            get { return _iteration; }
+            set
+            {
+                _iteration = value;
+                UpdateDerivedPasswords( );
+            }
+        }
+
 
         public string Note { get; set; }
 
-        public IList<IDerivedPasswordModel> DerivedPasswords
+        public IEnumerable<IDerivedPasswordModel> DerivedPasswords
         {
             get { return _derivedPasswords; }
         }
 
         public IDerivedPasswordModel SelectedPassword { get; set; }
 
-        public Guid? MasterPasswordId { get; set; }
+        public Guid? MasterPasswordId { get; private set; }
 
         public Guid? ExpectedMasterPasswordId
         {
@@ -150,12 +162,18 @@ namespace Chwthewke.PasswordManager.Editor
             return true;
         }
 
+        public void UpdateDerivedPasswords( )
+        {
+            foreach ( var derivedPasswordModel in _derivedPasswords )
+                derivedPasswordModel.UpdateDerivedPassword( Key, MasterPassword, Iteration );
+        }
+
         private void UpdateFromOriginal( )
         {
             _key = _original.Key;
             Note = _original.Note;
-            Iteration = _original.Iteration;
-            SelectedPassword = DerivedPasswords.SingleOrDefault( p => p.Generator == _original.PasswordGenerator );
+            _iteration = _original.Iteration;
+            SelectedPassword = _derivedPasswords.SingleOrDefault( p => p.Generator == _original.PasswordGenerator );
         }
 
         private bool CanSaveWithMasterPassword
@@ -252,7 +270,9 @@ namespace Chwthewke.PasswordManager.Editor
             get { return _timeProvider.Now; }
         }
 
-        private SecureString _masterPassword;
+        private string _key;
+        private int _iteration;
+        private SecureString _masterPassword = new SecureString();
 
         private IBaselinePasswordDocument _original;
 
@@ -261,6 +281,6 @@ namespace Chwthewke.PasswordManager.Editor
         private readonly IPasswordRepository _passwordRepository;
         private readonly IPasswordDerivationEngine _derivationEngine;
         private readonly IMasterPasswordMatcher _masterPasswordMatcher;
-        private readonly IList<IDerivedPasswordModel> _derivedPasswords;
+        private readonly IList<DerivedPasswordModel> _derivedPasswords;
     }
 }

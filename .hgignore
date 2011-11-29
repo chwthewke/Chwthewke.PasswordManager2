@@ -5,3 +5,5 @@ glob:*/bin
 glob:*/obj
 glob:doc/~$*
 glob:*.orig
+syntax: glob
+*.dotCover

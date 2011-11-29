@@ -12,21 +12,29 @@ namespace Chwthewke.PasswordManager.Editor
 
         int Iteration { get; set; }
 
-        IList<IDerivedPasswordModel> DerivedPasswords { get; }
+        void UpdateDerivedPasswords( );
+
+        IEnumerable<IDerivedPasswordModel> DerivedPasswords { get; }
 
         IDerivedPasswordModel SelectedPassword { get; set; }
+
+        string Note { get; set; }
 
         Guid? MasterPasswordId { get; }
         Guid? ExpectedMasterPasswordId { get; }
 
-        bool IsDirty { get; }
-        bool CanSave { get; }
-        bool CanDelete { get; }
-        string Note { get; set; }
-        bool IsKeyReadonly { get; }
-
-        bool Save( );
-        bool Delete( );
         void Reload( );
+
+        bool IsKeyReadonly { get; }
+        
+        bool IsDirty { get; }
+
+        bool CanSave { get; }
+        bool Save( );
+
+        bool CanDelete { get; }
+        bool Delete( );
+
+        
     }
 }

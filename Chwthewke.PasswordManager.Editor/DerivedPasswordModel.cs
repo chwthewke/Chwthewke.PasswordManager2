@@ -6,36 +6,32 @@ namespace Chwthewke.PasswordManager.Editor
 {
     internal class DerivedPasswordModel : IDerivedPasswordModel
     {
-        public DerivedPasswordModel( IPasswordDerivationEngine derivationEngine, IPasswordEditorModel editorModel, 
-            Guid generator )
+        public DerivedPasswordModel( IPasswordDerivationEngine derivationEngine, Guid generator )
         {
             if ( derivationEngine == null ) 
                 throw new ArgumentNullException( "derivationEngine" );
-            if ( editorModel == null )
-                throw new ArgumentNullException( "editorModel" );
 
             _derivationEngine = derivationEngine;
-            _editorModel = editorModel;
             Generator = generator;
+        }
+
+        public void UpdateDerivedPassword( string key, SecureString masterPassword, int iteration )
+        {
+            if ( string.IsNullOrEmpty( key ) || masterPassword.Length == 0 )
+                _derivedPassword = NullDerivedPassword.Instance;
+            else
+                _derivedPassword = _derivationEngine.Derive( new PasswordRequest( key, masterPassword, iteration, Generator ) );
+            
         }
 
         public Guid Generator { get; private set; }
 
         public IDerivedPassword DerivedPassword
         {
-            get
-            {
-                string key = _editorModel.Key;
-                SecureString masterPassword = _editorModel.MasterPassword;
-                if ( string.IsNullOrEmpty( key ) || masterPassword.Length == 0 )
-                    return NullDerivedPassword.Instance;
-
-                int iteration = _editorModel.Iteration;
-                return _derivationEngine.Derive( new PasswordRequest( key, masterPassword, iteration, Generator ) );
-            }
+            get { return _derivedPassword; }
         }
 
-        private readonly IPasswordEditorModel _editorModel;
+        private IDerivedPassword _derivedPassword = NullDerivedPassword.Instance;
         private readonly IPasswordDerivationEngine _derivationEngine;
     }
 

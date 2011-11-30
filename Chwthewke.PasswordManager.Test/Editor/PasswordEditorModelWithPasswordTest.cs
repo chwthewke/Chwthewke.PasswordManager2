@@ -80,12 +80,13 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
         [ Test ]
-        public void SetMasterPasswordToActualChangesDerivedPasswordsAndMasterPasswordId( )
+        public void SetMasterPasswordAndUpdateDerivedPasswordsToActualChangesDerivedPasswordsAndMasterPasswordId( )
         {
             // Set up
 
             // Exercise
             _model.MasterPassword = "1234".ToSecureString( );
+            _model.UpdateDerivedPasswords( );
             // Verify
             Assert.That( _model.DerivedPasswords,
                          Is.EquivalentTo( GeneratorGuids.Select( g => IsPasswordModel.For( g, "abij", "1234".ToSecureString( ), 3 ) ) )
@@ -96,13 +97,32 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.CanDelete, Is.True );
         }
 
-        [ Test ]
-        public void SetMasterPasswordToOtherMakesEditorSaveableButNotDirty( )
+        [Test]
+        public void SetMasterPasswordWithoutUpdateChangesNothing( )
         {
             // Set up
 
             // Exercise
             _model.MasterPassword = "123".ToSecureString( );
+            // Verify
+            Assert.That( _model.DerivedPasswords,
+                         Is.EquivalentTo( GeneratorGuids.Select( IsPasswordModel.Empty ) )
+                             .Using( DerivedPasswordEquality ) );
+            Assert.That( _model.MasterPasswordId, Is.Null );
+            Assert.That( _model.IsDirty, Is.False );
+            Assert.That( _model.CanSave, Is.False );
+            Assert.That( _model.CanDelete, Is.True );
+        }
+
+
+        [Test]
+        public void SetMasterPasswordAndUpdateDerivedPasswordsToOtherMakesEditorSaveableButNotDirty( )
+        {
+            // Set up
+
+            // Exercise
+            _model.MasterPassword = "123".ToSecureString( );
+            _model.UpdateDerivedPasswords( );
             // Verify
             Assert.That( _model.DerivedPasswords,
                          Is.EquivalentTo( GeneratorGuids.Select( g => IsPasswordModel.For( g, "abij", "123".ToSecureString( ), 3 ) ) )
@@ -114,7 +134,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
 
-        [ Test ]
+        [Test]
         public void ChangeGeneratorMakesEditorDirty( )
         {
             // Set up
@@ -132,6 +152,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Set up
             _model.MasterPassword = "AAA".ToSecureString( );
+            _model.UpdateDerivedPasswords( );
             // Exercise
             _model.SelectedPassword = _model.DerivedPasswords.First( p => p != _model.SelectedPassword );
             // Verify
@@ -157,6 +178,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Set up
             _model.MasterPassword = "AAA".ToSecureString( );
+            _model.UpdateDerivedPasswords( );
             // Exercise
             _model.Iteration = 2;
             // Verify
@@ -198,6 +220,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Set up
             _model.MasterPassword = "AAA".ToSecureString( );
+            _model.UpdateDerivedPasswords( );
             // Exercise
             _model.Note = "A rather longer note.";
             // Verify
@@ -211,6 +234,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Set up
             _model.MasterPassword = "4321".ToSecureString( );
+            _model.UpdateDerivedPasswords( );
 
             // Exercise
             _model.Reload( );
@@ -234,6 +258,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Set up
             _model.Iteration = 2;
             _model.MasterPassword = "4321".ToSecureString( );
+            _model.UpdateDerivedPasswords( );
 
             var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 5, PasswordGenerators.LegacyAlphaNumeric ) );
 
@@ -270,6 +295,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         {
             // Set up
             _model.MasterPassword = "4321".ToSecureString( );
+            _model.UpdateDerivedPasswords( );
 
             var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 5, PasswordGenerators.LegacyAlphaNumeric ) );
 

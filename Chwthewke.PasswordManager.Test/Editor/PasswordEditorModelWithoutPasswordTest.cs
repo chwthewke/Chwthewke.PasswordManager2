@@ -69,8 +69,8 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.CanDelete, Is.False );
         }
 
-        [ Test ]
-        public void ChangeKeyAndSelectGeneratorWithMasterPasswodMakesDirtyAndSaveable( )
+        [Test]
+        public void ChangeKeyAndSelectGeneratorWithMasterPasswordMakesDirty( )
         {
             // Set up
             _model.MasterPassword = "AAA".ToSecureString( );
@@ -80,12 +80,28 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
             Assert.That( _model.Key, Is.EqualTo( "kolp" ) );
             Assert.That( _model.IsDirty, Is.True );
+            Assert.That( _model.CanSave, Is.False );
+            Assert.That( _model.CanDelete, Is.False );
+        }
+
+        [Test]
+        public void ChangeKeyAndSelectGeneratorWithMasterPasswordThenUpdateDerivedMakesDirtyAndSaveable( )
+        {
+            // Set up
+            _model.MasterPassword = "AAA".ToSecureString( );
+            // Exercise
+            _model.Key = "kolp";
+            _model.UpdateDerivedPasswords( );
+            _model.SelectedPassword = _model.DerivedPasswords.First( );
+            // Verify
+            Assert.That( _model.Key, Is.EqualTo( "kolp" ) );
+            Assert.That( _model.IsDirty, Is.True );
             Assert.That( _model.CanSave, Is.True );
             Assert.That( _model.CanDelete, Is.False );
         }
 
         [ Test ]
-        public void ChangeKeyWithMasterPasswodMakesDirty( )
+        public void ChangeKeyWithMasterPasswordMakesDirty( )
         {
             // Set up
             _model.MasterPassword = "AAA".ToSecureString( );
@@ -165,6 +181,33 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
         [ Test ]
+        public void SetKeyMasterPasswordAndIterationDoesNotGeneratePasswords( )
+        {
+            // Set up
+            _model.Key = "abcd";
+            _model.MasterPassword = "1234".ToSecureString( );
+            _model.Iteration = 2;
+            // Exercise
+            var derivedPasswords = _model.DerivedPasswords.Select( m => m.DerivedPassword.Password );
+            // Verify
+            Assert.That( derivedPasswords, Has.All.EqualTo( string.Empty ) );
+        }
+
+        [ Test ]
+        public void UpdateDerivedPasswordsWithKeyMasterPasswordAndIterationGeneratesPasswords( )
+        {
+            // Set up
+            _model.Key = "abcd";
+            _model.MasterPassword = "1234".ToSecureString( );
+            _model.Iteration = 2;
+            // Exercise
+            _model.UpdateDerivedPasswords( );
+            var derivedPasswords = _model.DerivedPasswords.Select( m => m.DerivedPassword.Password ).ToList( );
+            // Verify
+            Assert.That( derivedPasswords, Has.None.EqualTo( string.Empty ) );
+        }
+
+        [ Test ]
         public void ChangeOnlyNoteMakesEditorDirty( )
         {
             // Set up
@@ -199,6 +242,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Key = "Toto";
             _model.MasterPassword = "AAA".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.UpdateDerivedPasswords( );
             // Exercise
             _model.Note = "A rather longer note.";
             // Verify
@@ -215,6 +259,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.MasterPassword = "AAA".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
             _model.Iteration = 4;
+            _model.UpdateDerivedPasswords( );
             _model.Note = "A rather longer note.";
 
             // Exercise
@@ -240,6 +285,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.MasterPassword = "AAA".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
             _model.Iteration = 4;
+            _model.UpdateDerivedPasswords( );
             _model.Note = "A rather longer note.";
 
             _passwordRepository.SavePassword( new PasswordDigestDocumentBuilder

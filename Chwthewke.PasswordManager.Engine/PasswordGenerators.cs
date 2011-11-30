@@ -19,12 +19,12 @@ namespace Chwthewke.PasswordManager.Engine
                 {
                     new { Id = LegacyAlphaNumeric, Generator = Sha512Generator( PasswordMaterializers.AlphaNumeric ) },
                     new { Id = LegacyFull, Generator = Sha512Generator( PasswordMaterializers.Full ) },
-                    new { Id = AlphaNumeric, Generator = Pkbdf2Generator( PasswordMaterializers.AlphaNumeric ) },
-                    new { Id = Full, Generator = Pkbdf2Generator( PasswordMaterializers.Full ) },
+                    new { Id = AlphaNumeric, Generator = Pbkdf2Generator( PasswordMaterializers.AlphaNumeric ) },
+                    new { Id = Full, Generator = Pbkdf2Generator( PasswordMaterializers.Full ) },
                 }
                 .ToDictionary( z => z.Id, z => z.Generator );
 
-        private static PasswordGenerator Pkbdf2Generator( PasswordMaterializer materializer )
+        private static PasswordGenerator Pbkdf2Generator( PasswordMaterializer materializer )
         {
             return new PasswordGenerator( new Pbkdf2DerivedKeyFactory( 1000 ), new Pbkdf2DerivedKeyFactory( 1000 ), materializer, 32 );
         }

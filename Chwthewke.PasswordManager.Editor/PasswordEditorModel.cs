@@ -180,7 +180,8 @@ namespace Chwthewke.PasswordManager.Editor
                 return ( IsDirty || MasterPasswordId != _original.MasterPasswordId ) &&
                        MasterPassword.Length > 0 &&
                        !string.IsNullOrEmpty( Key ) &&
-                       SelectedPassword != null;
+                       SelectedPassword != null && 
+                       SelectedPassword.DerivedPassword.Password != string.Empty;
             }
         }
 

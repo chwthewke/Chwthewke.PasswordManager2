@@ -36,6 +36,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Set up
             _model.Key = "abcd";
             _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.UpdateDerivedPasswords( );
 
             // Exercise
             var saved = _model.Save( );
@@ -51,6 +52,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Key = "abcd";
             _model.MasterPassword = "1234".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.UpdateDerivedPasswords( );
             // Exercise
             var saved = _model.Save( );
             // Verify
@@ -65,6 +67,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Key = "abcd";
             _model.MasterPassword = "1234".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.UpdateDerivedPasswords( );
             // Exercise
             _model.Save( );
             var savedPassword = _passwordRepository.LoadPassword( "abcd" );
@@ -79,6 +82,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Key = "abcd";
             _model.MasterPassword = "1234".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.UpdateDerivedPasswords( );
             // Exercise
             _model.Save( );
             var savedPassword = _passwordRepository.LoadPassword( "abcd" );
@@ -94,6 +98,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.MasterPassword = "1234".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
             _model.Iteration = 13;
+            _model.UpdateDerivedPasswords( );
             // Exercise
             _model.Save( );
             var savedPassword = _passwordRepository.LoadPassword( "abcd" );
@@ -108,6 +113,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Key = "abcd";
             _model.MasterPassword = "1234".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.UpdateDerivedPasswords( );
             // Exercise
             _model.Save( );
             var savedPassword = _passwordRepository.LoadPassword( "abcd" );
@@ -122,6 +128,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Key = "abcd";
             _model.MasterPassword = "1234".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.UpdateDerivedPasswords( );
             const string myNote = "My Note.";
             _model.Note = myNote;
             // Exercise
@@ -138,6 +145,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Key = "abcd";
             _model.MasterPassword = "1234".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.UpdateDerivedPasswords( );
             DateTime now = new DateTime( 2011, 11, 7 );
             _timeProvider.Now = now;
             // Exercise
@@ -155,6 +163,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _model.Key = "abcd";
             _model.MasterPassword = "1234".ToSecureString( );
             _model.SelectedPassword = _model.DerivedPasswords.First( );
+            _model.UpdateDerivedPasswords( );
 
             // Exercise
             _model.Save( );

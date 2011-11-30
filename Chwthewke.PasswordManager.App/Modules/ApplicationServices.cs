@@ -27,6 +27,8 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<PasswordManagerApp>( );
 
             builder.RegisterType<DialogService>( ).As<IDialogService>( ).SingleInstance( );
+
+            builder.RegisterType<ExclusiveDelayedScheduler>( ).As<IExclusiveDelayedScheduler>( );
         }
 
         private static GuidToColorConverter GuidToColorConverter

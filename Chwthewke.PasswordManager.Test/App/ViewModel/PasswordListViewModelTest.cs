@@ -2,6 +2,7 @@ using System.Linq;
 using Autofac;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Storage;
+using Chwthewke.PasswordManager.Test.App.Services;
 using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
 using NUnit.Framework;
@@ -25,7 +26,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         [ SetUp ]
         public void SetUpContainer( )
         {
-            TestInjection.TestContainer( ).InjectProperties( this );
+            TestInjection.TestContainer( ImmediateScheduler.Module ).InjectProperties( this );
 
             PasswordRepository.PasswordData = new InMemoryPasswordData( );
         }

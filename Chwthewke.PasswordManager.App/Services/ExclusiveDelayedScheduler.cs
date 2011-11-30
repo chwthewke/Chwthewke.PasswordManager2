@@ -4,7 +4,7 @@ using System.Timers;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
-    public class ExclusiveDelayedScheduler
+    public class ExclusiveDelayedScheduler : IExclusiveDelayedScheduler
     {
         public void ScheduleActions( double delay, IEnumerable<Action> actions )
         {

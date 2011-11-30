@@ -5,6 +5,7 @@ using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
+using Chwthewke.PasswordManager.Test.App.Services;
 using Chwthewke.PasswordManager.Test.Storage;
 using Moq;
 using NUnit.Framework;
@@ -20,10 +21,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public PasswordEditorViewModelFactory ViewModelFactory { get; set; }
         public PasswordEditorViewModel ViewModel;
 
-//        public IPasswordDatabase PasswordDatabase { get; set; }
-//        public PasswordEditorControllerFactory ControllerFactory { get; set; }
-//        public IEnumerable<IPasswordGenerator> Generators { get; set; }
-
         public IPasswordDerivationEngine Engine { get; set; }
         public IPasswordManagerStorage Storage { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
@@ -38,7 +35,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         public void SetUpPasswordEditorViewModel( )
         {
             TestInjection
-                .TestContainer( TestInjection.Mock<IClipboardService>( ) )
+                .TestContainer( TestInjection.Mock<IClipboardService>( ),
+                                ImmediateScheduler.Module )
                 .InjectProperties( this );
 
             PasswordRepository.PasswordData = new InMemoryPasswordData( );

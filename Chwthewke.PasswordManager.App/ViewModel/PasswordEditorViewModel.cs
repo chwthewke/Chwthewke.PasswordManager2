@@ -17,11 +17,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     public class PasswordEditorViewModel : ObservableObject
     {
         public PasswordEditorViewModel( IPasswordEditorModel model,
+                                        IExclusiveDelayedScheduler scheduler,
                                         IClipboardService clipboardService,
                                         IDialogService dialogService,
                                         IGuidToColorConverter guidToColor )
         {
             _model = model;
+            _scheduler = scheduler;
             _clipboardService = clipboardService;
             _dialogService = dialogService;
             _guidToColor = guidToColor;
@@ -40,8 +42,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _closeAllButSelfCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.AllButSelf ) );
             _closeToTheRightCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.RightOfSelf ) );
             _closeInsecureCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.Insecure ) );
-
-            _scheduler = new ExclusiveDelayedScheduler( );
 
             Refresh( );
         }
@@ -258,10 +258,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             Dispatcher currentDispatcher = Dispatcher.CurrentDispatcher;
             var actions = new Action[ ]
-                                    {
-                                        ( ) => _model.UpdateDerivedPasswords( ),
-                                        ( ) => currentDispatcher.BeginInvoke( new Action( Update ) )
-                                    };
+                              {
+                                  ( ) => _model.UpdateDerivedPasswords( ),
+                                  ( ) => currentDispatcher.BeginInvoke( new Action( Update ) )
+                              };
 
             _scheduler.ScheduleActions( 200, actions );
         }
@@ -462,7 +462,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _closeToTheRightCommand;
         private readonly ICommand _closeInsecureCommand;
 
-        private readonly ExclusiveDelayedScheduler _scheduler;
+        private readonly IExclusiveDelayedScheduler _scheduler;
 
         public const string NewTitle = "(new)";
     }

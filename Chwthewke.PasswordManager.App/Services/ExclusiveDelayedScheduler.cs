@@ -8,7 +8,26 @@ namespace Chwthewke.PasswordManager.App.Services
     {
         public void ScheduleActions( double delay, IEnumerable<Action> actions )
         {
-            
+            int actionNumber;
+            lock ( _lockObject )
+            {
+                actionNumber = ++_sequenceNumber;
+            }
+
+            Action compoundAction =
+                ( ) =>
+                    {
+                        foreach ( var action in actions )
+                        {
+                            lock ( _lockObject )
+                            {
+                                if ( _sequenceNumber != actionNumber )
+                                    return;
+                            }
+                            action( );
+                        }
+                    };
+            StartTimer( delay, compoundAction );
         }
 
         private void StartTimer( double delay, Action action )

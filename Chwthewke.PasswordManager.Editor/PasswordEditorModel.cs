@@ -59,7 +59,6 @@ namespace Chwthewke.PasswordManager.Editor
                 if ( IsKeyReadonly )
                     return;
                 _key = value;
-                UpdateDerivedPasswords( );
             }
         }
 
@@ -70,7 +69,6 @@ namespace Chwthewke.PasswordManager.Editor
             {
                 _masterPassword = value;
                 UpdateMasterPasswordId( );
-                UpdateDerivedPasswords( );
             }
         }
 
@@ -85,7 +83,6 @@ namespace Chwthewke.PasswordManager.Editor
             set
             {
                 _iteration = value;
-                UpdateDerivedPasswords( );
             }
         }
 

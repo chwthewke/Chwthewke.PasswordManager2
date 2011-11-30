@@ -5,6 +5,7 @@ using System.Linq;
 using System.Security;
 using System.Windows.Input;
 using System.Windows.Media;
+using System.Windows.Threading;
 using Chwthewke.MvvmUtils;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
@@ -16,9 +17,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     public class PasswordEditorViewModel : ObservableObject
     {
         public PasswordEditorViewModel( IPasswordEditorModel model,
-                                          IClipboardService clipboardService,
-                                          IDialogService dialogService,
-                                          IGuidToColorConverter guidToColor )
+                                        IClipboardService clipboardService,
+                                        IDialogService dialogService,
+                                        IGuidToColorConverter guidToColor )
         {
             _model = model;
             _clipboardService = clipboardService;
@@ -39,6 +40,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _closeAllButSelfCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.AllButSelf ) );
             _closeToTheRightCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.RightOfSelf ) );
             _closeInsecureCommand = new RelayCommand( ( ) => RaiseCloseRequested( CloseEditorEventType.Insecure ) );
+
+            _scheduler = new ExclusiveDelayedScheduler( );
 
             Refresh( );
         }
@@ -253,7 +256,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void ScheduleDerivedPasswordUpdate( )
         {
-            _model.UpdateDerivedPasswords( );
+            Dispatcher currentDispatcher = Dispatcher.CurrentDispatcher;
+            var actions = new Action[ ]
+                                    {
+                                        ( ) => _model.UpdateDerivedPasswords( ),
+                                        ( ) => currentDispatcher.BeginInvoke( new Action( Update ) )
+                                    };
+
+            _scheduler.ScheduleActions( 200, actions );
         }
 
 
@@ -451,6 +461,8 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _closeAllButSelfCommand;
         private readonly ICommand _closeToTheRightCommand;
         private readonly ICommand _closeInsecureCommand;
+
+        private readonly ExclusiveDelayedScheduler _scheduler;
 
         public const string NewTitle = "(new)";
     }

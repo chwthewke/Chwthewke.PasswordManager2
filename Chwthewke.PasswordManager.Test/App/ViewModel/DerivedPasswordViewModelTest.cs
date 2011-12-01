@@ -122,7 +122,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.IsSelected, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void SetKeyAndMasterPasswordAndUpdateSetsContent( )
         {
             // Set up
@@ -131,6 +131,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 
             _editorModel.Key = "abc";
             _editorModel.MasterPassword = "123".ToSecureString( );
+            _editorModel.UpdateDerivedPasswords(  );
             // Exercise
             _viewModel.Update( );
             // Verify
@@ -138,18 +139,20 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( _viewModel.Content, Is.EqualTo( "[0dY\\,&<P{" ) );
         }
 
-        [Test]
+        [ Test ]
         public void UnSetKeyAndMasterPasswordAndUpdateSetsContentEmpty( )
         {
             // Set up
             _editorModel.Key = "abc";
             _editorModel.MasterPassword = "123".ToSecureString( );
-            _viewModel.Update(  );
-            
+            _editorModel.UpdateDerivedPasswords( );
+            _viewModel.Update( );
+
             bool propertyChanged = false;
             _viewModel.PropertyChanged += ( s, e ) => { propertyChanged |= e.PropertyName == "Content"; };
 
             _editorModel.MasterPassword = "".ToSecureString( );
+            _editorModel.UpdateDerivedPasswords( );
             // Exercise
             _viewModel.Update( );
             // Verify

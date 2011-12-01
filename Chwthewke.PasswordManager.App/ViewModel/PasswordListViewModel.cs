@@ -83,7 +83,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private void OpenNewEditorInternal( PasswordDigestDocument passwordDocument )
         {
             UpdateList( );
-            // TODO this null check goes down all the way, why ?
+
             PasswordEditorViewModel editor = passwordDocument == null
                                                  ? _editorFactory.NewPasswordEditor( )
                                                  : _editorFactory.PasswordEditorFor( passwordDocument );

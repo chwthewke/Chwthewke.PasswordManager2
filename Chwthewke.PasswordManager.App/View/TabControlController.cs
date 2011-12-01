@@ -9,7 +9,6 @@ namespace Chwthewke.PasswordManager.App.View
 {
     public class TabControlController
     {
-        // TODO unit test me
         public TabControlController( ITabbed tabbed )
         {
             _tabbed = tabbed;

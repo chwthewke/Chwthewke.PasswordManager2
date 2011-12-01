@@ -6,7 +6,7 @@ using NUnit.Framework;
 namespace Chwthewke.PasswordManager.Test.Engine
 {
     [ TestFixture ]
-    [ Ignore ] // TODO figure how to setup an integration category
+    [ Category( "Long" ) ]
     public class Pbkdf2DerivedKeyFactoryTest
     {
         [ Test ]

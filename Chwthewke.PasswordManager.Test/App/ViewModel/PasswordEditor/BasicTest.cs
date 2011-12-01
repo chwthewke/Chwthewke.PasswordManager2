@@ -36,8 +36,6 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( ViewModel.DerivedPasswords.Select( s => s.Content ), Has.All.EqualTo( string.Empty ) );
         }
 
-        // TODO test all close variations
-
         [ Test ]
         public void CloseSelfCommandRaisesCloseSelfRequest( )
         {

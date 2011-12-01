@@ -27,7 +27,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
 
-            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ) );
+            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ), new NewPasswordDocument( ) );
         }
 
         [ Test ]
@@ -69,7 +69,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.CanDelete, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void ChangeKeyAndSelectGeneratorWithMasterPasswordMakesDirty( )
         {
             // Set up
@@ -84,7 +84,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.CanDelete, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void ChangeKeyAndSelectGeneratorWithMasterPasswordThenUpdateDerivedMakesDirtyAndSaveable( )
         {
             // Set up

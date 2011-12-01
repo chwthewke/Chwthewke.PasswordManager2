@@ -40,7 +40,3 @@ using System.Runtime.InteropServices;
 [ assembly: AssemblyFileVersion( "2.5.0.0" ) ]
 
 [assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Test" )]
-// TEMP
-[assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.App" )]
-[assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Editor" )]
-[assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Storage" )]

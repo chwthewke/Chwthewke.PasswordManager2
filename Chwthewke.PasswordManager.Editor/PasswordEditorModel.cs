@@ -9,26 +9,8 @@ namespace Chwthewke.PasswordManager.Editor
 {
     internal class PasswordEditorModel : IPasswordEditorModel
     {
-        public PasswordEditorModel( IPasswordRepository passwordRepository,
-                                    IPasswordDerivationEngine derivationEngine,
-                                    IMasterPasswordMatcher masterPasswordMatcher,
-                                    ITimeProvider timeProvider )
-            : this( passwordRepository, derivationEngine, masterPasswordMatcher, timeProvider, new NewPasswordDocument( ) )
-        {
-        }
 
         public PasswordEditorModel( IPasswordRepository passwordRepository,
-                                    IPasswordDerivationEngine derivationEngine,
-                                    IMasterPasswordMatcher masterPasswordMatcher,
-                                    ITimeProvider timeProvider,
-                                    PasswordDigestDocument original )
-            : this( passwordRepository, derivationEngine, masterPasswordMatcher, timeProvider, new BaselinePasswordDocument( original ) )
-        {
-        }
-
-        // TODO factory delegate for autofac
-
-        private PasswordEditorModel( IPasswordRepository passwordRepository,
                                      IPasswordDerivationEngine derivationEngine,
                                      IMasterPasswordMatcher masterPasswordMatcher,
                                      ITimeProvider timeProvider,

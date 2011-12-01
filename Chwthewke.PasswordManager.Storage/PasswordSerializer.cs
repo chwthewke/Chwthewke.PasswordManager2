@@ -119,7 +119,6 @@ namespace Chwthewke.PasswordManager.Storage
 
         private int ExtractIteration( string s )
         {
-            // TODO unit test coercion
             return string.IsNullOrEmpty( s ) ? 1 : Math.Max( 1, int.Parse( s ) );
         }
 

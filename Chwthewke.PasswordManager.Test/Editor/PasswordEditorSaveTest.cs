@@ -27,7 +27,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             _timeProvider = new StubTimeProvider { Now = new DateTime( 2011, 11, 16 ) };
 
             IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
-            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider );
+            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider, new NewPasswordDocument( ) );
         }
 
         [ Test ]

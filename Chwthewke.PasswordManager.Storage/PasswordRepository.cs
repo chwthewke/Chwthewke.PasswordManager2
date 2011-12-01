@@ -52,7 +52,6 @@ namespace Chwthewke.PasswordManager.Storage
             if ( password.IsDeleted )
                 throw new ArgumentException( "A new password must have non-empty hash.", "password" );
 
-            // TODO internal IDisposable ?
             Load( );
 
             var mergedPasswords = Merge( new[ ] { password }, false );

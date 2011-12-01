@@ -39,7 +39,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
 
-            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ), _original );
+            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ), new BaselinePasswordDocument( _original ) );
         }
 
         [ Test ]

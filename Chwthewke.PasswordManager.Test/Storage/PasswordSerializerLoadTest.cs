@@ -93,6 +93,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( passwordDigest.MasterPasswordId, Is.EqualTo( guid ) );
         }
 
+
         [ Test ]
         public void LoadReadsPasswordSettingsGuidFromElement( )
         {
@@ -108,6 +109,50 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
             Assert.That( passwordDigest.PasswordGenerator, Is.EqualTo( guid ) );
         }
+
+        [ Test ]
+        public void LoadReadsIterationFromElement( )
+        {
+            // Setup
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", Iteration = 13 };
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement, element ) );
+            // Exercise
+            IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
+            // Verify
+            PasswordDigestDocument passwordDigest = passwords.First( );
+            Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
+            Assert.That( passwordDigest.Iteration, Is.EqualTo( 13 ) );
+        }
+
+        [ Test ]
+        public void LoadReadsNoIterationFromElementAs1( )
+        {
+            // Setup
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey" };
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement, element ) );
+            // Exercise
+            IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
+            // Verify
+            PasswordDigestDocument passwordDigest = passwords.First( );
+            Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
+            Assert.That( passwordDigest.Iteration, Is.EqualTo( 1 ) );
+        }
+
+        [ Test ]
+        public void LoadReadsInvalidIterationFromElementAs1( )
+        {
+            // Setup
+            XElement element = new PasswordDigestDocumentBuilder { Key = "aKey", Iteration = -13 };
+
+            SaveXml( new XElement( PasswordSerializer.PasswordStoreElement, element ) );
+            // Exercise
+            IEnumerable<PasswordDigestDocument> passwords = _serializer.Load( _textResource );
+            // Verify
+            PasswordDigestDocument passwordDigest = passwords.First( );
+            Assert.That( passwordDigest.Key, Is.EqualTo( "aKey" ) );
+            Assert.That( passwordDigest.Iteration, Is.EqualTo( 1 ) );
+        }
+
 
         [ Test ]
         public void LoadReadsCreationDateFromElement( )

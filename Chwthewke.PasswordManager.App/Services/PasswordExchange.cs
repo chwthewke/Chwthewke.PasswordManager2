@@ -11,7 +11,6 @@ namespace Chwthewke.PasswordManager.App.Services
             _storage = storage;
         }
 
-        // TODO possibly return a "report" to be presented to the user
         public void ImportPasswords( FileInfo externalPasswordFile )
         {
             var importedPasswords =

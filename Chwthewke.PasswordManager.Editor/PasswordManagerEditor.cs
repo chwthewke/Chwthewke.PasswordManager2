@@ -22,12 +22,14 @@ namespace Chwthewke.PasswordManager.Editor
     {
         public IPasswordEditorModel EmptyModel( )
         {
-            return new PasswordEditorModel( _passwordRepository, _derivationEngine, _masterPasswordMatcher, _timeProvider );
+            return new PasswordEditorModel( _passwordRepository, _derivationEngine, _masterPasswordMatcher, _timeProvider,
+                                            new NewPasswordDocument( ) );
         }
 
         public IPasswordEditorModel ModelFor( PasswordDigestDocument password )
         {
-            return new PasswordEditorModel( _passwordRepository, _derivationEngine, _masterPasswordMatcher, _timeProvider, password );
+            return new PasswordEditorModel( _passwordRepository, _derivationEngine, _masterPasswordMatcher, _timeProvider,
+                                            new BaselinePasswordDocument( password ) );
         }
 
         private readonly IPasswordRepository _passwordRepository;

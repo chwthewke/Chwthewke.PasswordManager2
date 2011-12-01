@@ -41,7 +41,3 @@ using System.Runtime.InteropServices;
 
 // Visibility
 [ assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Test" ) ]
-// TEMPORARY
-
-[assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.App" )]
-[assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Editor" )]

@@ -1,4 +1,6 @@
-﻿using System.Timers;
+﻿using System;
+using System.Collections.Generic;
+using System.Timers;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
@@ -8,6 +10,11 @@ namespace Chwthewke.PasswordManager.App.Services
         public TimerShim( double delay )
         {
             _timer = new Timer( delay );
+        }
+
+        public double Delay
+        {
+            get { return _timer.Interval; }
         }
 
         public void Start( )
@@ -20,11 +27,25 @@ namespace Chwthewke.PasswordManager.App.Services
             _timer.Stop( );
         }
 
-        public event ElapsedEventHandler Elapsed
+        public event EventHandler Elapsed
         {
-            add { _timer.Elapsed += value; }
-            remove { _timer.Elapsed -= value; }
+            add
+            {
+                ElapsedEventHandler elapsed = ( s, e ) => value( s, e );
+                _handlerTranslations[ value ] = elapsed;
+                _timer.Elapsed += elapsed;
+            }
+
+            remove
+            {
+                ElapsedEventHandler elapsed;
+                _handlerTranslations.TryGetValue( value, out elapsed );
+                _timer.Elapsed -= elapsed;
+            }
         }
+
+        private readonly IDictionary<EventHandler, ElapsedEventHandler> _handlerTranslations = 
+            new Dictionary<EventHandler, ElapsedEventHandler>( );
 
         private readonly Timer _timer;
     }

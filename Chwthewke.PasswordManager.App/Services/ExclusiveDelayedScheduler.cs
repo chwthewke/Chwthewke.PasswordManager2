@@ -49,7 +49,8 @@ namespace Chwthewke.PasswordManager.App.Services
             }
         }
 
-        private void RemoveTimer( object source, ElapsedEventArgs e )
+
+        private void RemoveTimer( object source, EventArgs e )
         {
             var timer = source as ITimer;
             if ( timer == null )

@@ -48,7 +48,7 @@
                        Guid="2F3B6B26-EE5A-4143-94A5-5D597E0AB82D">
               <File Id="AutofacDll"
                     Name="Autofac.dll"
-                    Source="$(var.SolutionDir)\lib\autofac\Autofac.dll"/>
+                    Source="$(var.SolutionDir)\packages\Autofac.2.5.2.830\lib\NET40\Autofac.dll"/>
             </Component>
             <Component Id="StartMenuShortcut"
                        Guid="BB6ED33F-5ED3-4D84-AD21-9412E2BCC00D">

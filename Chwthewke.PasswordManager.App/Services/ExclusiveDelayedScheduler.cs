@@ -6,6 +6,11 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class ExclusiveDelayedScheduler : IExclusiveDelayedScheduler
     {
+        public ExclusiveDelayedScheduler( Func<double, ITimer> timerFactory )
+        {
+            _timerFactory = timerFactory;
+        }
+
         public void ScheduleActions( double delay, IEnumerable<Action> actions )
         {
             int actionNumber;
@@ -32,7 +37,7 @@ namespace Chwthewke.PasswordManager.App.Services
 
         private void StartTimer( double delay, Action action )
         {
-            var timer = new Timer( delay );
+            var timer = _timerFactory( delay );
 
             timer.Elapsed += RemoveTimer;
             timer.Elapsed += ( s, e ) => action( );
@@ -46,7 +51,7 @@ namespace Chwthewke.PasswordManager.App.Services
 
         private void RemoveTimer( object source, ElapsedEventArgs e )
         {
-            var timer = source as Timer;
+            var timer = source as ITimer;
             if ( timer == null )
                 return;
 
@@ -59,6 +64,8 @@ namespace Chwthewke.PasswordManager.App.Services
 
         private volatile int _sequenceNumber = 0;
         private readonly object _lockObject = new object( );
-        private readonly ICollection<Timer> _timers = new HashSet<Timer>( );
+        private readonly ICollection<ITimer> _timers = new HashSet<ITimer>( );
+        private readonly Func<double, ITimer> _timerFactory;
+
     }
 }

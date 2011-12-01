@@ -20,6 +20,8 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterType<FuzzyDateFormatter>( ).As<IFuzzyDateFormatter>( );
             builder.RegisterType<TimeProvider>( ).As<ITimeProvider>( );
 
+            builder.RegisterType<TimerShim>( ).As<ITimer>( );
+
             builder.RegisterInstance( Settings.Default ).As<Settings>( );
             builder.RegisterType<StorageConfiguration>( ).As<IStorageConfiguration>( ).SingleInstance( );
 

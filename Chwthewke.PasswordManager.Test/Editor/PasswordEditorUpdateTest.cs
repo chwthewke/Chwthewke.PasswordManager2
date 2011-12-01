@@ -41,7 +41,8 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
 
-            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider, new BaselinePasswordDocument( _original ) );
+            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider,
+                                              new BaselinePasswordDocument( _original ) );
         }
 
         [ Test ]
@@ -164,7 +165,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( savedPassword.ModifiedOn, Is.EqualTo( now ) );
         }
 
-        [Test]
+        [ Test ]
         public void AfterSaveEditorIsNotDirtyAndKeyIsReadonly( )
         {
             // Set up
@@ -178,7 +179,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.CanSave, Is.False );
             Assert.That( _model.CanDelete, Is.True );
             Assert.That( _model.IsKeyReadonly, Is.True );
-        } 
-
+        }
     }
 }

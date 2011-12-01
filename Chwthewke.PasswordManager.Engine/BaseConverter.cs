@@ -16,7 +16,7 @@ namespace Chwthewke.PasswordManager.Engine
         {
             if ( BytesNeeded( numDigits ) > bytes.Length )
                 throw new ArgumentException( "Insufficient bytes provided to convert to this number of digits" );
-            
+
             BigInteger value = CreatePositiveBigIntegerFromUsedBytes( numDigits, bytes );
 
             return EnumerateDigits( value, numDigits ).ToArray( );

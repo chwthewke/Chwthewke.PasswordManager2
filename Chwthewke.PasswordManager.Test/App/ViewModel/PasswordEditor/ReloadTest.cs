@@ -159,7 +159,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             var original = AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
             ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
 
-            var updatedDigest = 
+            var updatedDigest =
                 Engine.Derive( new PasswordRequest( original.Key, "123".ToSecureString( ), 1, PasswordGenerators.LegacyFull ) ).Digest;
 
             PasswordDigestDocument updated = new PasswordDigestDocumentBuilder

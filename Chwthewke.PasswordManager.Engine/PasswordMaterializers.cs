@@ -10,6 +10,5 @@
 
         internal const string SymbolsString62 =
             "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
     }
 }

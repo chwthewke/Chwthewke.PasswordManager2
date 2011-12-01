@@ -19,6 +19,5 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Verify
             Assert.That( extracted, Is.EqualTo( "abcd1234" ) );
         }
-
     }
 }

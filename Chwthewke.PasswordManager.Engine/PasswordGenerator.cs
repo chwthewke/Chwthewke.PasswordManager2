@@ -16,8 +16,8 @@ namespace Chwthewke.PasswordManager.Engine
                                                               0x28, 0x2d, 0x54, 0x72, 0x66,
                                                           };
 
-        public PasswordGenerator( IDerivedKeyFactory derivedPasswordFactory, IDerivedKeyFactory digestFactory, 
-            PasswordMaterializer materializer, int digestLength )
+        public PasswordGenerator( IDerivedKeyFactory derivedPasswordFactory, IDerivedKeyFactory digestFactory,
+                                  PasswordMaterializer materializer, int digestLength )
         {
             _derivedPasswordFactory = derivedPasswordFactory;
             _digestFactory = digestFactory;

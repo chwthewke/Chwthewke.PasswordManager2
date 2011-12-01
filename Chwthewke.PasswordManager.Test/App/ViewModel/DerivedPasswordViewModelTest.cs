@@ -131,7 +131,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 
             _editorModel.Key = "abc";
             _editorModel.MasterPassword = "123".ToSecureString( );
-            _editorModel.UpdateDerivedPasswords(  );
+            _editorModel.UpdateDerivedPasswords( );
             // Exercise
             _viewModel.Update( );
             // Verify

@@ -32,8 +32,8 @@ namespace Chwthewke.PasswordManager.Engine
         private static PasswordGenerator Sha512Generator( PasswordMaterializer materializer )
         {
             return new PasswordGenerator( new Sha512DerivedKeyFactory( ( s, p ) => InternalSalt.Concat( p ).Concat( s ).ToArray( ) ),
-                                           new Sha512DerivedKeyFactory( ( s, p ) => s.Concat( p ).ToArray( ) ),
-                                           materializer, 64 );
+                                          new Sha512DerivedKeyFactory( ( s, p ) => s.Concat( p ).ToArray( ) ),
+                                          materializer, 64 );
         }
 
         internal static readonly byte[ ] InternalSalt = Encoding.UTF8.GetBytes( "tsU&yUaZulAs4eOV" );

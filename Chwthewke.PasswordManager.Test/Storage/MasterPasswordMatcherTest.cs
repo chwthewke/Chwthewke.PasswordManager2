@@ -31,12 +31,12 @@ namespace Chwthewke.PasswordManager.Test.Storage
             // Setup
             SecureString masterPassword = "toto".ToSecureString( );
 
-            IDerivedPassword match = 
+            IDerivedPassword match =
                 _passwordDerivationEngine.Derive( new PasswordRequest( "key1", masterPassword, 10, PasswordGenerators.LegacyFull ) );
 
-            PasswordDigestDocument matchingDocument = 
+            PasswordDigestDocument matchingDocument =
                 new PasswordDigestDocument( match.Digest, _masterPasswordId, new DateTime( 2011, 11, 1 ), new DateTime( 2011, 11, 1 ), string.Empty );
-            
+
             _passwordRepository.SavePassword( matchingDocument );
 
             IDerivedPassword nonMatch =

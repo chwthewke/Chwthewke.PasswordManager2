@@ -4,6 +4,6 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public interface IFuzzyDateFormatter
     {
-        string Format(DateTime dateTime);
+        string Format( DateTime dateTime );
     }
 }

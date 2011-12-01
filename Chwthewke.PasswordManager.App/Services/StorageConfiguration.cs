@@ -27,7 +27,7 @@ namespace Chwthewke.PasswordManager.App.Services
                                     } );
         }
 
-        public void SelectInternalStorage(  )
+        public void SelectInternalStorage( )
         {
             ImportOldPasswords( s =>
                                     {
@@ -48,7 +48,6 @@ namespace Chwthewke.PasswordManager.App.Services
 
                 ApplyStorageTypeSetting( );
                 _storage.PasswordRepository.Merge( currentPasswords );
-
             }
             catch ( PasswordsFileException )
             {
@@ -80,7 +79,7 @@ namespace Chwthewke.PasswordManager.App.Services
             }
             else
             {
-                StorageType= StorageType.Internal;
+                StorageType = StorageType.Internal;
                 _storage.PasswordRepository.PasswordData = InternalPasswordData( );
             }
         }

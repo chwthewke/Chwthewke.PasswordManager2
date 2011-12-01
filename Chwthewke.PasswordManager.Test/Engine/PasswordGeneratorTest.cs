@@ -37,12 +37,12 @@ namespace Chwthewke.PasswordManager.Test.Engine
 
             PasswordGenerator generator = new PasswordGenerator( derivedKeyFactory, digestFactory, materializer, 32 );
             // Exercise
-            DerivedPassword derived = 
+            DerivedPassword derived =
                 generator.Derive( new PasswordRequest( "abcd", "1234".ToSecureString( ), 1, PasswordGenerators.LegacyFull ) );
             // Verify
 
             byte[ ] expectedHash = digestFactory.DeriveKey( PasswordGenerator.DigestSalt, Encoding.UTF8.GetBytes( derived.Password ),
-                                                                1, 32 );
+                                                            1, 32 );
             PasswordDigest expectedDigest = new PasswordDigest( "abcd", expectedHash, 1, PasswordGenerators.LegacyFull );
 
             Assert.That( derived.Digest, Is.EqualTo( expectedDigest ) );

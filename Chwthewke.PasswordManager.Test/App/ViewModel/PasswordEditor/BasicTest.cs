@@ -50,7 +50,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.Self } ) );
         }
 
-        [Test]
+        [ Test ]
         public void CloseAllCommandRaisesCloseAllRequest( )
         {
             // Setup
@@ -62,7 +62,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.All } ) );
         }
 
-        [Test]
+        [ Test ]
         public void CloseAllButSelfCommandRaisesCloseAllButSelfRequest( )
         {
             // Setup
@@ -74,7 +74,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.AllButSelf } ) );
         }
 
-        [Test]
+        [ Test ]
         public void CloseToTheRightCommandRaisesCloseRightOfSelfRequest( )
         {
             // Setup
@@ -86,7 +86,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.RightOfSelf } ) );
         }
 
-        [Test]
+        [ Test ]
         public void CloseInsecureCommandRaisesCloseInsecureRequest( )
         {
             // Setup
@@ -97,6 +97,5 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
             // Verify
             Assert.That( closeRequests, Is.EquivalentTo( new[ ] { CloseEditorEventType.Insecure } ) );
         }
-
     }
 }

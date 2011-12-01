@@ -39,7 +39,8 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
 
-            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ), new BaselinePasswordDocument( _original ) );
+            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, new StubTimeProvider( ),
+                                              new BaselinePasswordDocument( _original ) );
         }
 
         [ Test ]
@@ -97,7 +98,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( _model.CanDelete, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void SetMasterPasswordWithoutUpdateChangesNothing( )
         {
             // Set up
@@ -115,7 +116,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
 
-        [Test]
+        [ Test ]
         public void SetMasterPasswordAndUpdateDerivedPasswordsToOtherMakesEditorSaveableButNotDirty( )
         {
             // Set up
@@ -134,7 +135,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
         }
 
 
-        [Test]
+        [ Test ]
         public void ChangeGeneratorMakesEditorDirty( )
         {
             // Set up
@@ -300,13 +301,13 @@ namespace Chwthewke.PasswordManager.Test.Editor
             var digest = _engine.Derive( new PasswordRequest( "abij", "1234".ToSecureString( ), 5, PasswordGenerators.LegacyAlphaNumeric ) );
 
             var updated = new PasswordDigestDocumentBuilder
-            {
-                Digest = digest.Digest,
-                CreatedOn = new DateTime( 2011, 11, 2 ),
-                ModifiedOn = new DateTime( 2011, 11, 5 ),
-                MasterPasswordId = Guid.NewGuid( ),
-                Note = "AB IJ K"
-            };
+                              {
+                                  Digest = digest.Digest,
+                                  CreatedOn = new DateTime( 2011, 11, 2 ),
+                                  ModifiedOn = new DateTime( 2011, 11, 5 ),
+                                  MasterPasswordId = Guid.NewGuid( ),
+                                  Note = "AB IJ K"
+                              };
 
 
             Assert.That( _passwordRepository.SavePassword( updated ), Is.True );

@@ -40,4 +40,5 @@ using System.Runtime.InteropServices;
 [ assembly: AssemblyFileVersion( "2.5.0.0" ) ]
 
 // Visibility
+
 [ assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Test" ) ]

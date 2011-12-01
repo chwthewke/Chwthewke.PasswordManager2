@@ -8,7 +8,7 @@ namespace Chwthewke.PasswordManager.Editor
     {
         public DerivedPasswordModel( IPasswordDerivationEngine derivationEngine, Guid generator )
         {
-            if ( derivationEngine == null ) 
+            if ( derivationEngine == null )
                 throw new ArgumentNullException( "derivationEngine" );
 
             _derivationEngine = derivationEngine;
@@ -21,7 +21,6 @@ namespace Chwthewke.PasswordManager.Editor
                 _derivedPassword = NullDerivedPassword.Instance;
             else
                 _derivedPassword = _derivationEngine.Derive( new PasswordRequest( key, masterPassword, iteration, Generator ) );
-            
         }
 
         public Guid Generator { get; private set; }

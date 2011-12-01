@@ -30,7 +30,6 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public Guid Generator { get; private set; }
 
         public IDerivedPassword DerivedPassword { get; private set; }
-
     }
 
     public class DerivedPasswordEqualityComparer : IEqualityComparer<IDerivedPasswordModel>

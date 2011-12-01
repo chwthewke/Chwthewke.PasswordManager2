@@ -55,6 +55,5 @@ namespace Chwthewke.PasswordManager.Engine
         }
 
         private readonly Func<byte[ ], byte[ ], byte[ ]> _composePasswordAndSalt;
-
     }
 }

@@ -17,12 +17,11 @@ namespace Chwthewke.PasswordManager.App.Modules
             builder.RegisterInstance( PasswordManagerEngine.DerivationEngine ).As<IPasswordDerivationEngine>( );
 
             builder.Register( CreateStorage ).As<IPasswordManagerStorage>( ).SingleInstance( );
-
         }
 
         private IPasswordManagerStorage CreateStorage( IComponentContext c )
         {
-            return PasswordManagerStorage.CreateService( new NullPasswordData() );
+            return PasswordManagerStorage.CreateService( new NullPasswordData( ) );
         }
 
         private IPasswordManagerEditor CreateEditor( IComponentContext c )

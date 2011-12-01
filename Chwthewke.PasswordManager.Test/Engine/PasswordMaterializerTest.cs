@@ -52,7 +52,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Assert.That( materializer.BytesNeeded, Is.EqualTo( 8 ) );
         }
 
-        [Test]
+        [ Test ]
         public void AlphabetNeeds9BytesWith128Symbols( )
         {
             // Set up
@@ -64,7 +64,7 @@ namespace Chwthewke.PasswordManager.Test.Engine
             Assert.That( materializer.BytesNeeded, Is.EqualTo( 9 ) );
         }
 
-        [Test]
+        [ Test ]
         public void AlphabetNeeds9BytesWith48Symbols( )
         {
             // Set up
@@ -75,6 +75,5 @@ namespace Chwthewke.PasswordManager.Test.Engine
             // Verify
             Assert.That( materializer.BytesNeeded, Is.EqualTo( 9 ) );
         }
-
-     }
+    }
 }

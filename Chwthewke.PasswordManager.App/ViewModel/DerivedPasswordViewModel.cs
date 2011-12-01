@@ -77,6 +77,5 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private readonly IPasswordEditorModel _parentModel;
         private readonly IDerivedPasswordModel _model;
-
-     }
+    }
 }

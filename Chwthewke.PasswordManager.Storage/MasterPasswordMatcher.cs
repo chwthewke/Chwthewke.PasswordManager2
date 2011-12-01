@@ -33,7 +33,7 @@ namespace Chwthewke.PasswordManager.Storage
             PasswordRequest testRequest =
                 new PasswordRequest( password.Key, masterPassword, password.Iteration, password.PasswordGenerator );
             var testDigest = _passwordDerivationEngine.Derive( testRequest ).Digest;
-            
+
             return testDigest.Equals( password.Digest );
         }
     }

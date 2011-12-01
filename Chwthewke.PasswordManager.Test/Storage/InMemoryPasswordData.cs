@@ -23,9 +23,9 @@ namespace Chwthewke.PasswordManager.Test.Storage
             return new PasswordDigestDocumentBuilder
                        {
                            Digest = new PasswordDigest( source.Digest.Key,
-                                                         source.Digest.Hash.Clone( ) as byte[ ],
-                                                         source.Digest.Iteration,
-                                                         source.Digest.PasswordGenerator ),
+                                                        source.Digest.Hash.Clone( ) as byte[ ],
+                                                        source.Digest.Iteration,
+                                                        source.Digest.PasswordGenerator ),
                            MasterPasswordId = source.MasterPasswordId,
                            CreatedOn = source.CreatedOn,
                            ModifiedOn = source.ModifiedOn,

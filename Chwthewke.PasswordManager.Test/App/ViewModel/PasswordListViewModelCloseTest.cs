@@ -136,7 +136,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         {
             // Set up
             var defEditor = PasswordList.Editors.First( ed => ed.Key == "def" );
-            defEditor.UpdateMasterPassword( "123".ToSecureString(  ) );
+            defEditor.UpdateMasterPassword( "123".ToSecureString( ) );
 
             var abcEditor = PasswordList.Editors.First( ed => ed.Key == "abc" );
             abcEditor.UpdateMasterPassword( "12".ToSecureString( ) );
@@ -147,7 +147,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             // Verify
             Assert.That( PasswordList.Editors, Has.Count.EqualTo( 2 ) );
             Assert.That( PasswordList.Editors.Select( e => e.Key ), Is.EquivalentTo( new[ ] { "abc", "ghi" } ) );
-        } 
+        }
 
 
 //        [ Test ]

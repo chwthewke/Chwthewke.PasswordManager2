@@ -26,7 +26,7 @@ namespace Chwthewke.PasswordManager.Editor
         void Reload( );
 
         bool IsKeyReadonly { get; }
-        
+
         bool IsDirty { get; }
 
         bool CanSave { get; }
@@ -34,7 +34,5 @@ namespace Chwthewke.PasswordManager.Editor
 
         bool CanDelete { get; }
         bool Delete( );
-
-        
     }
 }

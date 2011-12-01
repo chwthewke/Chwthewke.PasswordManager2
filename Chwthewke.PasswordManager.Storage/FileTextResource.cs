@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Chwthewke.PasswordManager.Storage
 {
-    public class PasswordsFileException: Exception
+    public class PasswordsFileException : Exception
     {
         public PasswordsFileException( )
         {
@@ -35,14 +35,14 @@ namespace Chwthewke.PasswordManager.Storage
 
         public TextReader OpenReader( )
         {
-            return WrappingFileExceptions( () => 
-                new StreamReader( _passwordsFile.Open( FileMode.OpenOrCreate, FileAccess.Read ), new UTF8Encoding( false ) ) );
+            return WrappingFileExceptions( ( ) =>
+                                           new StreamReader( _passwordsFile.Open( FileMode.OpenOrCreate, FileAccess.Read ), new UTF8Encoding( false ) ) );
         }
 
         public TextWriter OpenWriter( )
         {
-            return WrappingFileExceptions( () => 
-                new StreamWriter( _passwordsFile.Open( FileMode.Create, FileAccess.Write ), new UTF8Encoding( false ) ) );
+            return WrappingFileExceptions( ( ) =>
+                                           new StreamWriter( _passwordsFile.Open( FileMode.Create, FileAccess.Write ), new UTF8Encoding( false ) ) );
         }
 
 
@@ -50,7 +50,7 @@ namespace Chwthewke.PasswordManager.Storage
         {
             try
             {
-                return function();
+                return function( );
             }
             catch ( ArgumentException e )
             {

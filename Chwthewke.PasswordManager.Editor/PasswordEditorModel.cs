@@ -9,12 +9,11 @@ namespace Chwthewke.PasswordManager.Editor
 {
     internal class PasswordEditorModel : IPasswordEditorModel
     {
-
         public PasswordEditorModel( IPasswordRepository passwordRepository,
-                                     IPasswordDerivationEngine derivationEngine,
-                                     IMasterPasswordMatcher masterPasswordMatcher,
-                                     ITimeProvider timeProvider,
-                                     IBaselinePasswordDocument original )
+                                    IPasswordDerivationEngine derivationEngine,
+                                    IMasterPasswordMatcher masterPasswordMatcher,
+                                    ITimeProvider timeProvider,
+                                    IBaselinePasswordDocument original )
         {
             _passwordRepository = passwordRepository;
             _derivationEngine = derivationEngine;
@@ -62,10 +61,7 @@ namespace Chwthewke.PasswordManager.Editor
         public int Iteration
         {
             get { return _iteration; }
-            set
-            {
-                _iteration = value;
-            }
+            set { _iteration = value; }
         }
 
 
@@ -162,7 +158,7 @@ namespace Chwthewke.PasswordManager.Editor
                 return ( IsDirty || MasterPasswordId != _original.MasterPasswordId ) &&
                        MasterPassword.Length > 0 &&
                        !string.IsNullOrEmpty( Key ) &&
-                       SelectedPassword != null && 
+                       SelectedPassword != null &&
                        SelectedPassword.DerivedPassword.Password != string.Empty;
             }
         }
@@ -252,7 +248,7 @@ namespace Chwthewke.PasswordManager.Editor
 
         private string _key;
         private int _iteration;
-        private SecureString _masterPassword = new SecureString();
+        private SecureString _masterPassword = new SecureString( );
 
         private IBaselinePasswordDocument _original;
 

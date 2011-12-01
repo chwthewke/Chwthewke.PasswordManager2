@@ -5,8 +5,8 @@ namespace Chwthewke.PasswordManager.Engine
 {
     public class PasswordRequest
     {
-        public PasswordRequest( string key, SecureString masterPassword, int iterations, 
-            Guid passwordGenerator )
+        public PasswordRequest( string key, SecureString masterPassword, int iterations,
+                                Guid passwordGenerator )
         {
             Key = key;
             MasterPassword = masterPassword;

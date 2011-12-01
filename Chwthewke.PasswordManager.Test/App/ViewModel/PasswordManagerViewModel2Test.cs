@@ -59,6 +59,5 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( ViewModel.ExternalStorageSelected, Is.True );
             Assert.That( ViewModel.InternalStorageSelected, Is.False );
         }
-
     }
 }

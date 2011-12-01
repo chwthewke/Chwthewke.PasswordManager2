@@ -5,7 +5,6 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class PasswordExchange : IPasswordExchange
     {
-
         public PasswordExchange( IPasswordManagerStorage storage )
         {
             _storage = storage;
@@ -29,6 +28,5 @@ namespace Chwthewke.PasswordManager.App.Services
         }
 
         private readonly IPasswordManagerStorage _storage;
-
     }
 }

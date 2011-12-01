@@ -5,7 +5,7 @@ namespace Chwthewke.PasswordManager.App.Services
     public interface IStorageConfiguration
     {
         void SelectExternalStorage( FileInfo externalFile );
-        void SelectInternalStorage(  );
+        void SelectInternalStorage( );
         StorageType StorageType { get; }
     }
 }

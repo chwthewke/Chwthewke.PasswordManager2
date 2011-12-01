@@ -42,6 +42,7 @@ namespace Chwthewke.PasswordManager.App
             //SetupPersistence( );
             Run( );
         }
+
         //
 
         private void SetupPersistence( )

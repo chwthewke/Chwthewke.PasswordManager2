@@ -6,7 +6,7 @@ using Chwthewke.PasswordManager.App.Services;
 
 namespace Chwthewke.PasswordManager.Test.App.Services
 {
-    public class ImmediateScheduler: IExclusiveDelayedScheduler
+    public class ImmediateScheduler : IExclusiveDelayedScheduler
     {
         public void ScheduleActions( double delay, IEnumerable<Action> actions )
         {

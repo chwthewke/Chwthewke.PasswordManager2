@@ -15,18 +15,18 @@ namespace Chwthewke.PasswordManager.Test.App
             return new ActionModule( setup );
         }
 
-        public static IModule Mock<T>(  ) where T : class
+        public static IModule Mock<T>( ) where T : class
         {
             return new MockModule<T>( );
         }
 
-        public static IContainer TestContainer( params IModule[] modules )
+        public static IContainer TestContainer( params IModule[ ] modules )
         {
             ContainerBuilder containerBuilder = new ContainerBuilder( );
-            
+
             foreach ( IModule module in AppConfiguration.ApplicationModules.Concat( modules ) )
                 containerBuilder.RegisterModule( module );
-            
+
             return containerBuilder.Build( );
         }
     }
@@ -48,7 +48,6 @@ namespace Chwthewke.PasswordManager.Test.App
 
     internal class MockModule<T> : Module where T : class
     {
-
         protected override void Load( ContainerBuilder builder )
         {
             Mock<T> mock = new Mock<T>( );
@@ -56,6 +55,4 @@ namespace Chwthewke.PasswordManager.Test.App
             builder.RegisterInstance( mock.Object ).As<T>( );
         }
     }
-
-
 }

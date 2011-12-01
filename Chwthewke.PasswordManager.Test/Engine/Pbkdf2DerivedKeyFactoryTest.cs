@@ -24,6 +24,6 @@ namespace Chwthewke.PasswordManager.Test.Engine
             }
             // Verify
             Console.WriteLine( @"result: {0}", result );
-        } 
+        }
     }
 }

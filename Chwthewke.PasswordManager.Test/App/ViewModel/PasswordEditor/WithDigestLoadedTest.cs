@@ -90,7 +90,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
-            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword("abde") );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
 
             bool deleteChanged = false;
             ViewModel.DeleteCommand.CanExecuteChanged += ( s, e ) => deleteChanged = true;
@@ -106,7 +106,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
-            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword("abde") );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
 
             bool storeModifiedRaised = false;
             ViewModel.StoreModified += ( s, e ) => { storeModifiedRaised = true; };
@@ -121,7 +121,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel.PasswordEditor
         {
             // Setup
             AddPassword( "abde", PasswordGenerators.LegacyAlphaNumeric, 1, "123".ToSecureString( ), "yadda yadda" );
-            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword("abde") );
+            ViewModel = ViewModelFactory.PasswordEditorFor( PasswordRepository.LoadPassword( "abde" ) );
 
             ViewModel.UpdateMasterPassword( "123".ToSecureString( ) );
             // Exercise

@@ -42,7 +42,8 @@ namespace Chwthewke.PasswordManager.Test.Editor
 
             IMasterPasswordMatcher masterPasswordMatcher = new MasterPasswordMatcher( _engine, _passwordRepository );
 
-            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider, new BaselinePasswordDocument( _original ) );
+            _model = new PasswordEditorModel( _passwordRepository, _engine, masterPasswordMatcher, _timeProvider,
+                                              new BaselinePasswordDocument( _original ) );
         }
 
         [ Test ]

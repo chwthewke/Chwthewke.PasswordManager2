@@ -4,6 +4,7 @@ using Autofac;
 using Autofac.Core;
 using Chwthewke.PasswordManager.App.Modules;
 using System.Linq;
+using Chwthewke.PasswordManager.App.Properties;
 using Moq;
 
 namespace Chwthewke.PasswordManager.Test.App
@@ -20,11 +21,15 @@ namespace Chwthewke.PasswordManager.Test.App
             return new MockModule<T>( );
         }
 
-        public static IContainer TestContainer( params IModule[ ] modules )
+        public static IContainer TestContainer( params IModule[ ] userModules )
         {
-            ContainerBuilder containerBuilder = new ContainerBuilder( );
+            var containerBuilder = new ContainerBuilder( );
 
-            foreach ( IModule module in AppConfiguration.ApplicationModules.Concat( modules ) )
+            IEnumerable<IModule> allModules = AppConfiguration.ApplicationModules
+                .Concat( new[ ] { new SettingsModule( ) } )
+                .Concat( userModules );
+
+            foreach ( IModule module in allModules )
                 containerBuilder.RegisterModule( module );
 
             return containerBuilder.Build( );
@@ -53,6 +58,14 @@ namespace Chwthewke.PasswordManager.Test.App
             Mock<T> mock = new Mock<T>( );
             builder.RegisterInstance( mock ).As<Mock<T>>( );
             builder.RegisterInstance( mock.Object ).As<T>( );
+        }
+    }
+
+    internal class SettingsModule : Module
+    {
+        protected override void Load( ContainerBuilder builder )
+        {
+            builder.RegisterInstance( new Settings( ) ).As<Settings>( );
         }
     }
 }

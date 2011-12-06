@@ -21,7 +21,6 @@ namespace Chwthewke.PasswordManager.App
         public PasswordManagerApp( PasswordManagerWindow passwordManagerWindow )
         {
             MainWindow = passwordManagerWindow;
-            _passwordList = passwordManagerWindow.ViewModel.PasswordList;
         }
 
         // Single instance app lifecycle management
@@ -39,17 +38,8 @@ namespace Chwthewke.PasswordManager.App
 
         public void Start( )
         {
-            //SetupPersistence( );
             Run( );
         }
 
-        //
-
-        private void SetupPersistence( )
-        {
-            _passwordList.UpdateList( );
-        }
-
-        private readonly PasswordListViewModel _passwordList;
     }
 }

@@ -1,15 +1,15 @@
 ﻿using System.IO;
 using Autofac;
+using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.App.ViewModel;
-using Chwthewke.PasswordManager.Storage;
 using Moq;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
     [ TestFixture ]
-    public class PasswordManagerViewModel2Test
+    public class PasswordManagerViewModelTest
     {
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
@@ -18,6 +18,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         public Mock<IFileSelectionService> FileSelectionServiceMock { get; set; }
 
         public Mock<IStorageConfiguration> StorageConfigurationMock { get; set; }
+
+        public Settings Settings { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 // ReSharper restore MemberCanBePrivate.Global
 
@@ -58,6 +60,28 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             StorageConfigurationMock.Verify( sc => sc.SelectExternalStorage( fileInfo ) );
             Assert.That( ViewModel.ExternalStorageSelected, Is.True );
             Assert.That( ViewModel.InternalStorageSelected, Is.False );
+        }
+
+        [Test]
+        public void ToggleShowLegacyPasswordsFirstShowsLegacyPasswords( )
+        {
+            // Set up
+            Assert.That( Settings.ShowLegacyPasswordGenerators, Is.False );
+            // Exercise
+            ViewModel.ToggleAlwaysShowLegacyPasswordTypes.Execute( null );
+            // Verify
+            Assert.That( Settings.ShowLegacyPasswordGenerators, Is.True );
+        }
+
+        [Test]
+        public void ToggleShowLegacyPasswordsWhenShownHidesLegacyPasswords( )
+        {
+            // Set up
+            Settings.ShowLegacyPasswordGenerators = true;
+            // Exercise
+            ViewModel.ToggleAlwaysShowLegacyPasswordTypes.Execute( null );
+            // Verify
+            Assert.That( Settings.ShowLegacyPasswordGenerators, Is.False );
         }
     }
 }

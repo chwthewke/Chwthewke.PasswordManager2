@@ -17,6 +17,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
         public IPasswordManagerEditor Editor { get; set; }
 
         public DerivedPasswordViewModel.Factory Factory { get; set; }
+
+        public Settings Settings { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 // ReSharper restore MemberCanBePrivate.Global
 
@@ -161,6 +163,69 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( propertyChanged, Is.True );
             Assert.That( _viewModel.Content, Is.EqualTo( string.Empty ) );
         }
+
+        [ Test ]
+        public void NonLegacyPasswordsAreAlwaysVisible( )
+        {
+            // Set up
+            _derivedPasswordModel = _editorModel.DerivedPasswords.First( dp => dp.Generator == PasswordGenerators.Full );
+
+            _viewModel = Factory( _derivedPasswordModel, _editorModel );
+            _viewModel.Update( );
+
+            // Exercise
+            var visible = _viewModel.Visible;
+            // Verify
+            Assert.That( visible, Is.True );
+        }
+
+        [Test]
+        public void LegacyPasswordsAreNotVisibleByDefault( )
+        {
+            // Set up
+            _derivedPasswordModel = _editorModel.DerivedPasswords.First( dp => dp.Generator == PasswordGenerators.LegacyFull );
+
+            _viewModel = Factory( _derivedPasswordModel, _editorModel );
+            _viewModel.Update( );
+
+            // Exercise
+            var visible = _viewModel.Visible;
+            // Verify
+            Assert.That( visible, Is.False );
+        }
+
+        [Test]
+        public void LegacyPasswordIsVisibleWhenSelected( )
+        {
+            // Set up
+            _derivedPasswordModel = _editorModel.DerivedPasswords.First( dp => dp.Generator == PasswordGenerators.LegacyFull );
+
+            _viewModel = Factory( _derivedPasswordModel, _editorModel );
+            _viewModel.IsSelected = true;
+            _viewModel.Update( );
+
+            // Exercise
+            var visible = _viewModel.Visible;
+            // Verify
+            Assert.That( visible, Is.True );
+        }
+
+        [Test]
+        public void LegacyPasswordsIsForcedVisibleBySettings( )
+        {
+            // Set up
+            Settings.ShowLegacyPasswordGenerators = true;
+            _derivedPasswordModel = _editorModel.DerivedPasswords.First( dp => dp.Generator == PasswordGenerators.LegacyFull );
+
+            _viewModel = Factory( _derivedPasswordModel, _editorModel );
+            _viewModel.Update( );
+
+            // Exercise
+            var visible = _viewModel.Visible;
+            // Verify
+            Assert.That( visible, Is.True );
+        }
+
 
         private DerivedPasswordViewModel _viewModel;
         private IPasswordEditorModel _editorModel;

@@ -3,6 +3,7 @@ using System.IO;
 using System.Windows;
 using System.Windows.Input;
 using Chwthewke.MvvmUtils;
+using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Storage;
 
@@ -14,16 +15,19 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                                          IDialogService dialogService,
                                          IPasswordExchange passwordExchange,
                                          IStorageConfiguration storageConfiguration,
+                                         Settings settings,
                                          PasswordListViewModel passwordList )
         {
             _passwordList = passwordList;
             _passwordExchange = passwordExchange;
             _storageConfiguration = storageConfiguration;
+            _settings = settings;
             _fileSelectionService = fileSelectionService;
             _dialogService = dialogService;
 
             _selectInternalStorageCommand = new RelayCommand( ExecuteSelectInternalStorage );
             _selectExternalStorageCommand = new RelayCommand( ExecuteSelectExternalStorage );
+            _toggleAlwaysShowLegacyPasswordTypes = new RelayCommand( ExecuteToggleAlwaysShowLegacyPasswordTypes );
             _quitCommand = new RelayCommand( ExecuteQuit );
             _importPasswordsCommand = new RelayCommand( ExecuteImportPasswords );
             _exportPasswordsCommand = new RelayCommand( ExecuteExportPasswords );
@@ -46,6 +50,11 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _selectExternalStorageCommand; }
         }
 
+        public ICommand ToggleAlwaysShowLegacyPasswordTypes
+        {
+            get { return _toggleAlwaysShowLegacyPasswordTypes; }
+        }
+
         public ICommand QuitCommand
         {
             get { return _quitCommand; }
@@ -64,7 +73,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public bool InternalStorageSelected
         {
             get { return _internalStorageSelected; }
-            set
+            private set
             {
                 if ( _internalStorageSelected == value )
                     return;
@@ -76,13 +85,34 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public bool ExternalStorageSelected
         {
             get { return _externalStorageSelected; }
-            set
+            private set
             {
                 if ( _externalStorageSelected == value )
                     return;
                 _externalStorageSelected = value;
                 RaisePropertyChanged( ( ) => ExternalStorageSelected );
             }
+        }
+
+        public bool AlwaysShowLegacyPasswordTypes
+        {
+            get {
+                return _alwaysShowLegacyPasswordTypes;
+            }
+            private set
+            {
+                if ( value == AlwaysShowLegacyPasswordTypes )
+                    return;
+                _alwaysShowLegacyPasswordTypes = value;
+                RaisePropertyChanged( () => AlwaysShowLegacyPasswordTypes );
+            }
+        }
+
+        private void ExecuteToggleAlwaysShowLegacyPasswordTypes( )
+        {
+            _settings.ShowLegacyPasswordGenerators = !_settings.ShowLegacyPasswordGenerators;
+            _settings.Save( );
+            Update( );            
         }
 
         private void ExecuteSelectInternalStorage( )
@@ -123,6 +153,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private void Update( )
         {
+            AlwaysShowLegacyPasswordTypes = _settings.ShowLegacyPasswordGenerators;
             ExternalStorageSelected = _storageConfiguration.StorageType == StorageType.External;
             InternalStorageSelected = _storageConfiguration.StorageType == StorageType.Internal;
 
@@ -175,6 +206,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private readonly ICommand _selectExternalStorageCommand;
         private readonly ICommand _importPasswordsCommand;
         private readonly ICommand _exportPasswordsCommand;
+        private readonly ICommand _toggleAlwaysShowLegacyPasswordTypes;
 
         private readonly PasswordListViewModel _passwordList;
         private readonly IFileSelectionService _fileSelectionService;
@@ -182,11 +214,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private readonly IPasswordExchange _passwordExchange;
         private readonly IStorageConfiguration _storageConfiguration;
+        private readonly Settings _settings;
 
         private bool _externalStorageSelected;
         private bool _internalStorageSelected;
 
         private readonly DirectoryInfo _initialDirectory =
             new DirectoryInfo( Environment.GetFolderPath( Environment.SpecialFolder.Personal ) );
+
+        private bool _alwaysShowLegacyPasswordTypes;
     }
 }

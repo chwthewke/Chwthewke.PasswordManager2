@@ -8,5 +8,7 @@ namespace Chwthewke.PasswordManager.Editor
         Guid Generator { get; }
 
         IDerivedPassword DerivedPassword { get; }
+
+        bool IsLegacy { get; }
     }
 }

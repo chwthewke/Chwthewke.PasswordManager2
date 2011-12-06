@@ -58,5 +58,17 @@ namespace Chwthewke.PasswordManager.App.Properties {
                 this["ExternalPasswordDatabaseFile"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("False")]
+        public bool ShowLegacyPasswordGenerators {
+            get {
+                return ((bool)(this["ShowLegacyPasswordGenerators"]));
+            }
+            set {
+                this["ShowLegacyPasswordGenerators"] = value;
+            }
+        }
     }
 }

@@ -15,6 +15,7 @@ namespace Chwthewke.PasswordManager.App.Modules
 
             builder.RegisterType<PasswordEditorViewModel>( );
             builder.RegisterType<PasswordEditorViewModelFactory>( );
+            builder.RegisterType<DerivedPasswordViewModel>( );
 
             builder.Register( c => new PasswordManagerWindow( c.Resolve<PasswordManagerViewModel>( ) ) )
                 .As<PasswordManagerWindow>( )

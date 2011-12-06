@@ -15,9 +15,14 @@ namespace Chwthewke.PasswordManager.Engine
             return _generators[ request.PasswordGenerator ].Derive( request );
         }
 
-        public IEnumerable<Guid> PasswordGenerators
+        public IEnumerable<Guid> PasswordGeneratorIds
         {
             get { return _generators.Keys; }
+        }
+
+        public IEnumerable<Guid> LegacyPasswordGeneratorIds
+        {
+            get { return new[ ] { PasswordGenerators.LegacyAlphaNumeric, PasswordGenerators.LegacyFull }; }
         }
 
         private readonly IDictionary<Guid, PasswordGenerator> _generators;

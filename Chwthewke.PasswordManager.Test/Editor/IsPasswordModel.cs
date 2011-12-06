@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Security;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {
@@ -30,6 +31,11 @@ namespace Chwthewke.PasswordManager.Test.Editor
         public Guid Generator { get; private set; }
 
         public IDerivedPassword DerivedPassword { get; private set; }
+
+        public bool IsLegacy
+        {
+            get { return Engine.LegacyPasswordGeneratorIds.Contains( Generator ); }
+        }
     }
 
     public class DerivedPasswordEqualityComparer : IEqualityComparer<IDerivedPasswordModel>

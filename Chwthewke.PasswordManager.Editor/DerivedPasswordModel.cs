@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Editor
 {
@@ -13,7 +14,9 @@ namespace Chwthewke.PasswordManager.Editor
 
             _derivationEngine = derivationEngine;
             Generator = generator;
+            IsLegacy = _derivationEngine.LegacyPasswordGeneratorIds.Contains( generator );
         }
+
 
         public void UpdateDerivedPassword( string key, SecureString masterPassword, int iteration )
         {
@@ -24,6 +27,8 @@ namespace Chwthewke.PasswordManager.Editor
         }
 
         public Guid Generator { get; private set; }
+
+        public bool IsLegacy { get; private set; }
 
         public IDerivedPassword DerivedPassword
         {

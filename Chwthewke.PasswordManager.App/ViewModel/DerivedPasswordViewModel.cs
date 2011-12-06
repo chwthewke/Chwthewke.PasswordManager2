@@ -7,11 +7,14 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 {
     public class DerivedPasswordViewModel : ObservableObject
     {
-        public DerivedPasswordViewModel( IDerivedPasswordModel model, IPasswordEditorModel parentModel )
+        public DerivedPasswordViewModel( IDerivedPasswordModel model, IPasswordEditorModel parentModel, Settings settings )
         {
             _model = model;
             _parentModel = parentModel;
+            _settings = settings;
         }
+
+        public delegate DerivedPasswordViewModel Factory( IDerivedPasswordModel model, IPasswordEditorModel parentModel );
 
         public string GeneratorDescription
         {
@@ -55,6 +58,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         public void Update( )
         {
             Content = _model.DerivedPassword.Password;
+            Visible = IsSelected || !_model.IsLegacy || _settings.ShowLegacyPasswordGenerators;
         }
 
         public void Refresh( )
@@ -67,6 +71,18 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             get { return _model; }
         }
 
+        public bool Visible
+        {
+            get { return _visible; }
+            set
+            {
+                if ( _visible == value )
+                    return;
+                _visible = value;
+                RaisePropertyChanged( () => Visible );
+            }
+        }
+
         private Guid Generator
         {
             get { return _model.Generator; }
@@ -74,8 +90,10 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         private string _content = string.Empty;
         private bool _isSelected;
+        private bool _visible;
 
         private readonly IPasswordEditorModel _parentModel;
+        private readonly Settings _settings;
         private readonly IDerivedPasswordModel _model;
     }
 }

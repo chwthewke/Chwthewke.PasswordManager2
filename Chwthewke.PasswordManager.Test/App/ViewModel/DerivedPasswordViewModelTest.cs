@@ -15,6 +15,8 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
 // ReSharper disable MemberCanBePrivate.Global
 // ReSharper disable UnusedAutoPropertyAccessor.Global
         public IPasswordManagerEditor Editor { get; set; }
+
+        public DerivedPasswordViewModel.Factory Factory { get; set; }
 // ReSharper restore UnusedAutoPropertyAccessor.Global
 // ReSharper restore MemberCanBePrivate.Global
 
@@ -26,7 +28,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             _editorModel = Editor.EmptyModel( );
             _derivedPasswordModel = _editorModel.DerivedPasswords.First( dp => dp.Generator == PasswordGenerators.LegacyFull );
 
-            _viewModel = new DerivedPasswordViewModel( _derivedPasswordModel, _editorModel );
+            _viewModel = Factory( _derivedPasswordModel, _editorModel );
         }
 
         [ Test ]

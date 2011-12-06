@@ -17,6 +17,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
     public class PasswordEditorViewModel : ObservableObject
     {
         public PasswordEditorViewModel( IPasswordEditorModel model,
+                                        DerivedPasswordViewModel.Factory derivedPasswordFactory,
                                         IExclusiveDelayedScheduler scheduler,
                                         IClipboardService clipboardService,
                                         IDialogService dialogService,
@@ -28,7 +29,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
             _dialogService = dialogService;
             _guidToColor = guidToColor;
             _derivedPasswords = new ObservableCollection<DerivedPasswordViewModel>(
-                _model.DerivedPasswords.Select( dp => new DerivedPasswordViewModel( dp, _model ) ) );
+                _model.DerivedPasswords.Select( dp => derivedPasswordFactory( dp, _model ) ) );
 
             foreach ( DerivedPasswordViewModel passwordSlotViewModel in DerivedPasswords )
                 passwordSlotViewModel.PropertyChanged += OnDerivedPasswordPropertyChanged;

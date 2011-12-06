@@ -20,7 +20,7 @@ namespace Chwthewke.PasswordManager.Editor
             _masterPasswordMatcher = masterPasswordMatcher;
             _timeProvider = timeProvider;
 
-            _derivedPasswords = _derivationEngine.PasswordGenerators
+            _derivedPasswords = _derivationEngine.PasswordGeneratorIds
                 .Select( g => new DerivedPasswordModel( _derivationEngine, g ) )
                 .ToList( );
 

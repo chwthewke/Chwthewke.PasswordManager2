@@ -5,6 +5,7 @@ using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
 using NUnit.Framework;
+using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {
@@ -68,7 +69,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             // Verify
             Assert.That( deleted, Is.True );
             Assert.That( _passwordData.LoadPasswords( ), Has.Count.EqualTo( 1 ) );
-            Assert.That( _passwordData.LoadPasswords( )[ 0 ].IsDeleted, Is.True );
+            Assert.That( _passwordData.LoadPasswords( ).ElementAt( 0 ).IsDeleted, Is.True );
         }
 
         [ Test ]
@@ -91,7 +92,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( deleted, Is.True );
             Assert.That( _passwordRepository.LoadPasswords( ), Is.Empty );
             Assert.That( _passwordData.LoadPasswords( ), Has.Count.EqualTo( 1 ) );
-            Assert.That( _passwordData.LoadPasswords( )[ 0 ].IsDeleted, Is.True );
+            Assert.That( _passwordData.LoadPasswords( ).ElementAt( 0 ).IsDeleted, Is.True );
         }
 
         [ Test ]
@@ -115,7 +116,7 @@ namespace Chwthewke.PasswordManager.Test.Editor
             Assert.That( deleted, Is.False );
             Assert.That( _passwordRepository.LoadPasswords( ), Is.EquivalentTo( new[ ] { updated } ) );
             Assert.That( _passwordData.LoadPasswords( ), Has.Count.EqualTo( 1 ) );
-            Assert.That( _passwordData.LoadPasswords( )[ 0 ].IsDeleted, Is.False );
+            Assert.That( _passwordData.LoadPasswords( ).ElementAt( 0 ).IsDeleted, Is.False );
         }
 
         [ Test ]

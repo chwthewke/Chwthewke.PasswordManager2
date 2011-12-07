@@ -96,15 +96,13 @@ namespace Chwthewke.PasswordManager.App.ViewModel
 
         public bool AlwaysShowLegacyPasswordTypes
         {
-            get {
-                return _alwaysShowLegacyPasswordTypes;
-            }
+            get { return _alwaysShowLegacyPasswordTypes; }
             private set
             {
                 if ( value == AlwaysShowLegacyPasswordTypes )
                     return;
                 _alwaysShowLegacyPasswordTypes = value;
-                RaisePropertyChanged( () => AlwaysShowLegacyPasswordTypes );
+                RaisePropertyChanged( ( ) => AlwaysShowLegacyPasswordTypes );
             }
         }
 
@@ -112,7 +110,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         {
             _settings.ShowLegacyPasswordGenerators = !_settings.ShowLegacyPasswordGenerators;
             _settings.Save( );
-            Update( );            
+            Update( );
         }
 
         private void ExecuteSelectInternalStorage( )

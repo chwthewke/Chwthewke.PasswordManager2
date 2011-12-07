@@ -6,7 +6,6 @@ namespace Chwthewke.PasswordManager.App.Services
 {
     public class TimerShim : ITimer
     {
-
         public TimerShim( double delay )
         {
             _timer = new Timer( delay );
@@ -44,7 +43,7 @@ namespace Chwthewke.PasswordManager.App.Services
             }
         }
 
-        private readonly IDictionary<EventHandler, ElapsedEventHandler> _handlerTranslations = 
+        private readonly IDictionary<EventHandler, ElapsedEventHandler> _handlerTranslations =
             new Dictionary<EventHandler, ElapsedEventHandler>( );
 
         private readonly Timer _timer;

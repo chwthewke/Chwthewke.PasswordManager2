@@ -1,14 +1,14 @@
 ﻿using System;
+using Autofac;
 using Autofac.Core;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.ViewModel;
+using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Editor;
 using Chwthewke.PasswordManager.Test.Storage;
 using NUnit.Framework;
-using Autofac;
-using ITimeProvider = Chwthewke.PasswordManager.Editor.ITimeProvider;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {

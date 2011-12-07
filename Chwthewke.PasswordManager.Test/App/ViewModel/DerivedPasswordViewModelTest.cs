@@ -1,11 +1,11 @@
 using System.Linq;
+using Autofac;
 using Chwthewke.PasswordManager.App.Properties;
 using Chwthewke.PasswordManager.App.ViewModel;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
-using NUnit.Framework;
-using Autofac;
 using Chwthewke.PasswordManager.Test.Engine;
+using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.App.ViewModel
 {
@@ -179,7 +179,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( visible, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void LegacyPasswordsAreNotVisibleByDefault( )
         {
             // Set up
@@ -194,7 +194,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( visible, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void LegacyPasswordIsVisibleWhenSelected( )
         {
             // Set up
@@ -210,7 +210,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( visible, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void LegacyPasswordsIsForcedVisibleBySettings( )
         {
             // Set up

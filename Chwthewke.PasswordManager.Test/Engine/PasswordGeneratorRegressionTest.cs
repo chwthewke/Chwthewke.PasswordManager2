@@ -1,7 +1,4 @@
-using System;
-using System.Linq;
 using Chwthewke.PasswordManager.Engine;
-using Chwthewke.PasswordManager.Storage;
 using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Engine

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Timers;
 
 namespace Chwthewke.PasswordManager.App.Services
 {
@@ -63,7 +62,7 @@ namespace Chwthewke.PasswordManager.App.Services
             }
         }
 
-        private volatile int _sequenceNumber = 0;
+        private volatile int _sequenceNumber;
         private readonly object _lockObject = new object( );
         private readonly ICollection<ITimer> _timers = new HashSet<ITimer>( );
         private readonly Func<double, ITimer> _timerFactory;

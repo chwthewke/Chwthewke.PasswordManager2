@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using System.Linq;
@@ -13,7 +12,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
             Passwords = new List<PasswordDigestDocument>( );
         }
 
-        public IList<PasswordDigestDocument> LoadPasswords( )
+        public IEnumerable<PasswordDigestDocument> LoadPasswords( )
         {
             return Passwords.Select( ClonePassword ).ToList( );
         }
@@ -33,7 +32,7 @@ namespace Chwthewke.PasswordManager.Test.Storage
                        };
         }
 
-        public void SavePasswords( IList<PasswordDigestDocument> passwords )
+        public void SavePasswords( IEnumerable<PasswordDigestDocument> passwords )
         {
             Passwords = passwords.Select( ClonePassword ).ToList( );
         }

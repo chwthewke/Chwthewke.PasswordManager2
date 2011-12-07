@@ -1,6 +1,4 @@
-﻿using Chwthewke.PasswordManager.App.ViewModel;
-
-namespace Chwthewke.PasswordManager.App.Services
+﻿namespace Chwthewke.PasswordManager.App.Services
 {
     public static class ErrorDialogs
     {

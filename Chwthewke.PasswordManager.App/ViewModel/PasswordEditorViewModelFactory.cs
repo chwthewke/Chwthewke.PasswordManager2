@@ -1,5 +1,4 @@
 using System;
-using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Storage;
 

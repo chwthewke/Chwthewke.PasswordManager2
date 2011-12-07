@@ -1,7 +1,7 @@
 ﻿using System;
+using System.Linq;
 using System.Security;
 using Chwthewke.PasswordManager.Engine;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Editor
 {

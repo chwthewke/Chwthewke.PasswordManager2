@@ -79,7 +79,7 @@ namespace Chwthewke.PasswordManager.App.ViewModel
                 if ( _visible == value )
                     return;
                 _visible = value;
-                RaisePropertyChanged( () => Visible );
+                RaisePropertyChanged( ( ) => Visible );
             }
         }
 

@@ -1,5 +1,4 @@
-﻿using System;
-using System.Security;
+﻿using System.Security;
 using System.Text;
 using NUnit.Framework;
 using Chwthewke.PasswordManager.Engine;

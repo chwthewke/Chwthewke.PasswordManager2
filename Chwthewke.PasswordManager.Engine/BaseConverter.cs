@@ -22,7 +22,7 @@ namespace Chwthewke.PasswordManager.Engine
             return EnumerateDigits( value, numDigits ).ToArray( );
         }
 
-        public BaseConverter( int theBase ) : base( )
+        public BaseConverter( int theBase )
         {
             if ( theBase < 2 || theBase > 256 )
                 throw new ArgumentException( "The base must lie between 2 and 256", "theBase" );

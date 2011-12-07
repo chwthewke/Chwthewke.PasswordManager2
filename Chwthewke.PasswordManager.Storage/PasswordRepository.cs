@@ -129,10 +129,9 @@ namespace Chwthewke.PasswordManager.Storage
                     var oldPassword = _passwordsCache[ newPassword.Key ];
                     if ( oldPassword.ModifiedOn.CompareTo( newPassword.ModifiedOn ) > 0 )
                         continue;
-                    if ( oldPassword.IsDeleted )
-                        creation = newPassword.CreatedOn;
-                    else
-                        creation = new[ ] { oldPassword.CreatedOn, newPassword.CreatedOn }.Min( );
+                    creation = oldPassword.IsDeleted ? 
+                        newPassword.CreatedOn : 
+                        new[ ] { oldPassword.CreatedOn, newPassword.CreatedOn }.Min( );
                 }
                 else
                 {

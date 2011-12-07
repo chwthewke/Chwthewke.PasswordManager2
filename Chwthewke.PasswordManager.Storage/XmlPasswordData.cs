@@ -21,12 +21,12 @@ namespace Chwthewke.PasswordManager.Storage
             _store = store;
         }
 
-        public IList<PasswordDigestDocument> LoadPasswords( )
+        public IEnumerable<PasswordDigestDocument> LoadPasswords( )
         {
             return _serializer.Load( _store ).ToList( );
         }
 
-        public void SavePasswords( IList<PasswordDigestDocument> passwords )
+        public void SavePasswords( IEnumerable<PasswordDigestDocument> passwords )
         {
             _serializer.Save( passwords, _store );
         }

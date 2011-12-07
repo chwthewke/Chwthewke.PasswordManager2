@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using Autofac;
 using Chwthewke.PasswordManager.App.Services;
 using Moq;
 using NUnit.Framework;
-using Autofac;
 
 namespace Chwthewke.PasswordManager.Test.App.Services
 {

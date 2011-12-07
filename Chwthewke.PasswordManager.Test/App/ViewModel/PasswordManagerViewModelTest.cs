@@ -62,7 +62,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( ViewModel.InternalStorageSelected, Is.False );
         }
 
-        [Test]
+        [ Test ]
         public void ToggleShowLegacyPasswordsFirstShowsLegacyPasswords( )
         {
             // Set up
@@ -73,7 +73,7 @@ namespace Chwthewke.PasswordManager.Test.App.ViewModel
             Assert.That( Settings.ShowLegacyPasswordGenerators, Is.True );
         }
 
-        [Test]
+        [ Test ]
         public void ToggleShowLegacyPasswordsWhenShownHidesLegacyPasswords( )
         {
             // Set up

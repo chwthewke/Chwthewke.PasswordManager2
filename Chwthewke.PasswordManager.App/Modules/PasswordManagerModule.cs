@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
 using Autofac;
-using Chwthewke.PasswordManager.App.Services;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
@@ -35,12 +34,12 @@ namespace Chwthewke.PasswordManager.App.Modules
     // null object for stubbing at init time
     internal class NullPasswordData : IPasswordData
     {
-        public IList<PasswordDigestDocument> LoadPasswords( )
+        public IEnumerable<PasswordDigestDocument> LoadPasswords( )
         {
             return new List<PasswordDigestDocument>( );
         }
 
-        public void SavePasswords( IList<PasswordDigestDocument> passwords )
+        public void SavePasswords( IEnumerable<PasswordDigestDocument> passwords )
         {
         }
     }

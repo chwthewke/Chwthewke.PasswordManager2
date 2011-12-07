@@ -3,7 +3,6 @@ using Autofac;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
-using ITimeProvider = Chwthewke.PasswordManager.Editor.ITimeProvider;
 
 namespace Chwthewke.PasswordManager.App.Modules
 {

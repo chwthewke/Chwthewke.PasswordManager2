@@ -427,9 +427,9 @@ namespace Chwthewke.PasswordManager.App.ViewModel
         private string DeriveCopyText( )
         {
             IDerivedPasswordModel derivedPasswordModel = _model.SelectedPassword;
-            string qualifier = derivedPasswordModel == null ? 
-                Resources.CopyPasswordDefaultQualifier : 
-                Resources.ResourceManager.GetString( PasswordGeneratorTranslator.NameKey( derivedPasswordModel.Generator ) );
+            string qualifier = derivedPasswordModel == null
+                                   ? Resources.CopyPasswordDefaultQualifier
+                                   : Resources.ResourceManager.GetString( PasswordGeneratorTranslator.NameKey( derivedPasswordModel.Generator ) );
             return string.Format( Resources.CopyPasswordTemplate, qualifier );
         }
 

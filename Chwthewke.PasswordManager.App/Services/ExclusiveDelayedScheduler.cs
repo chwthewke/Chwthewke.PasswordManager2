@@ -66,6 +66,5 @@ namespace Chwthewke.PasswordManager.App.Services
         private readonly object _lockObject = new object( );
         private readonly ICollection<ITimer> _timers = new HashSet<ITimer>( );
         private readonly Func<double, ITimer> _timerFactory;
-
     }
 }

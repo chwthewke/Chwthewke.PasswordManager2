@@ -4,12 +4,12 @@ using System.Text;
 namespace Chwthewke.PasswordManager.Engine
 {
     /// <summary>
-    /// <para>
-    /// Encodes a sequence of bytes into a string built from a fixed set of characters.
-    /// </para>
-    /// <para>
-    /// Returns strings of a fixed even length, the smallest possible to have at least 2 ^ 64 possible outputs.
-    /// </para>
+    ///   <para>
+    ///     Encodes a sequence of bytes into a string built from a fixed set of characters.
+    ///   </para>
+    ///   <para>
+    ///     Returns strings of a fixed even length, the smallest possible to have at least 2 ^ 64 possible outputs.
+    ///   </para>
     /// </summary>
     internal class PasswordMaterializer
     {

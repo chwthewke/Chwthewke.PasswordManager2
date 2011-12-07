@@ -1,11 +1,11 @@
 ﻿using System;
+using System.Linq;
 using Chwthewke.PasswordManager.Editor;
 using Chwthewke.PasswordManager.Engine;
 using Chwthewke.PasswordManager.Storage;
 using Chwthewke.PasswordManager.Test.Engine;
 using Chwthewke.PasswordManager.Test.Storage;
 using NUnit.Framework;
-using System.Linq;
 
 namespace Chwthewke.PasswordManager.Test.Editor
 {

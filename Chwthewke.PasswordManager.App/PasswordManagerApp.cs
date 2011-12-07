@@ -39,6 +39,5 @@ namespace Chwthewke.PasswordManager.App
         {
             Run( );
         }
-
     }
 }

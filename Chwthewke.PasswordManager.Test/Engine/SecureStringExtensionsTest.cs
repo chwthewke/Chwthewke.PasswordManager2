@@ -1,7 +1,7 @@
 ﻿using System.Security;
 using System.Text;
-using NUnit.Framework;
 using Chwthewke.PasswordManager.Engine;
+using NUnit.Framework;
 
 namespace Chwthewke.PasswordManager.Test.Engine
 {

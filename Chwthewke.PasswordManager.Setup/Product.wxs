@@ -1,15 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
-  <!-- TODO I'd like to do ComponentGroups for the Dlls. Do I need <Fragment> ?-->
-  <!-- TODO Icon in Control Panel/Programs list-->
-  <Product Id="862CFB32-A8C3-4BDB-AEF6-6BCBD8E1396B"
-           Name="Chwthewke.PasswordManager 2.1"
+  <Product Id="00934830-3459-4AAA-B02A-647DD3C999A5"
+           Name="Chwthewke.PasswordManager 2.5"
            Language="1033"
-           Version="2.1.190.45"
+           Version="2.5.301.100"
            Manufacturer="www.chwthewke.net"
            UpgradeCode="EF0EBEC7-6938-4328-9EC6-B3512D43F43E">
     <Package Id="*"
-             Description="Chwthewke.PasswordManager 2.1"
+             Description="Chwthewke.PasswordManager 2.5"
              InstallerVersion="200"
              Compressed="yes" />
 
@@ -18,7 +16,7 @@
                       Property="PREVIOUSFOUND" 
                       Minimum="2.0.0" 
                       IncludeMinimum="yes"
-                      Maximum="2.1.190.45" 
+                      Maximum="2.5.301.100" 
                       IncludeMaximum="no"/>
     </Upgrade>
 
@@ -45,7 +43,7 @@
                     KeyPath="yes"/>
             </Component>
             <Component Id="AutofacDlls"
-                       Guid="2F3B6B26-EE5A-4143-94A5-5D597E0AB82D">
+                       Guid="BEE71FFC-B0CA-4F1A-9301-63DAEBC2F516">
               <File Id="AutofacDll"
                     Name="Autofac.dll"
                     Source="$(var.SolutionDir)\packages\Autofac.2.5.2.830\lib\NET40\Autofac.dll"/>
@@ -54,7 +52,7 @@
                        Guid="BB6ED33F-5ED3-4D84-AD21-9412E2BCC00D">
               <Shortcut Id="StartMenuChwthewkePasswordManager2"
                         Directory="ApplicationProgramsFolder"
-                        Name="Chwthewke.PasswordManager 2.1"
+                        Name="Chwthewke.PasswordManager 2.5"
                         WorkingDirectory="INSTALLLOCATION"
                         Icon="IcoChwthewke.PasswordManager.App.exe"
                         IconIndex="0"

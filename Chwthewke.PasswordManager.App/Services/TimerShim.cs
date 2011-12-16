@@ -30,7 +30,7 @@ namespace Chwthewke.PasswordManager.App.Services
         {
             add
             {
-                ElapsedEventHandler elapsed = ( s, e ) => value( s, e );
+                ElapsedEventHandler elapsed = ( s, e ) => value( this, e );
                 _handlerTranslations[ value ] = elapsed;
                 _timer.Elapsed += elapsed;
             }
@@ -41,6 +41,11 @@ namespace Chwthewke.PasswordManager.App.Services
                 _handlerTranslations.TryGetValue( value, out elapsed );
                 _timer.Elapsed -= elapsed;
             }
+        }
+
+        internal Timer Timer
+        {
+            get { return _timer; }
         }
 
         private readonly IDictionary<EventHandler, ElapsedEventHandler> _handlerTranslations =

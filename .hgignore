@@ -1,9 +1,0 @@
-glob:*.suo
-glob:*.user
-glob:_ReSharper.*
-glob:*/bin
-glob:*/obj
-glob:doc/~$*
-glob:*.orig
-syntax: glob
-*.dotCover

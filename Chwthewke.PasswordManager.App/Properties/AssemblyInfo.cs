@@ -12,7 +12,7 @@ using System.Windows;
 [ assembly: AssemblyConfiguration( "" ) ]
 [ assembly: AssemblyCompany( "www.chwthewke.net" ) ]
 [ assembly: AssemblyProduct( "Chwthewke.PasswordManager.App" ) ]
-[ assembly: AssemblyCopyright( "Copyright © www.chwthewke.net 2010" ) ]
+[ assembly: AssemblyCopyright( "Copyright © www.chwthewke.net 2010-2017" ) ]
 [ assembly: AssemblyTrademark( "" ) ]
 [ assembly: AssemblyCulture( "" ) ]
 
@@ -53,6 +53,6 @@ using System.Windows;
 // by using the '*' as shown below:
 // [assembly: AssemblyVersion("1.0.*")]
 
-[ assembly: AssemblyVersion( "2.5.0.0" ) ]
-[ assembly: AssemblyFileVersion( "2.5.0.0" ) ]
+[ assembly: AssemblyVersion( "2.6.0.0" ) ]
+[ assembly: AssemblyFileVersion( "2.6.0.0" ) ]
 [ assembly: InternalsVisibleTo( "Chwthewke.PasswordManager.Test" ) ]

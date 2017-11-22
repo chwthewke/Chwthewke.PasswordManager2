@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="6D51007A-591A-4683-8724-B9A48192BF0A"
-           Name="Chwthewke.PasswordManager 2.5"
+           Name="Chwthewke.PasswordManager 2.6"
            Language="1033"
-           Version="2.5.306.110"
+           Version="2.6.0.0"
            Manufacturer="www.chwthewke.net"
            UpgradeCode="EF0EBEC7-6938-4328-9EC6-B3512D43F43E">
     <Package Id="*"
-             Description="Chwthewke.PasswordManager 2.5"
+             Description="Chwthewke.PasswordManager 2.6"
              InstallerVersion="200"
              Compressed="yes" />
 
@@ -16,7 +16,7 @@
                       Property="PREVIOUSFOUND" 
                       Minimum="2.0.0" 
                       IncludeMinimum="yes"
-                      Maximum="2.5.306.110" 
+                      Maximum="2.6.0.0" 
                       IncludeMaximum="no"/>
     </Upgrade>
 
@@ -46,19 +46,21 @@
                        Guid="BEE71FFC-B0CA-4F1A-9301-63DAEBC2F516">
               <File Id="AutofacDll"
                     Name="Autofac.dll"
-                    Source="$(var.SolutionDir)\packages\Autofac.2.5.2.830\lib\NET40\Autofac.dll"/>
+                    Source="$(var.SolutionDir)\packages\Autofac.2.5.2.830\lib\NET40\Autofac.dll"
+                    KeyPath="yes"/>
             </Component>
             <Component Id="WpfToolkitDlls"
-                       Guid="77b03662-C66D-4374-B976-E4fE56C1DDDB">
+                       Guid="77B03662-C66D-4374-B976-E4FE56C1DDDB">
               <File Id="WPFToolkitExtendedDll"
                     Name="WPFToolkit.Extended.dll"
-                    Source="$(var.SolutionDir)\packages\Extended.Wpf.Toolkit.1.5.0\lib\net40\WPFToolkit.Extended.dll"/>
+                    Source="$(var.SolutionDir)\packages\Extended.Wpf.Toolkit.1.5.0\lib\net40\WPFToolkit.Extended.dll"
+                    KeyPath="yes"/>
             </Component>
             <Component Id="StartMenuShortcut"
                        Guid="BB6ED33F-5ED3-4D84-AD21-9412E2BCC00D">
               <Shortcut Id="StartMenuChwthewkePasswordManager2"
                         Directory="ApplicationProgramsFolder"
-                        Name="Chwthewke.PasswordManager 2.5"
+                        Name="Chwthewke.PasswordManager 2.6"
                         WorkingDirectory="INSTALLLOCATION"
                         Icon="IcoChwthewke.PasswordManager.App.exe"
                         IconIndex="0"

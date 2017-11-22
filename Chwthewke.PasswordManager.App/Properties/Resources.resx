@@ -157,15 +157,27 @@
     <value>Close</value>
   </data>
   <data name="PasswordGenerator09ec011706614bef8248ef8e3ea0eb81" xml:space="preserve">
-    <value>Complex</value>
+    <value>Complex (2010)</value>
   </data>
   <data name="PasswordGenerator3b120ddba21b40acb028e086ed8b23c1" xml:space="preserve">
-    <value>Alphanumeric</value>
+    <value>Alphanumeric (2010)</value>
   </data>
   <data name="PasswordGeneratorDescription09ec011706614bef8248ef8e3ea0eb81" xml:space="preserve">
     <value>Generates an 10-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; " ' ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `</value>
   </data>
   <data name="PasswordGeneratorDescription3b120ddba21b40acb028e086ed8b23c1" xml:space="preserve">
     <value>Generates a 12-character password, using lower- and upper-case letters and digits.</value>
+  </data>
+  <data name="PasswordGeneratorcbc926e575f24a3c9981c7dce200aed6" xml:space="preserve">
+    <value>Complex (2017)</value>
+  </data>
+  <data name="PasswordGeneratorDescriptioncbc926e575f24a3c9981c7dce200aed6" xml:space="preserve">
+    <value>Generates a 14-character password, using lower- and upper-case letters, digits, as well as special characters among: &amp; " ' ( - _ ) = # { [ | \ @ ] } $ % * &lt; &gt; , ? ; . : / ! ^ `</value>
+  </data>
+  <data name="PasswordGeneratorDescriptionfeb68a3b685640ebb52725684d81a35a" xml:space="preserve">
+    <value>Generates a 16-character password, using lower- and upper-case letters and digits.</value>
+  </data>
+  <data name="PasswordGeneratorfeb68a3b685640ebb52725684d81a35a" xml:space="preserve">
+    <value>Alphanumeric (2017)</value>
   </data>
 </root>

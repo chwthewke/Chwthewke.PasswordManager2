@@ -17,13 +17,11 @@ namespace Chwthewke.PasswordManager.Engine
         private readonly BaseConverter _converter;
         private readonly int _passwordLength;
 
-        public PasswordMaterializer( string symbols )
+        public PasswordMaterializer( string symbols, int strength = 64 )
         {
-            if ( symbols == null )
-                throw new ArgumentNullException( "symbols" );
-            _symbols = symbols;
+            _symbols = symbols ?? throw new ArgumentNullException( "symbols" );
             _converter = new BaseConverter( _symbols.Length );
-            _passwordLength = ComputePasswordLength( _symbols.Length );
+            _passwordLength = ComputePasswordLength( _symbols.Length, strength );
         }
 
         public string ToString( byte[ ] bytes )
@@ -50,9 +48,9 @@ namespace Chwthewke.PasswordManager.Engine
             get { return _converter.BytesNeeded( _passwordLength ); }
         }
 
-        private static int ComputePasswordLength( int symbolCount )
+        private static int ComputePasswordLength( int symbolCount, int strength )
         {
-            return 2 * (int) Math.Ceiling( 32 / Math.Log( symbolCount, 2 ) );
+            return 2 * (int) Math.Ceiling( (strength / 2) / Math.Log( symbolCount, 2 ) );
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Chwthewke.PasswordManager.Engine
 
         public IEnumerable<Guid> LegacyPasswordGeneratorIds
         {
-            get { return new[ ] { PasswordGenerators.LegacyAlphaNumeric, PasswordGenerators.LegacyFull }; }
+            get { return new[ ] { PasswordGenerators.LegacyAlphaNumeric, PasswordGenerators.LegacyFull, PasswordGenerators.AlphaNumeric, PasswordGenerators.Full }; }
         }
 
         private readonly IDictionary<Guid, PasswordGenerator> _generators;

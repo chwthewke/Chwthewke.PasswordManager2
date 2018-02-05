@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
   <Product Id="6D51007A-591A-4683-8724-B9A48192BF0A"
-           Name="Chwthewke.PasswordManager 2.6"
+           Name="Chwthewke.PasswordManager 2.7"
            Language="1033"
-           Version="2.6.0.0"
+           Version="2.7.0.0"
            Manufacturer="www.chwthewke.net"
            UpgradeCode="EF0EBEC7-6938-4328-9EC6-B3512D43F43E">
     <Package Id="*"
-             Description="Chwthewke.PasswordManager 2.6"
+             Description="Chwthewke.PasswordManager 2.7"
              InstallerVersion="200"
              Compressed="yes" />
 
@@ -16,7 +16,7 @@
                       Property="PREVIOUSFOUND" 
                       Minimum="2.0.0" 
                       IncludeMinimum="yes"
-                      Maximum="2.6.0.0" 
+                      Maximum="2.7.0.0" 
                       IncludeMaximum="no"/>
     </Upgrade>
 
@@ -60,7 +60,7 @@
                        Guid="BB6ED33F-5ED3-4D84-AD21-9412E2BCC00D">
               <Shortcut Id="StartMenuChwthewkePasswordManager2"
                         Directory="ApplicationProgramsFolder"
-                        Name="Chwthewke.PasswordManager 2.6"
+                        Name="Chwthewke.PasswordManager 2.7"
                         WorkingDirectory="INSTALLLOCATION"
                         Icon="IcoChwthewke.PasswordManager.App.exe"
                         IconIndex="0"
